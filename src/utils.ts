@@ -22,10 +22,11 @@ export const messageAdapter = (variable: LLMInput | LLMOutput) => {
     message = variable
     chat = undefined
   } else if (Array.isArray(variable)) {
-    message = variable[variable.length - 1].text
+    const last = variable[variable.length - 1]
+    message = last.text || last.content
     chat = message
   } else if (typeof variable === "object") {
-    message = variable.text
+    message = variable.text || variable.content
     chat = message
   }
 
