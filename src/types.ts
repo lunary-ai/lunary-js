@@ -1,4 +1,4 @@
-import { ChatMessage as LangchainChatMessage } from "langchain/schema"
+import { BaseChatMessage as LangchainChatMessage } from "langchain/schema"
 
 export interface LLMonitorOptions {
   appId?: string
