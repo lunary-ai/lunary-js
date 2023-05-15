@@ -1,11 +1,15 @@
 {
   "compilerOptions": {
-    "target": "ES2019",
-    "module": "CommonJS",
+    "target": "ESNext",
+    "module": "ESNext",
     "declaration": true,
+    "emitDeclarationOnly": true,
     "outDir": "./lib",
-    "strict": true
+    "strict": true,
+    "paths": {
+      "langchain/schema": ["./node_modules/langchain/schema"],
+    }
   },
   "include": ["src"],
-  "exclude": ["node_modules", "**/__tests__/*"]
+  "exclude": ["node_modules"]
 }

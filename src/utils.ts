@@ -32,3 +32,4 @@ export const messageAdapter = (variable: LLMInput | LLMOutput) => {
 
   return { message, chat }
 }
+
