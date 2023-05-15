@@ -56,23 +56,54 @@ class LLMonitor {
     return this.convoId
   }
 
-  call(prompt: LLMInput) {
-    const { message, chat } = messageAdapter(prompt)
+  /**
+   * Use this for higher accuracy as soon as the user sends a message.
+   * @param {string} msg - User message
+   **/
+  messageReceived(msg: LLMInput) {
+    const { message } = messageAdapter(msg)
 
-    this.trackEvent("LLM_CALL", { message, chat })
+    this.trackEvent("MSG_RECEIVED", { message })
   }
 
+  /**
+   * Use this just before calling a model
+   * @param {string | ChatHistory} prompt - Prompt sent to the model
+   **/
+  call(prompt: LLMInput, model?: string) {
+    const { message, chat } = messageAdapter(prompt)
+
+    this.trackEvent("LLM_CALL", { message, chat, model })
+  }
+
+  /**
+   * Use this when the model returns an answer, but the chain isn't complete yet.
+   * @param {string | ChatHistory} answer - Answer returned by the model
+   **/
   intermediateResult(answer: LLMOutput) {
     const { message } = messageAdapter(answer)
     this.trackEvent("LLM_RESULT", { message, intermediate: true })
   }
 
+  /**
+   * Use this when the model returns the final answer you'll show to the user.
+   * @param {string | ChatHistory} answer - Answer returned by the model
+   * @example
+   * const answer = await model.generate("Hello")
+   * monitor.finalResult(answer)
+   **/
   finalResult(answer: LLMOutput) {
     const { message } = messageAdapter(answer)
     this.trackEvent("LLM_RESULT", { message, intermediate: false })
   }
 
-  /* Alias final result for simple use cases */
+  /**
+   * Use this when the model returns the final answer you'll show to the user.
+   * @param {string | ChatHistory} answer - Answer returned by the model
+   * @example
+   * const answer = await model.generate("Hello")
+   * monitor.result(answer)
+   **/
   result(answer: LLMOutput) {
     this.finalResult(answer)
   }
@@ -81,19 +112,41 @@ class LLMonitor {
     this.trackEvent("LOG", { message })
   }
 
+  /**
+   * Use this when you start streaming the model's output to the user.
+   * Used to measure the time it takes for the model to generate the first response.
+   */
   streamingStarts() {
     this.trackEvent("STREAMING_START")
   }
 
+  /**
+   * Vote on the quality of the conversation.
+   */
   userUpvotes() {
     this.trackEvent("FEEDBACK", { message: "GOOD" })
   }
 
+  /**
+   * Vote on the quality of the conversation.
+   */
   userDownvotes() {
     this.trackEvent("FEEDBACK", { message: "BAD" })
   }
 
-  error(message: string | any, error: any) {
+  /**
+   * Report any errors that occur during the conversation.
+   * @param {string} message - Error message
+   * @param {any} error - Error object
+   * @example
+   * try {
+   *   const answer = await model.generate("Hello")
+   *   monitor.result(answer)
+   * } catch (error) {
+   *   monitor.error("Error generating answer", error)
+   * }
+   **/
+  error(message: string | any, error?: any) {
     // Allow error obj to be the first argument
     if (typeof message === "object") {
       error = message
