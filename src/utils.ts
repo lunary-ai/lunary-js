@@ -2,13 +2,13 @@
 
 import { LLMInput, LLMOutput } from "./types"
 
-export const getDefaultAppId = () => {
-  if (typeof process !== "undefined" && process.env?.LLMONITOR_APP_ID) {
-    return process.env.LLMONITOR_APP_ID
+export const checkEnv = (variable) => {
+  if (typeof process !== "undefined" && process.env?.[variable]) {
+    return process.env[variable]
   }
 
-  if (typeof Deno !== "undefined" && Deno.env?.get("LLMONITOR_APP_ID")) {
-    return Deno.env.get("LLMONITOR_APP_ID")
+  if (typeof Deno !== "undefined" && Deno.env?.get(variable)) {
+    return Deno.env.get(variable)
   }
 
   return undefined
@@ -16,20 +16,19 @@ export const getDefaultAppId = () => {
 
 export const messageAdapter = (variable: LLMInput | LLMOutput) => {
   let message
-  let chat
+  let history
 
   if (typeof variable === "string") {
     message = variable
-    chat = undefined
+    history = undefined
   } else if (Array.isArray(variable)) {
     const last = variable[variable.length - 1]
     message = last.text || last.content
-    chat = message
+    history = variable
   } else if (typeof variable === "object") {
     message = variable.text || variable.content
-    chat = message
+    history = [variable]
   }
 
-  return { message, chat }
+  return { message, history }
 }
-

@@ -3,7 +3,7 @@ import { BaseChatMessage as LangchainChatMessage } from "langchain/schema"
 export interface LLMonitorOptions {
   appId?: string
   convoId?: string
-  convoType?: string
+  convoTags?: string
   apiUrl?: string
 }
 

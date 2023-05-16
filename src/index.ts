@@ -1,32 +1,35 @@
-import { getDefaultAppId, messageAdapter } from "./utils"
+import { checkEnv, messageAdapter } from "./utils"
 import { LLMonitorOptions, LLMOutput, LLMInput } from "./types"
 
 class LLMonitor {
   appId: string
   convoId: string
-  convoType: string | undefined
+  convoTags: string | undefined
   apiUrl: string
 
   /**
    * @param {string} appId - App ID generated from the LLMonitor dashboard, required if LLMONITOR_APP_ID is not set in the environment
    * @param {string} convoId - Tie to an existing conversation ID
-   * @param {string} convoType - Add a label to the conversation
-   * @param {string} apiUrl - Custom tracking URL if you are self-hosting
+   * @param {string} convoTags - Add a label to the conversation
+   * @param {string} apiUrl - Custom tracking URL if you are self-hosting (can also be set with LLMONITOR_API_URL)
    * @constructor
    * @example
    * const monitor = new LLMonitor({
    *   appId: "00000000-0000-0000-0000-000000000000",
    *   convoId: "my-convo-id",
-   *   convoType: "my-convo-type",
+   *   convoTags: "home",
    *   apiUrl: "https://app.llmonitor.com/api"
    * })
    */
 
   constructor(options: LLMonitorOptions) {
-    this.appId = options.appId || getDefaultAppId()
+    this.appId = options.appId || checkEnv("LLMONITOR_APP_ID")
     this.convoId = options.convoId || crypto.randomUUID()
-    this.convoType = options.convoType
-    this.apiUrl = options.apiUrl || "https://app.llmonitor.com/api"
+    this.convoTags = options.convoTags
+    this.apiUrl =
+      options.apiUrl ||
+      checkEnv("LLMONITOR_API_URL") ||
+      "https://app.llmonitor.com"
   }
 
   private async trackEvent(type: string, data: any = {}) {
@@ -38,20 +41,36 @@ class LLMonitor {
       ...data,
     }
 
-    if (this.convoType) {
-      eventData.convoType = this.convoType
+    if (this.convoTags) {
+      eventData.tags = Array.isArray(this.convoTags)
+        ? this.convoTags
+        : this.convoTags.split(",")
     }
 
-    // fetch
-    await fetch(`${this.apiUrl}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ event: eventData }),
-    })
+    try {
+      // fetch
+      await fetch(`${this.apiUrl}/api/report`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ events: [eventData] }),
+      })
+    } catch (error) {
+      console.warn("Error sending event to LLMonitor", error)
+    }
   }
 
+  /**
+   * Get the conversation ID to continue tracking an existing conversation.
+   * @returns {string} - Conversation ID
+   * @example
+   * const monitor = new LLMonitor()
+   * const convoId = monitor.id
+   *
+   * // Later on...
+   * const monitor = new LLMonitor({ convoId })
+   **/
   get id() {
     return this.convoId
   }
@@ -63,7 +82,7 @@ class LLMonitor {
   messageReceived(msg: LLMInput) {
     const { message } = messageAdapter(msg)
 
-    this.trackEvent("MSG_RECEIVED", { message })
+    this.trackEvent("PROMPT", { message })
   }
 
   /**
@@ -71,9 +90,9 @@ class LLMonitor {
    * @param {string | ChatHistory} prompt - Prompt sent to the model
    **/
   call(prompt: LLMInput, model?: string) {
-    const { message, chat } = messageAdapter(prompt)
+    const { message, history } = messageAdapter(prompt)
 
-    this.trackEvent("LLM_CALL", { message, chat, model })
+    this.trackEvent("CALL", { message, history, model })
   }
 
   /**
@@ -82,7 +101,7 @@ class LLMonitor {
    **/
   intermediateResult(answer: LLMOutput) {
     const { message } = messageAdapter(answer)
-    this.trackEvent("LLM_RESULT", { message, intermediate: true })
+    this.trackEvent("RESULT", { message })
   }
 
   /**
@@ -94,7 +113,7 @@ class LLMonitor {
    **/
   finalResult(answer: LLMOutput) {
     const { message } = messageAdapter(answer)
-    this.trackEvent("LLM_RESULT", { message, intermediate: false })
+    this.trackEvent("ANSWER", { message })
   }
 
   /**

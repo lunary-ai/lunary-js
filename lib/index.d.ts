@@ -2,24 +2,34 @@ import { LLMonitorOptions, LLMOutput, LLMInput } from "./types";
 declare class LLMonitor {
     appId: string;
     convoId: string;
-    convoType: string | undefined;
+    convoTags: string | undefined;
     apiUrl: string;
     /**
      * @param {string} appId - App ID generated from the LLMonitor dashboard, required if LLMONITOR_APP_ID is not set in the environment
      * @param {string} convoId - Tie to an existing conversation ID
-     * @param {string} convoType - Add a label to the conversation
-     * @param {string} apiUrl - Custom tracking URL if you are self-hosting
+     * @param {string} convoTags - Add a label to the conversation
+     * @param {string} apiUrl - Custom tracking URL if you are self-hosting (can also be set with LLMONITOR_API_URL)
      * @constructor
      * @example
      * const monitor = new LLMonitor({
      *   appId: "00000000-0000-0000-0000-000000000000",
      *   convoId: "my-convo-id",
-     *   convoType: "my-convo-type",
+     *   convoTags: "home",
      *   apiUrl: "https://app.llmonitor.com/api"
      * })
      */
     constructor(options: LLMonitorOptions);
     private trackEvent;
+    /**
+     * Get the conversation ID to continue tracking an existing conversation.
+     * @returns {string} - Conversation ID
+     * @example
+     * const monitor = new LLMonitor()
+     * const convoId = monitor.id
+     *
+     * // Later on...
+     * const monitor = new LLMonitor({ convoId })
+     **/
     get id(): string;
     /**
      * Use this for higher accuracy as soon as the user sends a message.
