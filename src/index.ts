@@ -79,10 +79,10 @@ class LLMonitor {
    * Use this for higher accuracy as soon as the user sends a message.
    * @param {string} msg - User message
    **/
-  messageReceived(msg: LLMInput) {
+  userMessage(msg: LLMInput) {
     const { message } = messageAdapter(msg)
 
-    this.trackEvent("PROMPT", { message })
+    this.trackEvent("user:message", { message })
   }
 
   /**
@@ -92,43 +92,41 @@ class LLMonitor {
   call(prompt: LLMInput, model?: string) {
     const { message, history } = messageAdapter(prompt)
 
-    this.trackEvent("CALL", { message, history, model })
+    this.trackEvent("llm:call", { message, history, model })
   }
 
   /**
-   * Use this when the model returns an answer, but the chain isn't complete yet.
-   * @param {string | ChatHistory} answer - Answer returned by the model
-   **/
-  intermediateResult(answer: LLMOutput) {
-    const { message } = messageAdapter(answer)
-    this.trackEvent("RESULT", { message })
-  }
-
-  /**
-   * Use this when the model returns the final answer you'll show to the user.
-   * @param {string | ChatHistory} answer - Answer returned by the model
-   * @example
-   * const answer = await model.generate("Hello")
-   * monitor.finalResult(answer)
-   **/
-  finalResult(answer: LLMOutput) {
-    const { message } = messageAdapter(answer)
-    this.trackEvent("ANSWER", { message })
-  }
-
-  /**
-   * Use this when the model returns the final answer you'll show to the user.
+   * Use this when the model returns an answer.
    * @param {string | ChatHistory} answer - Answer returned by the model
    * @example
    * const answer = await model.generate("Hello")
    * monitor.result(answer)
    **/
-  result(answer: LLMOutput) {
-    this.finalResult(answer)
+  result(result: LLMOutput) {
+    const { message } = messageAdapter(result)
+    this.trackEvent("llm:result", { message })
   }
 
+  /**
+   * Use this when the model returns the final answer you'll show to the user.
+   * @param {string | ChatHistory} answer - Answer returned by the model
+   * @example
+   * const answer = await model.generate("Hello")
+   * monitor.assistantAnswer(answer)
+   **/
+  assistantAnswer(answer: LLMOutput) {
+    const { message } = messageAdapter(answer)
+    this.trackEvent("assistant:message", { message })
+  }
+
+  /**
+   * Use this to log any external action or tool you use.
+   * @param {string} message - Log message
+   * @example
+   * monitor.log("Running tool Google Search")
+   **/
   log(message: string) {
-    this.trackEvent("LOG", { message })
+    this.trackEvent("log", { message })
   }
 
   /**
@@ -136,21 +134,21 @@ class LLMonitor {
    * Used to measure the time it takes for the model to generate the first response.
    */
   streamingStarts() {
-    this.trackEvent("STREAMING_START")
+    this.trackEvent("llm:stream")
   }
 
   /**
    * Vote on the quality of the conversation.
    */
   userUpvotes() {
-    this.trackEvent("FEEDBACK", { message: "GOOD" })
+    this.trackEvent("user:feedback", { message: "GOOD" })
   }
 
   /**
    * Vote on the quality of the conversation.
    */
   userDownvotes() {
-    this.trackEvent("FEEDBACK", { message: "BAD" })
+    this.trackEvent("user:feedback", { message: "BAD" })
   }
 
   /**
@@ -172,7 +170,7 @@ class LLMonitor {
       message = undefined
     }
 
-    this.trackEvent("ERROR", { message, error })
+    this.trackEvent("error", { message, error })
   }
 }
 

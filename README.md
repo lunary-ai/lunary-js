@@ -32,16 +32,17 @@ const handleUserMessage = async (prompt) => {
 
   try {
 
-    monitor.call(prompt)
+    monitor.userMessage(userPrompt)
 
+    monitor.call(userPrompt, 'gpt-4-32k')
     const answer = await doLLMquery(prompt)
-
     monitor.result(answer)
+
+    monitor.assistantAnswer(answer)
 
     return { answer, convoId: monitor.id }
 
-  } catch (err)
-
+  } catch (err) {
     monitor.error(err)
   }
 }
@@ -59,6 +60,10 @@ const handleUserMessage = (userPrompt) => {
     appId, // Optional (uuid): if you haven't defined process.env.LLMONITOR_APP_ID
   })
 
+  monitor.userMessage(userPrompt)
+
+  // ...
+  
   try {
     // An user message was received and you're starting a chain / agent.
 
@@ -70,7 +75,7 @@ const handleUserMessage = (userPrompt) => {
 
         monitor.call(chat, model)
         const intermediaryResult = await doLLMquery(chat)
-        monitor.intermediateResult(intermediaryResult)
+        monitor.result(intermediaryResult)
 
         // Log anything else you use (tools, APIs, etc..)
         monitor.log(`Running tool Google Search with input xxxxx`)
@@ -83,7 +88,7 @@ const handleUserMessage = (userPrompt) => {
     monitor.streamingStarts()
 
     // Track when you've received the final answer (streaming finished) to send the user
-    monitor.finalResult(answer)
+    monitor.assistantAnswer(answer)
 
     // pass the convoId to keep the context in the next queries
     return { answer, convoId: convo.id }

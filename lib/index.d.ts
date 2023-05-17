@@ -35,33 +35,34 @@ declare class LLMonitor {
      * Use this for higher accuracy as soon as the user sends a message.
      * @param {string} msg - User message
      **/
-    messageReceived(msg: LLMInput): void;
+    userMessage(msg: LLMInput): void;
     /**
      * Use this just before calling a model
      * @param {string | ChatHistory} prompt - Prompt sent to the model
      **/
     call(prompt: LLMInput, model?: string): void;
     /**
-     * Use this when the model returns an answer, but the chain isn't complete yet.
-     * @param {string | ChatHistory} answer - Answer returned by the model
-     **/
-    intermediateResult(answer: LLMOutput): void;
-    /**
-     * Use this when the model returns the final answer you'll show to the user.
-     * @param {string | ChatHistory} answer - Answer returned by the model
-     * @example
-     * const answer = await model.generate("Hello")
-     * monitor.finalResult(answer)
-     **/
-    finalResult(answer: LLMOutput): void;
-    /**
-     * Use this when the model returns the final answer you'll show to the user.
+     * Use this when the model returns an answer.
      * @param {string | ChatHistory} answer - Answer returned by the model
      * @example
      * const answer = await model.generate("Hello")
      * monitor.result(answer)
      **/
-    result(answer: LLMOutput): void;
+    result(result: LLMOutput): void;
+    /**
+     * Use this when the model returns the final answer you'll show to the user.
+     * @param {string | ChatHistory} answer - Answer returned by the model
+     * @example
+     * const answer = await model.generate("Hello")
+     * monitor.assistantAnswer(answer)
+     **/
+    assistantAnswer(answer: LLMOutput): void;
+    /**
+     * Use this to log any external action or tool you use.
+     * @param {string} message - Log message
+     * @example
+     * monitor.log("Running tool Google Search")
+     **/
     log(message: string): void;
     /**
      * Use this when you start streaming the model's output to the user.
