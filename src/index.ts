@@ -4,13 +4,13 @@ import { LLMonitorOptions, LLMOutput, LLMInput } from "./types"
 class LLMonitor {
   appId: string
   convoId: string
-  convoTags: string | undefined
+  convoTags: string | string[] | undefined
   apiUrl: string
 
   /**
    * @param {string} appId - App ID generated from the LLMonitor dashboard, required if LLMONITOR_APP_ID is not set in the environment
    * @param {string} convoId - Tie to an existing conversation ID
-   * @param {string} convoTags - Add a label to the conversation
+   * @param {string | string[]} convoTags - Add a label to the conversation
    * @param {string} apiUrl - Custom tracking URL if you are self-hosting (can also be set with LLMONITOR_API_URL)
    * @constructor
    * @example
