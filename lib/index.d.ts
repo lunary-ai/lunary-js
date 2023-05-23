@@ -58,13 +58,6 @@ declare class LLMonitor {
      **/
     assistantAnswer(answer: LLMOutput): void;
     /**
-     * Use this to log any external action or tool you use.
-     * @param {string} message - Log message
-     * @example
-     * monitor.log("Running tool Google Search")
-     **/
-    log(message: string): void;
-    /**
      * Use this when you start streaming the model's output to the user.
      * Used to measure the time it takes for the model to generate the first response.
      */
@@ -77,6 +70,22 @@ declare class LLMonitor {
      * Vote on the quality of the conversation.
      */
     userDownvotes(): void;
+    /**
+     * Use this to log any external action or tool you use.
+     * @param {string} message - Log message
+     * @param {any} extra - Extra data to pass
+     * @example
+     * monitor.info("Running tool Google Search")
+     **/
+    info(message: string, extra: any): void;
+    /**
+     * Use this to warn
+     * @param {string} message - Warning message
+     * @param {any} extra - Extra data to pass
+     * @example
+     * monitor.log("Running tool Google Search")
+     **/
+    warn(message: string, extra: any): void;
     /**
      * Report any errors that occur during the conversation.
      * @param {string} message - Error message
