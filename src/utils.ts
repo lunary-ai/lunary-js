@@ -14,6 +14,7 @@ export const checkEnv = (variable) => {
   return undefined
 }
 
+// TODO: better support for langchain JS
 export const messageAdapter = (variable: LLMInput | LLMOutput) => {
   let message
   let history
@@ -31,4 +32,14 @@ export const messageAdapter = (variable: LLMInput | LLMOutput) => {
   }
 
   return { message, history }
+}
+
+export const debounce = (func, timeout = 50) => {
+  let timer
+  return (...args) => {
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      func.apply(this, args)
+    }, timeout)
+  }
 }

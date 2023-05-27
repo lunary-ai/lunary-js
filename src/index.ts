@@ -1,11 +1,14 @@
-import { checkEnv, messageAdapter } from "./utils"
-import { LLMonitorOptions, LLMOutput, LLMInput } from "./types"
+import { checkEnv, debounce, messageAdapter } from "./utils"
+import { LLMonitorOptions, LLMOutput, LLMInput, Event } from "./types"
 
 class LLMonitor {
   appId: string
   convoId: string
   convoTags: string | string[] | undefined
   apiUrl: string
+
+  private queue: any[] = []
+  private queueRunning: boolean = false
 
   /**
    * @param {string} appId - App ID generated from the LLMonitor dashboard, required if LLMONITOR_APP_ID is not set in the environment
@@ -32,12 +35,22 @@ class LLMonitor {
       "https://app.llmonitor.com"
   }
 
-  private async trackEvent(type: string, data: any = {}) {
-    const eventData = {
+  private async trackEvent(type: string, data: Partial<Event> = {}) {
+    let timestamp = Date.now()
+
+    // Add 1ms to timestamp if it's the same/lower than the last event
+    // Keep the order of events in case they are sent in the same millisecond
+
+    const lastEvent = this.queue?.[this.queue.length - 1]
+    if (lastEvent?.timestamp >= timestamp) {
+      timestamp = lastEvent.timestamp + 1
+    }
+
+    const eventData: Event = {
       type,
       app: this.appId,
       convo: this.convoId,
-      timestamp: new Date().toISOString(),
+      timestamp,
       ...data,
     }
 
@@ -47,18 +60,38 @@ class LLMonitor {
         : this.convoTags.split(",")
     }
 
+    this.queue.push(eventData)
+
+    // Wait 50ms to allow other events to be added to the queue
+    debounce(() => this.processQueue())
+  }
+
+  private async processQueue() {
+    if (!this.queue.length || this.queueRunning) return
+
+    this.queueRunning = true
+
     try {
-      // fetch
+      const copy = this.queue.slice()
+
       await fetch(`${this.apiUrl}/api/report`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ events: [eventData] }),
+        body: JSON.stringify({ events: copy }),
       })
+
+      // Clear the events we just sent (don't clear it all in case new events were added while sending)
+      this.queue = this.queue.slice(copy.length)
     } catch (error) {
-      console.warn("Error sending event to LLMonitor", error)
+      console.warn("Error sending event(s) to LLMonitor", error)
     }
+
+    this.queueRunning = false
+
+    // If there are new events in the queue
+    if (this.queue.length) this.processQueue()
   }
 
   /**
@@ -131,14 +164,14 @@ class LLMonitor {
    * Vote on the quality of the conversation.
    */
   userUpvotes() {
-    this.trackEvent("user:feedback", { message: "GOOD" })
+    this.trackEvent("user:upvote")
   }
 
   /**
    * Vote on the quality of the conversation.
    */
   userDownvotes() {
-    this.trackEvent("user:feedback", { message: "BAD" })
+    this.trackEvent("user:downvote")
   }
 
   /**
@@ -148,8 +181,8 @@ class LLMonitor {
    * @example
    * monitor.info("Running tool Google Search")
    **/
-  info(message: string, extra: any) {
-    this.trackEvent("info", { message, extra })
+  info(message: string, extra?: any) {
+    this.trackEvent("log:info", { message, extra })
   }
 
   /**
@@ -159,8 +192,8 @@ class LLMonitor {
    * @example
    * monitor.log("Running tool Google Search")
    **/
-  warn(message: string, extra: any) {
-    this.trackEvent("warn", { message, extra })
+  warn(message: string, extra?: any) {
+    this.trackEvent("log:warn", { message, extra })
   }
 
   /**
@@ -182,7 +215,7 @@ class LLMonitor {
       message = error.message || undefined
     }
 
-    this.trackEvent("error", { message, extra: error })
+    this.trackEvent("log:error", { message, extra: error })
   }
 }
 

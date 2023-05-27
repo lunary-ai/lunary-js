@@ -102,8 +102,7 @@ const handleUserMessage = (userPrompt) => {
 
 ## Todo
 
-- [] fix event sent right after another one have the exact same timestamp
-- [] batch/debounce requests
-- [] add a wrapper method to directly wrap calls
-- [] langchain-js support
-- []
+- [x] batch/debounce requests
+- [x] fix event sent right after another one have the exact same timestamp
+- [ ] add a wrapper method to directly wrap calls
+- [ ] langchain-js support

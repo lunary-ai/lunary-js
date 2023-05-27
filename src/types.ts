@@ -7,6 +7,18 @@ export interface LLMonitorOptions {
   apiUrl?: string
 }
 
+export interface Event {
+  type: string
+  app: string
+  convo: string
+  timestamp: number
+  tags?: string[]
+  message?: string
+  history?: any
+  extra?: any
+  model?: string
+}
+
 export type ChatMessage =
   | LangchainChatMessage
   | {

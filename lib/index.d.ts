@@ -4,6 +4,8 @@ declare class LLMonitor {
     convoId: string;
     convoTags: string | string[] | undefined;
     apiUrl: string;
+    private queue;
+    private queueRunning;
     /**
      * @param {string} appId - App ID generated from the LLMonitor dashboard, required if LLMONITOR_APP_ID is not set in the environment
      * @param {string} convoId - Tie to an existing conversation ID
@@ -20,6 +22,7 @@ declare class LLMonitor {
      */
     constructor(options: LLMonitorOptions);
     private trackEvent;
+    private processQueue;
     /**
      * Get the conversation ID to continue tracking an existing conversation.
      * @returns {string} - Conversation ID
@@ -77,7 +80,7 @@ declare class LLMonitor {
      * @example
      * monitor.info("Running tool Google Search")
      **/
-    info(message: string, extra: any): void;
+    info(message: string, extra?: any): void;
     /**
      * Use this to warn
      * @param {string} message - Warning message
@@ -85,7 +88,7 @@ declare class LLMonitor {
      * @example
      * monitor.log("Running tool Google Search")
      **/
-    warn(message: string, extra: any): void;
+    warn(message: string, extra?: any): void;
     /**
      * Report any errors that occur during the conversation.
      * @param {string} message - Error message
