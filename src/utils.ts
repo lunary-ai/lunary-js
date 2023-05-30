@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { LLMInput, LLMOutput } from "./types"
+import { Event, LLMInput, LLMOutput } from "./types"
 
 export const checkEnv = (variable) => {
   if (typeof process !== "undefined" && process.env?.[variable]) {
@@ -12,6 +12,15 @@ export const checkEnv = (variable) => {
   }
 
   return undefined
+}
+
+// TODO: use colors for different event types
+export const formatLog = (event: Event) => {
+  const { type, message, extra, model } = event
+
+  return `[LLMonitor: ${type}] ${model ? `(${model})` : ""} ${message || ""} ${
+    extra ? "\n" + JSON.stringify(extra, null, 2) : ""
+  } `
 }
 
 // TODO: better support for langchain JS

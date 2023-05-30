@@ -1,9 +1,10 @@
-import { checkEnv, debounce, messageAdapter } from "./utils"
+import { checkEnv, debounce, formatLog, messageAdapter } from "./utils"
 import { LLMonitorOptions, LLMOutput, LLMInput, Event } from "./types"
 
 class LLMonitor {
   appId: string
   convoId: string
+  log: boolean
   convoTags: string | string[] | undefined
   apiUrl: string
 
@@ -13,6 +14,7 @@ class LLMonitor {
   /**
    * @param {string} appId - App ID generated from the LLMonitor dashboard, required if LLMONITOR_APP_ID is not set in the environment
    * @param {string} convoId - Tie to an existing conversation ID
+   * @param {boolean} log - Log events to the console
    * @param {string | string[]} convoTags - Add a label to the conversation
    * @param {string} apiUrl - Custom tracking URL if you are self-hosting (can also be set with LLMONITOR_API_URL)
    * @constructor
@@ -28,6 +30,7 @@ class LLMonitor {
   constructor(options: LLMonitorOptions) {
     this.appId = options.appId || checkEnv("LLMONITOR_APP_ID")
     this.convoId = options.convoId || crypto.randomUUID()
+    this.log = options.log || false
     this.convoTags = options.convoTags
     this.apiUrl =
       options.apiUrl ||
@@ -58,6 +61,10 @@ class LLMonitor {
       eventData.tags = Array.isArray(this.convoTags)
         ? this.convoTags
         : this.convoTags.split(",")
+    }
+
+    if (this.log) {
+      console.log(formatLog(eventData))
     }
 
     this.queue.push(eventData)

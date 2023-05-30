@@ -5,6 +5,7 @@ export interface LLMonitorOptions {
   convoId?: string
   convoTags?: string
   apiUrl?: string
+  log?: boolean
 }
 
 export interface Event {
