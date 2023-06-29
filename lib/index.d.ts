@@ -24,6 +24,7 @@ declare class LLMonitor {
      */
     constructor(options: LLMonitorOptions);
     private trackEvent;
+    private debouncedProcessQueue;
     private processQueue;
     /**
      * Get the conversation ID to continue tracking an existing conversation.

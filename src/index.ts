@@ -69,9 +69,11 @@ class LLMonitor {
 
     this.queue.push(eventData)
 
-    // Wait 50ms to allow other events to be added to the queue
-    debounce(() => this.processQueue())
+    this.debouncedProcessQueue()
   }
+
+  // Wait 50ms to allow other events to be added to the queue
+  private debouncedProcessQueue = debounce(() => this.processQueue())
 
   private async processQueue() {
     if (!this.queue.length || this.queueRunning) return
