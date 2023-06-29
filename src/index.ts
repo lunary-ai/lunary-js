@@ -105,14 +105,28 @@ class LLMonitor {
   //   return this.convoId
   // }
 
-  agentStart(data: { tags?: string[]; name?: string }) {
+  agentStart(data: { name?: string; input: any }) {
     this.trackEvent("agent", {
       event: "start",
       ...data,
     })
   }
 
-  llmStart(data: { runId: string; messages: LLMInput[]; params: any }) {
+  agentEnd(data: { output: any }) {
+    this.trackEvent("agent", {
+      event: "end",
+      ...data,
+    })
+  }
+
+  agentError(data: { error: any }) {
+    this.trackEvent("agent", {
+      event: "error",
+      ...data,
+    })
+  }
+
+  llmStart(data: { runId: string; messages: LLMInput[]; input: any }) {
     this.trackEvent("llm", {
       event: "start",
       ...data,
@@ -150,14 +164,14 @@ class LLMonitor {
     })
   }
 
-  toolStart(data: { runId: string; name: string; input: any }) {
+  toolStart(data: { runId: string; name: string; input?: any }) {
     this.trackEvent("tool", {
       event: "start",
       ...data,
     })
   }
 
-  toolEnd(data: { runId: string; output: any }) {
+  toolEnd(data: { runId: string; output?: any }) {
     this.trackEvent("tool", {
       event: "end",
       ...data,
@@ -169,6 +183,41 @@ class LLMonitor {
       event: "error",
       ...data,
     })
+  }
+
+  /**
+   * Use this to wrap any external tool you use.
+   * @param {string} name - Tool name
+   * @param {Function} func - Tool function
+   * @returns {Function} - Wrapped tool function
+   * @example
+   * const monitor = new LLMonitor()
+   * const googleSearch = monitor.wrapTool("Google Search", async (query) => {
+   *  const response = await fetch(`https://google.com/search?q=${query}`)
+   *  return response.text()
+   * })
+   * const result = await googleSearch("test")
+   **/
+
+  wrapTool<T extends (...args: any[]) => Promise<any>>(name: string, func: T) {
+    return async (...args: Parameters<T>) => {
+      const runId = crypto.randomUUID()
+
+      // record the arguments
+      this.toolStart({ runId, name, input: args })
+
+      try {
+        const output = await func(...args)
+
+        this.toolEnd({ runId, output })
+
+        return output
+      } catch (error) {
+        this.toolError({ runId, error })
+
+        throw error
+      }
+    }
   }
 
   /**

@@ -6,29 +6,37 @@ import { extendModel, AgentMonitor } from "../lib/index.js"
 
 import { HumanChatMessage, SystemChatMessage } from "langchain/schema"
 
-const monitor = new AgentMonitor({
-  name: "translator",
-  tags: ["some", "tags"],
-})
-
 const MonitoredChat = extendModel(ChatOpenAI)
 
-const main = async () => {
+// By using AgentMonitor, all sub LLM calls, tools and logs will be linked to the agent.
+const monitor = new AgentMonitor({
+  name: "translator",
+  userId: "test-user",
+})
+
+const translate = async (query) => {
   const chat = new MonitoredChat({
     temperature: 0.2,
     modelName: "gpt-3.5-turbo",
-    monitor,
+    monitor, // Here we use a custom monitor to link all calls made to the agent
     tags: ["test-tag"],
   })
+
+  /* Optional: track tools:
+   * const tool = monitor.wrapTool("tool-name", toolFunc)
+   * const res = await tool("tool-input")
+   */
 
   const res = await chat.call([
     new SystemChatMessage("You are a translator agent."),
     new HumanChatMessage(
-      "Translate this sentence from English to French. I love programming."
+      `Translate this sentence from English to French. ${query}`
     ),
   ])
 
   return res
 }
 
-main()
+const trackedAgent = monitor.wrapExecutor(translate)
+
+trackedAgent("Hello, how are you?")

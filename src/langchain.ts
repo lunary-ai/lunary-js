@@ -25,7 +25,7 @@ export class LLMonitorCallbackHandler extends BaseCallbackHandler {
       this.streamingState[runId] = false
     }
 
-    this.monitor.llmStart({ runId, messages: prompts, params: this.params })
+    this.monitor.llmStart({ runId, messages: prompts, input: this.params })
 
     console.log("llm:start", llm.name, prompts, runId, parentRunId, extraParams)
   }
@@ -42,7 +42,7 @@ export class LLMonitorCallbackHandler extends BaseCallbackHandler {
       this.streamingState[runId] = false
     }
 
-    this.monitor.llmStart({ runId, messages, params: this.params })
+    this.monitor.llmStart({ runId, messages, input: this.params })
 
     console.log("chat:start", chat.name, runId, messages, parentRunId, "\n")
   }
@@ -105,7 +105,7 @@ export class LLMonitorCallbackHandler extends BaseCallbackHandler {
   }
 }
 
-const argsToReport = [
+const ARGS_TO_REPORT = [
   "temperature",
   "modelName",
   "streaming",
@@ -113,12 +113,14 @@ const argsToReport = [
   "streaming",
 ]
 
+// Extends Langchain's LLM classes like ChatOpenAI
+// TODO: test with non-chat classes see if it works (should)
 export const extendModel = (baseClass: any): any =>
   // TODO: get vendor from (lc_namespace: [ "langchain", "chat_models", "openai" ])
 
   class extends baseClass {
     constructor(...args: any[]) {
-      const interestingArgs = argsToReport.reduce((acc, arg) => {
+      const interestingArgs = ARGS_TO_REPORT.reduce((acc, arg) => {
         if (args[0][arg]) acc[arg] = args[0][arg]
         return acc
       }, {} as Record<string, unknown>)

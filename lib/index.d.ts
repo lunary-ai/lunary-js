@@ -31,11 +31,18 @@ declare class LLMonitor {
     agentStart(data: {
         tags?: string[];
         name?: string;
+        input: any;
+    }): void;
+    agentEnd(data: {
+        output: any;
+    }): void;
+    agentError(data: {
+        error: any;
     }): void;
     llmStart(data: {
         runId: string;
         messages: LLMInput[];
-        params: any;
+        input: any;
     }): void;
     /**
      * Use this when you start streaming the model's output to the user.
@@ -57,16 +64,30 @@ declare class LLMonitor {
     toolStart(data: {
         runId: string;
         name: string;
-        input: any;
+        input?: any;
     }): void;
     toolEnd(data: {
         runId: string;
-        output: any;
+        output?: any;
     }): void;
     toolError(data: {
         runId: string;
         error: any;
     }): void;
+    /**
+     * Use this to wrap any external tool you use.
+     * @param {string} name - Tool name
+     * @param {Function} func - Tool function
+     * @returns {Function} - Wrapped tool function
+     * @example
+     * const monitor = new LLMonitor()
+     * const googleSearch = monitor.wrapTool("Google Search", async (query) => {
+     *  const response = await fetch(`https://google.com/search?q=${query}`)
+     *  return response.text()
+     * })
+     * const result = await googleSearch("test")
+     **/
+    wrapTool<T extends (...args: any[]) => Promise<any>>(name: string, func: T): (...args: Parameters<T>) => Promise<any>;
     /**
      * Use this to log any external action or tool you use.
      * @param {string} message - Log message
