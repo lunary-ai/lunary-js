@@ -6,6 +6,7 @@ type AgentProps = LLMonitorOptions & {
 };
 /**
  * AgentMonitor is a wrapper around LLMonitor that adds a few methods for tracking custom agents.
+ * By using AgentMonitor, all sub LLM calls, tools and logs will be linked to the agent.
  * @example
  * const monitor = new AgentMonitor({ name: "translator" })
  *
@@ -23,12 +24,12 @@ type AgentProps = LLMonitorOptions & {
  *  return res
  * }
  *
- * const wrappedAgent = monitor.wrapAgent("my-agent", translatorAgentRunner)
+ * const wrappedAgent = monitor.wrapExecutor(translatorAgentRunner)
  *
  * const result = await wrappedAgent("Bonjour, comment allez-vous?")
  */
 export declare class AgentMonitor extends LLMonitor {
     constructor(options: AgentProps);
-    wrapAgent<T extends (...args: any[]) => Promise<any>>(name: string, func: T): (...args: Parameters<T>) => Promise<any>;
+    wrapExecutor<T extends (...args: any[]) => Promise<any>>(func: T): (...args: Parameters<T>) => Promise<any>;
 }
 export {};

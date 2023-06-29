@@ -29,7 +29,6 @@ declare class LLMonitor {
      * const monitor = new LLMonitor({ convoId })
      **/
     agentStart(data: {
-        tags?: string[];
         name?: string;
         input: any;
     }): void;

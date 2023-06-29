@@ -1,10 +1,9 @@
-// Basic agent tracking example
+// Basic agent monitoring example
 
 import { ChatOpenAI } from "langchain/chat_models/openai"
+import { HumanChatMessage, SystemChatMessage } from "langchain/schema"
 
 import { extendModel, AgentMonitor } from "../lib/index.js"
-
-import { HumanChatMessage, SystemChatMessage } from "langchain/schema"
 
 const MonitoredChat = extendModel(ChatOpenAI)
 
@@ -18,7 +17,7 @@ const translate = async (query) => {
   const chat = new MonitoredChat({
     temperature: 0.2,
     modelName: "gpt-3.5-turbo",
-    monitor, // Here we use a custom monitor to link all calls made to the agent
+    monitor, // Here we use our agent monitor to link all calls made to the agent
     tags: ["test-tag"],
   })
 
@@ -37,6 +36,7 @@ const translate = async (query) => {
   return res
 }
 
+// By wrapping it, errors, inputs and outputs will be tracked
 const trackedAgent = monitor.wrapExecutor(translate)
 
 trackedAgent("Hello, how are you?")
