@@ -19,7 +19,6 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.21.0",
-    "langchain": "^0.0.75"
+    "langchain": "^0.0.96"
   }
 }

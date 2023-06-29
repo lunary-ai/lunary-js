@@ -1,28 +1,14 @@
-import { BaseChatMessage as LangchainChatMessage } from "langchain/schema";
 export interface LLMonitorOptions {
     appId?: string;
     convoId?: string;
-    convoTags?: string;
+    agentRunId?: string;
+    userId?: string;
     apiUrl?: string;
     log?: boolean;
 }
 export interface Event {
-    type: string;
-    app: string;
-    convo: string;
-    timestamp: number;
-    tags?: string[];
-    message?: string;
-    history?: any;
-    extra?: any;
-    model?: string;
+    [key: string]: any;
 }
-export type ChatMessage = LangchainChatMessage | {
-    role: "assistant" | "user" | "system";
-    text: string;
-} | {
-    role: "assistant" | "user" | "system";
-    content: string;
-};
-export type LLMInput = ChatMessage[] | string;
-export type LLMOutput = ChatMessage | string;
+export type ChatMessage = any;
+export type LLMInput = any;
+export type LLMOutput = any;
