@@ -1,5 +1,43 @@
 import { BaseCallbackHandler } from "langchain/callbacks"
-import LLMonitor from "./index"
+import { LLMResult, BaseChatMessage } from "langchain/schema"
+import LLMonitor from "./llmonitor"
+import { LLMessage } from "./types"
+
+// Langchain message don't seem consisten
+// Sometimes:
+// {
+//   "type": "system",
+//   "data": {
+//     "content": "You are a translator agent.",
+//     "additional_kwargs": {}
+//   }
+// },
+// Sometimes:
+//  {
+//   "text": "Bonjour, comment ça va ?",
+//   "message": {
+//     "type": "ai",
+//     "data": {
+//       "content": "Bonjour, comment ça va ?",
+//       "additional_kwargs": {}
+//     }
+//   }
+// }
+
+const messageAdapter = (llmMessage: any): any => {
+  if (Array.isArray(llmMessage)) {
+    if (llmMessage.length === 1) return messageAdapter(llmMessage[0])
+    else return llmMessage.map(messageAdapter)
+  } else {
+    if (llmMessage.message) return messageAdapter(llmMessage.message)
+
+    return {
+      role: llmMessage.type,
+      text: llmMessage.data.content,
+      ...llmMessage.data.additional_kwargs,
+    } as LLMessage
+  }
+}
 
 // TODO: set convoId with a helper state that compares chat history
 export class LLMonitorCallbackHandler extends BaseCallbackHandler {
@@ -8,14 +46,15 @@ export class LLMonitorCallbackHandler extends BaseCallbackHandler {
   private params = {} as Record<string, unknown>
   private monitor: LLMonitor
 
-  constructor(args: any) {
-    super(...args)
-    this.monitor = args.monitor || new LLMonitor()
+  constructor(monitor: LLMonitor, args: any) {
+    super()
+
+    this.monitor = monitor
     this.params = args
   }
 
   async handleLLMStart(
-    llm: { name: string },
+    llm: any,
     prompts: string[],
     runId: string,
     parentRunId?: string,
@@ -25,15 +64,15 @@ export class LLMonitorCallbackHandler extends BaseCallbackHandler {
       this.streamingState[runId] = false
     }
 
-    this.monitor.llmStart({ runId, messages: prompts, input: this.params })
+    this.monitor.llmStart({ runId, input: prompts, extra: this.params })
 
-    console.log("llm:start", llm.name, prompts, runId, parentRunId, extraParams)
+    // console.log("llm:start", llm.name, prompts, runId, parentRunId, extraParams)
   }
 
   // handleLLMStart won't be called if the model is chat-style
   async handleChatModelStart(
-    chat: { name: string },
-    messages: any[][],
+    chat: any,
+    messages: BaseChatMessage[][],
     runId: string,
     parentRunId?: string,
     extraParams?: Record<string, unknown>
@@ -42,13 +81,22 @@ export class LLMonitorCallbackHandler extends BaseCallbackHandler {
       this.streamingState[runId] = false
     }
 
-    this.monitor.llmStart({ runId, messages, input: this.params })
+    this.monitor.llmStart({
+      runId,
+      input: messageAdapter(messages[0]),
+      extra: this.params,
+    })
 
-    console.log("chat:start", chat.name, runId, messages, parentRunId, "\n")
+    // console.log("chat:start", chat.name, runId, messages, parentRunId, "\n")
   }
 
   // Used to calculate latency to first token
-  async handleLLMNewToken(token: string, runId: string, parentRunId?: string) {
+  async handleLLMNewToken(
+    token: string,
+    idx: any,
+    runId: string,
+    parentRunId?: string
+  ) {
     // Track when streaming starts
     if (this.params.streaming && !this.streamingState[runId]) {
       this.streamingState[runId] = true
@@ -62,70 +110,38 @@ export class LLMonitorCallbackHandler extends BaseCallbackHandler {
     parentRunId?: string,
     extraParams?: Record<string, unknown>
   ) {
-    console.error("llm:error", error, runId, parentRunId, extraParams)
+    // console.error("llm:error", error, runId, parentRunId, extraParams)
 
     this.monitor.llmError({ runId, error })
   }
 
-  async handleLLMEnd(output: any, runId: string, parentRunId?: string) {
+  async handleLLMEnd(output: LLMResult, runId: string, parentRunId?: string) {
     const { generations, llmOutput } = output
-    const { promptTokens, completionTokens } = llmOutput
 
-    console.log("llm:end", output, runId, parentRunId)
+    // console.log("llm:end", output, runId, parentRunId)
 
     this.monitor.llmEnd({
       runId,
-      output: generations,
-      promptTokens,
-      completionTokens,
+      output: messageAdapter(generations),
+      promptTokens: llmOutput?.promptTokens,
+      completionTokens: llmOutput?.completionTokens,
     })
   }
 
   async handleToolStart(
-    tool: { name: string },
+    tool: any,
     input: string,
     runId: string,
     parentRunId?: string
   ) {
-    console.log("tool:start", tool.name, input, runId, parentRunId, "\n")
-
-    this.monitor.toolStart({ runId, name: tool.name, input })
+    this.monitor.toolStart({ toolRunId: runId, name: tool.name, input })
   }
 
   async handleToolError(error: any, runId: string, parentRunId?: string) {
-    console.log("tool:error", error, runId, parentRunId, "\n")
-
-    this.monitor.toolError({ runId, error })
+    this.monitor.toolError({ toolRunId: runId, error })
   }
 
   async handleToolEnd(output: string, runId: string, parentRunId?: string) {
-    console.log("tool:end", output, runId, parentRunId, "\n")
-
-    this.monitor.toolEnd({ runId, output })
+    this.monitor.toolEnd({ toolRunId: runId, output })
   }
 }
-
-const ARGS_TO_REPORT = [
-  "temperature",
-  "modelName",
-  "streaming",
-  "tags",
-  "streaming",
-]
-
-// Extends Langchain's LLM classes like ChatOpenAI
-// TODO: test with non-chat classes see if it works (should)
-export const extendModel = (baseClass: any): any =>
-  // TODO: get vendor from (lc_namespace: [ "langchain", "chat_models", "openai" ])
-
-  class extends baseClass {
-    constructor(...args: any[]) {
-      const interestingArgs = ARGS_TO_REPORT.reduce((acc, arg) => {
-        if (args[0][arg]) acc[arg] = args[0][arg]
-        return acc
-      }, {} as Record<string, unknown>)
-
-      args[0].callbacks = [new LLMonitorCallbackHandler(interestingArgs)]
-      super(...args)
-    }
-  }

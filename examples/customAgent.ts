@@ -1,30 +1,27 @@
 // Basic agent monitoring example
+import "https://deno.land/std@0.192.0/dotenv/load.ts"
 
 import { ChatOpenAI } from "langchain/chat_models/openai"
 import { HumanChatMessage, SystemChatMessage } from "langchain/schema"
 
-import { extendModel, AgentMonitor } from "../lib/index.js"
+import { AgentMonitor } from "../lib/index.js"
 
-const MonitoredChat = extendModel(ChatOpenAI)
-
-// By using AgentMonitor, all sub LLM calls, tools and logs will be linked to the agent.
 const monitor = new AgentMonitor({
   name: "translator",
-  userId: "test-user",
+  appId: "test-app",
+  log: true,
 })
 
-const translate = async (query) => {
+const MonitoredChat = monitor.extendModel(ChatOpenAI)
+
+// By wrapping the executor, we can track all input, outputs and errors
+// And tools and logs will be tied to the correct agent
+const translate = monitor.wrapExecutor(async (query) => {
   const chat = new MonitoredChat({
     temperature: 0.2,
     modelName: "gpt-3.5-turbo",
-    monitor, // Here we use our agent monitor to link all calls made to the agent
     tags: ["test-tag"],
   })
-
-  /* Optional: track tools:
-   * const tool = monitor.wrapTool("tool-name", toolFunc)
-   * const res = await tool("tool-input")
-   */
 
   const res = await chat.call([
     new SystemChatMessage("You are a translator agent."),
@@ -33,10 +30,9 @@ const translate = async (query) => {
     ),
   ])
 
-  return res
-}
+  return res.text
+})
 
-// By wrapping it, errors, inputs and outputs will be tracked
-const trackedAgent = monitor.wrapExecutor(translate)
-
-trackedAgent("Hello, how are you?")
+translate("Hello, how are you?").then((res) => {
+  console.log(res) // "Bonjour, comment allez-vous?"
+})

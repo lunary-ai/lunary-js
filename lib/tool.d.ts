@@ -1,8 +1,8 @@
 import LLMonitor from "./llmonitor";
 /**
- * AgentMonitor is a wrapper around LLMonitor that adds a few methods for tracking custom agents.
+ * ToolMonitor is a wrapper around LLMonitor that adds a few methods for tracking custom agents.
  * @example
- * const monitor = new AgentMonitor({ name: "translator" })
+ * const monitor = new ToolMonitor({ name: "translator" })
  *
  * const Chat = monitor.extendModel(ChatOpenAI)
  * const chat = new Chat({
@@ -24,9 +24,9 @@ import LLMonitor from "./llmonitor";
  *
  * const result = await agent("Bonjour, comment allez-vous?")
  */
-export declare class AgentMonitor extends LLMonitor {
+export declare class ToolMonitor extends LLMonitor {
     private name;
-    private agentRunId;
+    private toolRunId;
     trackEvent(type: string, data?: Partial<Event>): Promise<void>;
     wrapExecutor<T extends (...args: any[]) => Promise<any>>(func: T): (...args: Parameters<T>) => Promise<any>;
 }

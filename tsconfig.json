@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
+    "moduleResolution": "classic",
     "declaration": true,
     "emitDeclarationOnly": true,
     "outDir": "./lib",
@@ -9,6 +10,8 @@
     "paths": {
       "langchain/schema": ["./node_modules/langchain/schema"],
       "langchain/callbacks": ["./node_modules/langchain/callbacks"],
+      "openai": ["./node_modules/openai/dist"],
+      // "context": ["./node_modules/context/dist/es"],
     }
   },
   "include": ["src"],

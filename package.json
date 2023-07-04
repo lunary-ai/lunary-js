@@ -19,6 +19,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "langchain": "^0.0.96"
+    "langchain": "^0.0.102",
+    "p-queue": "^7.3.4"
   }
 }

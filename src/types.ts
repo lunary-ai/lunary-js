@@ -4,6 +4,7 @@ export interface LLMonitorOptions {
   appId?: string
   convoId?: string
   agentRunId?: string
+  toolRunId?: string
   userId?: string
   apiUrl?: string
   log?: boolean
@@ -22,22 +23,19 @@ export interface LLMonitorOptions {
 //   model?: string
 // }
 
+// Same as Langchain's
+type MessageType = "human" | "ai" | "generic" | "system" | "function"
+
 export interface Event {
   [key: string]: any
 }
 
-export type ChatMessage = any
-// | LangchainChatMessage
-// | {
-//     role: "assistant" | "user" | "system"
-//     text: string
-//   }
-// | {
-//     role: "assistant" | "user" | "system"
-//     content: string
-//   }
+// Inspired from OpenAi's format, less heavy than Langchain's type
+export type ChatMessage = {
+  role: MessageType
+  text: string
+  function_call?: any
+  [key: string]: unknown
+}
 
-/* For chat-style models (ie GPT-4), the input is an array of ChatMessage objects. */
-export type LLMInput = any // ChatMessage[] | string
-
-export type LLMOutput = any // ChatMessage | string
+export type LLMessage = ChatMessage | ChatMessage[] | string | string[]

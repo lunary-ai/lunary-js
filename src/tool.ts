@@ -1,9 +1,9 @@
 import LLMonitor from "./llmonitor"
 
 /**
- * AgentMonitor is a wrapper around LLMonitor that adds a few methods for tracking custom agents.
+ * ToolMonitor is a wrapper around LLMonitor that adds a few methods for tracking custom agents.
  * @example
- * const monitor = new AgentMonitor({ name: "translator" })
+ * const monitor = new ToolMonitor({ name: "translator" })
  *
  * const Chat = monitor.extendModel(ChatOpenAI)
  * const chat = new Chat({
@@ -25,14 +25,14 @@ import LLMonitor from "./llmonitor"
  *
  * const result = await agent("Bonjour, comment allez-vous?")
  */
-export class AgentMonitor extends LLMonitor {
+export class ToolMonitor extends LLMonitor {
   private name: string | undefined
-  private agentRunId: string | undefined
+  private toolRunId: string | undefined
 
   trackEvent(type: string, data: Partial<Event> = {}) {
     return super.trackEvent(type, {
       ...data,
-      agentRunId: this.agentRunId,
+      toolRunId: this.toolRunId,
     })
   }
 
@@ -43,27 +43,27 @@ export class AgentMonitor extends LLMonitor {
    **/
   wrapExecutor<T extends (...args: any[]) => Promise<any>>(func: T) {
     return async (...args: Parameters<T>) => {
-      this.agentRunId = crypto.randomUUID()
+      this.toolRunId = crypto.randomUUID()
 
-      this.agentStart({
+      this.toolStart({
         name: this.name,
         input: args,
-        agentRunId: this.agentRunId,
+        toolRunId: this.toolRunId,
       })
 
       try {
         const result = await func(...args)
 
-        this.agentEnd({
+        this.toolEnd({
           output: result,
-          agentRunId: this.agentRunId,
+          toolRunId: this.toolRunId,
         })
 
         return result
       } catch (error) {
-        this.agentError({
+        this.toolError({
+          toolRunId: this.toolRunId,
           error,
-          agentRunId: this.agentRunId,
         })
 
         throw error
