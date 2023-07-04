@@ -1,4 +1,5 @@
 import LLMonitor from "./llmonitor"
+import { LLMonitorOptions } from "./types"
 
 /**
  * ToolMonitor is a wrapper around LLMonitor that adds a few methods for tracking custom agents.
@@ -28,6 +29,11 @@ import LLMonitor from "./llmonitor"
 export class ToolMonitor extends LLMonitor {
   private name: string | undefined
   private toolRunId: string | undefined
+
+  constructor(options: Partial<LLMonitorOptions> = {}) {
+    super(options)
+    this.name = options.name
+  }
 
   trackEvent(type: string, data: Partial<Event> = {}) {
     return super.trackEvent(type, {

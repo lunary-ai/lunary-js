@@ -8,6 +8,7 @@ export interface LLMonitorOptions {
   userId?: string
   apiUrl?: string
   log?: boolean
+  name?: string
 }
 
 export interface Event {

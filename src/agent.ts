@@ -29,6 +29,11 @@ export class AgentMonitor extends LLMonitor {
   private name: string | undefined
   private agentRunId: string | undefined
 
+  constructor(options: Partial<LLMonitorOptions> = {}) {
+    super(options)
+    this.name = options.name
+  }
+
   trackEvent(type: string, data: Partial<Event> = {}) {
     return super.trackEvent(type, {
       ...data,
