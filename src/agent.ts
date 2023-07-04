@@ -1,4 +1,5 @@
 import LLMonitor from "./llmonitor"
+import { LLMonitorOptions } from "./types"
 
 /**
  * AgentMonitor is a wrapper around LLMonitor that adds a few methods for tracking custom agents.
