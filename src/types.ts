@@ -20,11 +20,9 @@ export interface Event {
   convo?: string
   level?: "info" | "warn" | "error"
   timestamp: number
-  tags?: string[]
-  message?: string
   input?: any
   output?: any
-  extra?: any
+  extra?: Record<string, unknown>
   error?: {
     message: string
     stack?: string

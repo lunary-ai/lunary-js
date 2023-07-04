@@ -14,95 +14,78 @@ It is compatible with Langchain JS, AutoGPT and all the other libraries.
 npm install llmonitor
 ```
 
-## Simple usage
+## Usage with Langchain.js
 
-```typescript
-import LLMonitor from 'llmonitor';
+```ts
+import { ChatOpenAI } from "langchain/chat_models/openai"
+import LLMonitor from "LLMonitor"
 
-const systemMessage = {role: 'system', content: `You are an assistant...`}
+/** Takes the same parameters as LLMonitor **/
+const monitor = new LLMonitor({
+  appId: "your-app-id"
+})
 
-const handleUserMessage = async (prompt) => {
+const MonitoredChat = monitor.extendModel(ChatOpenAI)
 
-  // If you already have a convo id, set it as parameter, otherwise leave empty
-  const monitor = new LLMonitor({
-    convoId, // Optional (uuid): tie to an existing conversation
-    convoType, // Optional (string): to filter conversations in the dashboard by type
-    appId, // Optional (uuid): if you haven't defined process.env.LLMONITOR_APP_ID
-  })
+const chat = new MonitoredChat({
+  temperature: 0.2,
+  modelName: "gpt-3.5-turbo",
+  tags: ["test-tag"],
+})
 
-  try {
-
-    monitor.userMessage(userPrompt)
-
-    monitor.call(userPrompt, 'gpt-4-32k')
-    const answer = await doLLMquery(prompt)
-    monitor.result(answer)
-
-    monitor.assistantAnswer(answer)
-
-    return { answer, convoId: monitor.id }
-
-  } catch (err) {
-    monitor.error(err)
-  }
-}
+const res = await chat.call([
+  new HumanChatMessage(`Tell me a joke`),
+])
 ```
 
-## Advanced Usage (agents with chains and multiple steps)
+## Custom Agent Usage
 
-```typescript
-import LLMonitor from "llmonitor"
+```ts
+// Basic agent monitoring example
+import { ChatOpenAI } from "langchain/chat_models/openai"
+import { HumanChatMessage, SystemChatMessage } from "langchain/schema"
 
-const handleUserMessage = (userPrompt) => {
-  const monitor = new LLMonitor({
-    convoId, // Optional (uuid): tie to an existing conversation
-    convoType, // Optional (string): to filter conversations in the dashboard by type. Ie: 'web_agent'
-    appId, // Optional (uuid): if you haven't defined process.env.LLMONITOR_APP_ID
+import { AgentMonitor } from "LLMonitor"
+
+/** Takes the same parameters as LLMonitor **/
+const monitor = new AgentMonitor({
+  name: "translator",
+  log: true,
+})
+
+const MonitoredChat = monitor.extendModel(ChatOpenAI)
+
+// By wrapping the executor, we can track all input, outputs and errors
+// And tools and logs will be tied to the correct agent
+const translate = monitor.wrapExecutor(async (query) => {
+  const chat = new MonitoredChat({
+    temperature: 0.2,
+    modelName: "gpt-3.5-turbo",
+    tags: ["test-tag"],
   })
 
-  monitor.userMessage(userPrompt)
+  const res = await chat.call([
+    new SystemChatMessage("You are a translator agent."),
+    new HumanChatMessage(
+      `Translate this sentence from English to French. ${query}`
+    ),
+  ])
 
-  // ...
-  
-  try {
-    // An user message was received and you're starting a chain / agent.
+  return res.text
+})
 
-    let finished = false
-
-    while (!finished) {
-      try {
-        const chat = [systemMessage, userPrompt]
-
-        monitor.call(chat, model)
-        const intermediaryResult = await doLLMquery(chat)
-        monitor.result(intermediaryResult)
-
-        // Log anything else you use (tools, APIs, etc..)
-        monitor.log(`Running tool Google Search with input xxxxx`)
-      } catch (e) {
-        monitor.error("Error at step x", e)
-      }
-    }
-
-    // Optional: track when the response starts streaming to the user
-    monitor.streamingStarts()
-
-    // Track when you've received the final answer (streaming finished) to send the user
-    monitor.assistantAnswer(answer)
-
-    // pass the convoId to keep the context in the next queries
-    return { answer, convoId: convo.id }
-  } catch (err) {
-    // Track errors at any point
-    monitor.error("Some error", error)
-  }
-}
+translate("Hello, how are you?").then((res) => {
+  console.log(res) // "Bonjour, comment allez-vous?"
+})
 ```
-
 
 ## Todo
-
+- [ ] Think how to re-implement convo tracking
+- [ ] Add ModelMonitor for tracking models without langchain
+- [ ] Support langchain agents
+- [ ] Support langchain tools via functions
+- [ ] Proper documentation
 - [x] batch/debounce requests
 - [x] fix event sent right after another one have the exact same timestamp
-- [ ] add a wrapper method to directly wrap calls
-- [ ] langchain-js support
+- [x] add a wrapper method to directly wrap calls
+- [x] langchain-js support
