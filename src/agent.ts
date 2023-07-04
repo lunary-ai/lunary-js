@@ -40,7 +40,7 @@ export class AgentMonitor extends LLMonitor {
    * Wrap an agent Promise to track it's input, results and any errors.
    * @param {string} name - Agent name
    * @param {Promise} func - Agent function
-   **/
+   */
   wrapExecutor<T extends (...args: any[]) => Promise<any>>(func: T) {
     return async (...args: Parameters<T>) => {
       this.agentRunId = crypto.randomUUID()

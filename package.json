@@ -1,6 +1,6 @@
 {
   "name": "llmonitor",
-  "version": "0.1.14",
+  "version": "0.2.0",
   "description": "LLMonitor is an open-source logging and analytics platform for LLM-powered apps.",
   "main": "lib/index.js",
   "scripts": {
