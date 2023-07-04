@@ -18,10 +18,10 @@ npm install llmonitor
 
 ```ts
 import { ChatOpenAI } from "langchain/chat_models/openai"
-import LLMonitor from "LLMonitor"
+import Monitor from "LLMonitor"
 
 /** Takes the same parameters as LLMonitor **/
-const monitor = new LLMonitor({
+const monitor = new Monitor({
   appId: "your-app-id"
 })
 
@@ -30,7 +30,6 @@ const MonitoredChat = monitor.extendModel(ChatOpenAI)
 const chat = new MonitoredChat({
   temperature: 0.2,
   modelName: "gpt-3.5-turbo",
-  tags: ["test-tag"],
 })
 
 const res = await chat.call([

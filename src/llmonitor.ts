@@ -236,6 +236,7 @@ class LLMonitor {
 
     this.trackEvent("log", {
       level: "error",
+      message,
       error: cleanError(error),
     })
   }

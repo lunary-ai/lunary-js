@@ -22,6 +22,7 @@ export interface Event {
   timestamp: number
   input?: any
   output?: any
+  message?: string
   extra?: Record<string, unknown>
   error?: {
     message: string

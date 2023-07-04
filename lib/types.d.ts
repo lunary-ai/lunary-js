@@ -17,11 +17,10 @@ export interface Event {
     convo?: string;
     level?: "info" | "warn" | "error";
     timestamp: number;
-    tags?: string[];
-    message?: string;
     input?: any;
     output?: any;
-    extra?: any;
+    message?: string;
+    extra?: Record<string, unknown>;
     error?: {
         message: string;
         stack?: string;
