@@ -44,3 +44,15 @@ export const LANGCHAIN_ARGS_TO_REPORT = [
   "tags",
   "streaming",
 ]
+
+export const cleanError = (error: any) => {
+  if (typeof error === "string")
+    return {
+      message: error,
+    }
+
+  return {
+    message: error.message,
+    stack: error.stack,
+  }
+}

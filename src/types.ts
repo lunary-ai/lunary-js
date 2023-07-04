@@ -10,25 +10,32 @@ export interface LLMonitorOptions {
   log?: boolean
 }
 
-// export interface Event {
-//   type: string
-//   app: string
-//   convo: string
-//   level?: "info" | "warn" | "error"
-//   timestamp: number
-//   tags?: string[]
-//   message?: string
-//   history?: any
-//   extra?: any
-//   model?: string
-// }
+export interface Event {
+  type: string
+  app: string
+  event?: string
+  agentRunId?: string
+  toolRunId?: string
+  convo?: string
+  level?: "info" | "warn" | "error"
+  timestamp: number
+  tags?: string[]
+  message?: string
+  input?: any
+  output?: any
+  extra?: any
+  error?: {
+    message: string
+    stack?: string
+  }
+}
 
 // Same as Langchain's
 type MessageType = "human" | "ai" | "generic" | "system" | "function"
 
-export interface Event {
-  [key: string]: any
-}
+// export interface Event {
+//   [key: string]: any
+// }
 
 // Inspired from OpenAi's format, less heavy than Langchain's type
 export type ChatMessage = {

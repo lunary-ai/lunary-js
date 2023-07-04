@@ -1,6 +1,7 @@
 import {
   LANGCHAIN_ARGS_TO_REPORT,
   checkEnv,
+  cleanError,
   debounce,
   formatLog,
 } from "./utils"
@@ -116,6 +117,7 @@ class LLMonitor {
     this.trackEvent("agent", {
       event: "error",
       ...data,
+      error: cleanError(data.error),
     })
   }
 
@@ -153,6 +155,7 @@ class LLMonitor {
     this.trackEvent("llm", {
       event: "error",
       ...data,
+      error: cleanError(data.error),
     })
   }
 
@@ -174,6 +177,7 @@ class LLMonitor {
     this.trackEvent("tool", {
       event: "error",
       ...data,
+      error: cleanError(data.error),
     })
   }
 
@@ -232,8 +236,7 @@ class LLMonitor {
 
     this.trackEvent("log", {
       level: "error",
-      message,
-      error,
+      error: cleanError(error),
     })
   }
 
