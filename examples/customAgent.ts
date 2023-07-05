@@ -8,7 +8,6 @@ import { AgentMonitor } from "../lib/index.js"
 
 const monitor = new AgentMonitor({
   name: "translator",
-  appId: "test-app",
   log: true,
 })
 

@@ -3,7 +3,7 @@ import { LLMResult, BaseChatMessage } from "langchain/schema"
 import LLMonitor from "./llmonitor"
 import { LLMessage } from "./types"
 
-// Langchain message don't seem consisten
+// Langchain outputs are highly inconsistents
 // Sometimes:
 // {
 //   "type": "system",
@@ -23,18 +23,36 @@ import { LLMessage } from "./types"
 //     }
 //   }
 // }
+// Sometimes:
+// {
+//   text: "Bonjour, comment ça va ?",
+//   message: AIChatMessage {
+//     text: "Bonjour, comment ça va ?",
+//     name: undefined,
+//     additional_kwargs: { function_call: undefined }
+//   }
+// }
 
 const messageAdapter = (llmMessage: any): any => {
   if (Array.isArray(llmMessage)) {
     if (llmMessage.length === 1) return messageAdapter(llmMessage[0])
     else return llmMessage.map(messageAdapter)
   } else {
-    if (llmMessage.message) return messageAdapter(llmMessage.message)
+    let obj = llmMessage.message || llmMessage
+
+    if (typeof obj.toJSON === "function") {
+      // For instances of BaseChatMessage
+      obj = obj.toJSON()
+    }
+
+    const role = obj.type
+    const text = obj.text || obj.content || obj.data?.content
+    const kwargs = obj.additional_kwargs || obj.data.additional_kwargs
 
     return {
-      role: llmMessage.type,
-      text: llmMessage.data.content,
-      ...llmMessage.data.additional_kwargs,
+      role,
+      text,
+      ...kwargs,
     } as LLMessage
   }
 }

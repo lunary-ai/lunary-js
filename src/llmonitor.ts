@@ -26,7 +26,7 @@ class LLMonitor {
 
   constructor(customOptions?: LLMonitorOptions) {
     const defaultOptions = {
-      appId: checkEnv("LLMONITOR_API_URL"),
+      appId: checkEnv("LLMONITOR_APP_ID"),
       // convoId: checkEnv("LL_CONVO_ID"),
       log: true,
       apiUrl: checkEnv("LLMONITOR_API_URL") || "https://app.llmonitor.com",
