@@ -8,14 +8,14 @@ export interface LLMonitorOptions {
     log?: boolean;
     name?: string;
 }
+export type EventType = "log" | "tool" | "agent" | "llm" | "convo";
 export interface Event {
-    type: string;
+    type: EventType;
     app: string;
     event?: string;
     agentRunId?: string;
     toolRunId?: string;
     convo?: string;
-    level?: "info" | "warn" | "error";
     timestamp: number;
     input?: any;
     output?: any;
@@ -25,6 +25,7 @@ export interface Event {
         message: string;
         stack?: string;
     };
+    [key: string]: unknown;
 }
 type MessageType = "human" | "ai" | "generic" | "system" | "function";
 export type ChatMessage = {

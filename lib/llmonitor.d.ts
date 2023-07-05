@@ -1,4 +1,4 @@
-import { LLMonitorOptions, LLMessage, Event } from "./types";
+import { LLMonitorOptions, LLMessage, Event, EventType } from "./types";
 declare class LLMonitor {
     appId: string;
     logConsole: boolean;
@@ -11,7 +11,7 @@ declare class LLMonitor {
      * @constructor
      */
     constructor(customOptions?: LLMonitorOptions);
-    trackEvent(type: string, data?: Partial<Event>): Promise<void>;
+    trackEvent(type: EventType, data?: Partial<Event>): Promise<void>;
     private debouncedProcessQueue;
     private processQueue;
     agentStart(data: {

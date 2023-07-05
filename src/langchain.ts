@@ -137,6 +137,7 @@ export class LLMonitorCallbackHandler extends BaseCallbackHandler {
     this.monitor.toolStart({ toolRunId: runId, name: tool.name, input })
   }
 
+  // TODO: what is parentRunId for? agent id?
   async handleToolError(error: any, runId: string, parentRunId?: string) {
     this.monitor.toolError({ toolRunId: runId, error })
   }

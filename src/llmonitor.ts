@@ -6,7 +6,7 @@ import {
   formatLog,
 } from "./utils"
 
-import { LLMonitorOptions, LLMessage, Event } from "./types"
+import { LLMonitorOptions, LLMessage, Event, EventType } from "./types"
 import { LLMonitorCallbackHandler } from "./langchain"
 
 class LLMonitor {
@@ -40,7 +40,7 @@ class LLMonitor {
     this.userId = options.userId
   }
 
-  async trackEvent(type: string, data: Partial<Event> = {}) {
+  async trackEvent(type: EventType, data: Partial<Event> = {}) {
     let timestamp = Date.now()
 
     // Add 1ms to timestamp if it's the same/lower than the last event
@@ -190,7 +190,7 @@ class LLMonitor {
    **/
   info(message: string, extra?: any) {
     this.trackEvent("log", {
-      level: "info",
+      event: "info",
       message,
       extra,
     })
@@ -209,7 +209,7 @@ class LLMonitor {
    **/
   warn(message: string, extra?: any) {
     this.trackEvent("log", {
-      level: "warn",
+      event: "warn",
       message,
       extra,
     })
@@ -235,9 +235,9 @@ class LLMonitor {
     }
 
     this.trackEvent("log", {
-      level: "error",
+      event: "error",
       message,
-      error: cleanError(error),
+      extra: cleanError(error),
     })
   }
 

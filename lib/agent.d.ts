@@ -1,5 +1,5 @@
 import LLMonitor from "./llmonitor";
-import { LLMonitorOptions } from "./types";
+import { EventType, LLMonitorOptions, Event } from "./types";
 /**
  * AgentMonitor is a wrapper around LLMonitor that adds a few methods for tracking custom agents.
  * @example
@@ -29,6 +29,6 @@ export declare class AgentMonitor extends LLMonitor {
     private name;
     private agentRunId;
     constructor(options?: Partial<LLMonitorOptions>);
-    trackEvent(type: string, data?: Partial<Event>): Promise<void>;
+    trackEvent(type: EventType, data?: Partial<Event>): Promise<void>;
     wrapExecutor<T extends (...args: any[]) => Promise<any>>(func: T): (...args: Parameters<T>) => Promise<any>;
 }
