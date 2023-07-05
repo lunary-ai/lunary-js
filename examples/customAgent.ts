@@ -17,21 +17,25 @@ const MonitoredChat = monitor.extendModel(ChatOpenAI)
 // And tools and logs will be tied to the correct agent
 const translate = monitor.wrapExecutor(async (query) => {
   const chat = new MonitoredChat({
-    temperature: 0.2,
+    temperature: 1,
     modelName: "gpt-3.5-turbo",
     tags: ["test-tag"],
   })
 
+  monitor.log("Logging from inside the agent")
+
   const res = await chat.call([
-    new SystemChatMessage("You are a translator agent."),
+    new SystemChatMessage(
+      "You are a translator agent that uses as much slang as possible."
+    ),
     new HumanChatMessage(
-      `Translate this sentence from English to French. ${query}`
+      `Translate this sentence from English to French: "${query}"`
     ),
   ])
 
   return res.text
 })
 
-translate("Hello, how are you?").then((res) => {
+translate("Hello, it's a nice day isn't it?").then((res) => {
   console.log(res) // "Bonjour, comment allez-vous?"
 })
