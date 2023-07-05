@@ -82,9 +82,15 @@ export class LLMonitorCallbackHandler extends BaseCallbackHandler {
       this.streamingState[runId] = false
     }
 
-    this.monitor.llmStart({ runId, input: prompts, extra: this.params })
+    const modelName = this.params?.modelName as string
+    delete this.params?.modelName
 
-    // console.log("llm:start", llm.name, prompts, runId, parentRunId, extraParams)
+    this.monitor.llmStart({
+      runId,
+      name: modelName,
+      input: prompts,
+      extra: this.params,
+    })
   }
 
   // handleLLMStart won't be called if the model is chat-style
@@ -93,19 +99,21 @@ export class LLMonitorCallbackHandler extends BaseCallbackHandler {
     messages: BaseChatMessage[][],
     runId: string,
     parentRunId?: string,
-    extraParams?: Record<string, unknown>
+    extraParams?: Record<string, unknown> // Params as sent to OpenAI
   ) {
     if (this.params.streaming) {
       this.streamingState[runId] = false
     }
 
+    const modelName = this.params?.modelName as string
+    delete this.params?.modelName
+
     this.monitor.llmStart({
       runId,
-      input: messageAdapter(messages[0]),
+      input: messageAdapter(messages[0]), // TODO: handle multiple completions at the same time
+      name: modelName,
       extra: this.params,
     })
-
-    // console.log("chat:start", chat.name, runId, messages, parentRunId, "\n")
   }
 
   // Used to calculate latency to first token
@@ -128,21 +136,17 @@ export class LLMonitorCallbackHandler extends BaseCallbackHandler {
     parentRunId?: string,
     extraParams?: Record<string, unknown>
   ) {
-    // console.error("llm:error", error, runId, parentRunId, extraParams)
-
     this.monitor.llmError({ runId, error })
   }
 
   async handleLLMEnd(output: LLMResult, runId: string, parentRunId?: string) {
     const { generations, llmOutput } = output
 
-    // console.log("llm:end", output, runId, parentRunId)
-
     this.monitor.llmEnd({
       runId,
       output: messageAdapter(generations),
-      promptTokens: llmOutput?.promptTokens,
-      completionTokens: llmOutput?.completionTokens,
+      promptTokens: llmOutput?.tokenUsage?.promptTokens,
+      completionTokens: llmOutput?.tokenUsage?.completionTokens,
     })
   }
 

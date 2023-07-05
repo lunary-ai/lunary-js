@@ -44,7 +44,6 @@ export class AgentMonitor extends LLMonitor {
 
   /*
    * Wrap an agent Promise to track it's input, results and any errors.
-   * @param {string} name - Agent name
    * @param {Promise} func - Agent function
    */
   wrapExecutor<T extends (...args: any[]) => Promise<any>>(func: T) {
@@ -53,7 +52,7 @@ export class AgentMonitor extends LLMonitor {
 
       this.agentStart({
         name: this.name,
-        input: args,
+        input: args.length === 1 ? args[0] : args,
         agentRunId: this.agentRunId,
       })
 

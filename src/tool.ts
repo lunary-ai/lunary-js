@@ -2,7 +2,7 @@ import LLMonitor from "./llmonitor"
 import { LLMonitorOptions, EventType, Event } from "./types"
 
 /**
- * ToolMonitor is a wrapper around LLMonitor that adds a few methods for tracking custom agents.
+ * ToolMonitor is a wrapper around LLMonitor that adds a few methods for tracking custom tools.
  * @example
  * const monitor = new ToolMonitor({ name: "translator" })
  *
@@ -12,19 +12,14 @@ import { LLMonitorOptions, EventType, Event } from "./types"
  *    monitor,
  * })
  *
- * const agent = monitor.wrapExecutor(async (input: string) => {
+ * const tool = monitor.wrapExecutor(async (input: string) => {
  *
- *  monitor.log("Starting translator agent")
- *
- *  const res = await chat.call([
- *    new SystemChatMessage("You are a translator agent."),
- *    new HumanChatMessage(`Translate this sentence from English to French. ${input}`),
- *  ])
+ *  monitor.log("Starting translator tool")
  *
  *  return res
  * })
  *
- * const result = await agent("Bonjour, comment allez-vous?")
+ * const result = await tool("Bonjour, comment allez-vous?")
  */
 export class ToolMonitor extends LLMonitor {
   private name: string | undefined
@@ -53,7 +48,7 @@ export class ToolMonitor extends LLMonitor {
 
       this.toolStart({
         name: this.name,
-        input: args,
+        input: args.length === 1 ? args[0] : args,
         toolRunId: this.toolRunId,
       })
 

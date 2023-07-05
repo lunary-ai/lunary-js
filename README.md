@@ -48,7 +48,7 @@ import { AgentMonitor } from "LLMonitor"
 
 /** Takes the same parameters as LLMonitor **/
 const monitor = new AgentMonitor({
-  name: "translator",
+  name: "translator", // name of your agent visible on the dashboard
   log: true,
 })
 
@@ -79,11 +79,12 @@ translate("Hello, how are you?").then((res) => {
 ```
 
 ## Todo
-- [ ] Think how to re-implement convo tracking
-- [ ] Add ModelMonitor for tracking models without langchain
-- [ ] Support langchain agents
-- [ ] Support langchain tools via functions
 - [ ] Proper documentation
+- [ ] Add ModelMonitor for tracking models w/o Langchain
+- [ ] Support/test langchain agent executors
+- [ ] Support/test langchain tools via openai functions
+- [ ] Cleaner logging when { log: true }
+- [ ] Think how to re-implement convo tracking
 - [x] batch/debounce requests
 - [x] fix event sent right after another one have the exact same timestamp
 - [x] add a wrapper method to directly wrap calls

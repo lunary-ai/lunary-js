@@ -30,7 +30,8 @@ declare class LLMonitor {
     llmStart(data: {
         runId: string;
         input: LLMessage;
-        extra: any;
+        name?: string;
+        extra?: any;
     }): void;
     /**
      * Use this when you start streaming the model's output to the user.
@@ -42,8 +43,8 @@ declare class LLMonitor {
     llmEnd(data: {
         runId: string;
         output: LLMessage;
-        promptTokens: number;
-        completionTokens: number;
+        promptTokens?: number;
+        completionTokens?: number;
     }): void;
     llmError(data: {
         runId: string;

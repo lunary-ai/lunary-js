@@ -121,7 +121,12 @@ class LLMonitor {
     })
   }
 
-  llmStart(data: { runId: string; input: LLMessage; extra: any }) {
+  llmStart(data: {
+    runId: string
+    input: LLMessage
+    name?: string
+    extra?: any
+  }) {
     this.trackEvent("llm", {
       event: "start",
       ...data,
@@ -142,8 +147,8 @@ class LLMonitor {
   llmEnd(data: {
     runId: string
     output: LLMessage
-    promptTokens: number
-    completionTokens: number
+    promptTokens?: number
+    completionTokens?: number
   }) {
     this.trackEvent("llm", {
       event: "end",
@@ -254,6 +259,8 @@ class LLMonitor {
           if (args[0][arg]) acc[arg] = args[0][arg]
           return acc
         }, {} as Record<string, unknown>)
+
+        console.log("interestingArgs", interestingArgs)
 
         args[0].callbacks = [
           new LLMonitorCallbackHandler(monitor, interestingArgs),
