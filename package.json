@@ -5,8 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=neutral --outfile=lib/index.js && npm run types",
-    "types": "tsc --emitDeclarationOnly",
-    "prepare": "npm run build"
+    "types": "tsc --emitDeclarationOnly"
   },
   "author": "vincelwt",
   "type": "module",
