@@ -20,7 +20,6 @@ npm install llmonitor
 import { ChatOpenAI } from "langchain/chat_models/openai"
 import Monitor from "LLMonitor"
 
-/** Takes the same parameters as LLMonitor **/
 const monitor = new Monitor({
   appId: "your-app-id"
 })
