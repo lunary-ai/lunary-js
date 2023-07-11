@@ -56,3 +56,12 @@ export const cleanError = (error: any) => {
     stack: error.stack,
   }
 }
+
+export const getArgumentNames = (func: Function): string[] => {
+  const funcString = func.toString().replace(/[\r\n\s]+/g, " ")
+  const result = funcString
+    .slice(funcString.indexOf("(") + 1, funcString.indexOf(")"))
+    .match(/([^\s,]+)/g)
+  if (result === null) return []
+  else return result
+}

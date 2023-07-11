@@ -260,8 +260,6 @@ class LLMonitor {
           return acc
         }, {} as Record<string, unknown>)
 
-        console.log("interestingArgs", interestingArgs)
-
         args[0].callbacks = [
           new LLMonitorCallbackHandler(monitor, interestingArgs),
         ]

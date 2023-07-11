@@ -2,7 +2,7 @@
 
 LLMonitor is an open-source logging and analytics platform for LLM-powered apps.
 
-You can use it with any LLM models, not limited to GPT.
+You can use it with any LLM models, not limited to OpenAI.
 
 This is the JS isomorphic library compatible with Node.js, Deno and the browser.
 
@@ -14,7 +14,7 @@ It is compatible with Langchain JS, AutoGPT and all the other libraries.
 npm install llmonitor
 ```
 
-## Usage with Langchain.js
+## Simple usage with Langchain.js
 
 ```ts
 import { ChatOpenAI } from "langchain/chat_models/openai"
@@ -77,14 +77,22 @@ translate("Hello, how are you?").then((res) => {
 })
 ```
 
+## Definitions
+
+Agent: Runs multiple LLM calls and tools until it finds a solution to a given query
+Sub-agent: Agent called from another agent
+Tool: Gives external functionalities to agents (ie: web scraper, google search, calculator, etc.)
+
 ## Todo
+- [ ] Find way to tie ToolMonitor to AgentMonitor via the wrapExecutor so we don’t have to exchange monitor objects
 - [ ] Proper documentation
-- [ ] Add ModelMonitor for tracking models w/o Langchain
+- [ ] Add ModelMonitor for tracking custom models w/o Langchain
 - [ ] Support/test langchain agent executors
 - [ ] Support/test langchain tools via openai functions
 - [ ] Cleaner logging when { log: true }
+- [ ] Allow sub agents runs 
 - [ ] Think how to re-implement convo tracking
 - [x] batch/debounce requests
 - [x] fix event sent right after another one have the exact same timestamp
 - [x] add a wrapper method to directly wrap calls
-- [x] langchain-js support
+- [x] basic langchain-js support

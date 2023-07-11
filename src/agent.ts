@@ -1,5 +1,6 @@
 import LLMonitor from "./llmonitor"
 import { EventType, LLMonitorOptions, Event } from "./types"
+import { getArgumentNames } from "./utils"
 
 /**
  * AgentMonitor is a wrapper around LLMonitor that adds a few methods for tracking custom agents.
@@ -50,9 +51,18 @@ export class AgentMonitor extends LLMonitor {
     return async (...args: Parameters<T>) => {
       this.agentRunId = crypto.randomUUID()
 
+      // Get argument names from function
+      const argNames = getArgumentNames(func)
+
+      // Pair argument names and values to create an object
+      const input = argNames.reduce((obj, argName, index) => {
+        obj[argName] = args[index]
+        return obj
+      }, {} as { [key: string]: any })
+
       this.agentStart({
         name: this.name,
-        input: args.length === 1 ? args[0] : args,
+        input,
         agentRunId: this.agentRunId,
       })
 
@@ -72,6 +82,8 @@ export class AgentMonitor extends LLMonitor {
         })
 
         throw error
+      } finally {
+        this.agentRunId = undefined
       }
     }
   }

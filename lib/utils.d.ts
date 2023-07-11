@@ -10,3 +10,4 @@ export declare const cleanError: (error: any) => {
     message: any;
     stack: any;
 };
+export declare const getArgumentNames: (func: Function) => string[];
