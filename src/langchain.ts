@@ -83,13 +83,16 @@ export class LLMonitorCallbackHandler extends BaseCallbackHandler {
     }
 
     const modelName = this.params?.modelName as string
-    delete this.params?.modelName
+
+    // Create copy of params without modelName
+    const copiedArgs = { ...this.params }
+    delete copiedArgs.modelName
 
     this.monitor.llmStart({
       runId,
       name: modelName,
       input: prompts,
-      extra: this.params,
+      extra: copiedArgs,
     })
   }
 

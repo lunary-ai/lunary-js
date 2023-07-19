@@ -266,8 +266,6 @@ class LLMonitor {
 
     return class extends baseClass {
       constructor(...args: any[]) {
-        console.log("DEBUG args", JSON.stringify(args, null, 2))
-
         const interestingArgs = LANGCHAIN_ARGS_TO_REPORT.reduce((acc, arg) => {
           if (args[0][arg]) acc[arg] = args[0][arg]
           return acc
