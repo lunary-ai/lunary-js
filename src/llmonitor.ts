@@ -246,15 +246,28 @@ class LLMonitor {
     })
   }
 
-  // Extends Langchain's LLM classes like ChatOpenAI
-  // TODO: test with non-chat classes see if it works (should if it supports callbacks)
+  /**
+   * Extends Langchain's LLM classes like ChatOpenAI
+   * @param baseClass - Langchain's LLM class
+   * @returns Extended class
+   * @example
+   * const monitor = new LLMonitor()
+   * const MonitoredChat = monitor.extendModel(ChatOpenAI)
+   * const chat = new MonitoredChat({
+   *  modelName: "gpt-4"
+   * })
+   **/
+
   extendModel(baseClass: any) {
     // TODO: get model vendor from (lc_namespace: [ "langchain", "chat_models", "openai" ])
+    // TODO: test with non-chat classes see if it works (should if it supports callbacks)
 
     const monitor = this
 
     return class extends baseClass {
       constructor(...args: any[]) {
+        console.log("DEBUG args", JSON.stringify(args, null, 2))
+
         const interestingArgs = LANGCHAIN_ARGS_TO_REPORT.reduce((acc, arg) => {
           if (args[0][arg]) acc[arg] = args[0][arg]
           return acc
@@ -262,7 +275,9 @@ class LLMonitor {
 
         args[0].callbacks = [
           new LLMonitorCallbackHandler(monitor, interestingArgs),
+          ...(args[0]?.callbacks || []),
         ]
+
         super(...args)
       }
     }

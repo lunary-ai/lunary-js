@@ -93,6 +93,17 @@ declare class LLMonitor {
      * }
      **/
     error(message: string | any, error?: any): void;
+    /**
+     * Extends Langchain's LLM classes like ChatOpenAI
+     * @param baseClass - Langchain's LLM class
+     * @returns Extended class
+     * @example
+     * const monitor = new LLMonitor()
+     * const MonitoredChat = monitor.extendModel(ChatOpenAI)
+     * const chat = new MonitoredChat({
+     *  modelName: "gpt-4"
+     * })
+     **/
     extendModel(baseClass: any): {
         new (...args: any[]): {
             [x: string]: any;
