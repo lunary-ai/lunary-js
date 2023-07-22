@@ -29,17 +29,19 @@ import { getArgumentNames } from "./utils"
  */
 export class AgentMonitor extends LLMonitor {
   private name: string | undefined
-  private agentRunId: string | undefined
+
+  private runId: string | undefined
 
   constructor(options: Partial<LLMonitorOptions> = {}) {
     super(options)
     this.name = options.name
   }
 
+  // So each subsequent run has the parent ID of this agent
   trackEvent(type: EventType, data: Partial<Event> = {}) {
     return super.trackEvent(type, {
       ...data,
-      agentRunId: this.agentRunId,
+      parentRunId: this.runId,
     })
   }
 
@@ -49,7 +51,7 @@ export class AgentMonitor extends LLMonitor {
    */
   wrapExecutor<T extends (...args: any[]) => Promise<any>>(func: T) {
     return async (...args: Parameters<T>) => {
-      this.agentRunId = crypto.randomUUID()
+      this.runId = crypto.randomUUID()
 
       // Get argument names from function
       const argNames = getArgumentNames(func)
@@ -63,7 +65,7 @@ export class AgentMonitor extends LLMonitor {
       this.agentStart({
         name: this.name,
         input,
-        agentRunId: this.agentRunId,
+        runId: this.runId,
       })
 
       try {
@@ -71,19 +73,19 @@ export class AgentMonitor extends LLMonitor {
 
         this.agentEnd({
           output: result,
-          agentRunId: this.agentRunId,
+          runId: this.runId,
         })
 
         return result
       } catch (error) {
         this.agentError({
           error,
-          agentRunId: this.agentRunId,
+          runId: this.runId,
         })
 
         throw error
       } finally {
-        this.agentRunId = undefined
+        this.runId = undefined
       }
     }
   }

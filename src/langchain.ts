@@ -90,6 +90,7 @@ export class LLMonitorCallbackHandler extends BaseCallbackHandler {
 
     this.monitor.llmStart({
       runId,
+      parentRunId,
       name: modelName,
       input: prompts,
       extra: copiedArgs,
@@ -113,6 +114,7 @@ export class LLMonitorCallbackHandler extends BaseCallbackHandler {
 
     this.monitor.llmStart({
       runId,
+      parentRunId,
       input: messageAdapter(messages[0]), // TODO: handle multiple completions at the same time
       name: modelName,
       extra: this.params,
@@ -129,7 +131,7 @@ export class LLMonitorCallbackHandler extends BaseCallbackHandler {
     // Track when streaming starts
     if (this.params.streaming && !this.streamingState[runId]) {
       this.streamingState[runId] = true
-      this.monitor.streamingStart({ runId })
+      this.monitor.streamingStart({ runId, parentRunId })
     }
   }
 
@@ -139,7 +141,7 @@ export class LLMonitorCallbackHandler extends BaseCallbackHandler {
     parentRunId?: string,
     extraParams?: Record<string, unknown>
   ) {
-    this.monitor.llmError({ runId, error })
+    this.monitor.llmError({ runId, parentRunId, error })
   }
 
   async handleLLMEnd(output: LLMResult, runId: string, parentRunId?: string) {
@@ -159,15 +161,15 @@ export class LLMonitorCallbackHandler extends BaseCallbackHandler {
     runId: string,
     parentRunId?: string
   ) {
-    this.monitor.toolStart({ toolRunId: runId, name: tool.name, input })
+    this.monitor.toolStart({ runId, parentRunId, name: tool.name, input })
   }
 
   // TODO: what is parentRunId for? agent id?
   async handleToolError(error: any, runId: string, parentRunId?: string) {
-    this.monitor.toolError({ toolRunId: runId, error })
+    this.monitor.toolError({ runId, parentRunId, error })
   }
 
   async handleToolEnd(output: string, runId: string, parentRunId?: string) {
-    this.monitor.toolEnd({ toolRunId: runId, output })
+    this.monitor.toolEnd({ runId, parentRunId, output })
   }
 }

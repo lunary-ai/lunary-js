@@ -99,21 +99,26 @@ class LLMonitor {
     if (this.queue.length) this.processQueue()
   }
 
-  agentStart(data: { name?: string; input: any; agentRunId: string }) {
+  agentStart(data: {
+    name?: string
+    input: any
+    runId: string
+    parentRunId: string
+  }) {
     this.trackEvent("agent", {
       event: "start",
       ...data,
     })
   }
 
-  agentEnd(data: { output: any; agentRunId: string }) {
+  agentEnd(data: { output: any; runId: string; parentRunId: string }) {
     this.trackEvent("agent", {
       event: "end",
       ...data,
     })
   }
 
-  agentError(data: { error: any; agentRunId: string }) {
+  agentError(data: { error: any; runId: string; parentRunId: string }) {
     this.trackEvent("agent", {
       event: "error",
       ...data,
@@ -123,6 +128,7 @@ class LLMonitor {
 
   llmStart(data: {
     runId: string
+    parentRunId: string
     input: LLMessage
     name?: string
     extra?: any
@@ -137,7 +143,7 @@ class LLMonitor {
    * Use this when you start streaming the model's output to the user.
    * Used to measure the time it takes for the model to generate the first response.
    */
-  streamingStart(data: { runId: string }) {
+  streamingStart(data: { runId: string; parentRunId: string }) {
     this.trackEvent("llm", {
       event: "stream",
       ...data,
@@ -146,6 +152,7 @@ class LLMonitor {
 
   llmEnd(data: {
     runId: string
+    parentRunId: string
     output: LLMessage
     promptTokens?: number
     completionTokens?: number
@@ -156,7 +163,7 @@ class LLMonitor {
     })
   }
 
-  llmError(data: { runId: string; error: any }) {
+  llmError(data: { runId: string; error: any; parentRunId: string }) {
     this.trackEvent("llm", {
       event: "error",
       ...data,
@@ -164,21 +171,26 @@ class LLMonitor {
     })
   }
 
-  toolStart(data: { toolRunId: string; name?: string; input?: any }) {
+  toolStart(data: {
+    runId: string
+    name?: string
+    input?: any
+    parentRunId: string
+  }) {
     this.trackEvent("tool", {
       event: "start",
       ...data,
     })
   }
 
-  toolEnd(data: { toolRunId: string; output?: any }) {
+  toolEnd(data: { runId: string; output?: any; parentRunId: string }) {
     this.trackEvent("tool", {
       event: "end",
       ...data,
     })
   }
 
-  toolError(data: { toolRunId: string; error: any }) {
+  toolError(data: { runId: string; error: any; parentRunId: string }) {
     this.trackEvent("tool", {
       event: "error",
       ...data,
@@ -259,8 +271,7 @@ class LLMonitor {
    **/
 
   extendModel(baseClass: any) {
-    // TODO: get model vendor from (lc_namespace: [ "langchain", "chat_models", "openai" ])
-    // TODO: test with non-chat classes see if it works (should if it supports callbacks)
+    // TODO: use tracer instead cause no need to extend model to get args like modelName
 
     const monitor = this
 
