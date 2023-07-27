@@ -14,11 +14,16 @@
     "semi": false
   },
   "devDependencies": {
+    "@types/node": "^20.4.5",
     "esbuild": "^0.17.19",
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "@types/uuid": "^9.0.2",
+    "bun-types": "^0.7.0",
+    "dotenv": "^16.3.1",
     "langchain": "^0.0.102",
-    "p-queue": "^7.3.4"
+    "p-queue": "^7.3.4",
+    "uuid": "^9.0.0"
   }
 }
