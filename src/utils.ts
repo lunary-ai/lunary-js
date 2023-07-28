@@ -2,6 +2,11 @@
 
 import { Event } from "./types"
 
+/*
+ * Checks if the variable is exists in both Node and Deno.
+ * @param {string} variable
+ * @returns {string | undefined}
+ */
 export const checkEnv = (variable) => {
   if (typeof process !== "undefined" && process.env?.[variable]) {
     return process.env[variable]
@@ -14,15 +19,7 @@ export const checkEnv = (variable) => {
   return undefined
 }
 
-// TODO: use colors for different event types
-// export const formatLog = (event: Event) => {
-//   const { type, message, extra, model } = event
-
-//   return `[LLMonitor: ${type}] ${model ? `(${model})` : ""} ${message || ""} ${
-//     extra ? "\n" + JSON.stringify(extra, null, 2) : ""
-//   } `
-// }
-
+// TODO: implement this
 export const formatLog = (event: Event) => {
   console.log(JSON.stringify(event, null, 2))
 }

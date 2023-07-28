@@ -4,16 +4,17 @@ import {
   cleanError,
   debounce,
   formatLog,
+  getArgumentNames,
 } from "./utils"
 
 import { LLMonitorOptions, LLMessage, Event, EventType } from "./types"
 import { LLMonitorCallbackHandler } from "./langchain"
 
 class LLMonitor {
-  appId: string
+  appId?: string
   // convoId: string
-  logConsole: boolean
-  apiUrl: string
+  logConsole?: boolean
+  apiUrl?: string
   userId?: string
 
   private queue: any[] = []
@@ -21,14 +22,12 @@ class LLMonitor {
 
   /**
    * @param {LLMonitorOptions} options
-   * @constructor
    */
 
-  constructor(customOptions?: LLMonitorOptions) {
+  load(customOptions?: LLMonitorOptions) {
     const defaultOptions = {
       appId: checkEnv("LLMONITOR_APP_ID"),
-      // convoId: checkEnv("LL_CONVO_ID"),
-      log: true,
+      log: false,
       apiUrl: checkEnv("LLMONITOR_API_URL") || "https://app.llmonitor.com",
     }
 
@@ -198,6 +197,49 @@ class LLMonitor {
     })
   }
 
+  /*
+   * Wrap an agent Promise to track it's input, results and any errors.
+   * @param {Promise} func - Agent function
+   */
+  wrapAgent<T extends (...args: any[]) => Promise<any>>(func: T) {
+    const runId = crypto.randomUUID()
+
+    return async (...args: Parameters<T>) => {
+      // Get argument names from function
+      const argNames = getArgumentNames(func)
+
+      // Pair argument names and values to create an object
+      const input = argNames.reduce((obj, argName, index) => {
+        obj[argName] = args[index]
+        return obj
+      }, {} as { [key: string]: any })
+
+      this.agentStart({
+        name: this.name,
+        input,
+        runId,
+      })
+
+      try {
+        const result = await func(...args)
+
+        this.agentEnd({
+          output: result,
+          runId,
+        })
+
+        return result
+      } catch (error) {
+        this.agentError({
+          error,
+          runId,
+        })
+
+        throw error
+      }
+    }
+  }
+
   /**
    * Use this to log any external action or tool you use.
    * @param {string} message - Log message
@@ -260,6 +302,7 @@ class LLMonitor {
 
   /**
    * Extends Langchain's LLM classes like ChatOpenAI
+   * We need to extend instead of using `callbacks` as callbacks run in a different context don't allow us to tie parent IDs correctly.
    * @param baseClass - Langchain's LLM class
    * @returns Extended class
    * @example
@@ -270,9 +313,7 @@ class LLMonitor {
    * })
    **/
 
-  extendModel(baseClass: any) {
-    // TODO: use tracer instead cause no need to extend model to get args like modelName
-
+  langchain(baseClass: any) {
     const monitor = this
 
     return class extends baseClass {
