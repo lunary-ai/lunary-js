@@ -2,18 +2,19 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "classic",
+    "moduleResolution": "bundler",
     "declaration": true,
     "emitDeclarationOnly": true,
     "outDir": "./lib",
     "strict": false,
+    "baseUrl": "./",
     "noEmitOnError": true,
     "paths": {
-      "langchain/schema": ["./node_modules/langchain/schema"],
+      "langchain/schema": ["./node_modules/langchain/dist/schema"],
       "langchain/chat_models/openai": [
-        "./node_modules/langchain/chat_models/openai"
+        "./node_modules/langchain/dist/chat_models/openai"
       ],
-      "langchain/callbacks": ["./node_modules/langchain/callbacks"],
+      "langchain/callbacks": ["./node_modules/langchain/dist/callbacks"],
       "openai": ["./node_modules/openai/dist"]
     }
   },

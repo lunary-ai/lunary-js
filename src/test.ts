@@ -4,7 +4,7 @@ import { SystemMessage, HumanMessage } from "langchain/schema"
 
 // import { context } from "./context.ts"
 import { BaseTracer, Run } from "langchain/callbacks"
-import { AsyncContext } from "./context/index"
+import { AsyncContext } from "./context"
 import { ChatOpenAI } from "langchain/chat_models/openai"
 
 const context = new AsyncContext("context1")
