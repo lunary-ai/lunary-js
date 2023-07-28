@@ -1,6 +1,6 @@
-import { Mapping } from "./mapping.js"
-import { FrozenRevert, Revert } from "./fork.js"
-import type { AsyncContext } from "./index.js"
+import { Mapping } from "./mapping"
+import { FrozenRevert, Revert } from "./fork"
+import type { AsyncContext } from "./index"
 
 /**
  * Storage is the (internal to the language) storage container of all

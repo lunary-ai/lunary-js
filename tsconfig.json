@@ -1,14 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es2022",
-    "module": "CommonJS",
-    "moduleResolution": "Node16",
-    // "moduleResolution": "classic",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "classic",
     "declaration": true,
     "emitDeclarationOnly": true,
     "outDir": "./lib",
     "strict": false,
-    "noEmitOnError": true,
 
     "paths": {
       "langchain/schema": ["./node_modules/langchain/schema"],

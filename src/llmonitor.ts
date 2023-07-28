@@ -8,7 +8,7 @@ import {
 } from "./utils"
 
 import { LLMonitorOptions, LLMessage, Event, EventType } from "./types"
-import { LLMonitorCallbackHandler } from "./langchain"
+// import { LLMonitorCallbackHandler } from "./langchain"
 
 class LLMonitor {
   appId?: string
@@ -236,25 +236,25 @@ class LLMonitor {
    * })
    **/
 
-  langchain(baseClass: any) {
-    const monitor = this
+  // langchain(baseClass: any) {
+  //   const monitor = this
 
-    return class extends baseClass {
-      constructor(...args: any[]) {
-        const interestingArgs = LANGCHAIN_ARGS_TO_REPORT.reduce((acc, arg) => {
-          if (args[0][arg]) acc[arg] = args[0][arg]
-          return acc
-        }, {} as Record<string, unknown>)
+  //   return class extends baseClass {
+  //     constructor(...args: any[]) {
+  //       const interestingArgs = LANGCHAIN_ARGS_TO_REPORT.reduce((acc, arg) => {
+  //         if (args[0][arg]) acc[arg] = args[0][arg]
+  //         return acc
+  //       }, {} as Record<string, unknown>)
 
-        args[0].callbacks = [
-          new LLMonitorCallbackHandler(monitor, interestingArgs),
-          ...(args[0]?.callbacks || []),
-        ]
+  //       args[0].callbacks = [
+  //         new LLMonitorCallbackHandler(monitor, interestingArgs),
+  //         ...(args[0]?.callbacks || []),
+  //       ]
 
-        super(...args)
-      }
-    }
-  }
+  //       super(...args)
+  //     }
+  //   }
+  // }
 }
 
 export default LLMonitor

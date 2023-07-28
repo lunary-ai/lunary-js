@@ -1,78 +1,25 @@
-import { LLMonitorOptions, LLMessage, Event, EventType } from "./types";
+import { LLMonitorOptions, Event, EventType } from "./types";
 declare class LLMonitor {
-    appId: string;
-    logConsole: boolean;
-    apiUrl: string;
+    appId?: string;
+    logConsole?: boolean;
+    apiUrl?: string;
     userId?: string;
     private queue;
     private queueRunning;
     /**
      * @param {LLMonitorOptions} options
-     * @constructor
      */
-    constructor(customOptions?: LLMonitorOptions);
-    trackEvent(type: EventType, data?: Partial<Event>): Promise<void>;
+    load(customOptions?: LLMonitorOptions): void;
+    trackEvent(type: EventType, data: Partial<Event>): Promise<void>;
     private debouncedProcessQueue;
     private processQueue;
-    agentStart(data: {
+    private wrap;
+    wrapAgent<T extends (...args: any[]) => Promise<any>>(func: T, params?: {
         name?: string;
-        input: any;
-        runId: string;
-        parentRunId: string;
-    }): void;
-    agentEnd(data: {
-        output: any;
-        runId: string;
-        parentRunId: string;
-    }): void;
-    agentError(data: {
-        error: any;
-        runId: string;
-        parentRunId: string;
-    }): void;
-    llmStart(data: {
-        runId: string;
-        parentRunId: string;
-        input: LLMessage;
+    }): (...args: Parameters<T>) => Promise<any>;
+    wrapTool<T extends (...args: any[]) => Promise<any>>(func: T, params?: {
         name?: string;
-        extra?: any;
-    }): void;
-    /**
-     * Use this when you start streaming the model's output to the user.
-     * Used to measure the time it takes for the model to generate the first response.
-     */
-    streamingStart(data: {
-        runId: string;
-        parentRunId: string;
-    }): void;
-    llmEnd(data: {
-        runId: string;
-        parentRunId: string;
-        output: LLMessage;
-        promptTokens?: number;
-        completionTokens?: number;
-    }): void;
-    llmError(data: {
-        runId: string;
-        error: any;
-        parentRunId: string;
-    }): void;
-    toolStart(data: {
-        runId: string;
-        name?: string;
-        input?: any;
-        parentRunId: string;
-    }): void;
-    toolEnd(data: {
-        runId: string;
-        output?: any;
-        parentRunId: string;
-    }): void;
-    toolError(data: {
-        runId: string;
-        error: any;
-        parentRunId: string;
-    }): void;
+    }): (...args: Parameters<T>) => Promise<any>;
     /**
      * Use this to log any external action or tool you use.
      * @param {string} message - Log message
@@ -103,22 +50,5 @@ declare class LLMonitor {
      * }
      **/
     error(message: string | any, error?: any): void;
-    /**
-     * Extends Langchain's LLM classes like ChatOpenAI
-     * @param baseClass - Langchain's LLM class
-     * @returns Extended class
-     * @example
-     * const monitor = new LLMonitor()
-     * const MonitoredChat = monitor.extendModel(ChatOpenAI)
-     * const chat = new MonitoredChat({
-     *  modelName: "gpt-4"
-     * })
-     **/
-    extendModel(baseClass: any): {
-        new (...args: any[]): {
-            [x: string]: any;
-        };
-        [x: string]: any;
-    };
 }
 export default LLMonitor;

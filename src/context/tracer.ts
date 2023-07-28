@@ -1,4 +1,4 @@
-import { AsyncContext } from "./index.js"
+import { AsyncContext } from "./index"
 
 const context = new AsyncContext("dsoi")
 

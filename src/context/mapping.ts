@@ -1,4 +1,4 @@
-import type { AsyncContext } from "./index.js"
+import type { AsyncContext } from "./index"
 
 /**
  * Stores all AsyncContext data, and tracks whether any snapshots have been
