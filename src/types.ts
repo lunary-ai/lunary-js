@@ -59,3 +59,12 @@ export type ChatMessage = {
 }
 
 export type LLMessage = ChatMessage | ChatMessage[] | string | string[]
+
+// Keep the types when wrapping
+export type ConstructorParameters<T> = T extends new (...args: infer U) => any
+  ? U
+  : never
+export type MethodParameters<T> = T extends (...args: infer U) => any
+  ? U
+  : never
+export type MethodReturn<T> = T extends (...args: any[]) => infer R ? R : never

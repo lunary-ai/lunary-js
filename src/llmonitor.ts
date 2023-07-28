@@ -111,15 +111,22 @@ class LLMonitor {
     func: T,
     params?: { name?: string }
   ) {
-    const runId = crypto.randomUUID()
-
     return async (...args: Parameters<T>) => {
       // Get agent name from function name or params
-      const name = func.name || params?.name
+      const runId = crypto.randomUUID()
+
+      const parentId = context.get()
+
+      const name = params?.name || func.name
       const input = getFunctionInput(func, args)
+
+      console.log(
+        `Calling ${name} with runId ${runId} and parentId ${parentId}`
+      )
 
       this.trackEvent(type, {
         runId,
+        parentId,
         input,
         name,
       })
@@ -132,6 +139,7 @@ class LLMonitor {
 
         this.trackEvent(type, {
           runId,
+          parentId,
           output,
         })
 
@@ -139,6 +147,7 @@ class LLMonitor {
       } catch (error) {
         this.trackEvent(type, {
           runId,
+          parentId,
           error: cleanError(error),
         })
 
@@ -167,6 +176,17 @@ class LLMonitor {
     params?: { name?: string }
   ) {
     return this.wrap("tool", func, params)
+  }
+
+  /*
+   * Wrap an agent's Promise to track it's input, results and any errors.
+   * @param {Promise} func - Agent function
+   */
+  wrapModel<T extends (...args: any[]) => Promise<any>>(
+    func: T,
+    params?: { name?: string }
+  ) {
+    return this.wrap("llm", func, params)
   }
 
   /**
@@ -243,28 +263,28 @@ class LLMonitor {
    **/
 
   langchain(baseClass: any) {
-    // const monitor = this
+    const monitor = this
 
     return class extends baseClass {
+      interestingArgs?: Record<string, unknown>
+
       constructor(...args: any[]) {
-        // const interestingArgs = LANGCHAIN_ARGS_TO_REPORT.reduce((acc, arg) => {
-        //   if (args[0][arg]) acc[arg] = args[0][arg]
-        //   return acc
-        // }, {} as Record<string, unknown>)
-
-        // args[0].callbacks = [
-        //   new LLMonitorCallbackHandler(monitor, interestingArgs),
-        //   ...(args[0]?.callbacks || []),
-        // ]
-
         super(...args)
+
+        this.interestingArgs = LANGCHAIN_ARGS_TO_REPORT.reduce((acc, arg) => {
+          if (args[0][arg]) acc[arg] = args[0][arg]
+          return acc
+        }, {} as Record<string, unknown>)
       }
 
-      // rewrite the call method to add the runId
-      async call(...args: any): any {
-        console.log("PARENT RUN ID FROM INSIDE .CALL: " + context.get()) // 123
+      // wrap the call method to track input/output and name
+      async call(...args: any): Promise<any> {
+        // Bind the super call to the current instance, otherwise 'this' will be undefined
+        const boundSuperCall = super.call.bind(this)
 
-        return await super.call(...args)
+        return await monitor.wrapModel(boundSuperCall, {
+          name: this.interestingArgs?.modelName as string,
+        })(...args)
       }
     }
   }
