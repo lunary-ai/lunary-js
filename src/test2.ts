@@ -1,8 +1,9 @@
 import "dotenv/config"
-
-import { ChatOpenAI } from "langchain/chat_models/openai"
+//@ts-ignore
 import { HumanChatMessage, SystemChatMessage } from "langchain/schema"
 
+console.log(process.env)
+import { ChatOpenAI } from "langchain/chat_models/openai"
 import { BaseTracer, Run } from "langchain/callbacks"
 
 /// test console.trace
@@ -118,7 +119,7 @@ class ConsoleCallbackHandler extends BaseTracer {
 const getCallbackHandler = () => {
   const contextId = getContextId()
   console.log("CONTEXT ID FROM TRACE getCallbackHandler: " + contextId) // 123
-  return new ConsoleCallbackHandler(contextId)
+  return new ConsoleCallbackHandler(contextId as any)
 }
 
 async function translate(query: string) {
@@ -131,14 +132,12 @@ async function translate(query: string) {
   })
 
   const res = await chat.call([
-    new SystemChatMessage(
-      "You are a translator agent that uses as much slang as possible."
-    ),
     new HumanChatMessage(
       `Translate this sentence from English to French: "${query}"`
     ),
   ])
-  return res.text
+
+  console.log(res)
 }
 
-await runWithContextId(translate, "What's up")
+runWithContextId(translate, "What's up")

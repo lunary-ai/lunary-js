@@ -1,19 +1,22 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "classic",
+    "target": "es2022",
+    "module": "CommonJS",
+    "moduleResolution": "Node16",
+    // "moduleResolution": "classic",
     "declaration": true,
     "emitDeclarationOnly": true,
     "outDir": "./lib",
     "strict": false,
+    "noEmitOnError": true,
+
     "paths": {
       "langchain/schema": ["./node_modules/langchain/schema"],
       "langchain/callbacks": ["./node_modules/langchain/callbacks"],
       "openai": ["./node_modules/openai/dist"]
-      // "context": ["./node_modules/context/dist/es"],
     }
   },
-  "include": ["src"],
+
+  "include": ["src/**/*", "src/**/*"],
   "exclude": ["node_modules"]
 }

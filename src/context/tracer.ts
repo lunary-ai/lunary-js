@@ -1,6 +1,6 @@
 import { AsyncContext } from "./index.js"
 
-const context = new AsyncContext()
+const context = new AsyncContext("dsoi")
 
 export function log() {
   const currentId = context.get()

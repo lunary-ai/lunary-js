@@ -1,11 +1,11 @@
 import "dotenv/config"
 
-import { ChatOpenAI } from "langchain/chat_models/openai"
 import { HumanChatMessage, SystemChatMessage } from "langchain/schema"
 
 // import { context } from "./context.ts"
 import { BaseTracer, Run } from "langchain/callbacks"
-import { AsyncContext } from "./context/index.ts"
+import { AsyncContext } from "./context/index.js"
+import { ChatOpenAI } from "langchain/chat_models/openai"
 
 const context = new AsyncContext("context1")
 class ConsoleCallbackHandler extends BaseTracer {
