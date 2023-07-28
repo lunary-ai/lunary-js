@@ -27,7 +27,7 @@ import { EventType, LLMonitorOptions, Event } from "./types";
  */
 export declare class AgentMonitor extends LLMonitor {
     private name;
-    private agentRunId;
+    private runId;
     constructor(options?: Partial<LLMonitorOptions>);
     trackEvent(type: EventType, data?: Partial<Event>): Promise<void>;
     wrapExecutor<T extends (...args: any[]) => Promise<any>>(func: T): (...args: Parameters<T>) => Promise<any>;

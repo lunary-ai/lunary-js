@@ -1,4 +1,4 @@
-import { AsyncContext } from "./index.ts"
+import { AsyncContext } from "./index.js"
 
 type AnyFunc = (...args: any) => any
 
