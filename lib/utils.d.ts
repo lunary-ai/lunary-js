@@ -11,4 +11,4 @@ export declare const cleanError: (error: any) => {
     stack: any;
 };
 export declare const getArgumentNames: (func: Function) => string[];
-export declare const getFunctionInput: (func: Function) => any;
+export declare const getFunctionInput: (func: Function, args: any) => any;

@@ -8,12 +8,14 @@ export interface LLMonitorOptions {
     name?: string;
 }
 export type EventType = "log" | "tool" | "agent" | "llm" | "convo" | "chain";
-export interface RunEvent {
+export interface Event {
     type: EventType;
     app: string;
+    timestamp: number;
+}
+export interface RunEvent extends Event {
     runId: string;
     parentRunId?: string;
-    timestamp: number;
     input?: any;
     output?: any;
     message?: string;
@@ -24,12 +26,9 @@ export interface RunEvent {
     };
     [key: string]: unknown;
 }
-export interface LogEvent {
-    type: "log";
-    app: string;
+export interface LogEvent extends Event {
     level: string;
     runId?: string;
-    timestamp: number;
     message: string;
     extra: Record<string, unknown>;
     error: {
@@ -37,7 +36,6 @@ export interface LogEvent {
         stack?: string;
     };
 }
-export type Event = RunEvent | LogEvent;
 type MessageType = "human" | "ai" | "generic" | "system" | "function";
 export type ChatMessage = {
     role: MessageType;
@@ -46,4 +44,7 @@ export type ChatMessage = {
     [key: string]: unknown;
 };
 export type LLMessage = ChatMessage | ChatMessage[] | string | string[];
+export type ConstructorParameters<T> = T extends new (...args: infer U) => any ? U : never;
+export type MethodParameters<T> = T extends (...args: infer U) => any ? U : never;
+export type MethodReturn<T> = T extends (...args: any[]) => infer R ? R : never;
 export {};

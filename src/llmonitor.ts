@@ -7,10 +7,16 @@ import {
   getFunctionInput,
 } from "./utils"
 
-import { LLMonitorOptions, LLMessage, Event, EventType } from "./types"
-// import { LLMonitorCallbackHandler } from "./langchain"
+import {
+  LLMonitorOptions,
+  LLMessage,
+  Event,
+  EventType,
+  RunEvent,
+  LogEvent,
+} from "./types"
 
-import context from "./context"
+import ctx from "./context"
 
 class LLMonitor {
   appId?: string
@@ -41,7 +47,7 @@ class LLMonitor {
     this.userId = options.userId
   }
 
-  async trackEvent(type: EventType, data: Partial<Event>) {
+  async trackEvent(type: EventType, data: Partial<RunEvent | LogEvent>) {
     if (!this.appId)
       return console.error("LLMonitor: App ID not set. Not reporting anything.")
 
@@ -115,7 +121,7 @@ class LLMonitor {
       // Get agent name from function name or params
       const runId = crypto.randomUUID()
 
-      const parentId = context.get()
+      const parentId = ctx.tryUse()
 
       const name = params?.name || func.name
       const input = getFunctionInput(func, args)
@@ -133,8 +139,8 @@ class LLMonitor {
 
       try {
         // Inject runId into context
-        const output = await context.run(runId, async () => {
-          return await func(...args)
+        const output = await ctx.callAsync(runId, async () => {
+          return func(...args)
         })
 
         this.trackEvent(type, {

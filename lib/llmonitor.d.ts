@@ -1,4 +1,4 @@
-import { LLMonitorOptions, Event, EventType } from "./types";
+import { LLMonitorOptions, EventType, RunEvent, LogEvent } from "./types";
 declare class LLMonitor {
     appId?: string;
     logConsole?: boolean;
@@ -10,7 +10,7 @@ declare class LLMonitor {
      * @param {LLMonitorOptions} options
      */
     load(customOptions?: LLMonitorOptions): void;
-    trackEvent(type: EventType, data: Partial<Event>): Promise<void>;
+    trackEvent(type: EventType, data: Partial<RunEvent | LogEvent>): Promise<void>;
     private debouncedProcessQueue;
     private processQueue;
     private wrap;
@@ -18,6 +18,9 @@ declare class LLMonitor {
         name?: string;
     }): (...args: Parameters<T>) => Promise<any>;
     wrapTool<T extends (...args: any[]) => Promise<any>>(func: T, params?: {
+        name?: string;
+    }): (...args: Parameters<T>) => Promise<any>;
+    wrapModel<T extends (...args: any[]) => Promise<any>>(func: T, params?: {
         name?: string;
     }): (...args: Parameters<T>) => Promise<any>;
     /**
@@ -50,5 +53,25 @@ declare class LLMonitor {
      * }
      **/
     error(message: string | any, error?: any): void;
+    /**
+     * Extends Langchain's LLM classes like ChatOpenAI
+     * We need to extend instead of using `callbacks` as callbacks run in a different context & don't allow us to tie parent IDs correctly.
+     * @param baseClass - Langchain's LLM class
+     * @returns Extended class
+     * @example
+     * const monitor = new LLMonitor()
+     * const MonitoredChat = monitor.extendModel(ChatOpenAI)
+     * const chat = new MonitoredChat({
+     *  modelName: "gpt-4"
+     * })
+     **/
+    langchain(baseClass: any): {
+        new (...args: any[]): {
+            [x: string]: any;
+            interestingArgs?: Record<string, unknown>;
+            call(...args: any): Promise<any>;
+        };
+        [x: string]: any;
+    };
 }
 export default LLMonitor;
