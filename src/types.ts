@@ -8,15 +8,13 @@ export interface LLMonitorOptions {
   name?: string
 }
 
-export type EventType = "log" | "tool" | "agent" | "llm" | "convo"
+export type EventType = "log" | "tool" | "agent" | "llm" | "convo" | "chain"
 
-export interface Event {
+export interface RunEvent {
   type: EventType
   app: string
-  event?: string
-  runId?: string
+  runId: string
   parentRunId?: string
-  convo?: string
   timestamp: number
   input?: any
   output?: any
@@ -28,6 +26,22 @@ export interface Event {
   }
   [key: string]: unknown
 }
+
+export interface LogEvent {
+  type: "log"
+  app: string
+  level: string
+  runId?: string
+  timestamp: number
+  message: string
+  extra: Record<string, unknown>
+  error: {
+    message: string
+    stack?: string
+  }
+}
+
+export type Event = RunEvent | LogEvent
 
 // Same as Langchain's
 type MessageType = "human" | "ai" | "generic" | "system" | "function"

@@ -24,7 +24,7 @@ export const formatLog = (event: Event) => {
   console.log(JSON.stringify(event, null, 2))
 }
 
-export const debounce = (func, timeout = 50) => {
+export const debounce = (func, timeout = 500) => {
   let timer
   return (...args) => {
     clearTimeout(timer)
@@ -61,4 +61,20 @@ export const getArgumentNames = (func: Function): string[] => {
     .match(/([^\s,]+)/g)
   if (result === null) return []
   else return result
+}
+
+export const getFunctionInput = (func: Function) => {
+  const args = getArgumentNames(func)
+
+  // If there is only one argument, use its value as input
+  // Otherwise, build an object with the argument names as keys
+  const input =
+    argNames.length === 1
+      ? args[0]
+      : argNames.reduce((obj, argName, index) => {
+          obj[argName] = args[index]
+          return obj
+        }, {} as { [key: string]: any })
+
+  return input
 }

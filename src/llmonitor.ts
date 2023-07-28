@@ -4,7 +4,7 @@ import {
   cleanError,
   debounce,
   formatLog,
-  getArgumentNames,
+  getFunctionInput,
 } from "./utils"
 
 import { LLMonitorOptions, LLMessage, Event, EventType } from "./types"
@@ -39,12 +39,13 @@ class LLMonitor {
     this.userId = options.userId
   }
 
-  async trackEvent(type: EventType, data: Partial<Event> = {}) {
-    let timestamp = Date.now()
+  async trackEvent(type: EventType, data: Partial<Event>) {
+    if (!this.appId) return console.error("LLMonitor: App ID not set")
 
     // Add 1ms to timestamp if it's the same/lower than the last event
     // Keep the order of events in case they are sent in the same millisecond
 
+    let timestamp = Date.now()
     const lastEvent = this.queue?.[this.queue.length - 1]
     if (lastEvent?.timestamp >= timestamp) {
       timestamp = lastEvent.timestamp + 1
@@ -67,7 +68,7 @@ class LLMonitor {
     this.debouncedProcessQueue()
   }
 
-  // Wait 50ms to allow other events to be added to the queue
+  // Wait 500ms to allow other events to be added to the queue
   private debouncedProcessQueue = debounce(() => this.processQueue())
 
   private async processQueue() {
@@ -98,146 +99,68 @@ class LLMonitor {
     if (this.queue.length) this.processQueue()
   }
 
-  agentStart(data: {
-    name?: string
-    input: any
-    runId: string
-    parentRunId: string
-  }) {
-    this.trackEvent("agent", {
-      event: "start",
-      ...data,
-    })
-  }
-
-  agentEnd(data: { output: any; runId: string; parentRunId: string }) {
-    this.trackEvent("agent", {
-      event: "end",
-      ...data,
-    })
-  }
-
-  agentError(data: { error: any; runId: string; parentRunId: string }) {
-    this.trackEvent("agent", {
-      event: "error",
-      ...data,
-      error: cleanError(data.error),
-    })
-  }
-
-  llmStart(data: {
-    runId: string
-    parentRunId: string
-    input: LLMessage
-    name?: string
-    extra?: any
-  }) {
-    this.trackEvent("llm", {
-      event: "start",
-      ...data,
-    })
-  }
-
-  /**
-   * Use this when you start streaming the model's output to the user.
-   * Used to measure the time it takes for the model to generate the first response.
-   */
-  streamingStart(data: { runId: string; parentRunId: string }) {
-    this.trackEvent("llm", {
-      event: "stream",
-      ...data,
-    })
-  }
-
-  llmEnd(data: {
-    runId: string
-    parentRunId: string
-    output: LLMessage
-    promptTokens?: number
-    completionTokens?: number
-  }) {
-    this.trackEvent("llm", {
-      event: "end",
-      ...data,
-    })
-  }
-
-  llmError(data: { runId: string; error: any; parentRunId: string }) {
-    this.trackEvent("llm", {
-      event: "error",
-      ...data,
-      error: cleanError(data.error),
-    })
-  }
-
-  toolStart(data: {
-    runId: string
-    name?: string
-    input?: any
-    parentRunId: string
-  }) {
-    this.trackEvent("tool", {
-      event: "start",
-      ...data,
-    })
-  }
-
-  toolEnd(data: { runId: string; output?: any; parentRunId: string }) {
-    this.trackEvent("tool", {
-      event: "end",
-      ...data,
-    })
-  }
-
-  toolError(data: { runId: string; error: any; parentRunId: string }) {
-    this.trackEvent("tool", {
-      event: "error",
-      ...data,
-      error: cleanError(data.error),
-    })
-  }
-
   /*
-   * Wrap an agent Promise to track it's input, results and any errors.
-   * @param {Promise} func - Agent function
+   * Wrap a Promise to track it's input, results and any errors.
+   * @param {Promise} func - Agent/tool/model executor function
    */
-  wrapAgent<T extends (...args: any[]) => Promise<any>>(func: T) {
+  private wrap<T extends (...args: any[]) => Promise<any>>(
+    type: EventType,
+    func: T,
+    params?: { name?: string }
+  ) {
     const runId = crypto.randomUUID()
 
     return async (...args: Parameters<T>) => {
-      // Get argument names from function
-      const argNames = getArgumentNames(func)
+      // Get agent name from function name or params
+      const name = func.name || params?.name
+      const input = getFunctionInput(func)
 
-      // Pair argument names and values to create an object
-      const input = argNames.reduce((obj, argName, index) => {
-        obj[argName] = args[index]
-        return obj
-      }, {} as { [key: string]: any })
-
-      this.agentStart({
-        name: this.name,
-        input,
+      this.trackEvent(type, {
         runId,
+        input,
+        name,
       })
 
       try {
-        const result = await func(...args)
+        const output = await func(...args)
 
-        this.agentEnd({
-          output: result,
+        this.trackEvent(type, {
           runId,
+          output,
         })
 
-        return result
+        return output
       } catch (error) {
-        this.agentError({
-          error,
+        this.trackEvent(type, {
           runId,
+          error: cleanError(error),
         })
 
         throw error
       }
     }
+  }
+
+  /*
+   * Wrap an agent's Promise to track it's input, results and any errors.
+   * @param {Promise} func - Agent function
+   */
+  wrapAgent<T extends (...args: any[]) => Promise<any>>(
+    func: T,
+    params?: { name?: string }
+  ) {
+    return this.wrap("agent", func, params)
+  }
+
+  /*
+   * Wrap an agent's Promise to track it's input, results and any errors.
+   * @param {Promise} func - Agent function
+   */
+  wrapTool<T extends (...args: any[]) => Promise<any>>(
+    func: T,
+    params?: { name?: string }
+  ) {
+    return this.wrap("tool", func, params)
   }
 
   /**
@@ -302,7 +225,7 @@ class LLMonitor {
 
   /**
    * Extends Langchain's LLM classes like ChatOpenAI
-   * We need to extend instead of using `callbacks` as callbacks run in a different context don't allow us to tie parent IDs correctly.
+   * We need to extend instead of using `callbacks` as callbacks run in a different context & don't allow us to tie parent IDs correctly.
    * @param baseClass - Langchain's LLM class
    * @returns Extended class
    * @example
