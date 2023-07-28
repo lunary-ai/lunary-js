@@ -40,3 +40,5 @@ export class AsyncContext<T> {
     return Storage.get(this)
   }
 }
+
+export default new AsyncContext("context")

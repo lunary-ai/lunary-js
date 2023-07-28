@@ -10,6 +10,8 @@ import {
 import { LLMonitorOptions, LLMessage, Event, EventType } from "./types"
 // import { LLMonitorCallbackHandler } from "./langchain"
 
+import context from "./context"
+
 class LLMonitor {
   appId?: string
   // convoId: string
@@ -40,7 +42,8 @@ class LLMonitor {
   }
 
   async trackEvent(type: EventType, data: Partial<Event>) {
-    if (!this.appId) return console.error("LLMonitor: App ID not set")
+    if (!this.appId)
+      return console.error("LLMonitor: App ID not set. Not reporting anything.")
 
     // Add 1ms to timestamp if it's the same/lower than the last event
     // Keep the order of events in case they are sent in the same millisecond
@@ -113,7 +116,7 @@ class LLMonitor {
     return async (...args: Parameters<T>) => {
       // Get agent name from function name or params
       const name = func.name || params?.name
-      const input = getFunctionInput(func)
+      const input = getFunctionInput(func, args)
 
       this.trackEvent(type, {
         runId,
@@ -122,7 +125,10 @@ class LLMonitor {
       })
 
       try {
-        const output = await func(...args)
+        // Inject runId into context
+        const output = await context.run(runId, async () => {
+          return await func(...args)
+        })
 
         this.trackEvent(type, {
           runId,
@@ -236,25 +242,32 @@ class LLMonitor {
    * })
    **/
 
-  // langchain(baseClass: any) {
-  //   const monitor = this
+  langchain(baseClass: any) {
+    // const monitor = this
 
-  //   return class extends baseClass {
-  //     constructor(...args: any[]) {
-  //       const interestingArgs = LANGCHAIN_ARGS_TO_REPORT.reduce((acc, arg) => {
-  //         if (args[0][arg]) acc[arg] = args[0][arg]
-  //         return acc
-  //       }, {} as Record<string, unknown>)
+    return class extends baseClass {
+      constructor(...args: any[]) {
+        // const interestingArgs = LANGCHAIN_ARGS_TO_REPORT.reduce((acc, arg) => {
+        //   if (args[0][arg]) acc[arg] = args[0][arg]
+        //   return acc
+        // }, {} as Record<string, unknown>)
 
-  //       args[0].callbacks = [
-  //         new LLMonitorCallbackHandler(monitor, interestingArgs),
-  //         ...(args[0]?.callbacks || []),
-  //       ]
+        // args[0].callbacks = [
+        //   new LLMonitorCallbackHandler(monitor, interestingArgs),
+        //   ...(args[0]?.callbacks || []),
+        // ]
 
-  //       super(...args)
-  //     }
-  //   }
-  // }
+        super(...args)
+      }
+
+      // rewrite the call method to add the runId
+      async call(...args: any): any {
+        console.log("PARENT RUN ID FROM INSIDE .CALL: " + context.get()) // 123
+
+        return await super.call(...args)
+      }
+    }
+  }
 }
 
 export default LLMonitor

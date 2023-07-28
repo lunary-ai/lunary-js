@@ -63,8 +63,8 @@ export const getArgumentNames = (func: Function): string[] => {
   else return result
 }
 
-export const getFunctionInput = (func: Function) => {
-  const args = getArgumentNames(func)
+export const getFunctionInput = (func: Function, args: any) => {
+  const argNames = getArgumentNames(func)
 
   // If there is only one argument, use its value as input
   // Otherwise, build an object with the argument names as keys
