@@ -1,4 +1,4 @@
-import { Storage } from "./storage.ts"
+import { Storage } from "./storage.js"
 
 type AnyFunc<T> = (this: T, ...args: any) => any
 

@@ -1,4 +1,4 @@
-import { AsyncContext } from "./index.ts"
+import { AsyncContext } from "./index.js"
 
 const context = new AsyncContext()
 

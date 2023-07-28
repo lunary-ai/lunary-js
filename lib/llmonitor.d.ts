@@ -17,18 +17,22 @@ declare class LLMonitor {
     agentStart(data: {
         name?: string;
         input: any;
-        agentRunId: string;
+        runId: string;
+        parentRunId: string;
     }): void;
     agentEnd(data: {
         output: any;
-        agentRunId: string;
+        runId: string;
+        parentRunId: string;
     }): void;
     agentError(data: {
         error: any;
-        agentRunId: string;
+        runId: string;
+        parentRunId: string;
     }): void;
     llmStart(data: {
         runId: string;
+        parentRunId: string;
         input: LLMessage;
         name?: string;
         extra?: any;
@@ -39,9 +43,11 @@ declare class LLMonitor {
      */
     streamingStart(data: {
         runId: string;
+        parentRunId: string;
     }): void;
     llmEnd(data: {
         runId: string;
+        parentRunId: string;
         output: LLMessage;
         promptTokens?: number;
         completionTokens?: number;
@@ -49,19 +55,23 @@ declare class LLMonitor {
     llmError(data: {
         runId: string;
         error: any;
+        parentRunId: string;
     }): void;
     toolStart(data: {
-        toolRunId: string;
+        runId: string;
         name?: string;
         input?: any;
+        parentRunId: string;
     }): void;
     toolEnd(data: {
-        toolRunId: string;
+        runId: string;
         output?: any;
+        parentRunId: string;
     }): void;
     toolError(data: {
-        toolRunId: string;
+        runId: string;
         error: any;
+        parentRunId: string;
     }): void;
     /**
      * Use this to log any external action or tool you use.

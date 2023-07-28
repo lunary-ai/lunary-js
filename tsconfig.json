@@ -6,11 +6,11 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "outDir": "./lib",
-    "strict": true,
+    "strict": false,
     "paths": {
       "langchain/schema": ["./node_modules/langchain/schema"],
       "langchain/callbacks": ["./node_modules/langchain/callbacks"],
-      "openai": ["./node_modules/openai/dist"],
+      "openai": ["./node_modules/openai/dist"]
       // "context": ["./node_modules/context/dist/es"],
     }
   },

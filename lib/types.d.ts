@@ -1,8 +1,7 @@
 export interface LLMonitorOptions {
     appId?: string;
     convoId?: string;
-    agentRunId?: string;
-    toolRunId?: string;
+    parentRunId?: string;
     userId?: string;
     apiUrl?: string;
     log?: boolean;
@@ -13,8 +12,8 @@ export interface Event {
     type: EventType;
     app: string;
     event?: string;
-    agentRunId?: string;
-    toolRunId?: string;
+    runId?: string;
+    parentRunId?: string;
     convo?: string;
     timestamp: number;
     input?: any;

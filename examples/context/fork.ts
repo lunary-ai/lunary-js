@@ -1,5 +1,5 @@
-import type { Mapping } from "./mapping.ts"
-import type { AsyncContext } from "./index.ts"
+import type { Mapping } from "./mapping.js"
+import type { AsyncContext } from "./index.js"
 
 /**
  * FrozenRevert holds a frozen Mapping that will be simply restored when the
