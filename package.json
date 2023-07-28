@@ -4,7 +4,7 @@
   "description": "LLMonitor is an open-source logging and analytics platform for LLM-powered apps.",
   "main": "lib/index.js",
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=neutral --outfile=lib/index.js && npm run types",
+    "build": "esbuild src/index.ts --bundle --platform=neutral --outfile=lib/index.js",
     "types": "tsc --emitDeclarationOnly"
   },
   "author": "vincelwt",
@@ -16,14 +16,10 @@
   "devDependencies": {
     "@types/node": "^20.4.5",
     "esbuild": "^0.17.19",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "dotenv": "^16.3.1"
   },
   "dependencies": {
-    "@types/uuid": "^9.0.2",
-    "bun-types": "^0.7.0",
-    "dotenv": "^16.3.1",
-    "langchain": "^0.0.102",
-    "p-queue": "^7.3.4",
-    "uuid": "^9.0.0"
+    "langchain": "^0.0.118"
   }
 }

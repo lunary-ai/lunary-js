@@ -1,10 +1,10 @@
 import "dotenv/config"
 
-import { HumanChatMessage, SystemChatMessage } from "langchain/schema"
+import { SystemMessage, HumanMessage } from "langchain/schema"
 
 // import { context } from "./context.ts"
 import { BaseTracer, Run } from "langchain/callbacks"
-import { AsyncContext } from "./context/index.js"
+import { AsyncContext } from "./context/index"
 import { ChatOpenAI } from "langchain/chat_models/openai"
 
 const context = new AsyncContext("context1")
@@ -88,10 +88,10 @@ async function translate(query: string) {
     console.log(context.get()) // 123
     console.trace("Outside callback handler")
     const res = await chat.call([
-      new SystemChatMessage(
+      new SystemMessage(
         "You are a translator agent that uses as much slang as possible."
       ),
-      new HumanChatMessage(
+      new HumanMessage(
         `Translate this sentence from English to French: "${query}"`
       ),
     ])
