@@ -1,19 +1,27 @@
 import {
-  LANGCHAIN_ARGS_TO_REPORT,
   checkEnv,
   cleanError,
   debounce,
   formatLog,
+  getFunctionInput,
+  parseLangchainMessages,
 } from "./utils"
 
-import { LLMonitorOptions, LLMessage, Event, EventType } from "./types"
-import { LLMonitorCallbackHandler } from "./langchain"
+import {
+  LLMonitorOptions,
+  Event,
+  EventType,
+  RunEvent,
+  LogEvent,
+  WrapParams,
+} from "./types"
+
+import ctx from "./context"
 
 class LLMonitor {
-  appId: string
-  // convoId: string
-  logConsole: boolean
-  apiUrl: string
+  appId?: string
+  logConsole?: boolean
+  apiUrl?: string
   userId?: string
 
   private queue: any[] = []
@@ -21,40 +29,47 @@ class LLMonitor {
 
   /**
    * @param {LLMonitorOptions} options
-   * @constructor
    */
 
-  constructor(customOptions?: LLMonitorOptions) {
-    const defaultOptions = {
+  constructor() {
+    this.load({
       appId: checkEnv("LLMONITOR_APP_ID"),
-      // convoId: checkEnv("LL_CONVO_ID"),
-      log: true,
+      log: false,
       apiUrl: checkEnv("LLMONITOR_API_URL") || "https://app.llmonitor.com",
-    }
-
-    const options = { ...defaultOptions, ...customOptions }
-
-    this.appId = options.appId
-    this.logConsole = options.log
-    this.apiUrl = options.apiUrl
-    this.userId = options.userId
+    })
   }
 
-  async trackEvent(type: EventType, data: Partial<Event> = {}) {
-    let timestamp = Date.now()
+  load(options?: Partial<LLMonitorOptions>) {
+    if (options.appId) this.appId = options.appId
+    if (options.log) this.logConsole = options.log
+    if (options.apiUrl) this.apiUrl = options.apiUrl
+    if (options.userId) this.userId = options.userId
+  }
+
+  async trackEvent(
+    type: EventType,
+    event: string,
+    data: Partial<RunEvent | LogEvent>
+  ) {
+    if (!this.appId)
+      return console.error("LLMonitor: App ID not set. Not reporting anything.")
 
     // Add 1ms to timestamp if it's the same/lower than the last event
     // Keep the order of events in case they are sent in the same millisecond
 
+    let timestamp = Date.now()
     const lastEvent = this.queue?.[this.queue.length - 1]
     if (lastEvent?.timestamp >= timestamp) {
       timestamp = lastEvent.timestamp + 1
     }
 
+    const parentRunId = ctx.tryUse()
+
     const eventData: Event = {
+      event,
       type,
       app: this.appId,
-      // convo: this.convoId,
+      parentRunId,
       timestamp,
       ...data,
     }
@@ -68,7 +83,7 @@ class LLMonitor {
     this.debouncedProcessQueue()
   }
 
-  // Wait 50ms to allow other events to be added to the queue
+  // Wait 500ms to allow other events to be added to the queue
   private debouncedProcessQueue = debounce(() => this.processQueue())
 
   private async processQueue() {
@@ -99,103 +114,97 @@ class LLMonitor {
     if (this.queue.length) this.processQueue()
   }
 
-  agentStart(data: {
-    name?: string
-    input: any
-    runId: string
-    parentRunId: string
-  }) {
-    this.trackEvent("agent", {
-      event: "start",
-      ...data,
-    })
-  }
-
-  agentEnd(data: { output: any; runId: string; parentRunId: string }) {
-    this.trackEvent("agent", {
-      event: "end",
-      ...data,
-    })
-  }
-
-  agentError(data: { error: any; runId: string; parentRunId: string }) {
-    this.trackEvent("agent", {
-      event: "error",
-      ...data,
-      error: cleanError(data.error),
-    })
-  }
-
-  llmStart(data: {
-    runId: string
-    parentRunId: string
-    input: LLMessage
-    name?: string
-    extra?: any
-  }) {
-    this.trackEvent("llm", {
-      event: "start",
-      ...data,
-    })
-  }
-
-  /**
-   * Use this when you start streaming the model's output to the user.
-   * Used to measure the time it takes for the model to generate the first response.
+  /*
+   * Wrap a Promise to track it's input, results and any errors.
+   * @param {Promise} func - Agent/tool/model executor function
    */
-  streamingStart(data: { runId: string; parentRunId: string }) {
-    this.trackEvent("llm", {
-      event: "stream",
-      ...data,
-    })
+  private wrap<T extends (...args: any[]) => Promise<any>>(
+    type: EventType,
+    func: T,
+    params?: WrapParams
+  ) {
+    return async (...args: Parameters<T>) => {
+      // Generate a random ID for this run (will be injected into the context)
+      const runId = crypto.randomUUID()
+
+      // Get agent name from function name or params
+      const name = params?.name ?? func.name
+
+      const { inputParser, outputParser, tokensUsageParser, extra, tags } =
+        params || {}
+
+      const input = inputParser
+        ? inputParser(args)
+        : getFunctionInput(func, args)
+
+      this.trackEvent(type, "start", {
+        runId,
+        input,
+        name,
+        extra,
+        tags,
+      })
+
+      try {
+        // Call function with runId into context
+        const output = await ctx.callAsync(runId, async () => {
+          return func(...args)
+        })
+
+        // Allow parsing of token usage (useful for LLMs)
+        const tokensUsage = tokensUsageParser
+          ? tokensUsageParser(output)
+          : undefined
+
+        this.trackEvent(type, "end", {
+          runId,
+          output: outputParser ? outputParser(output) : output,
+          tokensUsage,
+        })
+
+        return output
+      } catch (error) {
+        this.trackEvent(type, "error", {
+          runId,
+          error: cleanError(error),
+        })
+
+        throw error
+      }
+    }
   }
 
-  llmEnd(data: {
-    runId: string
-    parentRunId: string
-    output: LLMessage
-    promptTokens?: number
-    completionTokens?: number
-  }) {
-    this.trackEvent("llm", {
-      event: "end",
-      ...data,
-    })
+  /*
+   * Wrap an agent's Promise to track it's input, results and any errors.
+   * @param {Promise} func - Agent function
+   */
+  wrapAgent<T extends (...args: any[]) => Promise<any>>(
+    func: T,
+    params?: WrapParams
+  ) {
+    return this.wrap("agent", func, params)
   }
 
-  llmError(data: { runId: string; error: any; parentRunId: string }) {
-    this.trackEvent("llm", {
-      event: "error",
-      ...data,
-      error: cleanError(data.error),
-    })
+  /*
+   * Wrap an agent's Promise to track it's input, results and any errors.
+   * @param {Promise} func - Agent function
+   */
+  wrapTool<T extends (...args: any[]) => Promise<any>>(
+    func: T,
+    params?: WrapParams
+  ) {
+    return this.wrap("tool", func, params)
   }
 
-  toolStart(data: {
-    runId: string
-    name?: string
-    input?: any
-    parentRunId: string
-  }) {
-    this.trackEvent("tool", {
-      event: "start",
-      ...data,
-    })
-  }
-
-  toolEnd(data: { runId: string; output?: any; parentRunId: string }) {
-    this.trackEvent("tool", {
-      event: "end",
-      ...data,
-    })
-  }
-
-  toolError(data: { runId: string; error: any; parentRunId: string }) {
-    this.trackEvent("tool", {
-      event: "error",
-      ...data,
-      error: cleanError(data.error),
-    })
+  /*
+   * Wrap an agent's Promise to track it's input, results and any errors.
+   * @param {Promise} func - Agent function
+   */
+  wrapModel<T extends (...args: any[]) => Promise<any>>(
+    func: T,
+    params?: WrapParams
+  ) {
+    return this.wrap("llm", func, params)
   }
 
   /**
@@ -206,8 +215,7 @@ class LLMonitor {
    * monitor.info("Running tool Google Search")
    **/
   info(message: string, extra?: any) {
-    this.trackEvent("log", {
-      event: "info",
+    this.trackEvent("log", "info", {
       message,
       extra,
     })
@@ -225,8 +233,7 @@ class LLMonitor {
    * monitor.log("Running tool Google Search")
    **/
   warn(message: string, extra?: any) {
-    this.trackEvent("log", {
-      event: "warn",
+    this.trackEvent("log", "warn", {
       message,
       extra,
     })
@@ -248,46 +255,66 @@ class LLMonitor {
     // Allow error obj to be the first argument
     if (typeof message === "object") {
       error = message
-      message = error.message || undefined
+      message = error.message ?? undefined
     }
 
-    this.trackEvent("log", {
-      event: "error",
+    this.trackEvent("log", "error", {
       message,
       extra: cleanError(error),
     })
   }
 
   /**
-   * Extends Langchain's LLM classes like ChatOpenAI
+   * Extends Langchain's LLM and Chat classes like OpenAI and ChatOpenAI
+   * We need to extend instead of using `callbacks` as callbacks run in a different context & don't allow us to tie parent IDs correctly.
    * @param baseClass - Langchain's LLM class
    * @returns Extended class
    * @example
-   * const monitor = new LLMonitor()
-   * const MonitoredChat = monitor.extendModel(ChatOpenAI)
+   * const MonitoredChat = monitor.langchain(ChatOpenAI)
    * const chat = new MonitoredChat({
    *  modelName: "gpt-4"
    * })
    **/
 
-  extendModel(baseClass: any) {
-    // TODO: use tracer instead cause no need to extend model to get args like modelName
-
+  langchain(baseClass: any) {
     const monitor = this
 
     return class extends baseClass {
-      constructor(...args: any[]) {
-        const interestingArgs = LANGCHAIN_ARGS_TO_REPORT.reduce((acc, arg) => {
-          if (args[0][arg]) acc[arg] = args[0][arg]
-          return acc
-        }, {} as Record<string, unknown>)
+      // Wrap the `generate` function instead of .call to get token usages information
+      async generate(...args: any): Promise<any> {
+        // Batch calls, richer outputs
+        const boundSuperGenerate = super.generate.bind(this)
 
-        args[0].callbacks = [
-          new LLMonitorCallbackHandler(monitor, interestingArgs),
-          ...(args[0]?.callbacks || []),
-        ]
+        const extra = {
+          temperature: this.temperature,
+          maxTokens: this.maxTokens,
+          frequencyPenalty: this.frequencyPenalty,
+          presencePenalty: this.presencePenalty,
+          stop: this.stop,
+          timeout: this.timeout,
+          modelKwargs: Object.keys(this.modelKwargs).length
+            ? this.modelKwargs
+            : undefined,
+        }
 
-        super(...args)
+        const extraCleaned = Object.fromEntries(
+          Object.entries(extra).filter(([_, v]) => v != null)
+        )
+
+        const output = await monitor.wrapModel(boundSuperGenerate, {
+          name: this.modelName || (this.model as string),
+          inputParser: (args) => parseLangchainMessages(args[0]), // Input message will be the first argument
+          outputParser: ({ generations }) =>
+            parseLangchainMessages(generations),
+          tokensUsageParser: ({ llmOutput }) => ({
+            completion: llmOutput?.tokenUsage?.completionTokens,
+            prompt: llmOutput?.tokenUsage?.promptTokens,
+          }),
+          extra: extraCleaned,
+          tags: this.tags,
+        })(...args)
+
+        return output
       }
     }
   }

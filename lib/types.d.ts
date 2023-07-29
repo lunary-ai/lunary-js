@@ -1,38 +1,56 @@
+export type JSON = string | number | boolean | {
+    [x: string]: JSON;
+} | Array<JSON>;
 export interface LLMonitorOptions {
     appId?: string;
     convoId?: string;
-    agentRunId?: string;
-    toolRunId?: string;
+    parentRunId?: string;
     userId?: string;
     apiUrl?: string;
     log?: boolean;
     name?: string;
 }
-export type EventType = "log" | "tool" | "agent" | "llm" | "convo";
+export type EventType = "log" | "tool" | "agent" | "llm" | "convo" | "chain";
 export interface Event {
     type: EventType;
     app: string;
-    event?: string;
-    agentRunId?: string;
-    toolRunId?: string;
-    convo?: string;
     timestamp: number;
-    input?: any;
-    output?: any;
-    message?: string;
-    extra?: Record<string, unknown>;
+    event: string;
+    parentRunId?: string;
+    extra?: JSON;
     error?: {
         message: string;
         stack?: string;
     };
+}
+export type TokenUsage = {
+    completion: number;
+    prompt: number;
+};
+export interface RunEvent extends Event {
+    runId: string;
+    input?: JSON;
+    output?: JSON;
+    tokensUsage?: TokenUsage;
     [key: string]: unknown;
 }
-type MessageType = "human" | "ai" | "generic" | "system" | "function";
-export type ChatMessage = {
-    role: MessageType;
+export interface LogEvent extends Event {
+    message: string;
+}
+export interface ChatMessage {
+    role: "human" | "ai" | "generic" | "system" | "function";
     text: string;
-    function_call?: any;
-    [key: string]: unknown;
+    function_call?: JSON;
+    [key: string]: JSON;
+}
+export type WrapParams = {
+    name?: string;
+    inputParser?: (...any: any[]) => JSON;
+    outputParser?: (...any: any[]) => JSON;
+    tokensUsageParser?: (...any: any[]) => TokenUsage;
+    extra?: JSON;
+    tags?: string[];
 };
-export type LLMessage = ChatMessage | ChatMessage[] | string | string[];
-export {};
+export type ConstructorParameters<T> = T extends new (...args: infer U) => any ? U : never;
+export type MethodParameters<T> = T extends (...args: infer U) => any ? U : never;
+export type MethodReturn<T> = T extends (...args: any[]) => infer R ? R : never;

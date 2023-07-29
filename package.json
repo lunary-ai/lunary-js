@@ -1,10 +1,10 @@
 {
   "name": "llmonitor",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "LLMonitor is an open-source logging and analytics platform for LLM-powered apps.",
   "main": "lib/index.js",
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=neutral --outfile=lib/index.js && npm run types",
+    "build": "esbuild src/index.ts --bundle --keep-names --platform=neutral --external:'node:async_hooks' --target=es2020 --outfile=lib/index.js",
     "types": "tsc --emitDeclarationOnly"
   },
   "author": "vincelwt",
@@ -18,7 +18,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "langchain": "^0.0.102",
-    "p-queue": "^7.3.4"
+    "@types/node": "^20.4.5",
+    "unctx": "^2.3.1"
   }
 }

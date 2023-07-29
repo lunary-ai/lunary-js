@@ -1,7 +1,7 @@
 import LLMonitor from "./llmonitor"
 
-export default LLMonitor
+export { LLMonitor }
 
-export * from "./agent"
-export * from "./tool"
-export * from "./langchain"
+const monitor = new LLMonitor()
+
+export default monitor
