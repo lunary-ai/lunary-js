@@ -9,7 +9,7 @@
   },
   "author": "vincelwt",
   "type": "module",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "prettier": {
     "semi": false
   },

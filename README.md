@@ -1,9 +1,8 @@
 <div align="center">
 
-<div style="display: flex; flex-direction: row; align-items: center;">
+
 <img src="https://llmonitor.com/logo.png" style='border-radius: 12px;' width="50"/> 
 <h1>LLMonitor JS SDK</h1>
-</div>
 
 **📈 JavaScript monitoring for AI apps and agent**
 
