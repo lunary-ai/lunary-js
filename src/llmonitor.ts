@@ -5,22 +5,22 @@ import {
   debounce,
   formatLog,
   getFunctionInput,
+  parseLangchainMessages,
 } from "./utils"
 
 import {
   LLMonitorOptions,
-  LLMessage,
   Event,
   EventType,
   RunEvent,
   LogEvent,
+  WrapParams,
 } from "./types"
 
 import ctx from "./context"
 
 class LLMonitor {
   appId?: string
-  // convoId: string
   logConsole?: boolean
   apiUrl?: string
   userId?: string
@@ -32,22 +32,26 @@ class LLMonitor {
    * @param {LLMonitorOptions} options
    */
 
-  load(customOptions?: LLMonitorOptions) {
-    const defaultOptions = {
+  constructor() {
+    this.load({
       appId: checkEnv("LLMONITOR_APP_ID"),
       log: false,
       apiUrl: checkEnv("LLMONITOR_API_URL") || "https://app.llmonitor.com",
-    }
-
-    const options = { ...defaultOptions, ...customOptions }
-
-    this.appId = options.appId
-    this.logConsole = options.log
-    this.apiUrl = options.apiUrl
-    this.userId = options.userId
+    })
   }
 
-  async trackEvent(type: EventType, data: Partial<RunEvent | LogEvent>) {
+  load(options?: Partial<LLMonitorOptions>) {
+    if (options.appId) this.appId = options.appId
+    if (options.log) this.logConsole = options.log
+    if (options.apiUrl) this.apiUrl = options.apiUrl
+    if (options.userId) this.userId = options.userId
+  }
+
+  async trackEvent(
+    type: EventType,
+    event: string,
+    data: Partial<RunEvent | LogEvent>
+  ) {
     if (!this.appId)
       return console.error("LLMonitor: App ID not set. Not reporting anything.")
 
@@ -60,10 +64,13 @@ class LLMonitor {
       timestamp = lastEvent.timestamp + 1
     }
 
+    const parentRunId = ctx.tryUse()
+
     const eventData: Event = {
+      event,
       type,
       app: this.appId,
-      // convo: this.convoId,
+      parentRunId,
       timestamp,
       ...data,
     }
@@ -115,24 +122,21 @@ class LLMonitor {
   private wrap<T extends (...args: any[]) => Promise<any>>(
     type: EventType,
     func: T,
-    params?: { name?: string }
+    params?: WrapParams
   ) {
     return async (...args: Parameters<T>) => {
       // Get agent name from function name or params
       const runId = crypto.randomUUID()
 
-      const parentId = ctx.tryUse()
+      const name = params?.name ?? func.name
+      const { inputParser, outputParser, tokensUsageParser } = params || {}
 
-      const name = params?.name || func.name
-      const input = getFunctionInput(func, args)
+      const input = inputParser
+        ? inputParser(args)
+        : getFunctionInput(func, args)
 
-      console.log(
-        `Calling ${name} with runId ${runId} and parentId ${parentId}`
-      )
-
-      this.trackEvent(type, {
+      this.trackEvent(type, "start", {
         runId,
-        parentId,
         input,
         name,
       })
@@ -143,17 +147,21 @@ class LLMonitor {
           return func(...args)
         })
 
-        this.trackEvent(type, {
+        // Allow parsing of token usage (useful for LLMs)
+        const tokensUsage = tokensUsageParser
+          ? tokensUsageParser(output)
+          : undefined
+
+        this.trackEvent(type, "end", {
           runId,
-          parentId,
-          output,
+          output: outputParser ? outputParser(output) : output,
+          tokensUsage,
         })
 
         return output
       } catch (error) {
-        this.trackEvent(type, {
+        this.trackEvent(type, "error", {
           runId,
-          parentId,
           error: cleanError(error),
         })
 
@@ -168,7 +176,7 @@ class LLMonitor {
    */
   wrapAgent<T extends (...args: any[]) => Promise<any>>(
     func: T,
-    params?: { name?: string }
+    params?: WrapParams
   ) {
     return this.wrap("agent", func, params)
   }
@@ -179,7 +187,7 @@ class LLMonitor {
    */
   wrapTool<T extends (...args: any[]) => Promise<any>>(
     func: T,
-    params?: { name?: string }
+    params?: WrapParams
   ) {
     return this.wrap("tool", func, params)
   }
@@ -190,7 +198,7 @@ class LLMonitor {
    */
   wrapModel<T extends (...args: any[]) => Promise<any>>(
     func: T,
-    params?: { name?: string }
+    params?: WrapParams
   ) {
     return this.wrap("llm", func, params)
   }
@@ -203,8 +211,7 @@ class LLMonitor {
    * monitor.info("Running tool Google Search")
    **/
   info(message: string, extra?: any) {
-    this.trackEvent("log", {
-      event: "info",
+    this.trackEvent("log", "info", {
       message,
       extra,
     })
@@ -222,8 +229,7 @@ class LLMonitor {
    * monitor.log("Running tool Google Search")
    **/
   warn(message: string, extra?: any) {
-    this.trackEvent("log", {
-      event: "warn",
+    this.trackEvent("log", "warn", {
       message,
       extra,
     })
@@ -245,11 +251,10 @@ class LLMonitor {
     // Allow error obj to be the first argument
     if (typeof message === "object") {
       error = message
-      message = error.message || undefined
+      message = error.message ?? undefined
     }
 
-    this.trackEvent("log", {
-      event: "error",
+    this.trackEvent("log", "error", {
       message,
       extra: cleanError(error),
     })
@@ -283,14 +288,23 @@ class LLMonitor {
         }, {} as Record<string, unknown>)
       }
 
-      // wrap the call method to track input/output and name
-      async call(...args: any): Promise<any> {
-        // Bind the super call to the current instance, otherwise 'this' will be undefined
-        const boundSuperCall = super.call.bind(this)
+      // Wrap the `generate` function instead of .call to get token usages information
+      async generate(...args: any): Promise<any> {
+        // Batch calls, richer outputs
+        const boundSuperGenerate = super.generate.bind(this)
 
-        return await monitor.wrapModel(boundSuperCall, {
+        const output = await monitor.wrapModel(boundSuperGenerate, {
           name: this.interestingArgs?.modelName as string,
+          inputParser: (args) => parseLangchainMessages(args[0]), // Input message will be the first argument
+          outputParser: ({ generations }) =>
+            parseLangchainMessages(generations),
+          tokensUsageParser: ({ llmOutput }) => ({
+            completion: llmOutput?.tokenUsage?.completionTokens,
+            prompt: llmOutput?.tokenUsage?.promptTokens,
+          }),
         })(...args)
+
+        return output
       }
     }
   }

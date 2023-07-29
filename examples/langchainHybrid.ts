@@ -1,6 +1,6 @@
 import { SystemMessage, HumanMessage } from "langchain/schema"
 import { ChatOpenAI } from "langchain/chat_models/openai"
-import monitor from "../src/index"
+import monitor from "../src/index.ts"
 
 const Chat = monitor.langchain(ChatOpenAI)
 

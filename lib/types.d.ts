@@ -1,3 +1,6 @@
+export type JSON = string | number | boolean | {
+    [x: string]: JSON;
+} | Array<JSON>;
 export interface LLMonitorOptions {
     appId?: string;
     convoId?: string;
@@ -12,39 +15,40 @@ export interface Event {
     type: EventType;
     app: string;
     timestamp: number;
-}
-export interface RunEvent extends Event {
-    runId: string;
+    event: string;
     parentRunId?: string;
-    input?: any;
-    output?: any;
-    message?: string;
-    extra?: Record<string, unknown>;
+    extra?: JSON;
     error?: {
         message: string;
         stack?: string;
     };
+}
+export type TokenUsage = {
+    completion: number;
+    prompt: number;
+};
+export interface RunEvent extends Event {
+    runId: string;
+    input?: JSON;
+    output?: JSON;
+    tokensUsage?: TokenUsage;
     [key: string]: unknown;
 }
 export interface LogEvent extends Event {
-    level: string;
-    runId?: string;
     message: string;
-    extra: Record<string, unknown>;
-    error: {
-        message: string;
-        stack?: string;
-    };
 }
-type MessageType = "human" | "ai" | "generic" | "system" | "function";
-export type ChatMessage = {
-    role: MessageType;
+export interface ChatMessage {
+    role: "human" | "ai" | "generic" | "system" | "function";
     text: string;
-    function_call?: any;
-    [key: string]: unknown;
+    function_call?: JSON;
+    [key: string]: JSON;
+}
+export type WrapParams = {
+    name?: string;
+    inputParser?: (...any: any[]) => JSON;
+    outputParser?: (...any: any[]) => JSON;
+    tokensUsageParser?: (...any: any[]) => TokenUsage;
 };
-export type LLMessage = ChatMessage | ChatMessage[] | string | string[];
 export type ConstructorParameters<T> = T extends new (...args: infer U) => any ? U : never;
 export type MethodParameters<T> = T extends (...args: infer U) => any ? U : never;
 export type MethodReturn<T> = T extends (...args: any[]) => infer R ? R : never;
-export {};

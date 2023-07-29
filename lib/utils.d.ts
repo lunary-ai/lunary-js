@@ -1,5 +1,5 @@
-import { Event } from "./types";
-export declare const checkEnv: (variable: any) => any;
+import { ChatMessage, Event } from "./types";
+export declare const checkEnv: (variable: string) => string | undefined;
 export declare const formatLog: (event: Event) => void;
 export declare const debounce: (func: any, timeout?: number) => (...args: any[]) => void;
 export declare const LANGCHAIN_ARGS_TO_REPORT: string[];
@@ -12,3 +12,4 @@ export declare const cleanError: (error: any) => {
 };
 export declare const getArgumentNames: (func: Function) => string[];
 export declare const getFunctionInput: (func: Function, args: any) => any;
+export declare const parseLangchainMessages: (input: any | any[] | any[][]) => ChatMessage | ChatMessage[] | ChatMessage[][];

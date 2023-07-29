@@ -1,18 +1,18 @@
-// @ts-nocheck
-
-import { Event } from "./types"
+import { ChatMessage, Event } from "./types"
 
 /*
  * Checks if the variable is exists in both Node and Deno.
  * @param {string} variable
  * @returns {string | undefined}
  */
-export const checkEnv = (variable) => {
+export const checkEnv = (variable: string): string | undefined => {
   if (typeof process !== "undefined" && process.env?.[variable]) {
     return process.env[variable]
   }
 
+  // @ts-ignore
   if (typeof Deno !== "undefined" && Deno.env?.get(variable)) {
+    // @ts-ignore
     return Deno.env.get(variable)
   }
 
@@ -77,4 +77,54 @@ export const getFunctionInput = (func: Function, args: any) => {
         }, {} as { [key: string]: any })
 
   return input
+}
+
+// Langchain Helpers
+// Input can be either a single message, an array of message, or an array of array of messages (batch requests)
+
+export const parseLangchainMessages = (
+  input: any | any[] | any[][]
+): ChatMessage | ChatMessage[] | ChatMessage[][] => {
+  const parseRole = (id: string[]) => {
+    const roleHint = id[id.length - 1]
+
+    if (roleHint.includes("Human")) return "user"
+    if (roleHint.includes("System")) return "system"
+    if (roleHint.includes("AI")) return "ai"
+    if (roleHint.includes("Function")) return "function"
+  }
+
+  const parseMessage = (raw) => {
+    if (typeof raw === "string") return raw
+    // sometimes the message is nested in a "message" property
+    if (raw.message) return parseMessage(raw.message)
+
+    const message = JSON.parse(JSON.stringify(raw))
+
+    try {
+      // "id" contains an array describing the constructor, with last item actual schema type
+      const role = parseRole(message.id)
+
+      const obj = message.kwargs
+      const text = message.text ?? obj.content
+      const kwargs = obj.additionalKwargs
+
+      return {
+        role,
+        text,
+        ...kwargs,
+      }
+    } catch (e) {
+      // if parsing fails, return the original message
+      return message.text ?? message
+    }
+  }
+
+  if (Array.isArray(input)) {
+    return input.length === 1
+      ? parseLangchainMessages(input[0])
+      : input.map(parseMessage)
+  }
+
+  return parseMessage(input)
 }

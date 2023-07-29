@@ -1,4 +1,4 @@
-import { LLMonitorOptions, EventType, RunEvent, LogEvent } from "./types";
+import { LLMonitorOptions, EventType, RunEvent, LogEvent, WrapParams } from "./types";
 declare class LLMonitor {
     appId?: string;
     logConsole?: boolean;
@@ -9,20 +9,15 @@ declare class LLMonitor {
     /**
      * @param {LLMonitorOptions} options
      */
-    load(customOptions?: LLMonitorOptions): void;
-    trackEvent(type: EventType, data: Partial<RunEvent | LogEvent>): Promise<void>;
+    constructor();
+    load(options?: Partial<LLMonitorOptions>): void;
+    trackEvent(type: EventType, event: string, data: Partial<RunEvent | LogEvent>): Promise<void>;
     private debouncedProcessQueue;
     private processQueue;
     private wrap;
-    wrapAgent<T extends (...args: any[]) => Promise<any>>(func: T, params?: {
-        name?: string;
-    }): (...args: Parameters<T>) => Promise<any>;
-    wrapTool<T extends (...args: any[]) => Promise<any>>(func: T, params?: {
-        name?: string;
-    }): (...args: Parameters<T>) => Promise<any>;
-    wrapModel<T extends (...args: any[]) => Promise<any>>(func: T, params?: {
-        name?: string;
-    }): (...args: Parameters<T>) => Promise<any>;
+    wrapAgent<T extends (...args: any[]) => Promise<any>>(func: T, params?: WrapParams): (...args: Parameters<T>) => Promise<any>;
+    wrapTool<T extends (...args: any[]) => Promise<any>>(func: T, params?: WrapParams): (...args: Parameters<T>) => Promise<any>;
+    wrapModel<T extends (...args: any[]) => Promise<any>>(func: T, params?: WrapParams): (...args: Parameters<T>) => Promise<any>;
     /**
      * Use this to log any external action or tool you use.
      * @param {string} message - Log message
@@ -69,7 +64,7 @@ declare class LLMonitor {
         new (...args: any[]): {
             [x: string]: any;
             interestingArgs?: Record<string, unknown>;
-            call(...args: any): Promise<any>;
+            generate(...args: any): Promise<any>;
         };
         [x: string]: any;
     };
