@@ -1,25 +1,37 @@
-# LLMonitor JS SDK
+<div align="center">
 
-[docs](https://llmonitor.com/docs/js) - [website](https://llmonitor.com)
+# ![](https://llmonitor.com/logo.png | width=50) LLMonitor JS SDK
 
-LLMonitor is an open-source logging and analytics platform for LLM-powered apps.
+**JavaScript monitoring for AI apps and agent**
 
-You can use it with any LLM models, not limited to OpenAI.
+[website](https://llmonitor.com) - [docs](https://llmonitor.com/docs/js/) - [demo](https://app.llmonitor.com/demo) - [![npm version](https://badge.fury.io/js/llmonitor.svg)](https://badge.fury.io/js/llmonitor)
 
-This is the JS isomorphic library compatible with Node.js, Deno, Vercel Edge functions and Cloudflare Workers.
+---  
+
+</div>
+
+Open-source logging and analytics platform for LLM-powered apps.
+
+Use it with any LLM model and custom agents (not limited to OpenAI).
+
+This is a typed JS library compatible with Node.js, Deno, Vercel Edge functions and Cloudflare Workers.
 
 It is compatible with Langchain JS, AutoGPT and all the other libraries.
 
-## Installation
+To get started, get an app ID by registering [here](https://llmonitor.com).
+
+## 🛠️ Installation
 
 ```bash
 npm install llmonitor
 ```
 
-Read the [docs](https://llmonitor.com/docs/js) here.
+## 📃 Documentation
 
-## TODO
+Full docs are available [here](https://llmonitor.com/docs/js).
 
-- [ ] wrap other langchain chat methods
-- [ ] maintain types while wrapping (langchain class)
-- [ ] `openai` module helper
+## 👷 TODO
+
+- [ ] maintain/forward types while wrapping (for `.langchain` and `.wrap` methods)
+- [ ] `openai` module wrapper
+- [ ] langchain embeddings wrapping
