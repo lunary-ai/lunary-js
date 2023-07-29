@@ -60,6 +60,7 @@ export type WrapParams = {
   inputParser?: (...any) => JSON
   outputParser?: (...any) => JSON
   tokensUsageParser?: (...any) => TokenUsage
+  extra?: JSON
 }
 
 // Keep the types when wrapping

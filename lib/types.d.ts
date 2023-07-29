@@ -48,6 +48,7 @@ export type WrapParams = {
     inputParser?: (...any: any[]) => JSON;
     outputParser?: (...any: any[]) => JSON;
     tokensUsageParser?: (...any: any[]) => TokenUsage;
+    extra?: JSON;
 };
 export type ConstructorParameters<T> = T extends new (...args: infer U) => any ? U : never;
 export type MethodParameters<T> = T extends (...args: infer U) => any ? U : never;

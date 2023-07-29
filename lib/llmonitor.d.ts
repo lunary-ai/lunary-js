@@ -63,7 +63,6 @@ declare class LLMonitor {
     langchain(baseClass: any): {
         new (...args: any[]): {
             [x: string]: any;
-            interestingArgs?: Record<string, unknown>;
             generate(...args: any): Promise<any>;
         };
         [x: string]: any;

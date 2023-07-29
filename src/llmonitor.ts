@@ -1,5 +1,4 @@
 import {
-  LANGCHAIN_ARGS_TO_REPORT,
   checkEnv,
   cleanError,
   debounce,
@@ -129,7 +128,8 @@ class LLMonitor {
       const runId = crypto.randomUUID()
 
       const name = params?.name ?? func.name
-      const { inputParser, outputParser, tokensUsageParser } = params || {}
+      const { inputParser, outputParser, tokensUsageParser, extra } =
+        params || {}
 
       const input = inputParser
         ? inputParser(args)
@@ -139,6 +139,7 @@ class LLMonitor {
         runId,
         input,
         name,
+        extra,
       })
 
       try {
@@ -277,15 +278,11 @@ class LLMonitor {
     const monitor = this
 
     return class extends baseClass {
-      interestingArgs?: Record<string, unknown>
-
       constructor(...args: any[]) {
         super(...args)
 
-        this.interestingArgs = LANGCHAIN_ARGS_TO_REPORT.reduce((acc, arg) => {
-          if (args[0][arg]) acc[arg] = args[0][arg]
-          return acc
-        }, {} as Record<string, unknown>)
+        console.log(this)
+        console.log(JSON.stringify(this, null, 2))
       }
 
       // Wrap the `generate` function instead of .call to get token usages information
@@ -293,8 +290,23 @@ class LLMonitor {
         // Batch calls, richer outputs
         const boundSuperGenerate = super.generate.bind(this)
 
+        const extra = {
+          temperature: this.temperature,
+          maxTokens: this.maxTokens,
+          tags: this.tags,
+          frequencyPenalty: this.frequencyPenalty,
+          presencePenalty: this.presencePenalty,
+          stop: this.stop,
+          timeout: this.timeout,
+          modelKwargs: this.modelKwargs,
+        }
+
+        const extraCleaned = Object.fromEntries(
+          Object.entries(extra).filter(([_, v]) => v != null)
+        )
+
         const output = await monitor.wrapModel(boundSuperGenerate, {
-          name: this.interestingArgs?.modelName as string,
+          name: this.modelName || (this.model as string),
           inputParser: (args) => parseLangchainMessages(args[0]), // Input message will be the first argument
           outputParser: ({ generations }) =>
             parseLangchainMessages(generations),
@@ -302,6 +314,7 @@ class LLMonitor {
             completion: llmOutput?.tokenUsage?.completionTokens,
             prompt: llmOutput?.tokenUsage?.promptTokens,
           }),
+          extra: extraCleaned,
         })(...args)
 
         return output

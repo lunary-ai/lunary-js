@@ -1,8 +1,8 @@
 import { ChatMessage, Event } from "./types"
 
 /*
- * Checks if the variable is exists in both Node and Deno.
- * @param {string} variable
+ * Checks if the env variable exists in either Node or Deno.
+ * @param {string} variable name
  * @returns {string | undefined}
  */
 export const checkEnv = (variable: string): string | undefined => {
@@ -33,14 +33,6 @@ export const debounce = (func, timeout = 500) => {
     }, timeout)
   }
 }
-
-export const LANGCHAIN_ARGS_TO_REPORT = [
-  "temperature",
-  "modelName",
-  "streaming",
-  "tags",
-  "streaming",
-]
 
 export const cleanError = (error: any) => {
   if (typeof error === "string")
