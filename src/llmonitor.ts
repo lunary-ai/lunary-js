@@ -124,11 +124,13 @@ class LLMonitor {
     params?: WrapParams
   ) {
     return async (...args: Parameters<T>) => {
-      // Get agent name from function name or params
+      // Generate a random ID for this run (will be injected into the context)
       const runId = crypto.randomUUID()
 
+      // Get agent name from function name or params
       const name = params?.name ?? func.name
-      const { inputParser, outputParser, tokensUsageParser, extra } =
+
+      const { inputParser, outputParser, tokensUsageParser, extra, tags } =
         params || {}
 
       const input = inputParser
@@ -140,10 +142,11 @@ class LLMonitor {
         input,
         name,
         extra,
+        tags,
       })
 
       try {
-        // Inject runId into context
+        // Call function with runId into context
         const output = await ctx.callAsync(runId, async () => {
           return func(...args)
         })
@@ -262,13 +265,12 @@ class LLMonitor {
   }
 
   /**
-   * Extends Langchain's LLM classes like ChatOpenAI
+   * Extends Langchain's LLM and Chat classes like OpenAI and ChatOpenAI
    * We need to extend instead of using `callbacks` as callbacks run in a different context & don't allow us to tie parent IDs correctly.
    * @param baseClass - Langchain's LLM class
    * @returns Extended class
    * @example
-   * const monitor = new LLMonitor()
-   * const MonitoredChat = monitor.extendModel(ChatOpenAI)
+   * const MonitoredChat = monitor.langchain(ChatOpenAI)
    * const chat = new MonitoredChat({
    *  modelName: "gpt-4"
    * })
@@ -278,13 +280,6 @@ class LLMonitor {
     const monitor = this
 
     return class extends baseClass {
-      constructor(...args: any[]) {
-        super(...args)
-
-        console.log(this)
-        console.log(JSON.stringify(this, null, 2))
-      }
-
       // Wrap the `generate` function instead of .call to get token usages information
       async generate(...args: any): Promise<any> {
         // Batch calls, richer outputs
@@ -293,12 +288,13 @@ class LLMonitor {
         const extra = {
           temperature: this.temperature,
           maxTokens: this.maxTokens,
-          tags: this.tags,
           frequencyPenalty: this.frequencyPenalty,
           presencePenalty: this.presencePenalty,
           stop: this.stop,
           timeout: this.timeout,
-          modelKwargs: this.modelKwargs,
+          modelKwargs: Object.keys(this.modelKwargs).length
+            ? this.modelKwargs
+            : undefined,
         }
 
         const extraCleaned = Object.fromEntries(
@@ -315,6 +311,7 @@ class LLMonitor {
             prompt: llmOutput?.tokenUsage?.promptTokens,
           }),
           extra: extraCleaned,
+          tags: this.tags,
         })(...args)
 
         return output

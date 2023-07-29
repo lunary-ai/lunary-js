@@ -49,19 +49,18 @@ declare class LLMonitor {
      **/
     error(message: string | any, error?: any): void;
     /**
-     * Extends Langchain's LLM classes like ChatOpenAI
+     * Extends Langchain's LLM and Chat classes like OpenAI and ChatOpenAI
      * We need to extend instead of using `callbacks` as callbacks run in a different context & don't allow us to tie parent IDs correctly.
      * @param baseClass - Langchain's LLM class
      * @returns Extended class
      * @example
-     * const monitor = new LLMonitor()
-     * const MonitoredChat = monitor.extendModel(ChatOpenAI)
+     * const MonitoredChat = monitor.langchain(ChatOpenAI)
      * const chat = new MonitoredChat({
      *  modelName: "gpt-4"
      * })
      **/
     langchain(baseClass: any): {
-        new (...args: any[]): {
+        new (): {
             [x: string]: any;
             generate(...args: any): Promise<any>;
         };
