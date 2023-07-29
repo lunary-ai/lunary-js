@@ -1,6 +1,6 @@
 <div align="center">
 
-# ![](https://llmonitor.com/logo.png | width=50) LLMonitor JS SDK
+# <img src="https://llmonitor.com/logo.png" width="50"/> LLMonitor JS SDK
 
 **JavaScript monitoring for AI apps and agent**
 
@@ -26,7 +26,7 @@ To get started, get an app ID by registering [here](https://llmonitor.com).
 npm install llmonitor
 ```
 
-## 📃 Documentation
+## 📖 Documentation
 
 Full docs are available [here](https://llmonitor.com/docs/js).
 
