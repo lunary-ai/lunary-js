@@ -1,16 +1,17 @@
 <div align="center">
 
-# <img src="https://llmonitor.com/logo.png" width="50"/> LLMonitor JS SDK
+<div style="display: flex; flex-direction: row; align-items: center;">
+<img src="https://llmonitor.com/logo.png" style='border-radius: 12px;' width="50"/> 
+<h1>LLMonitor JS SDK</h1>
+</div>
 
-**JavaScript monitoring for AI apps and agent**
+**📈 JavaScript monitoring for AI apps and agent**
 
 [website](https://llmonitor.com) - [docs](https://llmonitor.com/docs/js/) - [demo](https://app.llmonitor.com/demo) - [![npm version](https://badge.fury.io/js/llmonitor.svg)](https://badge.fury.io/js/llmonitor)
 
 ---  
 
 </div>
-
-Open-source logging and analytics platform for LLM-powered apps.
 
 Use it with any LLM model and custom agents (not limited to OpenAI).
 
