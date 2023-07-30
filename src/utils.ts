@@ -1,6 +1,6 @@
 import { ChatMessage, Event } from "./types"
 
-/*
+/**
  * Checks if the env variable exists in either Node or Deno.
  * @param {string} variable name
  * @returns {string | undefined}

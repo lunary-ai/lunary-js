@@ -114,7 +114,7 @@ class LLMonitor {
     if (this.queue.length) this.processQueue()
   }
 
-  /*
+  /**
    * Wrap a Promise to track it's input, results and any errors.
    * @param {Promise} func - Agent/tool/model executor function
    */
@@ -174,7 +174,7 @@ class LLMonitor {
     }
   }
 
-  /*
+  /**
    * Wrap an agent's Promise to track it's input, results and any errors.
    * @param {Promise} func - Agent function
    */
@@ -196,7 +196,7 @@ class LLMonitor {
     return this.wrap("tool", func, params)
   }
 
-  /*
+  /**
    * Wrap an agent's Promise to track it's input, results and any errors.
    * @param {Promise} func - Agent function
    */
@@ -250,7 +250,7 @@ class LLMonitor {
    * } catch (error) {
    *   monitor.error("Error generating answer", error)
    * }
-   **/
+   */
   error(message: string | any, error?: any) {
     // Allow error obj to be the first argument
     if (typeof message === "object") {
@@ -274,8 +274,7 @@ class LLMonitor {
    * const chat = new MonitoredChat({
    *  modelName: "gpt-4"
    * })
-   **/
-
+   */
   langchain(baseClass: any) {
     const monitor = this
 
