@@ -31,7 +31,6 @@ npm install llmonitor
 Full docs are available [here](https://llmonitor.com/docs/js).
 
 ## 👷 TODO
-
 - [ ] maintain/forward types while wrapping (for `.langchain` and `.wrap` methods)
 - [ ] `openai` module wrapper
 - [ ] langchain embeddings wrapping

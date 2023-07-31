@@ -17,6 +17,8 @@ import {
 } from "./types"
 
 import ctx from "./context"
+import { Configuration, CreateChatCompletionRequest, CreateChatCompletionResponse, OpenAIApi } from "openai"
+import { AxiosRequestConfig, AxiosResponse } from "axios"
 
 class LLMonitor {
   appId?: string
@@ -114,11 +116,18 @@ class LLMonitor {
     if (this.queue.length) this.processQueue()
   }
 
+  wrapOpenAI<T extends (...args: any[]) => Promise<any>>(func: T) {
+    const type = "llm"
+    return async (...args: Parameters<T>) => {
+      const runId = crypto.randomUUID()
+    }
+  }
+
   /**
    * Wrap a Promise to track it's input, results and any errors.
    * @param {Promise} func - Agent/tool/model executor function
    */
-  private wrap<T extends (...args: any[]) => Promise<any>>(
+  wrap<T extends (...args: any[]) => Promise<any>>(
     type: EventType,
     func: T,
     params?: WrapParams
@@ -185,7 +194,7 @@ class LLMonitor {
     return this.wrap("agent", func, params)
   }
 
-  /*
+  /**
    * Wrap an agent's Promise to track it's input, results and any errors.
    * @param {Promise} func - Agent function
    */
@@ -262,6 +271,44 @@ class LLMonitor {
       message,
       extra: cleanError(error),
     })
+  }
+
+  openai(baseClass: typeof OpenAIApi) {
+    const monitor = this
+
+    class MonitoredOpenAiApi extends OpenAIApi {
+      constructor(configuration: Configuration)  {
+        super(configuration)
+      }
+
+      createChatCompletion(createChatCompletionRequest: CreateChatCompletionRequest, options?: AxiosRequestConfig<any>): Promise<AxiosResponse<CreateChatCompletionResponse, any>> {
+        const runId = crypto.randomUUID()
+        const {messages} = createChatCompletionRequest
+        const name = 'openai'
+
+        monitor.trackEvent('llm', "start", {
+          runId,
+          input: JSON.stringify(messages),
+          name,
+          // extra,
+          // tags,
+        })
+
+        try {
+          const output = super.createChatCompletion(createChatCompletionRequest, options)
+          monitor.trackEvent('llm', "end", {
+            runId,
+            output: JSON.stringify(output),
+            tokensUsage: null,
+          })
+          return output
+        } catch (error) {
+          console.error(error)
+        }
+      }
+    } 
+
+    return MonitoredOpenAiApi 
   }
 
   /**
