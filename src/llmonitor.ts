@@ -8,6 +8,7 @@ import {
 } from "./utils"
 
 import {
+  cJSON,
   LLMonitorOptions,
   Event,
   EventType,
@@ -23,6 +24,7 @@ class LLMonitor {
   logConsole?: boolean
   apiUrl?: string
   userId?: string
+  userProps?: cJSON
 
   private queue: any[] = []
   private queueRunning: boolean = false
@@ -44,6 +46,12 @@ class LLMonitor {
     if (options.log) this.logConsole = options.log
     if (options.apiUrl) this.apiUrl = options.apiUrl
     if (options.userId) this.userId = options.userId
+    if (options.userProps) this.userProps = options.userProps
+  }
+
+  identify(userId: string, userProps?: cJSON) {
+    this.userId = userId
+    this.userProps = userProps
   }
 
   async trackEvent(
@@ -68,6 +76,8 @@ class LLMonitor {
     const eventData: Event = {
       event,
       type,
+      userId: this.userId,
+      userProps: this.userProps,
       app: this.appId,
       parentRunId,
       timestamp,

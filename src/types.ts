@@ -1,15 +1,15 @@
-export type JSON =
+// using 'JSON' causes problems with esbuild (probably because a type JSON alrady exists)
+export type cJSON =
   | string
   | number
   | boolean
-  | { [x: string]: JSON }
+  | { [x: string]: cJSON }
   | Array<JSON>
 
 export interface LLMonitorOptions {
   appId?: string
-  convoId?: string
-  parentRunId?: string
   userId?: string
+  userProps?: cJSON
   apiUrl?: string
   log?: boolean
   name?: string
@@ -22,8 +22,10 @@ export interface Event {
   app: string
   timestamp: number
   event: string
+  userId?: string
+  userProps?: cJSON
   parentRunId?: string
-  extra?: JSON
+  extra?: cJSON
   error?: {
     message: string
     stack?: string
@@ -37,8 +39,8 @@ export type TokenUsage = {
 
 export interface RunEvent extends Event {
   runId: string
-  input?: JSON
-  output?: JSON
+  input?: cJSON
+  output?: cJSON
   tokensUsage?: TokenUsage
   [key: string]: unknown
 }
@@ -51,16 +53,16 @@ export interface LogEvent extends Event {
 export interface ChatMessage {
   role: "human" | "ai" | "generic" | "system" | "function"
   text: string
-  function_call?: JSON
-  [key: string]: JSON
+  function_call?: cJSON
+  [key: string]: cJSON
 }
 
 export type WrapParams = {
   name?: string
-  inputParser?: (...any) => JSON
-  outputParser?: (...any) => JSON
+  inputParser?: (...any) => cJSON
+  outputParser?: (...any) => cJSON
   tokensUsageParser?: (...any) => TokenUsage
-  extra?: JSON
+  extra?: cJSON
   tags?: string[]
 }
 
