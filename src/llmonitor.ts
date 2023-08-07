@@ -73,7 +73,7 @@ class LLMonitor {
       }
 
       if (entity instanceof BaseLanguageModel) {
-        monitorLangchainLLM(entity, llmonitor)
+        monitorLangchainLLM(entity as any, llmonitor)
         return
       }
 

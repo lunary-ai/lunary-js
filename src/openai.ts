@@ -35,7 +35,13 @@ export function monitorOpenAi(openai: OpenAIApi, llmonitor: LLMonitor) {
       )
 
       const output = rawOutput.data.choices[0]
-      llmonitor.trackEvent("llm", "end", { ...event, output })
+
+      const tokenUsage = {
+        completion: rawOutput.data.usage?.completion_tokens,
+        prompt: rawOutput.data.usage?.prompt_tokens,
+      }
+
+      llmonitor.trackEvent("llm", "end", { ...event, output, tokenUsage })
 
       return rawOutput
     } catch (error: unknown) {
