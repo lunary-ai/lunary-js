@@ -1,3 +1,5 @@
+import { BaseLanguageModel } from "langchain/base_language"
+import { Tool } from "langchain/tools"
 import {
   checkEnv,
   cleanError,
@@ -8,15 +10,21 @@ import {
 } from "./utils"
 
 import {
-  cJSON,
-  LLMonitorOptions,
+  EntityToMonitor,
   Event,
+  EventName,
   EventType,
-  RunEvent,
+  LLMonitorOptions,
   LogEvent,
+  RunEvent,
   WrapParams,
+  cJSON,
 } from "./types"
 
+import { OpenAIApi } from "openai"
+import { monitorLangchainLLM } from "src/langchain"
+import { monitorOpenAi } from "src/openai"
+import { monitorTool } from "src/tool"
 import ctx from "./context"
 
 class LLMonitor {
@@ -32,21 +40,20 @@ class LLMonitor {
   /**
    * @param {LLMonitorOptions} options
    */
-
   constructor() {
     this.load({
       appId: checkEnv("LLMONITOR_APP_ID"),
-      log: false,
+      log: true,
       apiUrl: checkEnv("LLMONITOR_API_URL") || "https://app.llmonitor.com",
     })
   }
 
-  load(options?: Partial<LLMonitorOptions>) {
-    if (options.appId) this.appId = options.appId
-    if (options.log) this.logConsole = options.log
-    if (options.apiUrl) this.apiUrl = options.apiUrl
-    if (options.userId) this.userId = options.userId
-    if (options.userProps) this.userProps = options.userProps
+  load({ appId, log, apiUrl, userId, userProps }: LLMonitorOptions = {}) {
+    if (appId) this.appId = appId
+    if (log) this.logConsole = log
+    if (apiUrl) this.apiUrl = apiUrl
+    if (userId) this.userId = userId
+    if (userProps) this.userProps = userProps
   }
 
   identify(userId: string, userProps?: cJSON) {
@@ -54,9 +61,32 @@ class LLMonitor {
     this.userProps = userProps
   }
 
+  monitor(entities: EntityToMonitor | [EntityToMonitor]) {
+    const llmonitor = this
+
+    entities = Array.isArray(entities) ? entities : [entities]
+
+    entities.forEach((entity) => {
+      if (entity instanceof OpenAIApi) {
+        monitorOpenAi(entity, llmonitor)
+        return
+      }
+
+      if (entity instanceof BaseLanguageModel) {
+        monitorLangchainLLM(entity, llmonitor)
+        return
+      }
+
+      if (entities instanceof Tool) {
+        monitorTool(entity, llmonitor)
+        return
+      }
+    })
+  }
+
   async trackEvent(
     type: EventType,
-    event: string,
+    event: EventName,
     data: Partial<RunEvent | LogEvent>
   ) {
     if (!this.appId)
