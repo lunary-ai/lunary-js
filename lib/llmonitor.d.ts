@@ -1,4 +1,4 @@
-import { EntityToMonitor, EventName, EventType, LLMonitorOptions, LogEvent, RunEvent, WrapParams, cJSON } from "./types";
+import { EntityToMonitor, EventName, EventType, LLMonitorOptions, LogEvent, RunEvent, WrapParams, WrappableFn, cJSON } from "./types";
 declare class LLMonitor {
     appId?: string;
     logConsole?: boolean;
@@ -28,13 +28,13 @@ declare class LLMonitor {
      * Wrap an agent's Promise to track it's input, results and any errors.
      * @param {Promise} func - Agent function
      */
-    wrapAgent<T extends (...args: any[]) => Promise<any>>(func: T, params?: WrapParams): (...args: Parameters<T>) => Promise<any>;
-    wrapTool<T extends (...args: any[]) => Promise<any>>(func: T, params?: WrapParams): (...args: Parameters<T>) => Promise<any>;
+    wrapAgent<T extends WrappableFn>(func: T, params?: WrapParams<T>): T;
+    wrapTool<T extends WrappableFn>(func: T, params?: WrapParams<T>): T;
     /**
      * Wrap an agent's Promise to track it's input, results and any errors.
      * @param {Promise} func - Agent function
      */
-    wrapModel<T extends (...args: any[]) => Promise<any>>(func: T, params?: WrapParams): (...args: Parameters<T>) => Promise<any>;
+    wrapModel<T extends WrappableFn>(func: T, params?: WrapParams<T>): T;
     /**
      * Use this to log any external action or tool you use.
      * @param {string} message - Log message
@@ -65,23 +65,5 @@ declare class LLMonitor {
      * }
      */
     error(message: string | any, error?: any): void;
-    /**
-     * Extends Langchain's LLM and Chat classes like OpenAI and ChatOpenAI
-     * We need to extend instead of using `callbacks` as callbacks run in a different context & don't allow us to tie parent IDs correctly.
-     * @param baseClass - Langchain's LLM class
-     * @returns Extended class
-     * @example
-     * const MonitoredChat = monitor.langchain(ChatOpenAI)
-     * const chat = new MonitoredChat({
-     *  modelName: "gpt-4"
-     * })
-     */
-    langchain(baseClass: any): {
-        new (): {
-            [x: string]: any;
-            generate(...args: any): Promise<any>;
-        };
-        [x: string]: any;
-    };
 }
 export default LLMonitor;

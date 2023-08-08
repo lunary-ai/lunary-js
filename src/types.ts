@@ -8,7 +8,7 @@ export type cJSON =
   | number
   | boolean
   | { [x: string]: cJSON }
-  | Array<JSON>
+  | Array<cJSON>
 
 export interface LLMonitorOptions {
   appId?: string
@@ -62,23 +62,19 @@ export interface ChatMessage {
   [key: string]: cJSON
 }
 
-export type WrapParams = {
+export type WrappableFn = (...args: any[]) => Promise<any>
+
+export type WrapParams<T extends WrappableFn> = {
   name?: string
-  inputParser?: (...any) => cJSON
-  outputParser?: (...any) => cJSON
-  tokensUsageParser?: (...any) => TokenUsage
+  inputParser?: (...args: Parameters<T>) => cJSON
+  extraParser?: (...args: Parameters<T>) => cJSON
+  nameParser?: (...args: Parameters<T>) => string
+
+  outputParser?: (result: Awaited<ReturnType<T>>) => cJSON
+  tokensUsageParser?: (result: Awaited<ReturnType<T>>) => TokenUsage
   extra?: cJSON
   tags?: string[]
 }
-
-// Keep the types when wrapping
-export type ConstructorParameters<T> = T extends new (...args: infer U) => any
-  ? U
-  : never
-export type MethodParameters<T> = T extends (...args: infer U) => any
-  ? U
-  : never
-export type MethodReturn<T> = T extends (...args: any[]) => infer R ? R : never
 
 export type EntityToMonitor =
   | BaseLanguageModel

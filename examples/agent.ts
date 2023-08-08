@@ -5,21 +5,24 @@ import monitor, { llmonitor } from "../src"
 
 const chat = new ChatOpenAI({
   temperature: 0.2,
-  modelName: "gpt-3.5-turbo",
+  modelName: "gpt-4-32k",
   tags: ["test-tag"],
 })
+
+monitor(chat)
 
 llmonitor.identify("123", {
   email: "my-user@example.org",
 })
-monitor(chat)
 
 const TranslatorAgent = async (query) => {
   console.log(query)
   const res = await chat.call([
-    new SystemMessage("You are a translator agent."),
+    new SystemMessage(
+      "You are a translator agent that hides jokes in each translation."
+    ),
     new HumanMessage(
-      `Translate this sentence from English to French. ${query}`
+      `Translate this sentence from English to French: ${query}`
     ),
   ])
 

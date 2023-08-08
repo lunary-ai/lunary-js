@@ -1,4 +1,4 @@
-import { ChatMessage, Event } from "./types";
+import { Event, cJSON } from "./types";
 import { ChatCompletionRequestMessage } from "openai";
 /**
  * Checks if the env variable exists in either Node or Deno.
@@ -20,9 +20,10 @@ export declare const cleanExtra: (extra: object) => {
 };
 export declare const getArgumentNames: (func: Function) => string[];
 export declare const getFunctionInput: (func: Function, args: any) => any;
-export declare const parseLangchainMessages: (input: any | any[] | any[][]) => ChatMessage | ChatMessage[] | ChatMessage[][];
+export declare const parseLangchainMessages: (input: any | any[] | any[][]) => cJSON;
 export declare const parseOpenaiMessage: (message?: ChatCompletionRequestMessage) => {
-    role: import("openai").ChatCompletionRequestMessageRoleEnum;
+    role: string;
     text: string;
+    function_call: cJSON;
 };
 export declare const getInstanceParentClass: (obj: any) => any;

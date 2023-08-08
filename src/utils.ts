@@ -1,4 +1,4 @@
-import { ChatMessage, Event } from "./types"
+import { ChatMessage, Event, cJSON } from "./types"
 import { ChatCompletionRequestMessage } from "openai"
 
 /**
@@ -86,9 +86,7 @@ export const getFunctionInput = (func: Function, args: any) => {
 // Langchain Helpers
 // Input can be either a single message, an array of message, or an array of array of messages (batch requests)
 
-export const parseLangchainMessages = (
-  input: any | any[] | any[][]
-): ChatMessage | ChatMessage[] | ChatMessage[][] => {
+export const parseLangchainMessages = (input: any | any[] | any[][]): cJSON => {
   const parseRole = (id: string[]) => {
     const roleHint = id[id.length - 1]
 
@@ -134,9 +132,14 @@ export const parseLangchainMessages = (
 
 export const parseOpenaiMessage = (message?: ChatCompletionRequestMessage) => {
   if (!message) return undefined
+
+  // Is name (of the function gpt wanted to call) actually useful to report?
+  const { role, content, name, function_call } = message
+
   return {
-    role: message.role,
-    text: message.content,
+    role: role.replace("assistant", "ai"),
+    text: content,
+    function_call: function_call as cJSON,
   }
 }
 

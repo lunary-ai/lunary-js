@@ -16,12 +16,13 @@ import {
   LogEvent,
   RunEvent,
   WrapParams,
+  WrappableFn,
   cJSON,
 } from "./types"
 
-import { monitorLangchainLLM } from "src/langchain"
+import { monitorLangchainLLM, monitorLangchainTool } from "src/langchain"
 import { monitorOpenAi } from "src/openai"
-import { monitorTool } from "src/tool"
+
 import ctx from "./context"
 
 class LLMonitor {
@@ -84,7 +85,7 @@ class LLMonitor {
         Object.getPrototypeOf(entity.constructor)
       ).name
       if (parentName === "Tool" || parentName === "StructuredTool") {
-        monitorTool(entity as any, llmonitor, tags)
+        monitorLangchainTool(entity as any, llmonitor, tags)
         return
       }
     })
@@ -164,31 +165,39 @@ class LLMonitor {
    * Wrap a Promise to track it's input, results and any errors.
    * @param {Promise} func - Agent/tool/model executor function
    */
-  private wrap<T extends (...args: any[]) => Promise<any>>(
+  private wrap<T extends WrappableFn>(
     type: EventType,
     func: T,
-    params?: WrapParams
-  ) {
-    return async (...args: Parameters<T>) => {
+    params?: WrapParams<T>
+  ): T {
+    // @ts-ignore TODO: fix this TS error
+    return async (...args: Parameters<T>): Promise<ReturnType<T>> => {
       // Generate a random ID for this run (will be injected into the context)
       const runId = crypto.randomUUID()
 
       // Get agent name from function name or params
-      // const name = params?.name ?? func.name
-      const name = func.name
+      const name = params?.nameParser
+        ? params.nameParser(...args)
+        : params?.name ?? func.name
 
       const { inputParser, outputParser, tokensUsageParser, extra, tags } =
         params || {}
 
+      // Get extra data from function or params
+      const extraData = params?.extraParser
+        ? params.extraParser(...args)
+        : extra
+
       const input = inputParser
-        ? inputParser(args)
+        ? //  @ts-ignore TODO: fix this TS error
+          inputParser(...args)
         : getFunctionInput(func, args)
 
       this.trackEvent(type, "start", {
         runId,
         input,
         name,
-        extra,
+        extra: extraData,
         tags,
       })
 
@@ -216,6 +225,10 @@ class LLMonitor {
           error: cleanError(error),
         })
 
+        // Process queue immediately as if there is an uncaught exception next, it won't be processed
+        // TODO: find a cleaner (and non platform-specific) way to do this
+        await this.processQueue()
+
         throw error
       }
     }
@@ -225,10 +238,7 @@ class LLMonitor {
    * Wrap an agent's Promise to track it's input, results and any errors.
    * @param {Promise} func - Agent function
    */
-  wrapAgent<T extends (...args: any[]) => Promise<any>>(
-    func: T,
-    params?: WrapParams
-  ) {
+  wrapAgent<T extends WrappableFn>(func: T, params?: WrapParams<T>): T {
     return this.wrap("agent", func, params)
   }
 
@@ -236,10 +246,7 @@ class LLMonitor {
    * Wrap an agent's Promise to track it's input, results and any errors.
    * @param {Promise} func - Agent function
    */
-  wrapTool<T extends (...args: any[]) => Promise<any>>(
-    func: T,
-    params?: WrapParams
-  ) {
+  wrapTool<T extends WrappableFn>(func: T, params?: WrapParams<T>): T {
     return this.wrap("tool", func, params)
   }
 
@@ -247,10 +254,7 @@ class LLMonitor {
    * Wrap an agent's Promise to track it's input, results and any errors.
    * @param {Promise} func - Agent function
    */
-  wrapModel<T extends (...args: any[]) => Promise<any>>(
-    func: T,
-    params?: WrapParams
-  ) {
+  wrapModel<T extends WrappableFn>(func: T, params?: WrapParams<T>): T {
     return this.wrap("llm", func, params)
   }
 
@@ -309,62 +313,6 @@ class LLMonitor {
       message,
       extra: cleanError(error),
     })
-  }
-
-  /**
-   * Extends Langchain's LLM and Chat classes like OpenAI and ChatOpenAI
-   * We need to extend instead of using `callbacks` as callbacks run in a different context & don't allow us to tie parent IDs correctly.
-   * @param baseClass - Langchain's LLM class
-   * @returns Extended class
-   * @example
-   * const MonitoredChat = monitor.langchain(ChatOpenAI)
-   * const chat = new MonitoredChat({
-   *  modelName: "gpt-4"
-   * })
-   */
-  langchain(baseClass: any) {
-    const monitor = this
-
-    return class extends baseClass {
-      // Wrap the `generate` function instead of .call to get token usages information
-      async generate(...args: any): Promise<any> {
-        // Batch calls, richer outputs
-        const boundSuperGenerate = super.generate.bind(this)
-
-        const extra = {
-          temperature: this.temperature,
-          maxTokens: this.maxTokens,
-          frequencyPenalty: this.frequencyPenalty,
-          presencePenalty: this.presencePenalty,
-          stop: this.stop,
-          timeout: this.timeout,
-          modelKwargs: Object.keys(this.modelKwargs).length
-            ? this.modelKwargs
-            : undefined,
-        }
-
-        const extraCleaned = Object.fromEntries(
-          Object.entries(extra).filter(([_, v]) => v != null)
-        )
-
-        const output = await monitor.wrapModel(boundSuperGenerate, {
-          name: this.modelName || (this.model as string),
-          //@ts-ignore
-          inputParser: (args) => parseLangchainMessages(args[0]), // Input message will be the first argument
-          outputParser: ({ generations }) =>
-            //@ts-ignore
-            parseLangchainMessages(generations),
-          tokensUsageParser: ({ llmOutput }) => ({
-            completion: llmOutput?.tokenUsage?.completionTokens,
-            prompt: llmOutput?.tokenUsage?.promptTokens,
-          }),
-          extra: extraCleaned,
-          tags: this.tags,
-        })(...args)
-
-        return output
-      }
-    }
   }
 }
 
