@@ -14,7 +14,10 @@
     "semi": false
   },
   "devDependencies": {
+    "dotenv": "^16.3.1",
     "esbuild": "^0.17.19",
+    "langchain": "^0.0.124",
+    "openai": "^3.3.0",
     "typescript": "^5.0.4"
   },
   "dependencies": {

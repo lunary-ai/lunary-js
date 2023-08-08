@@ -43,7 +43,7 @@ class LLMonitor {
   constructor() {
     this.load({
       appId: checkEnv("LLMONITOR_APP_ID"),
-      log: true,
+      log: false,
       apiUrl: checkEnv("LLMONITOR_API_URL") || "https://app.llmonitor.com",
     })
   }
@@ -61,24 +61,33 @@ class LLMonitor {
     this.userProps = userProps
   }
 
-  monitor(entities: EntityToMonitor | [EntityToMonitor]) {
+  monitor(
+    entities: EntityToMonitor | [EntityToMonitor],
+    { tags }: { tags?: string[] } = {}
+  ) {
     const llmonitor = this
 
     entities = Array.isArray(entities) ? entities : [entities]
 
     entities.forEach((entity) => {
-      if (entity instanceof OpenAIApi) {
-        monitorOpenAi(entity, llmonitor)
+      if (entity.constructor.name === "OpenAIApi") {
+        monitorOpenAi(entity as any, llmonitor, tags)
         return
       }
 
-      if (entity instanceof BaseLanguageModel) {
-        monitorLangchainLLM(entity as any, llmonitor)
+      if (
+        Object.getPrototypeOf(Object.getPrototypeOf(entity.constructor))
+          .name === "BaseLanguageModel"
+      ) {
+        monitorLangchainLLM(entity as any, llmonitor, tags)
         return
       }
 
-      if (entities instanceof Tool) {
-        monitorTool(entity, llmonitor)
+      const parentName = Object.getPrototypeOf(
+        Object.getPrototypeOf(entity.constructor)
+      ).name
+      if (parentName === "Tool" || parentName === "StructuredTool") {
+        monitorTool(entity as any, llmonitor, tags)
         return
       }
     })
@@ -343,8 +352,10 @@ class LLMonitor {
 
         const output = await monitor.wrapModel(boundSuperGenerate, {
           name: this.modelName || (this.model as string),
+          //@ts-ignore
           inputParser: (args) => parseLangchainMessages(args[0]), // Input message will be the first argument
           outputParser: ({ generations }) =>
+            //@ts-ignore
             parseLangchainMessages(generations),
           tokensUsageParser: ({ llmOutput }) => ({
             completion: llmOutput?.tokenUsage?.completionTokens,

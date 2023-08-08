@@ -4,7 +4,11 @@ import ctx from "src/context"
 import { cleanError, cleanExtra, parseOpenaiMessage } from "src/utils"
 import LLMonitor from "./llmonitor"
 
-export function monitorOpenAi(openai: OpenAIApi, llmonitor: LLMonitor) {
+export function monitorOpenAi(
+  openai: OpenAIApi,
+  llmonitor: LLMonitor,
+  tags?: string[]
+) {
   const originalCreateChatCompletion = openai.createChatCompletion
 
   openai.createChatCompletion = async function (
@@ -23,7 +27,6 @@ export function monitorOpenAi(openai: OpenAIApi, llmonitor: LLMonitor) {
       stop: request.stop,
     }
     const extra = cleanExtra(rawExtra)
-    const tags = ["test-tag"]
 
     const event = { name, input, runId, extra, tags }
 

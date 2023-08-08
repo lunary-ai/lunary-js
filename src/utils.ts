@@ -142,3 +142,6 @@ export const parseOpenaiMessage = (message?: ChatCompletionRequestMessage) => {
     text: message.content,
   }
 }
+
+export const getInstanceParentClass = (obj: any) =>
+  Object.getPrototypeOf(obj.constructor)

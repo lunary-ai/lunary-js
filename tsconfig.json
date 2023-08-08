@@ -6,7 +6,7 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "outDir": "./lib",
-    "strict": true,
+    "strict": false,
     "baseUrl": "./",
     "noEmitOnError": true,
     "paths": {

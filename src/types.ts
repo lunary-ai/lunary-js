@@ -1,6 +1,6 @@
 import { BaseChatModel } from "langchain/chat_models/base"
 import { BaseLanguageModel } from "langchain/base_language"
-import { Tool } from "langchain/tools"
+import { Tool, StructuredTool } from "langchain/tools"
 import { OpenAIApi } from "openai"
 
 // using 'JSON' causes problems with esbuild (probably because a type JSON alrady exists)
@@ -81,4 +81,8 @@ export type MethodParameters<T> = T extends (...args: infer U) => any
   : never
 export type MethodReturn<T> = T extends (...args: any[]) => infer R ? R : never
 
-export type EntityToMonitor = BaseLanguageModel | BaseChatModel | Tool
+export type EntityToMonitor =
+  | BaseLanguageModel
+  | BaseChatModel
+  | Tool
+  | StructuredTool

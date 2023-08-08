@@ -2,10 +2,15 @@ import { Callbacks } from "langchain/callbacks"
 import { ChatOpenAI, ChatOpenAICallOptions } from "langchain/chat_models/openai"
 import { BaseMessage, LLMResult } from "langchain/schema"
 import ctx from "src/context"
+import LLMonitor from "src/llmonitor"
 import { cleanError, cleanExtra, parseLangchainMessages } from "src/utils"
 
 // TODO: type with other chat models (not basechat/llm, but an union of all chat models)
-export function monitorLangchainLLM(chat: ChatOpenAI, llmonitor: LLMonitor) {
+export function monitorLangchainLLM(
+  chat: ChatOpenAI,
+  llmonitor: LLMonitor,
+  tags?: string[]
+) {
   const originalGenerate = chat.generate
 
   chat.generate = async function (
@@ -15,7 +20,7 @@ export function monitorLangchainLLM(chat: ChatOpenAI, llmonitor: LLMonitor) {
   ) {
     const runId = crypto.randomUUID()
     const input = parseLangchainMessages(messages)
-    const { tags, modelName: name } = chat
+    const { modelName: name } = chat
 
     const rawExtra = {
       temperature: chat.temperature,
@@ -46,6 +51,7 @@ export function monitorLangchainLLM(chat: ChatOpenAI, llmonitor: LLMonitor) {
         prompt: rawOutput.llmOutput?.tokenUsage?.promptTokens,
       }
 
+      //@ts-ignore
       llmonitor.trackEvent("llm", "end", { ...event, output, tokensUsage })
 
       return rawOutput

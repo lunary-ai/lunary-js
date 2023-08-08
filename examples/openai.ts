@@ -6,15 +6,15 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 })
 const openai = new OpenAIApi(configuration)
-monitor(openai)
+monitor(openai, { tags: ["dev"] })
 
 async function main() {
   const chatCompletion = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
     temperature: 0.9,
     messages: [
-      { role: "system", content: "You are an helpful assitant" },
-      { role: "user", content: "Hello world" },
+      { role: "system", content: "You are an helpful assistant" },
+      { role: "user", content: "Hello friend" },
     ],
   })
   console.log(chatCompletion.data.choices[0].message)

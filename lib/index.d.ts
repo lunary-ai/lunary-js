@@ -1,4 +1,4 @@
 import LLMonitor from "./llmonitor";
-export { LLMonitor };
-declare const monitor: LLMonitor;
+export declare const llmonitor: LLMonitor;
+declare const monitor: any;
 export default monitor;

@@ -1,10 +1,10 @@
 import { Callbacks } from "langchain/callbacks"
 import { Tool } from "langchain/tools"
-import { LLMonitor } from "src"
 import ctx from "src/context"
+import LLMonitor from "src/llmonitor"
 import { cleanError } from "src/utils"
 
-export function monitorTool(tool: Tool, llmonitor: LLMonitor) {
+export function monitorTool(tool: Tool, llmonitor: LLMonitor, tags?: string[]) {
   const originalCall = tool.call
 
   tool.call = async function call(
@@ -21,6 +21,7 @@ export function monitorTool(tool: Tool, llmonitor: LLMonitor) {
     const event = {
       name: tool.name,
       input,
+      tags,
     }
 
     try {
