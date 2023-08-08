@@ -1,7 +1,7 @@
 import { AxiosRequestConfig } from "axios"
 import { CreateChatCompletionRequest, OpenAIApi } from "openai"
 import ctx from "src/context"
-import { cleanError, parseOpenaiMessage } from "src/utils"
+import { cleanError, cleanExtra, parseOpenaiMessage } from "src/utils"
 import LLMonitor from "./llmonitor"
 
 export function monitorOpenAi(openai: OpenAIApi, llmonitor: LLMonitor) {
@@ -22,12 +22,7 @@ export function monitorOpenAi(openai: OpenAIApi, llmonitor: LLMonitor) {
       presencePenalty: request.presence_penalty,
       stop: request.stop,
     }
-    // const extra = cleanExtra(rawExtra)
-    const extra = {
-      temperature: 0.2,
-      frequencyPenalty: 0,
-      presencePenalty: 0,
-    }
+    const extra = cleanExtra(rawExtra)
     const tags = ["test-tag"]
 
     const event = { name, input, runId, extra, tags }

@@ -11,6 +11,7 @@ monitor(openai)
 async function main() {
   const chatCompletion = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
+    temperature: 0.9,
     messages: [
       { role: "system", content: "You are an helpful assitant" },
       { role: "user", content: "Hello world" },
