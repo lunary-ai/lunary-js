@@ -1,8 +1,5 @@
 import { ChatMessage, Event } from "./types"
-import {
-  CreateChatCompletionResponse,
-  ChatCompletionRequestMessage,
-} from "openai"
+import { ChatCompletionRequestMessage } from "openai"
 
 /**
  * Checks if the env variable exists in either Node or Deno.

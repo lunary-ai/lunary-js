@@ -1,7 +1,6 @@
 import { BaseChatModel } from "langchain/chat_models/base"
 import { BaseLanguageModel } from "langchain/base_language"
 import { Tool, StructuredTool } from "langchain/tools"
-import { OpenAIApi } from "openai"
 
 // using 'JSON' causes problems with esbuild (probably because a type JSON alrady exists)
 export type cJSON =
