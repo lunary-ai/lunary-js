@@ -1,4 +1,8 @@
 import { ChatMessage, Event } from "./types"
+import {
+  CreateChatCompletionResponse,
+  ChatCompletionRequestMessage,
+} from "openai"
 
 /**
  * Checks if the env variable exists in either Node or Deno.
@@ -39,11 +43,22 @@ export const cleanError = (error: any) => {
     return {
       message: error,
     }
-
-  return {
-    message: error.message,
-    stack: error.stack,
+  else if (error instanceof Error) {
+    return {
+      message: error.message,
+      stack: error.stack,
+    }
+  } else {
+    error = new Error("Unknown error")
+    return {
+      message: error.message,
+      stack: error.stack,
+    }
   }
+}
+
+export const cleanExtra = (extra: object) => {
+  return Object.fromEntries(Object.entries(extra).filter(([_, v]) => v != null))
 }
 
 export const getArgumentNames = (func: Function): string[] => {
@@ -86,7 +101,7 @@ export const parseLangchainMessages = (
     if (roleHint.includes("Function")) return "function"
   }
 
-  const parseMessage = (raw) => {
+  const parseMessage = (raw: any) => {
     if (typeof raw === "string") return raw
     // sometimes the message is nested in a "message" property
     if (raw.message) return parseMessage(raw.message)
@@ -117,6 +132,13 @@ export const parseLangchainMessages = (
       ? parseLangchainMessages(input[0])
       : input.map(parseMessage)
   }
-
   return parseMessage(input)
+}
+
+export const parseOpenaiMessage = (message?: ChatCompletionRequestMessage) => {
+  if (!message) return undefined
+  return {
+    role: message.role,
+    text: message.content,
+  }
 }

@@ -1,3 +1,8 @@
+import { BaseChatModel } from "langchain/chat_models/base"
+import { BaseLanguageModel } from "langchain/base_language"
+import { Tool } from "langchain/tools"
+import { OpenAIApi } from "openai"
+
 // using 'JSON' causes problems with esbuild (probably because a type JSON alrady exists)
 export type cJSON =
   | string
@@ -16,12 +21,13 @@ export interface LLMonitorOptions {
 }
 
 export type EventType = "log" | "tool" | "agent" | "llm" | "convo" | "chain"
+export type EventName = "start" | "end" | "error" | "info" | "warn"
 
 export interface Event {
   type: EventType
+  event: EventName
   app: string
   timestamp: number
-  event: string
   userId?: string
   userProps?: cJSON
   parentRunId?: string
@@ -74,3 +80,5 @@ export type MethodParameters<T> = T extends (...args: infer U) => any
   ? U
   : never
 export type MethodReturn<T> = T extends (...args: any[]) => infer R ? R : never
+
+export type EntityToMonitor = BaseLanguageModel | BaseChatModel | Tool
