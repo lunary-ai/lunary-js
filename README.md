@@ -32,6 +32,6 @@ Full docs are available [here](https://llmonitor.com/docs/js).
 
 ## 👷 TODO
 
-- [ ] maintain/forward types while wrapping (for `.langchain` and `.wrap` methods)
-- [ ] `openai` module wrapper
+- [X] `openai` module wrapper
 - [ ] langchain embeddings wrapping
+- [ ] put useless packages for publication in dev dependencies

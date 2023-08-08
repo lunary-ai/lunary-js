@@ -168,7 +168,8 @@ class LLMonitor {
       const runId = crypto.randomUUID()
 
       // Get agent name from function name or params
-      const name = params?.name ?? func.name
+      // const name = params?.name ?? func.name
+      const name = func.name
 
       const { inputParser, outputParser, tokensUsageParser, extra, tags } =
         params || {}

@@ -1,8 +1,8 @@
 import { AxiosRequestConfig } from "axios"
 import { CreateChatCompletionRequest, OpenAIApi } from "openai"
-import { cleanError, cleanExtra } from "src/utils"
-import LLMonitor from "./llmonitor"
 import ctx from "src/context"
+import { cleanError, parseOpenaiMessage } from "src/utils"
+import LLMonitor from "./llmonitor"
 
 export function monitorOpenAi(openai: OpenAIApi, llmonitor: LLMonitor) {
   const originalCreateChatCompletion = openai.createChatCompletion
@@ -12,7 +12,7 @@ export function monitorOpenAi(openai: OpenAIApi, llmonitor: LLMonitor) {
     options?: AxiosRequestConfig
   ) {
     const runId = crypto.randomUUID()
-    const input = request.messages
+    const input = request.messages.map(parseOpenaiMessage)
     const { model: name } = request
 
     const rawExtra = {
@@ -22,9 +22,15 @@ export function monitorOpenAi(openai: OpenAIApi, llmonitor: LLMonitor) {
       presencePenalty: request.presence_penalty,
       stop: request.stop,
     }
-    const extra = cleanExtra(rawExtra)
+    // const extra = cleanExtra(rawExtra)
+    const extra = {
+      temperature: 0.2,
+      frequencyPenalty: 0,
+      presencePenalty: 0,
+    }
+    const tags = ["test-tag"]
 
-    const event = { name, input, runId, extra }
+    const event = { name, input, runId, extra, tags }
 
     try {
       llmonitor.trackEvent("llm", "start", event)
@@ -34,14 +40,15 @@ export function monitorOpenAi(openai: OpenAIApi, llmonitor: LLMonitor) {
         originalCreateChatCompletion.apply(this, [request, options])
       )
 
-      const output = rawOutput.data.choices[0]
+      const { data } = rawOutput
+      const output = parseOpenaiMessage(data.choices[0].message)
 
-      const tokenUsage = {
-        completion: rawOutput.data.usage?.completion_tokens,
-        prompt: rawOutput.data.usage?.prompt_tokens,
+      const tokensUsage = {
+        completion: data.usage?.completion_tokens,
+        prompt: data.usage?.prompt_tokens,
       }
 
-      llmonitor.trackEvent("llm", "end", { ...event, output, tokenUsage })
+      llmonitor.trackEvent("llm", "end", { ...event, output, tokensUsage })
 
       return rawOutput
     } catch (error: unknown) {

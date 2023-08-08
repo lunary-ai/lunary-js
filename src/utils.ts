@@ -1,5 +1,8 @@
 import { ChatMessage, Event } from "./types"
-import { CreateChatCompletionResponse } from "openai"
+import {
+  CreateChatCompletionResponse,
+  ChatCompletionRequestMessage,
+} from "openai"
 
 /**
  * Checks if the env variable exists in either Node or Deno.
@@ -128,5 +131,14 @@ export const parseLangchainMessages = (
     return input.length === 1
       ? parseLangchainMessages(input[0])
       : input.map(parseMessage)
+  }
+  return parseMessage(input)
+}
+
+export const parseOpenaiMessage = (message?: ChatCompletionRequestMessage) => {
+  if (!message) return undefined
+  return {
+    role: message.role,
+    text: message.content,
   }
 }

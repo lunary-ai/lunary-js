@@ -1,7 +1,6 @@
 import { Callbacks } from "langchain/callbacks"
 import { ChatOpenAI, ChatOpenAICallOptions } from "langchain/chat_models/openai"
 import { BaseMessage, LLMResult } from "langchain/schema"
-import { LLMonitor } from "src"
 import ctx from "src/context"
 import { cleanError, cleanExtra, parseLangchainMessages } from "src/utils"
 
@@ -42,12 +41,12 @@ export function monitorLangchainLLM(chat: ChatOpenAI, llmonitor: LLMonitor) {
 
       const output = parseLangchainMessages(rawOutput.generations)
 
-      const tokenUsage = {
+      const tokensUsage = {
         completion: rawOutput.llmOutput?.tokenUsage?.completionTokens,
         prompt: rawOutput.llmOutput?.tokenUsage?.promptTokens,
       }
 
-      llmonitor.trackEvent("llm", "end", { ...event, output, tokenUsage })
+      llmonitor.trackEvent("llm", "end", { ...event, output, tokensUsage })
 
       return rawOutput
     } catch (error: unknown) {
