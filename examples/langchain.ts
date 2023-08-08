@@ -2,13 +2,13 @@ import { ChatOpenAI } from "langchain/chat_models/openai"
 import { HumanMessage, SystemMessage } from "langchain/schema"
 import monitor from "../src/index"
 
+monitor.attach(ChatOpenAI)
+
 const chat = new ChatOpenAI({
   temperature: 0.2,
   modelName: "gpt-3.5-turbo",
   tags: ["test-tag"],
 })
-
-monitor.attach(chat)
 
 async function main(query: string) {
   const res = await chat.call([

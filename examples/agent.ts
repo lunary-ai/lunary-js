@@ -1,15 +1,16 @@
+import "dotenv/config"
 import { ChatOpenAI } from "langchain/chat_models/openai"
 import { HumanMessage, SystemMessage } from "langchain/schema"
 
 import monitor from "../src"
+
+monitor.attach(ChatOpenAI)
 
 const chat = new ChatOpenAI({
   temperature: 0.2,
   modelName: "gpt-4",
   tags: ["test-tag"],
 })
-
-monitor.attach(chat)
 
 monitor.identify("123", {
   email: "my-user@example.org",

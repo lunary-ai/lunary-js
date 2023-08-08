@@ -1,16 +1,11 @@
 import "dotenv/config"
-import { SerpAPI } from "langchain/tools"
+
 import { Calculator } from "langchain/tools/calculator"
 
 import monitor from "../src"
 
-const tools = [
-  new SerpAPI(process.env.SERPAPI_API_KEY, {
-    location: "Austin,Texas,United States",
-    hl: "en",
-    gl: "us",
-  }),
-  new Calculator(),
-]
+monitor.attach([Calculator])
 
-monitor.attach(tools)
+const calculator = new Calculator()
+
+console.log(await calculator.call("1+1"))

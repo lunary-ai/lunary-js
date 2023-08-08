@@ -1,6 +1,8 @@
 import { BaseChatModel } from "langchain/chat_models/base";
 import { BaseLanguageModel } from "langchain/base_language";
 import { Tool, StructuredTool } from "langchain/tools";
+import { OpenAIApi } from "openai";
+import { ChatOpenAI } from "langchain/chat_models/openai";
 export type cJSON = string | number | boolean | {
     [x: string]: cJSON;
 } | Array<cJSON>;
@@ -59,4 +61,4 @@ export type WrapParams<T extends WrappableFn> = {
     extra?: cJSON;
     tags?: string[];
 };
-export type EntityToMonitor = BaseLanguageModel | BaseChatModel | Tool | StructuredTool;
+export type EntityToMonitor = typeof BaseLanguageModel | typeof BaseChatModel | typeof ChatOpenAI | typeof OpenAIApi | typeof Tool | typeof StructuredTool;

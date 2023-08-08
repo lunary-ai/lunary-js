@@ -82,25 +82,19 @@ class LLMonitor {
     entities = Array.isArray(entities) ? entities : [entities]
 
     entities.forEach((entity) => {
-      if (entity.constructor.name === "OpenAIApi") {
+      const entityName = entity.name
+      const parentName = Object.getPrototypeOf(entity).name
+
+      if (entityName === "OpenAIApi") {
         monitorOpenAi(entity as any, llmonitor, tags)
-        return
       }
 
-      if (
-        Object.getPrototypeOf(Object.getPrototypeOf(entity.constructor))
-          .name === "BaseLanguageModel"
-      ) {
+      if (parentName === "BaseChatModel") {
         monitorLangchainLLM(entity as any, llmonitor, tags)
-        return
       }
 
-      const parentName = Object.getPrototypeOf(
-        Object.getPrototypeOf(entity.constructor)
-      ).name
       if (parentName === "Tool" || parentName === "StructuredTool") {
         monitorLangchainTool(entity as any, llmonitor, tags)
-        return
       }
     })
   }

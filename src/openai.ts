@@ -3,15 +3,23 @@ import { cleanExtra, parseOpenaiMessage } from "src/utils"
 import LLMonitor from "./llmonitor"
 
 export function monitorOpenAi(
-  openai: OpenAIApi,
+  baseClass: typeof OpenAIApi,
   llmonitor: LLMonitor,
   tags?: string[]
 ) {
-  const originalCreateChatCompletion = openai.createChatCompletion.bind(openai)
+  // Keep a reference to the original method
+  const originalCreateChatCompletion = baseClass.prototype.createChatCompletion
 
-  openai.createChatCompletion = llmonitor.wrapModel(
-    originalCreateChatCompletion,
-    {
+  // Replace the original method with the new one
+  baseClass.prototype.createChatCompletion = async function (
+    ...args: Parameters<typeof originalCreateChatCompletion>
+  ): ReturnType<typeof originalCreateChatCompletion> {
+    // Use 'this' to reference the instance
+
+    // Bind the original method to the instance
+    const boundCompletion = originalCreateChatCompletion.bind(this)
+
+    return llmonitor.wrapModel(boundCompletion, {
       nameParser: (request) => request.model,
       inputParser: (request) => request.messages.map(parseOpenaiMessage),
       extraParser: (request) => {
@@ -30,6 +38,6 @@ export function monitorOpenAi(
         prompt: data.usage?.prompt_tokens,
       }),
       tags,
-    }
-  )
+    })(...args)
+  }
 }

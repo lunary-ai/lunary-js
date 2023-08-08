@@ -6,52 +6,76 @@ import { cleanExtra, parseLangchainMessages } from "src/utils"
 
 // TODO: type with other chat models (not basechat/llm, but an union of all chat models)
 export function monitorLangchainLLM(
-  chat: ChatOpenAI,
+  baseClass: typeof ChatOpenAI,
   llmonitor: LLMonitor,
   tags?: string[]
 ) {
-  const originalGenerate = chat.generate.bind(chat)
+  // Keep a reference to the original method
+  const originalGenerate = baseClass.prototype.generate
 
-  const rawExtra = {
-    temperature: chat.temperature,
-    maxTokens: chat.maxTokens,
-    frequencyPenalty: chat.frequencyPenalty,
-    presencePenalty: chat.presencePenalty,
-    stop: chat.stop,
-    timeout: chat.timeout,
-    modelKwargs: Object.keys(chat.modelKwargs || {}).length
-      ? chat.modelKwargs
-      : undefined,
+  // Replace the original method with the new one
+  baseClass.prototype.generate = async function (
+    ...args: Parameters<typeof originalGenerate>
+  ): ReturnType<typeof originalGenerate> {
+    // Use 'this' to reference the instance
+    const chat = this
+
+    // Bind the original method to the instance
+    const boundSuperGenerate = originalGenerate.bind(chat)
+
+    const rawExtra = {
+      temperature: chat.temperature,
+      maxTokens: chat.maxTokens,
+      frequencyPenalty: chat.frequencyPenalty,
+      presencePenalty: chat.presencePenalty,
+      stop: chat.stop,
+      timeout: chat.timeout,
+      modelKwargs: Object.keys(chat.modelKwargs || {}).length
+        ? chat.modelKwargs
+        : undefined,
+    }
+    const extra = cleanExtra(rawExtra)
+
+    // Some chat classes use the `model` property, others use `modelName`
+    // @ts-ignore
+    const name = chat.modelName || chat.model
+
+    return llmonitor.wrapModel(boundSuperGenerate, {
+      name,
+      inputParser: (messages) => parseLangchainMessages(messages), // Input message will be the first argument
+      outputParser: ({ generations }) => parseLangchainMessages(generations),
+      tokensUsageParser: ({ llmOutput }) => ({
+        completion: llmOutput?.tokenUsage?.completionTokens,
+        prompt: llmOutput?.tokenUsage?.promptTokens,
+      }),
+      extra,
+      tags: tags || chat.tags,
+    })(...args)
   }
-  const extra = cleanExtra(rawExtra)
-
-  // Some chat classes use the `model` property, others use `modelName`
-  // @ts-ignore
-  const name = chat.modelName || chat.model
-
-  chat.generate = llmonitor.wrapModel(originalGenerate, {
-    name,
-    inputParser: (messages) => parseLangchainMessages(messages), // Input message will be the first argument
-    outputParser: ({ generations }) => parseLangchainMessages(generations),
-    tokensUsageParser: ({ llmOutput }) => ({
-      completion: llmOutput?.tokenUsage?.completionTokens,
-      prompt: llmOutput?.tokenUsage?.promptTokens,
-    }),
-    extra,
-    tags: tags || chat.tags,
-  })
+  // }
 }
 
 export function monitorLangchainTool(
-  tool: Tool,
+  baseClass: typeof Tool,
   llmonitor: LLMonitor,
   tags?: string[]
 ) {
-  const originalCall = tool.call
+  // Keep a reference to the original method
+  const originalCall = baseClass.prototype.call
 
-  tool.call = llmonitor.wrapTool(originalCall, {
-    name: tool.name,
-    inputParser: (arg) => (arg[0] instanceof Object ? arg[0].input : arg),
-    tags,
-  })
+  // Replace the original method with the new one
+  baseClass.prototype.call = async function (
+    ...args: Parameters<typeof originalCall>
+  ): ReturnType<typeof originalCall> {
+    // Use 'this' to reference the instance
+
+    // Bind the original method to the instance
+    const boundSuperCall = originalCall.bind(this)
+
+    return llmonitor.wrapTool(boundSuperCall, {
+      name: this.name,
+      inputParser: (arg) => (arg[0] instanceof Object ? arg[0].input : arg),
+      tags,
+    })(...args)
+  }
 }

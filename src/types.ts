@@ -2,6 +2,7 @@ import { BaseChatModel } from "langchain/chat_models/base"
 import { BaseLanguageModel } from "langchain/base_language"
 import { Tool, StructuredTool } from "langchain/tools"
 import { OpenAIApi } from "openai"
+import { ChatOpenAI } from "langchain/chat_models/openai"
 
 // using 'JSON' causes problems with esbuild (probably because a type JSON alrady exists)
 export type cJSON =
@@ -78,8 +79,9 @@ export type WrapParams<T extends WrappableFn> = {
 }
 
 export type EntityToMonitor =
-  | BaseLanguageModel
-  | BaseChatModel
-  | OpenAIApi
-  | Tool
-  | StructuredTool
+  | typeof BaseLanguageModel
+  | typeof BaseChatModel
+  | typeof ChatOpenAI
+  | typeof OpenAIApi
+  | typeof Tool
+  | typeof StructuredTool

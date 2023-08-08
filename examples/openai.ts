@@ -2,13 +2,13 @@ import "dotenv/config"
 import { Configuration, OpenAIApi } from "openai"
 import monitor from "../src/index"
 
+monitor.attach(OpenAIApi, { tags: ["dev"] })
+
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 })
 
 const openai = new OpenAIApi(configuration)
-
-monitor.attach(openai, { tags: ["dev"] })
 
 async function main() {
   const chatCompletion = await openai.createChatCompletion({
