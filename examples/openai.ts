@@ -5,7 +5,9 @@ import monitor from "../src/index"
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 })
+
 const openai = new OpenAIApi(configuration)
+
 monitor(openai, { tags: ["dev"] })
 
 async function main() {

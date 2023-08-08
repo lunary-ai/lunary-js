@@ -8,6 +8,7 @@ const chat = new ChatOpenAI({
   modelName: "gpt-3.5-turbo",
   tags: ["test-tag"],
 })
+
 monitor(chat)
 
 async function main(query: string) {

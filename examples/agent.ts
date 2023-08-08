@@ -5,7 +5,7 @@ import monitor, { llmonitor } from "../src"
 
 const chat = new ChatOpenAI({
   temperature: 0.2,
-  modelName: "gpt-4-32k",
+  modelName: "gpt-4",
   tags: ["test-tag"],
 })
 

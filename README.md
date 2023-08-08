@@ -1,6 +1,5 @@
 <div align="center">
 
-
 <img src="https://llmonitor.com/logo.png" style='border-radius: 12px;' width="50"/> 
 <h1>LLMonitor JS SDK</h1>
 
@@ -8,7 +7,7 @@
 
 [website](https://llmonitor.com) - [docs](https://llmonitor.com/docs/js/) - [demo](https://app.llmonitor.com/demo) - [![npm version](https://badge.fury.io/js/llmonitor.svg)](https://badge.fury.io/js/llmonitor)
 
----  
+---
 
 </div>
 
@@ -32,6 +31,6 @@ Full docs are available [here](https://llmonitor.com/docs/js).
 
 ## 👷 TODO
 
-- [X] `openai` module wrapper
+- [x] `openai` module wrapper
+- [x] add types for other langchain Chat and LLM classes
 - [ ] langchain embeddings wrapping
-- [ ] put useless packages for publication in dev dependencies
