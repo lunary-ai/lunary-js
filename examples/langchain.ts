@@ -1,4 +1,3 @@
-import "dotenv/config"
 import { ChatOpenAI } from "langchain/chat_models/openai"
 import { HumanMessage, SystemMessage } from "langchain/schema"
 import monitor from "../src/index"
@@ -9,7 +8,7 @@ const chat = new ChatOpenAI({
   tags: ["test-tag"],
 })
 
-monitor(chat)
+monitor.attach(chat)
 
 async function main(query: string) {
   const res = await chat.call([

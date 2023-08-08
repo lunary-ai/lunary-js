@@ -8,7 +8,7 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration)
 
-monitor(openai, { tags: ["dev"] })
+monitor.attach(openai, { tags: ["dev"] })
 
 async function main() {
   const chatCompletion = await openai.createChatCompletion({

@@ -13,4 +13,4 @@ const tools = [
   new Calculator(),
 ]
 
-monitor(tools)
+monitor.attach(tools)
