@@ -1,8 +1,9 @@
+import "dotenv/config"
 import { ChatOpenAI } from "langchain/chat_models/openai"
 import { HumanMessage, SystemMessage } from "langchain/schema"
 import monitor from "../src/index"
 
-monitor.attach(ChatOpenAI)
+monitor(ChatOpenAI)
 
 const chat = new ChatOpenAI({
   temperature: 0.2,

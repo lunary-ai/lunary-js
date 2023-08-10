@@ -4,7 +4,7 @@ import { Calculator } from "langchain/tools/calculator"
 
 import monitor from "../src"
 
-monitor.attach([Calculator])
+monitor([Calculator])
 
 const calculator = new Calculator()
 

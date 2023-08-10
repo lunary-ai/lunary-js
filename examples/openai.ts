@@ -2,7 +2,7 @@ import "dotenv/config"
 import { Configuration, OpenAIApi } from "openai"
 import monitor from "../src/index"
 
-monitor.attach(OpenAIApi, { tags: ["dev"] })
+monitor(OpenAIApi, { tags: ["dev"] })
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,

@@ -71,9 +71,9 @@ class LLMonitor {
    * const chat = new ChatOpenAI({
    *   modelName: "gpt-3.5-turbo",
    * })
-   * monitor.attach(chat)
+   * monitor(chat)
    */
-  attach(
+  monitor(
     entities: EntityToMonitor | EntityToMonitor[],
     { tags }: { tags?: string[] } = {}
   ) {
