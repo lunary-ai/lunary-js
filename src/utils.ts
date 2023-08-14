@@ -22,7 +22,7 @@ export const checkEnv = (variable: string): string | undefined => {
 
 // TODO: implement this
 export const formatLog = (event: Event) => {
-  console.log(JSON.stringify(event, null, 2))
+  return JSON.stringify(event, null, 2)
 }
 
 export const debounce = (func, timeout = 500) => {

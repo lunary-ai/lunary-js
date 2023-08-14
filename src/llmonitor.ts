@@ -18,6 +18,7 @@ import {
   WrapParams,
   WrappableFn,
   WrappedFn,
+  cJSON,
 } from "./types"
 
 import chainable from "./chainable"
@@ -26,6 +27,49 @@ import { monitorLangchainLLM, monitorLangchainTool } from "src/langchain"
 import { monitorOpenAi } from "src/openai"
 
 import ctx from "./context"
+
+class ThenableWrapper<T extends WrappableFn>
+  implements PromiseLike<ReturnType<T>>
+{
+  private _promise: Promise<ReturnType<T>>
+  private _func: WrappedFn<T>
+
+  constructor(promise: Promise<ReturnType<T>>, func: WrappedFn<T>) {
+    this._promise = promise
+    this._func = func
+  }
+
+  then<TResult1 = ReturnType<T>, TResult2 = never>(
+    onfulfilled?:
+      | ((value: ReturnType<T>) => TResult1 | PromiseLike<TResult1>)
+      | null,
+    onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null
+  ): PromiseLike<TResult1 | TResult2> {
+    return this._promise.then(onfulfilled, onrejected)
+  }
+
+  catch<TResult = never>(
+    onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | null
+  ): PromiseLike<ReturnType<T> | TResult> {
+    return this._promise.catch(onrejected)
+  }
+
+  finally(onfinally?: (() => void) | null): PromiseLike<ReturnType<T>> {
+    return this._promise.finally(onfinally)
+  }
+
+  identify(userId: string, userProps?: cJSON): ThenableWrapper<T> {
+    const identifiedFunc = chainable.identify.call(
+      this._func,
+      userId,
+      userProps
+    )
+    return new ThenableWrapper(
+      identifiedFunc(...this._func.args),
+      identifiedFunc
+    )
+  }
+}
 
 class LLMonitor {
   appId?: string
@@ -154,101 +198,149 @@ class LLMonitor {
     }
   }
 
-  /**
-   * Wrap a Promise to track it's input, results and any errors.
-   * @param {EventType} type - Event type
-   * @param {Promise} func - Agent function
-   * @param {WrapParams} params - Wrap params
-   * @returns {Promise} - Wrapped promise
-   */
   private wrap<T extends WrappableFn>(
     type: EventType,
     func: T,
     params?: WrapParams<T>
-  ): WrappedFn<T> {
-    const wrappedFn: WrappedFn<T> = (async (
+  ): WrappedFn<T> & { identify?: typeof identify } {
+    // ... rest of your code ...
+
+    const wrappedFn: WrappedFn<T> & { identify?: typeof identify } = (
       ...args: Parameters<T>
-    ): Promise<ReturnType<T>> => {
-      // Generate a random ID for this run (will be injected into the context)
-      const runId = crypto.randomUUID()
+    ) => {
+      // Keep a reference to the execution context
+      let executeOriginalPromise = () =>
+        this.executeFunction(type, func, params, args)
 
-      // Get agent name from function name or params
-      const name = params?.nameParser
-        ? params.nameParser(...args)
-        : params?.name ?? func.name
-
-      const {
-        inputParser,
-        outputParser,
-        tokensUsageParser,
-        extra,
-        tags,
-        userId,
-        userProps,
-      } = params || {}
-
-      // Get extra data from function or params
-      const extraData = params?.extraParser
-        ? params.extraParser(...args)
-        : extra
-
-      const input = inputParser
-        ? //  @ts-ignore TODO: fix this TS error
-          inputParser(...args)
-        : getFunctionInput(func, args)
-
-      this.trackEvent(type, "start", {
-        runId,
-        input,
-        name,
-        extra: extraData,
-        tags,
-      })
-
-      try {
-        const currentContext = ctx.tryUse()
-
-        const context = {
-          parentRunId: runId,
-          // If we already have a userId/userProps in the context, use that
-          userId: userId || currentContext?.userId,
-          userProps: userProps || currentContext?.userProps,
-        }
-
-        // Call function with runId into context
-        const output = await ctx.callAsync(context, async () => {
-          return func(...args)
-        })
-
-        // Allow parsing of token usage (useful for LLMs)
-        const tokensUsage = tokensUsageParser
-          ? tokensUsageParser(output)
-          : undefined
-
-        this.trackEvent(type, "end", {
-          runId,
-          output: outputParser ? outputParser(output) : output,
-          tokensUsage,
-        })
-
-        return output
-      } catch (error) {
-        this.trackEvent(type, "error", {
-          runId,
-          error: cleanError(error),
-        })
-
-        // Process queue immediately as if there is an uncaught exception next, it won't be processed
-        // TODO: find a cleaner (and non platform-specific) way to do this
-        await this.processQueue()
-
-        throw error
+      const result = {
+        then: (onFulfilled, onRejected) =>
+          executeOriginalPromise().then(onFulfilled, onRejected),
+        catch: (onRejected) => executeOriginalPromise().catch(onRejected),
+        finally: (onFinally) => executeOriginalPromise().finally(onFinally),
+        identify: (userId: string, userProps?: cJSON) => {
+          // Modify the execution context to include the user information
+          executeOriginalPromise = () =>
+            this.executeIdentifiedFunction(
+              type,
+              func,
+              params,
+              args,
+              userId,
+              userProps
+            )
+          return result
+        },
       }
-    }) as WrappedFn<T>
 
-    wrappedFn.identify = chainable.identify.bind(wrappedFn)
+      return result
+    }
 
     return wrappedFn
+  }
+
+  // Extract the actual execution logic into a function
+  private async executeFunction<T extends WrappableFn>(
+    type: EventType,
+    func: T,
+    params?: WrapParams<T>,
+    args: Parameters<T>
+  ): Promise<ReturnType<T>> {
+    // Generate a random ID for this run (will be injected into the context)
+    const runId = crypto.randomUUID()
+
+    // Get agent name from function name or params
+    const name = params?.nameParser
+      ? params.nameParser(...args)
+      : params?.name ?? func.name
+
+    const {
+      inputParser,
+      outputParser,
+      tokensUsageParser,
+      extra,
+      tags,
+      userId,
+      userProps,
+    } = params || {}
+
+    // Get extra data from function or params
+    const extraData = params?.extraParser ? params.extraParser(...args) : extra
+
+    const input = inputParser
+      ? //  @ts-ignore TODO: fix this TS error
+        inputParser(...args)
+      : getFunctionInput(func, args)
+
+    this.trackEvent(type, "start", {
+      runId,
+      input,
+      name,
+      extra: extraData,
+      tags,
+    })
+
+    try {
+      const currentContext = ctx.tryUse()
+
+      const context = {
+        parentRunId: runId,
+        // If we already have a userId/userProps in the context, use that
+        userId: userId || currentContext?.userId,
+        userProps: userProps || currentContext?.userProps,
+      }
+
+      // Call function with runId into context
+      const output = await ctx.callAsync(context, async () => {
+        return func(...args)
+      })
+
+      // Allow parsing of token usage (useful for LLMs)
+      const tokensUsage = tokensUsageParser
+        ? tokensUsageParser(output)
+        : undefined
+
+      this.trackEvent(type, "end", {
+        runId,
+        output: outputParser ? outputParser(output) : output,
+        tokensUsage,
+      })
+
+      return output
+    } catch (error) {
+      this.trackEvent(type, "error", {
+        runId,
+        error: cleanError(error),
+      })
+
+      // Process queue immediately as if there is an uncaught exception next, it won't be processed
+      // TODO: find a cleaner (and non platform-specific) way to do this
+      await this.processQueue()
+
+      throw error
+    }
+  }
+
+  // Create a new function for the identified execution
+  private async executeIdentifiedFunction<T extends WrappableFn>(
+    type: EventType,
+    func: T,
+    params?: WrapParams<T>,
+    args: Parameters<T>,
+    userId: string,
+    userProps?: cJSON
+  ): Promise<ReturnType<T>> {
+    // Update context or whatever else is needed here
+    const currentContext = ctx.tryUse()
+
+    const context = {
+      parentRunId: currentContext?.parentRunId,
+      userId,
+      userProps,
+    }
+
+    return await ctx.callAsync(context, async () => {
+      return this.executeFunction(type, func, params, args)
+    })
   }
 
   /**

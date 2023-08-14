@@ -6,28 +6,26 @@ import { WrappableFn, cJSON } from "./types"
  * @param {string} userId - User ID
  * @param {cJSON} userProps - User properties object
  */
-function identify<T extends WrappableFn>(userId: string, userProps?: cJSON): T {
-  const func = this as T
+function identify<T extends WrappableFn>(
+  originalPromise: Promise<ReturnType<T>>,
+  userId: string,
+  userProps?: cJSON
+): Promise<ReturnType<T>> {
+  // Capture the current context
+  const currentContext = ctx.tryUse()
 
-  const wrappedFn = async (...args: Parameters<T>): Promise<ReturnType<T>> => {
-    const currentContext = ctx.tryUse()
-
-    const context = {
-      // conserve parent runId
-      parentRunId: currentContext?.parentRunId,
-
-      // create new runId
-      userId,
-      userProps,
-    }
-
-    // Call function with runId into context
-    return ctx.callAsync(context, async () => {
-      return func(...args)
-    })
+  const context = {
+    // conserve parent runId
+    parentRunId: currentContext?.parentRunId,
+    // use the provided userId and userProps
+    userId,
+    userProps,
   }
 
-  return wrappedFn as T
+  return ctx.callAsync(context, async () => {
+    // Wait for the original promise to resolve/reject
+    return await originalPromise
+  })
 }
 
 export default {

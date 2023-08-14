@@ -31,8 +31,8 @@ const TranslatorAgent = async (query: string) => {
 
 // By wrapping the executor, we automatically track all input, outputs and errors
 // And tools and logs will be tied to the correct agent
-const translate = monitor.wrapAgent(TranslatorAgent).identify("user123")
+const translate = monitor.wrapAgent(TranslatorAgent)
 
-translate("When was the french revolution?").then((res) => {
-  console.log(res) // "Bonjour, comment allez-vous?"
-})
+const res = await translate("White house").identify("user123")
+
+console.log(res)
