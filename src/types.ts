@@ -62,21 +62,28 @@ export interface ChatMessage {
   [key: string]: cJSON
 }
 
-export type WrappableFn = (...args: any[]) => Promise<any>
+export type WrappableFn = (...args: any[]) => any
 
 // export type WrappedFn<T extends WrappableFn> = T & {
 //   identify: (userId: string, userProps?: cJSON) => T
 // }
 
 // Create a promise that also has a .identify() property returning the OG promise
-export type WrappedPromise<T extends WrappableFn> = Promise<ReturnType<T>> & {
-  identify: (userId: string, userProps?: cJSON) => WrappedPromise<T>
-}
+// export type WrappedPromise<T extends WrappableFn> = Promise<ReturnType<T>> & {
+//   identify: (userId: string, userProps?: cJSON) => WrappedPromise<T>
+// }
+
+export type Identify<T extends WrappableFn> = (
+  userId: string,
+  userProps?: cJSON
+) => ReturnType<T>
 
 // Create a type for the function returning that promise
 export type WrappedFn<T extends WrappableFn> = (
   ...args: Parameters<T>
-) => WrappedPromise<T>
+) => Promise<ReturnType<T>> & {
+  identify: Identify<T>
+}
 
 export type WrapExtras = {
   name?: string

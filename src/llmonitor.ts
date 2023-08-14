@@ -21,55 +21,10 @@ import {
   cJSON,
 } from "./types"
 
-import chainable from "./chainable"
-
 import { monitorLangchainLLM, monitorLangchainTool } from "src/langchain"
 import { monitorOpenAi } from "src/openai"
 
 import ctx from "./context"
-
-class ThenableWrapper<T extends WrappableFn>
-  implements PromiseLike<ReturnType<T>>
-{
-  private _promise: Promise<ReturnType<T>>
-  private _func: WrappedFn<T>
-
-  constructor(promise: Promise<ReturnType<T>>, func: WrappedFn<T>) {
-    this._promise = promise
-    this._func = func
-  }
-
-  then<TResult1 = ReturnType<T>, TResult2 = never>(
-    onfulfilled?:
-      | ((value: ReturnType<T>) => TResult1 | PromiseLike<TResult1>)
-      | null,
-    onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null
-  ): PromiseLike<TResult1 | TResult2> {
-    return this._promise.then(onfulfilled, onrejected)
-  }
-
-  catch<TResult = never>(
-    onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | null
-  ): PromiseLike<ReturnType<T> | TResult> {
-    return this._promise.catch(onrejected)
-  }
-
-  finally(onfinally?: (() => void) | null): PromiseLike<ReturnType<T>> {
-    return this._promise.finally(onfinally)
-  }
-
-  identify(userId: string, userProps?: cJSON): ThenableWrapper<T> {
-    const identifiedFunc = chainable.identify.call(
-      this._func,
-      userId,
-      userProps
-    )
-    return new ThenableWrapper(
-      identifiedFunc(...this._func.args),
-      identifiedFunc
-    )
-  }
-}
 
 class LLMonitor {
   appId?: string
@@ -198,20 +153,20 @@ class LLMonitor {
     }
   }
 
+  // TODO: refactor this to be cleaner
+  // I'll admit to not fully understand what's going on here
   private wrap<T extends WrappableFn>(
     type: EventType,
     func: T,
     params?: WrapParams<T>
-  ): WrappedFn<T> & { identify?: typeof identify } {
-    // ... rest of your code ...
-
-    const wrappedFn: WrappedFn<T> & { identify?: typeof identify } = (
-      ...args: Parameters<T>
-    ) => {
+  ): WrappedFn<T> {
+    const wrappedFn = (...args: Parameters<T>) => {
       // Keep a reference to the execution context
       let executeOriginalPromise = () =>
-        this.executeFunction(type, func, params, args)
+        this.executeWrappedFunction(type, func, args, params)
 
+      // Because Promises are immutable, we need to wrap all their methods
+      // To add another one
       const result = {
         then: (onFulfilled, onRejected) =>
           executeOriginalPromise().then(onFulfilled, onRejected),
@@ -223,11 +178,12 @@ class LLMonitor {
             this.executeIdentifiedFunction(
               type,
               func,
-              params,
               args,
               userId,
-              userProps
+              userProps,
+              params
             )
+
           return result
         },
       }
@@ -235,15 +191,15 @@ class LLMonitor {
       return result
     }
 
-    return wrappedFn
+    return wrappedFn as WrappedFn<T>
   }
 
   // Extract the actual execution logic into a function
-  private async executeFunction<T extends WrappableFn>(
+  private async executeWrappedFunction<T extends WrappableFn>(
     type: EventType,
     func: T,
-    params?: WrapParams<T>,
-    args: Parameters<T>
+    args: Parameters<T>,
+    params?: WrapParams<T>
   ): Promise<ReturnType<T>> {
     // Generate a random ID for this run (will be injected into the context)
     const runId = crypto.randomUUID()
@@ -324,12 +280,11 @@ class LLMonitor {
   private async executeIdentifiedFunction<T extends WrappableFn>(
     type: EventType,
     func: T,
-    params?: WrapParams<T>,
     args: Parameters<T>,
     userId: string,
-    userProps?: cJSON
+    userProps?: cJSON,
+    params?: WrapParams<T>
   ): Promise<ReturnType<T>> {
-    // Update context or whatever else is needed here
     const currentContext = ctx.tryUse()
 
     const context = {
@@ -338,14 +293,15 @@ class LLMonitor {
       userProps,
     }
 
-    return await ctx.callAsync(context, async () => {
-      return this.executeFunction(type, func, params, args)
+    return ctx.callAsync(context, async () => {
+      return this.executeWrappedFunction(type, func, args, params)
     })
   }
 
   /**
    * Wrap an agent's Promise to track it's input, results and any errors.
    * @param {Promise} func - Agent function
+   * @param {WrapParams} params - Wrap params
    */
   wrapAgent<T extends WrappableFn>(
     func: T,

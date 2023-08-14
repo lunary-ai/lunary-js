@@ -16,7 +16,7 @@ const chat = new ChatOpenAI({
   tags: ["test-tag"],
 })
 
-const TranslatorAgent = async (query: string) => {
+const TranslatorAgent = async (query: string): Promise<string> => {
   const res = await chat.call([
     new SystemMessage(
       "You are a translator agent that hides jokes in each translation."
