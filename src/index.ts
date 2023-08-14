@@ -8,7 +8,7 @@ type ExtractMethods<T> = PickMatching<T, Function>
 type Monitor = LLMonitor["monitor"] & ExtractMethods<LLMonitor>
 
 const monitor: Monitor = (...args) =>
-  llmonitor.monitor.apply(llmonitor, [...args])
+  llmonitor.monitor.bind(llmonitor).apply(llmonitor, [...args])
 
 // It's safer to attach the methods manually because we get typesafety
 monitor.load = llmonitor.load.bind(llmonitor)

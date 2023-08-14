@@ -4,19 +4,19 @@ import { HumanMessage, SystemMessage } from "langchain/schema"
 
 import monitor from "../src"
 
-monitor.load({
-  log: true,
-})
+// monitor.load({
+//   log: true,
+// })
 
 monitor(ChatOpenAI)
 
 const chat = new ChatOpenAI({
   temperature: 0.2,
-  modelName: "gpt-4",
+  modelName: "gpt-3.5-turbo",
   tags: ["test-tag"],
 })
 
-const TranslatorAgent = async (query: string): Promise<string> => {
+async function TranslatorAgent(query) {
   const res = await chat.call([
     new SystemMessage(
       "You are a translator agent that hides jokes in each translation."
@@ -33,6 +33,4 @@ const TranslatorAgent = async (query: string): Promise<string> => {
 // And tools and logs will be tied to the correct agent
 const translate = monitor.wrapAgent(TranslatorAgent)
 
-const res = await translate("White house").identify("user123")
-
-console.log(res)
+translate("White house").identify("user123").catch(console.error)

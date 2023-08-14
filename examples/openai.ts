@@ -6,7 +6,7 @@ monitor.load({
   log: true,
 })
 
-monitor(OpenAIApi, { tags: ["dev"] })
+monitor(OpenAIApi, { tags: ["dev"], userId: "test-user" })
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,

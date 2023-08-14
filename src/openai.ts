@@ -12,7 +12,7 @@ export function monitorOpenAi(
   const originalCreateChatCompletion = baseClass.prototype.createChatCompletion
 
   // Replace the original method with the new one
-  baseClass.prototype.createChatCompletion = function (
+  baseClass.prototype.createChatCompletion = async function (
     ...args: Parameters<typeof originalCreateChatCompletion>
   ): ReturnType<typeof originalCreateChatCompletion> {
     // Use 'this' to reference the instance
@@ -38,6 +38,7 @@ export function monitorOpenAi(
         completion: data.usage?.completion_tokens,
         prompt: data.usage?.prompt_tokens,
       }),
+      ...params,
     })(...args)
   }
 }

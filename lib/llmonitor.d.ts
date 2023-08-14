@@ -1,23 +1,15 @@
-import { EntityToMonitor, LLMonitorOptions, WrapParams, WrappableFn, cJSON } from "./types";
+import { EntityToMonitor, LLMonitorOptions, WrapExtras, WrapParams, WrappableFn, WrappedFn } from "./types";
 declare class LLMonitor {
     appId?: string;
     logConsole?: boolean;
     apiUrl?: string;
-    userId?: string;
-    userProps?: cJSON;
     private queue;
     private queueRunning;
     /**
      * @param {LLMonitorOptions} options
      */
     constructor();
-    load({ appId, log, apiUrl, userId, userProps }?: LLMonitorOptions): void;
-    /**
-     * Identify the user (optional)
-     * @param {string} userId - User ID
-     * @param {cJSON} userProps - User properties object
-     */
-    identify(userId: string, userProps?: cJSON): void;
+    load({ appId, log, apiUrl }?: LLMonitorOptions): void;
     /**
      * Attach LLMonitor to an entity (Langchain Chat/LLM/Tool classes, OpenAI class)
      * @param {EntityToMonitor | [EntityToMonitor]} entities - Entity or array of entities to monitor
@@ -26,39 +18,33 @@ declare class LLMonitor {
      * const chat = new ChatOpenAI({
      *   modelName: "gpt-3.5-turbo",
      * })
-     * monitor.attach(chat)
+     * monitor(chat)
      */
-    attach(entities: EntityToMonitor | EntityToMonitor[], { tags }?: {
-        tags?: string[];
-    }): void;
+    monitor(entities: EntityToMonitor | EntityToMonitor[], params?: WrapExtras): void;
     private trackEvent;
     private debouncedProcessQueue;
     private processQueue;
-    /**
-     * Wrap a Promise to track it's input, results and any errors.
-     * @param {EventType} type - Event type
-     * @param {Promise} func - Agent function
-     * @param {WrapParams} params - Wrap params
-     * @returns {Promise} - Wrapped promise
-     */
     private wrap;
+    private executeWrappedFunction;
+    private executeIdentifiedWrappedFunction;
     /**
      * Wrap an agent's Promise to track it's input, results and any errors.
      * @param {Promise} func - Agent function
+     * @param {WrapParams} params - Wrap params
      */
-    wrapAgent<T extends WrappableFn>(func: T, params?: WrapParams<T>): T;
+    wrapAgent<T extends WrappableFn>(func: T, params?: WrapParams<T>): WrappedFn<T>;
     /**
      * Wrap an tool's Promise to track it's input, results and any errors.
      * @param {Promise} func - Tool function
      * @param {WrapParams} params - Wrap params
      */
-    wrapTool<T extends WrappableFn>(func: T, params?: WrapParams<T>): T;
+    wrapTool<T extends WrappableFn>(func: T, params?: WrapParams<T>): WrappedFn<T>;
     /**
      * Wrap an model's Promise to track it's input, results and any errors.
      * @param {Promise} func - Model generation function
      * @param {WrapParams} params - Wrap params
      */
-    wrapModel<T extends WrappableFn>(func: T, params?: WrapParams<T>): T;
+    wrapModel<T extends WrappableFn>(func: T, params?: WrapParams<T>): WrappedFn<T>;
     /**
      * Use this to log any external action or tool you use.
      * @param {string} message - Log message

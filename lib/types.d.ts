@@ -8,8 +8,6 @@ export type cJSON = string | number | boolean | {
 } | Array<cJSON>;
 export interface LLMonitorOptions {
     appId?: string;
-    userId?: string;
-    userProps?: cJSON;
     apiUrl?: string;
     log?: boolean;
     name?: string;
@@ -50,15 +48,23 @@ export interface ChatMessage {
     function_call?: cJSON;
     [key: string]: cJSON;
 }
-export type WrappableFn = (...args: any[]) => Promise<any>;
-export type WrapParams<T extends WrappableFn> = {
+export type WrappableFn = (...args: any[]) => any;
+export type Identify<T extends WrappableFn> = (userId: string, userProps?: cJSON) => ReturnType<T>;
+export type WrappedFn<T extends WrappableFn> = (...args: Parameters<T>) => Promise<ReturnType<T>> & {
+    identify: Identify<T>;
+};
+export type WrapExtras = {
     name?: string;
+    extra?: cJSON;
+    tags?: string[];
+    userId?: string;
+    userProps?: cJSON;
+};
+export type WrapParams<T extends WrappableFn> = {
     inputParser?: (...args: Parameters<T>) => cJSON;
     extraParser?: (...args: Parameters<T>) => cJSON;
     nameParser?: (...args: Parameters<T>) => string;
     outputParser?: (result: Awaited<ReturnType<T>>) => cJSON;
     tokensUsageParser?: (result: Awaited<ReturnType<T>>) => TokenUsage;
-    extra?: cJSON;
-    tags?: string[];
-};
+} & WrapExtras;
 export type EntityToMonitor = typeof BaseLanguageModel | typeof BaseChatModel | typeof ChatOpenAI | typeof OpenAIApi | typeof Tool | typeof StructuredTool;

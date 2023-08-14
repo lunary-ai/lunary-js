@@ -172,19 +172,15 @@ class LLMonitor {
           executeOriginalPromise().then(onFulfilled, onRejected),
         catch: (onRejected) => executeOriginalPromise().catch(onRejected),
         finally: (onFinally) => executeOriginalPromise().finally(onFinally),
-        identify: (userId: string, userProps?: cJSON) => {
-          // Modify the execution context to include the user information
-          executeOriginalPromise = () =>
-            this.executeIdentifiedFunction(
-              type,
-              func,
-              args,
-              userId,
-              userProps,
-              params
-            )
-
-          return result
+        identify: (userId: string, userProps: cJSON) => {
+          return this.executeIdentifiedWrappedFunction(
+            type,
+            func,
+            args,
+            userId,
+            userProps,
+            params
+          )
         },
       }
 
@@ -276,8 +272,8 @@ class LLMonitor {
     }
   }
 
-  // Create a new function for the identified execution
-  private async executeIdentifiedFunction<T extends WrappableFn>(
+  // Run a wrap function injecting a userId and userProps into the context first
+  private async executeIdentifiedWrappedFunction<T extends WrappableFn>(
     type: EventType,
     func: T,
     args: Parameters<T>,

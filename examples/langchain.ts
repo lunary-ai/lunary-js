@@ -3,7 +3,9 @@ import { ChatOpenAI } from "langchain/chat_models/openai"
 import { HumanMessage, SystemMessage } from "langchain/schema"
 import monitor from "../src/index"
 
-monitor(ChatOpenAI)
+monitor.load({ log: true })
+
+monitor(ChatOpenAI, { userId: "test-user" })
 
 const chat = new ChatOpenAI({
   temperature: 0.2,
