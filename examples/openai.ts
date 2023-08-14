@@ -2,6 +2,10 @@ import "dotenv/config"
 import { Configuration, OpenAIApi } from "openai"
 import monitor from "../src/index"
 
+monitor.load({
+  log: true,
+})
+
 monitor(OpenAIApi, { tags: ["dev"] })
 
 const configuration = new Configuration({
@@ -19,6 +23,7 @@ async function main() {
       { role: "user", content: "Hello friend" },
     ],
   })
+  // .identify("user-123")
   console.log(chatCompletion.data.choices[0].message)
 }
 

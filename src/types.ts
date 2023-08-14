@@ -14,8 +14,6 @@ export type cJSON =
 
 export interface LLMonitorOptions {
   appId?: string
-  userId?: string
-  userProps?: cJSON
   apiUrl?: string
   log?: boolean
   name?: string
@@ -66,17 +64,25 @@ export interface ChatMessage {
 
 export type WrappableFn = (...args: any[]) => Promise<any>
 
-export type WrapParams<T extends WrappableFn> = {
+export type WrappedFn<T extends WrappableFn> = T & {
+  identify: (userId: string, userProps?: cJSON) => T
+}
+
+export type WrapExtras = {
   name?: string
+  extra?: cJSON
+  tags?: string[]
+  userId?: string
+  userProps?: cJSON
+}
+
+export type WrapParams<T extends WrappableFn> = {
   inputParser?: (...args: Parameters<T>) => cJSON
   extraParser?: (...args: Parameters<T>) => cJSON
   nameParser?: (...args: Parameters<T>) => string
-
   outputParser?: (result: Awaited<ReturnType<T>>) => cJSON
   tokensUsageParser?: (result: Awaited<ReturnType<T>>) => TokenUsage
-  extra?: cJSON
-  tags?: string[]
-}
+} & WrapExtras
 
 export type EntityToMonitor =
   | typeof BaseLanguageModel

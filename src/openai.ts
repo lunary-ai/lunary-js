@@ -1,17 +1,18 @@
 import { OpenAIApi } from "openai"
 import { cleanExtra, parseOpenaiMessage } from "src/utils"
 import LLMonitor from "./llmonitor"
+import { WrapExtras } from "./types"
 
 export function monitorOpenAi(
   baseClass: typeof OpenAIApi,
   llmonitor: LLMonitor,
-  tags?: string[]
+  params: WrapExtras
 ) {
   // Keep a reference to the original method
   const originalCreateChatCompletion = baseClass.prototype.createChatCompletion
 
   // Replace the original method with the new one
-  baseClass.prototype.createChatCompletion = async function (
+  baseClass.prototype.createChatCompletion = function (
     ...args: Parameters<typeof originalCreateChatCompletion>
   ): ReturnType<typeof originalCreateChatCompletion> {
     // Use 'this' to reference the instance
@@ -37,7 +38,6 @@ export function monitorOpenAi(
         completion: data.usage?.completion_tokens,
         prompt: data.usage?.prompt_tokens,
       }),
-      tags,
     })(...args)
   }
 }

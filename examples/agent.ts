@@ -4,6 +4,10 @@ import { HumanMessage, SystemMessage } from "langchain/schema"
 
 import monitor from "../src"
 
+monitor.load({
+  log: true,
+})
+
 monitor(ChatOpenAI)
 
 const chat = new ChatOpenAI({
@@ -12,12 +16,7 @@ const chat = new ChatOpenAI({
   tags: ["test-tag"],
 })
 
-monitor.identify("123", {
-  email: "my-user@example.org",
-})
-
-const TranslatorAgent = async (query) => {
-  console.log(query)
+const TranslatorAgent = async (query: string) => {
   const res = await chat.call([
     new SystemMessage(
       "You are a translator agent that hides jokes in each translation."
@@ -32,8 +31,8 @@ const TranslatorAgent = async (query) => {
 
 // By wrapping the executor, we automatically track all input, outputs and errors
 // And tools and logs will be tied to the correct agent
-const translate = monitor.wrapAgent(TranslatorAgent, { name: "translate" })
+const translate = monitor.wrapAgent(TranslatorAgent).identify("user123")
 
-translate("Hello, what's up").then((res) => {
+translate("When was the french revolution?").then((res) => {
   console.log(res) // "Bonjour, comment allez-vous?"
 })

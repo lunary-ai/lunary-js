@@ -3,12 +3,13 @@ import { Tool } from "langchain/tools"
 
 import LLMonitor from "src/llmonitor"
 import { cleanExtra, parseLangchainMessages } from "src/utils"
+import { WrapExtras } from "./types"
 
 // TODO: type with other chat models (not basechat/llm, but an union of all chat models)
 export function monitorLangchainLLM(
   baseClass: typeof ChatOpenAI,
   llmonitor: LLMonitor,
-  tags?: string[]
+  params: WrapExtras
 ) {
   // Keep a reference to the original method
   const originalGenerate = baseClass.prototype.generate
@@ -49,16 +50,16 @@ export function monitorLangchainLLM(
         prompt: llmOutput?.tokenUsage?.promptTokens,
       }),
       extra,
-      tags: tags || chat.tags,
+      ...params,
+      tags: params.tags || chat.tags,
     })(...args)
   }
-  // }
 }
 
 export function monitorLangchainTool(
   baseClass: typeof Tool,
   llmonitor: LLMonitor,
-  tags?: string[]
+  params: WrapExtras
 ) {
   // Keep a reference to the original method
   const originalCall = baseClass.prototype.call
@@ -75,7 +76,7 @@ export function monitorLangchainTool(
     return llmonitor.wrapTool(boundSuperCall, {
       name: this.name,
       inputParser: (arg) => (arg[0] instanceof Object ? arg[0].input : arg),
-      tags,
+      ...params,
     })(...args)
   }
 }

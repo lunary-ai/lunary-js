@@ -1,7 +1,7 @@
 {
   "name": "llmonitor",
-  "version": "0.4.3",
-  "description": "LLMonitor is an open-source logging and analytics platform for LLM-powered apps.",
+  "version": "0.4.4",
+  "description": "LLMonitor is an open-source monitoring and analytics platform for AI apps.",
   "main": "lib/index.js",
   "scripts": {
     "build": "esbuild src/index.ts --bundle --keep-names --platform=neutral --external:'node:async_hooks' --target=es2020 --outfile=lib/index.js",
@@ -14,14 +14,14 @@
     "semi": false
   },
   "devDependencies": {
+    "@types/node": "^20.5.0",
     "dotenv": "^16.3.1",
     "esbuild": "^0.17.19",
-    "langchain": "^0.0.124",
+    "langchain": "^0.0.127",
     "openai": "^3.3.0",
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@types/node": "^20.4.5",
     "unctx": "^2.3.1"
   }
 }

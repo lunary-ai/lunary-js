@@ -14,10 +14,13 @@ import {
   LLMonitorOptions,
   LogEvent,
   RunEvent,
+  WrapExtras,
   WrapParams,
   WrappableFn,
-  cJSON,
+  WrappedFn,
 } from "./types"
+
+import chainable from "./chainable"
 
 import { monitorLangchainLLM, monitorLangchainTool } from "src/langchain"
 import { monitorOpenAi } from "src/openai"
@@ -28,8 +31,6 @@ class LLMonitor {
   appId?: string
   logConsole?: boolean
   apiUrl?: string
-  userId?: string
-  userProps?: cJSON
 
   private queue: any[] = []
   private queueRunning: boolean = false
@@ -45,22 +46,10 @@ class LLMonitor {
     })
   }
 
-  load({ appId, log, apiUrl, userId, userProps }: LLMonitorOptions = {}) {
+  load({ appId, log, apiUrl }: LLMonitorOptions = {}) {
     if (appId) this.appId = appId
     if (log) this.logConsole = log
     if (apiUrl) this.apiUrl = apiUrl
-    if (userId) this.userId = userId
-    if (userProps) this.userProps = userProps
-  }
-
-  /**
-   * Identify the user (optional)
-   * @param {string} userId - User ID
-   * @param {cJSON} userProps - User properties object
-   */
-  identify(userId: string, userProps?: cJSON) {
-    this.userId = userId
-    this.userProps = userProps
   }
 
   /**
@@ -75,28 +64,24 @@ class LLMonitor {
    */
   monitor(
     entities: EntityToMonitor | EntityToMonitor[],
-    { tags }: { tags?: string[] } = {}
+    params: WrapExtras = {}
   ) {
     const llmonitor = this
 
     entities = Array.isArray(entities) ? entities : [entities]
 
-    entities.forEach((entity) => {
+    for (const entity of entities) {
       const entityName = entity.name
       const parentName = Object.getPrototypeOf(entity).name
 
       if (entityName === "OpenAIApi") {
-        monitorOpenAi(entity as any, llmonitor, tags)
+        monitorOpenAi(entity as any, llmonitor, params)
+      } else if (parentName === "BaseChatModel") {
+        monitorLangchainLLM(entity as any, llmonitor, params)
+      } else if (parentName === "Tool" || parentName === "StructuredTool") {
+        monitorLangchainTool(entity as any, llmonitor, params)
       }
-
-      if (parentName === "BaseChatModel") {
-        monitorLangchainLLM(entity as any, llmonitor, tags)
-      }
-
-      if (parentName === "Tool" || parentName === "StructuredTool") {
-        monitorLangchainTool(entity as any, llmonitor, tags)
-      }
-    })
+    }
   }
 
   private async trackEvent(
@@ -109,22 +94,21 @@ class LLMonitor {
 
     // Add 1ms to timestamp if it's the same/lower than the last event
     // Keep the order of events in case they are sent in the same millisecond
-
     let timestamp = Date.now()
     const lastEvent = this.queue?.[this.queue.length - 1]
     if (lastEvent?.timestamp >= timestamp) {
       timestamp = lastEvent.timestamp + 1
     }
 
-    const parentRunId = ctx.tryUse()
+    const context = ctx.tryUse()
 
     const eventData: Event = {
       event,
       type,
-      userId: this.userId,
-      userProps: this.userProps,
+      userId: context?.userId,
+      userProps: context?.userProps,
       app: this.appId,
-      parentRunId,
+      parentRunId: context?.parentRunId,
       timestamp,
       ...data,
     }
@@ -159,14 +143,15 @@ class LLMonitor {
 
       // Clear the events we just sent (don't clear it all in case new events were added while sending)
       this.queue = this.queue.slice(copy.length)
+
+      this.queueRunning = false
+
+      // If there are new events in the queue
+      if (this.queue.length) this.processQueue()
     } catch (error) {
+      this.queueRunning = false
       console.warn("Error sending event(s) to LLMonitor", error)
     }
-
-    this.queueRunning = false
-
-    // If there are new events in the queue
-    if (this.queue.length) this.processQueue()
   }
 
   /**
@@ -180,9 +165,10 @@ class LLMonitor {
     type: EventType,
     func: T,
     params?: WrapParams<T>
-  ): T {
-    // @ts-ignore TODO: fix this TS error
-    return async (...args: Parameters<T>): Promise<ReturnType<T>> => {
+  ): WrappedFn<T> {
+    const wrappedFn: WrappedFn<T> = (async (
+      ...args: Parameters<T>
+    ): Promise<ReturnType<T>> => {
       // Generate a random ID for this run (will be injected into the context)
       const runId = crypto.randomUUID()
 
@@ -191,8 +177,15 @@ class LLMonitor {
         ? params.nameParser(...args)
         : params?.name ?? func.name
 
-      const { inputParser, outputParser, tokensUsageParser, extra, tags } =
-        params || {}
+      const {
+        inputParser,
+        outputParser,
+        tokensUsageParser,
+        extra,
+        tags,
+        userId,
+        userProps,
+      } = params || {}
 
       // Get extra data from function or params
       const extraData = params?.extraParser
@@ -213,8 +206,17 @@ class LLMonitor {
       })
 
       try {
+        const currentContext = ctx.tryUse()
+
+        const context = {
+          parentRunId: runId,
+          // If we already have a userId/userProps in the context, use that
+          userId: userId || currentContext?.userId,
+          userProps: userProps || currentContext?.userProps,
+        }
+
         // Call function with runId into context
-        const output = await ctx.callAsync(runId, async () => {
+        const output = await ctx.callAsync(context, async () => {
           return func(...args)
         })
 
@@ -242,14 +244,21 @@ class LLMonitor {
 
         throw error
       }
-    }
+    }) as WrappedFn<T>
+
+    wrappedFn.identify = chainable.identify.bind(wrappedFn)
+
+    return wrappedFn
   }
 
   /**
    * Wrap an agent's Promise to track it's input, results and any errors.
    * @param {Promise} func - Agent function
    */
-  wrapAgent<T extends WrappableFn>(func: T, params?: WrapParams<T>): T {
+  wrapAgent<T extends WrappableFn>(
+    func: T,
+    params?: WrapParams<T>
+  ): WrappedFn<T> {
     return this.wrap("agent", func, params)
   }
 
@@ -258,7 +267,10 @@ class LLMonitor {
    * @param {Promise} func - Tool function
    * @param {WrapParams} params - Wrap params
    */
-  wrapTool<T extends WrappableFn>(func: T, params?: WrapParams<T>): T {
+  wrapTool<T extends WrappableFn>(
+    func: T,
+    params?: WrapParams<T>
+  ): WrappedFn<T> {
     return this.wrap("tool", func, params)
   }
 
@@ -267,8 +279,11 @@ class LLMonitor {
    * @param {Promise} func - Model generation function
    * @param {WrapParams} params - Wrap params
    */
-  wrapModel<T extends WrappableFn>(func: T, params?: WrapParams<T>): T {
-    return this.wrap("llm", func, params)
+  wrapModel<T extends WrappableFn>(
+    func: T,
+    params?: WrapParams<T>
+  ): WrappedFn<T> {
+    return this.wrap("llm", func, params) as WrappedFn<T>
   }
 
   /**
