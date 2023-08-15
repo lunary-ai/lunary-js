@@ -18,13 +18,13 @@ import {
   WrapParams,
   WrappableFn,
   WrappedFn,
-  cJSON,
 } from "./types"
 
-import { monitorLangchainLLM, monitorLangchainTool } from "src/langchain"
 import { monitorOpenAi } from "src/openai"
 
-import ctx from "./context"
+import { runIdCtx, userCtx } from "./context"
+import chainable from "./chainable"
+import { monitorLangchainLLM, monitorLangchainTool } from "./langchain"
 
 class LLMonitor {
   appId?: string
@@ -69,18 +69,19 @@ class LLMonitor {
 
     entities = Array.isArray(entities) ? entities : [entities]
 
-    for (const entity of entities) {
+    entities.forEach((entity) => {
       const entityName = entity.name
       const parentName = Object.getPrototypeOf(entity).name
 
       if (entityName === "OpenAIApi") {
+        console.log(`wrap ${entityName} through entityProxy`)
         monitorOpenAi(entity as any, llmonitor, params)
       } else if (parentName === "BaseChatModel") {
         monitorLangchainLLM(entity as any, llmonitor, params)
       } else if (parentName === "Tool" || parentName === "StructuredTool") {
         monitorLangchainTool(entity as any, llmonitor, params)
       }
-    }
+    })
   }
 
   private async trackEvent(
@@ -99,15 +100,16 @@ class LLMonitor {
       timestamp = lastEvent.timestamp + 1
     }
 
-    const context = ctx.tryUse()
+    const parentRunId = runIdCtx.tryUse()
+    const user = userCtx.tryUse()
 
     const eventData: Event = {
       event,
       type,
-      userId: context?.userId,
-      userProps: context?.userProps,
+      userId: user?.userId,
+      userProps: user?.userProps,
       app: this.appId,
-      parentRunId: context?.parentRunId,
+      parentRunId,
       timestamp,
       ...data,
     }
@@ -153,38 +155,49 @@ class LLMonitor {
     }
   }
 
-  // TODO: refactor this to be cleaner
-  // I'll admit to not fully understand what's going on here
   private wrap<T extends WrappableFn>(
     type: EventType,
     func: T,
     params?: WrapParams<T>
   ): WrappedFn<T> {
-    const wrappedFn = (...args: Parameters<T>) => {
-      // Keep a reference to the execution context
-      let executeOriginalPromise = () =>
-        this.executeWrappedFunction(type, func, args, params)
+    const llmonitor = this
 
-      // Because Promises are immutable, we need to wrap all their methods
-      // To add another one
-      const result = {
-        then: (onFulfilled, onRejected) =>
-          executeOriginalPromise().then(onFulfilled, onRejected),
-        catch: (onRejected) => executeOriginalPromise().catch(onRejected),
-        finally: (onFinally) => executeOriginalPromise().finally(onFinally),
-        identify: (userId: string, userProps: cJSON) => {
-          return this.executeIdentifiedWrappedFunction(
-            type,
-            func,
-            args,
-            userId,
-            userProps,
-            params
-          )
-        },
+    const wrappedFn = (...args: Parameters<T>) => {
+      // Don't pass the function directly to proxy to avoid it being called directly
+      const callInfo = {
+        type,
+        func,
+        args,
+        params,
       }
 
-      return result
+      const proxy = new Proxy(callInfo, {
+        get: function (target, prop) {
+          if (prop === "identify") {
+            return chainable.identify.bind({
+              target,
+              next: llmonitor.executeWrappedFunction.bind(llmonitor),
+            })
+          }
+
+          const promise = llmonitor.executeWrappedFunction(target)
+
+          if (prop === "then") {
+            return (onFulfilled, onRejected) =>
+              promise.then(onFulfilled, onRejected)
+          }
+
+          if (prop === "catch") {
+            return (onRejected) => promise.catch(onRejected)
+          }
+
+          if (prop === "finally") {
+            return (onFinally) => promise.finally(onFinally)
+          }
+        },
+      }) as unknown
+
+      return proxy
     }
 
     return wrappedFn as WrappedFn<T>
@@ -192,11 +205,10 @@ class LLMonitor {
 
   // Extract the actual execution logic into a function
   private async executeWrappedFunction<T extends WrappableFn>(
-    type: EventType,
-    func: T,
-    args: Parameters<T>,
-    params?: WrapParams<T>
+    target
   ): Promise<ReturnType<T>> {
+    const { type, args, func, params } = target
+
     // Generate a random ID for this run (will be injected into the context)
     const runId = crypto.randomUUID()
 
@@ -232,17 +244,8 @@ class LLMonitor {
     })
 
     try {
-      const currentContext = ctx.tryUse()
-
-      const context = {
-        parentRunId: runId,
-        // If we already have a userId/userProps in the context, use that
-        userId: userId || currentContext?.userId,
-        userProps: userProps || currentContext?.userProps,
-      }
-
-      // Call function with runId into context
-      const output = await ctx.callAsync(context, async () => {
+      // Inject runId into context
+      const output = await runIdCtx.callAsync(runId, async () => {
         return func(...args)
       })
 
@@ -270,28 +273,6 @@ class LLMonitor {
 
       throw error
     }
-  }
-
-  // Run a wrap function injecting a userId and userProps into the context first
-  private async executeIdentifiedWrappedFunction<T extends WrappableFn>(
-    type: EventType,
-    func: T,
-    args: Parameters<T>,
-    userId: string,
-    userProps?: cJSON,
-    params?: WrapParams<T>
-  ): Promise<ReturnType<T>> {
-    const currentContext = ctx.tryUse()
-
-    const context = {
-      parentRunId: currentContext?.parentRunId,
-      userId,
-      userProps,
-    }
-
-    return ctx.callAsync(context, async () => {
-      return this.executeWrappedFunction(type, func, args, params)
-    })
   }
 
   /**

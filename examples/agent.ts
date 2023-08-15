@@ -4,9 +4,9 @@ import { HumanMessage, SystemMessage } from "langchain/schema"
 
 import monitor from "../src"
 
-// monitor.load({
-//   log: true,
-// })
+monitor.load({
+  log: true,
+})
 
 monitor(ChatOpenAI)
 
@@ -16,7 +16,7 @@ const chat = new ChatOpenAI({
   tags: ["test-tag"],
 })
 
-async function TranslatorAgent(query) {
+async function TranslatorAgent(query: string): Promise<string> {
   const res = await chat.call([
     new SystemMessage(
       "You are a translator agent that hides jokes in each translation."
@@ -33,4 +33,5 @@ async function TranslatorAgent(query) {
 // And tools and logs will be tied to the correct agent
 const translate = monitor.wrapAgent(TranslatorAgent)
 
-translate("White house").identify("user123").catch(console.error)
+const res = await translate("White house").identify("user123")
+console.log(res)

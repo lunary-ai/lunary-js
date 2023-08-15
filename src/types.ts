@@ -64,15 +64,6 @@ export interface ChatMessage {
 
 export type WrappableFn = (...args: any[]) => any
 
-// export type WrappedFn<T extends WrappableFn> = T & {
-//   identify: (userId: string, userProps?: cJSON) => T
-// }
-
-// Create a promise that also has a .identify() property returning the OG promise
-// export type WrappedPromise<T extends WrappableFn> = Promise<ReturnType<T>> & {
-//   identify: (userId: string, userProps?: cJSON) => WrappedPromise<T>
-// }
-
 export type Identify<T extends WrappableFn> = (
   userId: string,
   userProps?: cJSON

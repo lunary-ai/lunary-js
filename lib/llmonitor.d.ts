@@ -26,7 +26,6 @@ declare class LLMonitor {
     private processQueue;
     private wrap;
     private executeWrappedFunction;
-    private executeIdentifiedWrappedFunction;
     /**
      * Wrap an agent's Promise to track it's input, results and any errors.
      * @param {Promise} func - Agent function
