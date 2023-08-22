@@ -1,5 +1,5 @@
 import { OpenAIApi } from "openai"
-import { cleanExtra, parseOpenaiMessage } from "src/utils"
+import { cleanExtra, parseOpenaiMessage } from "./utils"
 import LLMonitor from "./llmonitor"
 import { WrapExtras } from "./types"
 

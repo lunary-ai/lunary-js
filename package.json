@@ -1,27 +1,34 @@
 {
-  "name": "llmonitor",
-  "version": "0.4.5",
+  "name": "@hughcrt/llmonitor",
+  "version": "0.0.7",
   "description": "LLMonitor is an open-source monitoring and analytics platform for AI apps.",
-  "main": "lib/index.js",
+  "main": "dist/index.mjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --keep-names --platform=neutral --external:'node:async_hooks' --target=es2020 --outfile=lib/index.js",
-    "types": "tsc --emitDeclarationOnly"
+    "build": "rm -rf ./dist && tsup src/index.ts --format esm,cjs --dts && rm dist/index.d.mts"
   },
   "author": "llmonitor",
-  "type": "module",
   "license": "Apache-2.0",
-  "prettier": {
-    "semi": false
-  },
-  "devDependencies": {
-    "@types/node": "^20.5.0",
-    "dotenv": "^16.3.1",
-    "esbuild": "^0.17.19",
-    "langchain": "^0.0.127",
-    "openai": "^3.3.0",
-    "typescript": "^5.0.4"
-  },
   "dependencies": {
     "unctx": "^2.3.1"
+  },
+  "devDependencies": {
+    "@swc/cli": "^0.1.62",
+    "@swc/core": "^1.3.78",
+    "@types/node": "^20.5.1",
+    "dotenv": "^16.3.1",
+    "langchain": "^0.0.131",
+    "openai": "^3.0.0",
+    "tsup": "^7.2.0",
+    "typescript": "^5.1.6"
+  },
+  "peerDependencies": {
+    "openai": "^4.0.1"
+  },
+  "peerDependenciesMeta": {
+    "openai": {
+      "optional": true
+    }
   }
 }

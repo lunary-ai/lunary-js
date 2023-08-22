@@ -1,4 +1,43 @@
-import { EntityToMonitor, LLMonitorOptions, WrapExtras, WrapParams, WrappableFn, WrappedFn } from "./types";
+import { BaseChatModel } from 'langchain/chat_models/base';
+import { BaseLanguageModel } from 'langchain/base_language';
+import { Tool, StructuredTool } from 'langchain/tools';
+import { OpenAIApi } from 'openai';
+import { ChatOpenAI } from 'langchain/chat_models/openai';
+
+type cJSON = string | number | boolean | {
+    [x: string]: cJSON;
+} | Array<cJSON>;
+interface LLMonitorOptions {
+    appId?: string;
+    apiUrl?: string;
+    log?: boolean;
+    name?: string;
+}
+type TokenUsage = {
+    completion: number;
+    prompt: number;
+};
+type WrappableFn = (...args: any[]) => any;
+type Identify<T extends WrappableFn> = (userId: string, userProps?: cJSON) => ReturnType<T>;
+type WrappedFn<T extends WrappableFn> = (...args: Parameters<T>) => Promise<ReturnType<T>> & {
+    identify: Identify<T>;
+};
+type WrapExtras = {
+    name?: string;
+    extra?: cJSON;
+    tags?: string[];
+    userId?: string;
+    userProps?: cJSON;
+};
+type WrapParams<T extends WrappableFn> = {
+    inputParser?: (...args: Parameters<T>) => cJSON;
+    extraParser?: (...args: Parameters<T>) => cJSON;
+    nameParser?: (...args: Parameters<T>) => string;
+    outputParser?: (result: Awaited<ReturnType<T>>) => cJSON;
+    tokensUsageParser?: (result: Awaited<ReturnType<T>>) => TokenUsage;
+} & WrapExtras;
+type EntityToMonitor = typeof BaseLanguageModel | typeof BaseChatModel | typeof ChatOpenAI | typeof OpenAIApi | typeof Tool | typeof StructuredTool;
+
 declare class LLMonitor {
     appId?: string;
     logConsole?: boolean;
@@ -75,4 +114,12 @@ declare class LLMonitor {
      */
     error(message: string | any, error?: any): void;
 }
-export default LLMonitor;
+
+type PickMatching<T, V> = {
+    [K in keyof T as T[K] extends V ? K : never]: T[K];
+};
+type ExtractMethods<T> = PickMatching<T, Function>;
+type Monitor = LLMonitor["monitor"] & ExtractMethods<LLMonitor>;
+declare const monitor: Monitor;
+
+export { monitor as default };

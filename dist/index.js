@@ -1,13 +1,30 @@
 var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
 };
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+// src/index.ts
+var src_exports = {};
+__export(src_exports, {
+  default: () => src_default
+});
+module.exports = __toCommonJS(src_exports);
 
 // src/utils.ts
-var checkEnv = /* @__PURE__ */ __name((variable) => {
+var checkEnv = (variable) => {
   if (typeof process !== "undefined" && process.env?.[variable]) {
     return process.env[variable];
   }
@@ -15,11 +32,11 @@ var checkEnv = /* @__PURE__ */ __name((variable) => {
     return Deno.env.get(variable);
   }
   return void 0;
-}, "checkEnv");
-var formatLog = /* @__PURE__ */ __name((event) => {
+};
+var formatLog = (event) => {
   return JSON.stringify(event, null, 2);
-}, "formatLog");
-var debounce = /* @__PURE__ */ __name((func, timeout = 500) => {
+};
+var debounce = (func, timeout = 500) => {
   let timer;
   return (...args) => {
     clearTimeout(timer);
@@ -27,8 +44,8 @@ var debounce = /* @__PURE__ */ __name((func, timeout = 500) => {
       func.apply(void 0, args);
     }, timeout);
   };
-}, "debounce");
-var cleanError = /* @__PURE__ */ __name((error) => {
+};
+var cleanError = (error) => {
   if (typeof error === "string")
     return {
       message: error
@@ -45,10 +62,10 @@ var cleanError = /* @__PURE__ */ __name((error) => {
       stack: error.stack
     };
   }
-}, "cleanError");
-var cleanExtra = /* @__PURE__ */ __name((extra) => {
+};
+var cleanExtra = (extra) => {
   return Object.fromEntries(Object.entries(extra).filter(([_, v]) => v != null));
-}, "cleanExtra");
+};
 function getArgumentNames(func) {
   let str = func.toString();
   str = str.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/(.)*/g, "").replace(/{[\s\S]*}/, "").replace(/=>/g, "").trim();
@@ -63,17 +80,16 @@ function getArgumentNames(func) {
   });
   return params;
 }
-__name(getArgumentNames, "getArgumentNames");
-var getFunctionInput = /* @__PURE__ */ __name((func, args) => {
+var getFunctionInput = (func, args) => {
   const argNames = getArgumentNames(func);
   const input = argNames.length === 1 ? args[0] : argNames.reduce((obj, argName, index) => {
     obj[argName] = args[index];
     return obj;
   }, {});
   return input;
-}, "getFunctionInput");
-var parseLangchainMessages = /* @__PURE__ */ __name((input) => {
-  const parseRole = /* @__PURE__ */ __name((id) => {
+};
+var parseLangchainMessages = (input) => {
+  const parseRole = (id) => {
     const roleHint = id[id.length - 1];
     if (roleHint.includes("Human"))
       return "user";
@@ -83,8 +99,8 @@ var parseLangchainMessages = /* @__PURE__ */ __name((input) => {
       return "ai";
     if (roleHint.includes("Function"))
       return "function";
-  }, "parseRole");
-  const parseMessage = /* @__PURE__ */ __name((raw) => {
+  };
+  const parseMessage = (raw) => {
     if (typeof raw === "string")
       return raw;
     if (raw.message)
@@ -103,13 +119,13 @@ var parseLangchainMessages = /* @__PURE__ */ __name((input) => {
     } catch (e) {
       return message.text ?? message;
     }
-  }, "parseMessage");
+  };
   if (Array.isArray(input)) {
     return input.length === 1 ? parseLangchainMessages(input[0]) : input.map(parseMessage);
   }
   return parseMessage(input);
-}, "parseLangchainMessages");
-var parseOpenaiMessage = /* @__PURE__ */ __name((message) => {
+};
+var parseOpenaiMessage = (message) => {
   if (!message)
     return void 0;
   const { role, content, name, function_call } = message;
@@ -118,7 +134,7 @@ var parseOpenaiMessage = /* @__PURE__ */ __name((message) => {
     text: content,
     function_call
   };
-}, "parseOpenaiMessage");
+};
 
 // src/openai.ts
 function monitorOpenAi(baseClass, llmonitor2, params) {
@@ -149,116 +165,17 @@ function monitorOpenAi(baseClass, llmonitor2, params) {
     }
   });
 }
-__name(monitorOpenAi, "monitorOpenAi");
-
-// node_modules/unctx/dist/index.mjs
-function createContext(opts = {}) {
-  let currentInstance;
-  let isSingleton = false;
-  const checkConflict = /* @__PURE__ */ __name((instance) => {
-    if (currentInstance && currentInstance !== instance) {
-      throw new Error("Context conflict");
-    }
-  }, "checkConflict");
-  let als;
-  if (opts.asyncContext) {
-    const _AsyncLocalStorage = opts.AsyncLocalStorage || globalThis.AsyncLocalStorage;
-    if (_AsyncLocalStorage) {
-      als = new _AsyncLocalStorage();
-    } else {
-      console.warn("[unctx] `AsyncLocalStorage` is not provided.");
-    }
-  }
-  const _getCurrentInstance = /* @__PURE__ */ __name(() => {
-    if (als && currentInstance === void 0) {
-      const instance = als.getStore();
-      if (instance !== void 0) {
-        return instance;
-      }
-    }
-    return currentInstance;
-  }, "_getCurrentInstance");
-  return {
-    use: () => {
-      const _instance = _getCurrentInstance();
-      if (_instance === void 0) {
-        throw new Error("Context is not available");
-      }
-      return _instance;
-    },
-    tryUse: () => {
-      return _getCurrentInstance();
-    },
-    set: (instance, replace) => {
-      if (!replace) {
-        checkConflict(instance);
-      }
-      currentInstance = instance;
-      isSingleton = true;
-    },
-    unset: () => {
-      currentInstance = void 0;
-      isSingleton = false;
-    },
-    call: (instance, callback) => {
-      checkConflict(instance);
-      currentInstance = instance;
-      try {
-        return als ? als.run(instance, callback) : callback();
-      } finally {
-        if (!isSingleton) {
-          currentInstance = void 0;
-        }
-      }
-    },
-    async callAsync(instance, callback) {
-      currentInstance = instance;
-      const onRestore = /* @__PURE__ */ __name(() => {
-        currentInstance = instance;
-      }, "onRestore");
-      const onLeave = /* @__PURE__ */ __name(() => currentInstance === instance ? onRestore : void 0, "onLeave");
-      asyncHandlers.add(onLeave);
-      try {
-        const r = als ? als.run(instance, callback) : callback();
-        if (!isSingleton) {
-          currentInstance = void 0;
-        }
-        return await r;
-      } finally {
-        asyncHandlers.delete(onLeave);
-      }
-    }
-  };
-}
-__name(createContext, "createContext");
-function createNamespace(defaultOpts = {}) {
-  const contexts = {};
-  return {
-    get(key, opts = {}) {
-      if (!contexts[key]) {
-        contexts[key] = createContext({ ...defaultOpts, ...opts });
-      }
-      contexts[key];
-      return contexts[key];
-    }
-  };
-}
-__name(createNamespace, "createNamespace");
-var _globalThis = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : typeof global !== "undefined" ? global : typeof window !== "undefined" ? window : {};
-var globalKey = "__unctx__";
-var defaultNamespace = _globalThis[globalKey] || (_globalThis[globalKey] = createNamespace());
-var asyncHandlersKey = "__unctx_async_handlers__";
-var asyncHandlers = _globalThis[asyncHandlersKey] || (_globalThis[asyncHandlersKey] = /* @__PURE__ */ new Set());
 
 // src/context.ts
-import { AsyncLocalStorage } from "node:async_hooks";
-var runIdCtx = createContext({
+var import_unctx = require("unctx");
+var import_node_async_hooks = require("async_hooks");
+var runIdCtx = (0, import_unctx.createContext)({
   asyncContext: true,
-  AsyncLocalStorage
+  AsyncLocalStorage: import_node_async_hooks.AsyncLocalStorage
 });
-var userCtx = createContext({
+var userCtx = (0, import_unctx.createContext)({
   asyncContext: true,
-  AsyncLocalStorage
+  AsyncLocalStorage: import_node_async_hooks.AsyncLocalStorage
 });
 
 // src/chainable.ts
@@ -272,7 +189,6 @@ async function identify(userId, userProps) {
     return next(target);
   });
 }
-__name(identify, "identify");
 var chainable_default = {
   identify
 };
@@ -311,7 +227,6 @@ function monitorLangchainLLM(baseClass, llmonitor2, params) {
     }
   });
 }
-__name(monitorLangchainLLM, "monitorLangchainLLM");
 function monitorLangchainTool(baseClass, llmonitor2, params) {
   const originalCall = baseClass.prototype.call;
   Object.assign(baseClass.prototype, {
@@ -325,21 +240,18 @@ function monitorLangchainTool(baseClass, llmonitor2, params) {
     }
   });
 }
-__name(monitorLangchainTool, "monitorLangchainTool");
 
 // src/llmonitor.ts
 var LLMonitor = class {
+  appId;
+  logConsole;
+  apiUrl;
+  queue = [];
+  queueRunning = false;
   /**
    * @param {LLMonitorOptions} options
    */
   constructor() {
-    __publicField(this, "appId");
-    __publicField(this, "logConsole");
-    __publicField(this, "apiUrl");
-    __publicField(this, "queue", []);
-    __publicField(this, "queueRunning", false);
-    // Wait 500ms to allow other events to be added to the queue
-    __publicField(this, "debouncedProcessQueue", debounce(() => this.processQueue()));
     this.load({
       appId: checkEnv("LLMONITOR_APP_ID"),
       log: false,
@@ -406,6 +318,8 @@ var LLMonitor = class {
     this.queue.push(eventData);
     this.debouncedProcessQueue();
   }
+  // Wait 500ms to allow other events to be added to the queue
+  debouncedProcessQueue = debounce(() => this.processQueue());
   async processQueue() {
     if (!this.queue.length || this.queueRunning)
       return;
@@ -430,7 +344,7 @@ var LLMonitor = class {
   }
   wrap(type, func, params) {
     const llmonitor2 = this;
-    const wrappedFn = /* @__PURE__ */ __name((...args) => {
+    const wrappedFn = (...args) => {
       const callInfo = {
         type,
         func,
@@ -458,7 +372,7 @@ var LLMonitor = class {
         }
       });
       return proxy;
-    }, "wrappedFn");
+    };
     return wrappedFn;
   }
   // Extract the actual execution logic into a function
@@ -583,12 +497,11 @@ var LLMonitor = class {
     });
   }
 };
-__name(LLMonitor, "LLMonitor");
 var llmonitor_default = LLMonitor;
 
 // src/index.ts
 var llmonitor = new llmonitor_default();
-var monitor = /* @__PURE__ */ __name((...args) => llmonitor.monitor.bind(llmonitor).apply(llmonitor, [...args]), "monitor");
+var monitor = (...args) => llmonitor.monitor.bind(llmonitor).apply(llmonitor, [...args]);
 monitor.load = llmonitor.load.bind(llmonitor);
 monitor.monitor = llmonitor.monitor.bind(llmonitor);
 monitor.wrapAgent = llmonitor.wrapAgent.bind(llmonitor);
@@ -599,6 +512,3 @@ monitor.log = llmonitor.log.bind(llmonitor);
 monitor.warn = llmonitor.warn.bind(llmonitor);
 monitor.error = llmonitor.error.bind(llmonitor);
 var src_default = monitor;
-export {
-  src_default as default
-};

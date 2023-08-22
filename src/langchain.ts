@@ -1,8 +1,8 @@
 import { ChatOpenAI } from "langchain/chat_models/openai"
 import { Tool } from "langchain/tools"
 
-import LLMonitor from "src/llmonitor"
-import { cleanExtra, parseLangchainMessages } from "src/utils"
+import LLMonitor from "./llmonitor"
+import { cleanExtra, parseLangchainMessages } from "./utils"
 import { WrapExtras } from "./types"
 
 // TODO: type with other chat models (not basechat/llm, but an union of all chat models)

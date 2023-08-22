@@ -20,11 +20,13 @@ import {
   WrappedFn,
 } from "./types"
 
-import { monitorOpenAi } from "src/openai"
+import { monitorOpenAi } from "./openai"
 
 import { runIdCtx, userCtx } from "./context"
 import chainable from "./chainable"
 import { monitorLangchainLLM, monitorLangchainTool } from "./langchain"
+
+// import { OpenAIApi } from "openai"
 
 class LLMonitor {
   appId?: string
