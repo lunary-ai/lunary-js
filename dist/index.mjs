@@ -38,9 +38,6 @@ var cleanError = (error) => {
     };
   }
 };
-var cleanExtra = (extra) => {
-  return Object.fromEntries(Object.entries(extra).filter(([_, v]) => v != null));
-};
 function getArgumentNames(func) {
   let str = func.toString();
   str = str.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/(.)*/g, "").replace(/{[\s\S]*}/, "").replace(/=>/g, "").trim();
@@ -63,83 +60,6 @@ var getFunctionInput = (func, args) => {
   }, {});
   return input;
 };
-var parseLangchainMessages = (input) => {
-  const parseRole = (id) => {
-    const roleHint = id[id.length - 1];
-    if (roleHint.includes("Human"))
-      return "user";
-    if (roleHint.includes("System"))
-      return "system";
-    if (roleHint.includes("AI"))
-      return "ai";
-    if (roleHint.includes("Function"))
-      return "function";
-  };
-  const parseMessage = (raw) => {
-    if (typeof raw === "string")
-      return raw;
-    if (raw.message)
-      return parseMessage(raw.message);
-    const message = JSON.parse(JSON.stringify(raw));
-    try {
-      const role = parseRole(message.id);
-      const obj = message.kwargs;
-      const text = message.text ?? obj.content;
-      const kwargs = obj.additionalKwargs;
-      return {
-        role,
-        text,
-        ...kwargs
-      };
-    } catch (e) {
-      return message.text ?? message;
-    }
-  };
-  if (Array.isArray(input)) {
-    return input.length === 1 ? parseLangchainMessages(input[0]) : input.map(parseMessage);
-  }
-  return parseMessage(input);
-};
-var parseOpenaiMessage = (message) => {
-  if (!message)
-    return void 0;
-  const { role, content, name, function_call } = message;
-  return {
-    role: role.replace("assistant", "ai"),
-    text: content,
-    function_call
-  };
-};
-
-// src/openai.ts
-function monitorOpenAi(baseClass, llmonitor2, params) {
-  const originalCreateChatCompletion = baseClass.prototype.createChatCompletion;
-  Object.assign(baseClass.prototype, {
-    createChatCompletion(...args) {
-      const boundCompletion = originalCreateChatCompletion.bind(this);
-      return llmonitor2.wrapModel(boundCompletion, {
-        nameParser: (request) => request.model,
-        inputParser: (request) => request.messages.map(parseOpenaiMessage),
-        extraParser: (request) => {
-          const rawExtra = {
-            temperature: request.temperature,
-            maxTokens: request.max_tokens,
-            frequencyPenalty: request.frequency_penalty,
-            presencePenalty: request.presence_penalty,
-            stop: request.stop
-          };
-          return cleanExtra(rawExtra);
-        },
-        outputParser: ({ data }) => parseOpenaiMessage(data.choices[0].message),
-        tokensUsageParser: ({ data }) => ({
-          completion: data.usage?.completion_tokens,
-          prompt: data.usage?.prompt_tokens
-        }),
-        ...params
-      })(...args);
-    }
-  });
-}
 
 // src/context.ts
 import { createContext } from "unctx";
@@ -168,54 +88,6 @@ var chainable_default = {
   identify
 };
 
-// src/langchain.ts
-function monitorLangchainLLM(baseClass, llmonitor2, params) {
-  const originalGenerate = baseClass.prototype.generate;
-  Object.assign(baseClass.prototype, {
-    generate: async function(...args) {
-      const chat = this;
-      const boundSuperGenerate = originalGenerate.bind(chat);
-      const rawExtra = {
-        temperature: chat.temperature,
-        maxTokens: chat.maxTokens,
-        frequencyPenalty: chat.frequencyPenalty,
-        presencePenalty: chat.presencePenalty,
-        stop: chat.stop,
-        timeout: chat.timeout,
-        modelKwargs: Object.keys(chat.modelKwargs || {}).length ? chat.modelKwargs : void 0
-      };
-      const extra = cleanExtra(rawExtra);
-      const name = chat.modelName || chat.model;
-      return llmonitor2.wrapModel(boundSuperGenerate, {
-        name,
-        inputParser: (messages) => parseLangchainMessages(messages),
-        // Input message will be the first argument
-        outputParser: ({ generations }) => parseLangchainMessages(generations),
-        tokensUsageParser: ({ llmOutput }) => ({
-          completion: llmOutput?.tokenUsage?.completionTokens,
-          prompt: llmOutput?.tokenUsage?.promptTokens
-        }),
-        extra,
-        ...params,
-        tags: params.tags || chat.tags
-      })(...args);
-    }
-  });
-}
-function monitorLangchainTool(baseClass, llmonitor2, params) {
-  const originalCall = baseClass.prototype.call;
-  Object.assign(baseClass.prototype, {
-    call: async function(...args) {
-      const boundSuperCall = originalCall.bind(this);
-      return llmonitor2.wrapTool(boundSuperCall, {
-        name: this.name,
-        inputParser: (arg) => arg[0] instanceof Object ? arg[0].input : arg,
-        ...params
-      })(...args);
-    }
-  });
-}
-
 // src/llmonitor.ts
 var LLMonitor = class {
   appId;
@@ -241,31 +113,21 @@ var LLMonitor = class {
     if (apiUrl)
       this.apiUrl = apiUrl;
   }
-  /**
-   * Attach LLMonitor to an entity (Langchain Chat/LLM/Tool classes, OpenAI class)
-   * @param {EntityToMonitor | [EntityToMonitor]} entities - Entity or array of entities to monitor
-   * @param {string[]} tags - (optinal) Tags to add to all events
-   * @example
-   * const chat = new ChatOpenAI({
-   *   modelName: "gpt-3.5-turbo",
-   * })
-   * monitor(chat)
-   */
-  monitor(entities, params = {}) {
+  // /**
+  //  * Attach LLMonitor to an entity (Langchain Chat/LLM/Tool classes, OpenAI class)
+  //  * @param {EntityToMonitor | [EntityToMonitor]} entities - Entity or array of entities to monitor
+  //  * @param {string[]} tags - (optinal) Tags to add to all events
+  //  * @example
+  //  * const chat = new ChatOpenAI({
+  //  *   modelName: "gpt-3.5-turbo",
+  //  * })
+  //  * monitor(chat)
+  //  */
+  monitor(entity, params = {}) {
     const llmonitor2 = this;
-    entities = Array.isArray(entities) ? entities : [entities];
-    entities.forEach((entity) => {
-      const entityName = entity.name;
-      const parentName = Object.getPrototypeOf(entity).name;
-      if (entityName === "OpenAIApi") {
-        console.log(`wrap ${entityName} through entityProxy`);
-        monitorOpenAi(entity, llmonitor2, params);
-      } else if (parentName === "BaseChatModel") {
-        monitorLangchainLLM(entity, llmonitor2, params);
-      } else if (parentName === "Tool" || parentName === "StructuredTool") {
-        monitorLangchainTool(entity, llmonitor2, params);
-      }
-    });
+    const entityName = entity.name;
+    const parentName = Object.getPrototypeOf(entity).name;
+    console.log(entityName, parentName);
   }
   async trackEvent(type, event, data) {
     if (!this.appId)

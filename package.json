@@ -1,7 +1,7 @@
 {
-  "name": "@hughcrt/llmonitor",
-  "version": "0.0.7",
-  "description": "LLMonitor is an open-source monitoring and analytics platform for AI apps.",
+  "name": "llmonitor",
+  "version": "0.5.0",
+  "description": "llmonitor is an open-source monitoring and analytics platform for AI apps.",
   "main": "dist/index.mjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -19,16 +19,8 @@
     "@types/node": "^20.5.1",
     "dotenv": "^16.3.1",
     "langchain": "^0.0.131",
-    "openai": "^3.0.0",
+    "openai": "^4.3.0",
     "tsup": "^7.2.0",
     "typescript": "^5.1.6"
-  },
-  "peerDependencies": {
-    "openai": "^4.0.1"
-  },
-  "peerDependenciesMeta": {
-    "openai": {
-      "optional": true
-    }
   }
 }

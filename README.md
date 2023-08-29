@@ -28,9 +28,3 @@ npm install llmonitor
 ## 📖 Documentation
 
 Full docs are available [here](https://llmonitor.com/docs/js).
-
-## 👷 TODO
-
-- [x] `openai` module wrapper
-- [x] add types for other langchain Chat and LLM classes
-- [ ] langchain embeddings wrapping

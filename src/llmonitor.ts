@@ -1,13 +1,15 @@
 import {
   checkEnv,
   cleanError,
+  cleanExtra,
   debounce,
   formatLog,
   getFunctionInput,
+  parseOpenaiMessage,
+  teeAsync,
 } from "./utils"
 
 import {
-  EntityToMonitor,
   Event,
   EventName,
   EventType,
@@ -18,15 +20,12 @@ import {
   WrapParams,
   WrappableFn,
   WrappedFn,
+  WrappedOldOpenAi,
+  WrappedOpenAi,
 } from "./types"
-
-import { monitorOpenAi } from "./openai"
 
 import { runIdCtx, userCtx } from "./context"
 import chainable from "./chainable"
-import { monitorLangchainLLM, monitorLangchainTool } from "./langchain"
-
-// import { OpenAIApi } from "openai"
 
 class LLMonitor {
   appId?: string
@@ -51,39 +50,6 @@ class LLMonitor {
     if (appId) this.appId = appId
     if (log) this.logConsole = log
     if (apiUrl) this.apiUrl = apiUrl
-  }
-
-  /**
-   * Attach LLMonitor to an entity (Langchain Chat/LLM/Tool classes, OpenAI class)
-   * @param {EntityToMonitor | [EntityToMonitor]} entities - Entity or array of entities to monitor
-   * @param {string[]} tags - (optinal) Tags to add to all events
-   * @example
-   * const chat = new ChatOpenAI({
-   *   modelName: "gpt-3.5-turbo",
-   * })
-   * monitor(chat)
-   */
-  monitor(
-    entities: EntityToMonitor | EntityToMonitor[],
-    params: WrapExtras = {}
-  ) {
-    const llmonitor = this
-
-    entities = Array.isArray(entities) ? entities : [entities]
-
-    entities.forEach((entity) => {
-      const entityName = entity.name
-      const parentName = Object.getPrototypeOf(entity).name
-
-      if (entityName === "OpenAIApi") {
-        console.log(`wrap ${entityName} through entityProxy`)
-        monitorOpenAi(entity as any, llmonitor, params)
-      } else if (parentName === "BaseChatModel") {
-        monitorLangchainLLM(entity as any, llmonitor, params)
-      } else if (parentName === "Tool" || parentName === "StructuredTool") {
-        monitorLangchainTool(entity as any, llmonitor, params)
-      }
-    })
   }
 
   private async trackEvent(
@@ -206,9 +172,8 @@ class LLMonitor {
   }
 
   // Extract the actual execution logic into a function
-  private async executeWrappedFunction<T extends WrappableFn>(
-    target
-  ): Promise<ReturnType<T>> {
+  private async executeWrappedFunction<T extends WrappableFn>(target) {
+    // : Promise<ReturnType<T>> {
     const { type, args, func, params } = target
 
     // Generate a random ID for this run (will be injected into the context)
@@ -223,18 +188,19 @@ class LLMonitor {
       inputParser,
       outputParser,
       tokensUsageParser,
+      waitUntil,
+      enableWaitUntil,
       extra,
       tags,
       userId,
       userProps,
-    } = params || {}
+    }: WrapParams<T> = params || {}
 
     // Get extra data from function or params
     const extraData = params?.extraParser ? params.extraParser(...args) : extra
 
     const input = inputParser
-      ? //  @ts-ignore TODO: fix this TS error
-        inputParser(...args)
+      ? inputParser(...args)
       : getFunctionInput(func, args)
 
     this.trackEvent(type, "start", {
@@ -245,15 +211,10 @@ class LLMonitor {
       tags,
     })
 
-    try {
-      // Inject runId into context
-      const output = await runIdCtx.callAsync(runId, async () => {
-        return func(...args)
-      })
-
+    const processOutput = async (output) => {
       // Allow parsing of token usage (useful for LLMs)
       const tokensUsage = tokensUsageParser
-        ? tokensUsageParser(output)
+        ? await tokensUsageParser(output)
         : undefined
 
       this.trackEvent(type, "end", {
@@ -261,6 +222,29 @@ class LLMonitor {
         output: outputParser ? outputParser(output) : output,
         tokensUsage,
       })
+    }
+
+    try {
+      // Inject runId into context
+      const output = await runIdCtx.callAsync(runId, async () => {
+        return func(...args)
+      })
+
+      if (
+        typeof enableWaitUntil === "function"
+          ? enableWaitUntil(...args)
+          : waitUntil
+      ) {
+        // Support waiting for a callback to be called to complete the run
+        // Useful for streaming API
+        return waitUntil(
+          output,
+          (res) => processOutput(res),
+          (error) => console.error(error)
+        )
+      } else {
+        await processOutput(output)
+      }
 
       return output
     } catch (error) {
@@ -368,6 +352,123 @@ class LLMonitor {
       message,
       extra: cleanError(error),
     })
+  }
+
+  openAIv3<T extends any>(
+    openai: T,
+    params: WrapExtras = {}
+  ): WrappedOldOpenAi<T> {
+    // @ts-ignore
+    const createChatCompletion = openai.createChatCompletion.bind(openai)
+
+    const wrapped = this.wrapModel(createChatCompletion, {
+      nameParser: (request) => request.model,
+      inputParser: (request) => request.messages.map(parseOpenaiMessage),
+      extraParser: (request) => {
+        const rawExtra = {
+          temperature: request.temperature,
+          maxTokens: request.max_tokens,
+          frequencyPenalty: request.frequency_penalty,
+          presencePenalty: request.presence_penalty,
+          stop: request.stop,
+        }
+        return cleanExtra(rawExtra)
+      },
+      outputParser: ({ data }) =>
+        parseOpenaiMessage(data.choices[0].text || ""),
+      tokensUsageParser: async ({ data }) => ({
+        completion: data.usage?.completion_tokens,
+        prompt: data.usage?.prompt_tokens,
+      }),
+      ...params,
+    })
+
+    // @ts-ignore
+    openai.createChatCompletion = wrapped
+
+    return openai as WrappedOldOpenAi<T>
+  }
+
+  openAI<T extends any>(openai: T, params: WrapExtras = {}): WrappedOpenAi<T> {
+    // @ts-ignore
+    const createChatCompletion = openai.chat.completions.create.bind(openai)
+
+    async function handleStream(stream, onComplete, onError) {
+      try {
+        let tokens = 0
+        let choices = []
+        for await (const part of stream) {
+          // 1 chunk = 1 token
+          tokens += 1
+
+          const chunk = part.choices[0]
+
+          const { index, delta } = chunk
+
+          const { content, function_call, role } = delta
+
+          if (!choices[index]) {
+            choices.splice(index, 0, {
+              message: { role, content, function_call },
+            })
+            continue
+          }
+
+          if (content) choices[index].message.content += content
+          if (role) choices[index].message.role = role
+          if (function_call?.name)
+            choices[index].message.function_call.name = function_call.name
+          if (function_call?.arguments)
+            choices[index].message.function_call.arguments +=
+              function_call.arguments
+        }
+
+        const res = {
+          choices,
+          usage: { completion_tokens: tokens, prompt_tokens: undefined },
+        }
+
+        onComplete(res)
+      } catch (error) {
+        console.error(error)
+        onError(error)
+      }
+    }
+
+    const wrapped = this.wrapModel(createChatCompletion, {
+      nameParser: (request) => request.model,
+      inputParser: (request) => request.messages.map(parseOpenaiMessage),
+      extraParser: (request) => {
+        const rawExtra = {
+          temperature: request.temperature,
+          maxTokens: request.max_tokens,
+          frequencyPenalty: request.frequency_penalty,
+          presencePenalty: request.presence_penalty,
+          stop: request.stop,
+        }
+        return cleanExtra(rawExtra)
+      },
+      outputParser: (res) => parseOpenaiMessage(res.choices[0].message || ""),
+      tokensUsageParser: async (res) => {
+        return {
+          completion: res.usage?.completion_tokens,
+          prompt: res.usage?.prompt_tokens,
+        }
+      },
+      enableWaitUntil: (request) => !!request.stream,
+      waitUntil: (stream, onComplete, onError) => {
+        // Fork the stream in two to be able to process it / multicast it
+        const [og, copy] = teeAsync(stream)
+        handleStream(copy, onComplete, onError)
+        return og
+      },
+      ...params,
+    })
+
+    // @ts-ignore
+    openai.chat.completions.create = wrapped
+
+    return openai as WrappedOpenAi<T>
   }
 }
 

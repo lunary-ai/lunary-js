@@ -1,8 +1,11 @@
-import { BaseChatModel } from "langchain/chat_models/base"
-import { BaseLanguageModel } from "langchain/base_language"
-import { Tool, StructuredTool } from "langchain/tools"
-import { OpenAIApi } from "openai"
-import { ChatOpenAI } from "langchain/chat_models/openai"
+// import { BaseChatModel } from "langchain/chat_models/base"
+// import { BaseLanguageModel } from "langchain/base_language"
+// import { Tool, StructuredTool } from "langchain/tools"
+
+// import { ChatOpenAI } from "langchain/chat_models/openai"
+
+import OpenAI from "openai"
+import OpenAIStreaming from "openai/streaming"
 
 // using 'JSON' causes problems with esbuild (probably because a type JSON alrady exists)
 export type cJSON =
@@ -54,6 +57,14 @@ export interface LogEvent extends Event {
   message: string
 }
 
+// export type EntityToMonitor =
+//   | typeof BaseLanguageModel
+//   | typeof BaseChatModel
+//   | typeof ChatOpenAI
+//   // | typeof OpenAIApi
+//   | typeof Tool
+//   | typeof StructuredTool
+
 // Inspired from OpenAi's format, less heavy than Langchain's type
 export interface ChatMessage {
   role: "human" | "ai" | "generic" | "system" | "function"
@@ -62,18 +73,11 @@ export interface ChatMessage {
   [key: string]: cJSON
 }
 
-export type WrappableFn = (...args: any[]) => any
-
-export type Identify<T extends WrappableFn> = (
-  userId: string,
-  userProps?: cJSON
-) => ReturnType<T>
-
-// Create a type for the function returning that promise
-export type WrappedFn<T extends WrappableFn> = (
-  ...args: Parameters<T>
-) => Promise<ReturnType<T>> & {
-  identify: Identify<T>
+// Support for old OpenAI v3
+// Will be removed in the future
+export type WrappedOldOpenAi<T> = Omit<T, "createChatCompletion"> & {
+  // @ts-ignore
+  createChatCompletion: WrappedFn<T["createChatCompletion"]>
 }
 
 export type WrapExtras = {
@@ -89,13 +93,58 @@ export type WrapParams<T extends WrappableFn> = {
   extraParser?: (...args: Parameters<T>) => cJSON
   nameParser?: (...args: Parameters<T>) => string
   outputParser?: (result: Awaited<ReturnType<T>>) => cJSON
-  tokensUsageParser?: (result: Awaited<ReturnType<T>>) => TokenUsage
+  tokensUsageParser?: (result: Awaited<ReturnType<T>>) => Promise<TokenUsage>
+  // Add the option to wait for a condition to be met before completing the run
+  // Useful for streaming API
+  enableWaitUntil?: (...args: Parameters<T>) => boolean
+  waitUntil?: (
+    result: Awaited<ReturnType<T>>,
+    onComplete: (any) => any,
+    onError: (any) => any
+  ) => ReturnType<T>
 } & WrapExtras
 
-export type EntityToMonitor =
-  | typeof BaseLanguageModel
-  | typeof BaseChatModel
-  | typeof ChatOpenAI
-  | typeof OpenAIApi
-  | typeof Tool
-  | typeof StructuredTool
+export type WrappableFn = (...args: any[]) => any
+
+export type WrappedReturn<T extends WrappableFn> = ReturnType<T> & {
+  identify: Identify<T>
+}
+
+export type Identify<T extends WrappableFn> = (
+  userId: string,
+  userProps?: cJSON
+) => ReturnType<T>
+
+// Create a type for the function returning that promise
+export type WrappedFn<T extends WrappableFn> = (
+  ...args: Parameters<T>
+) => WrappedReturn<T>
+
+type CreateFunction<T, U> = (body: T, options?: OpenAI.RequestOptions) => U
+
+type WrapCreateFunction<T, U> = (
+  body: T,
+  options?: OpenAI.RequestOptions
+) => WrappedReturn<CreateFunction<T, U>>
+
+type WrapCreate<T> = {
+  chat: {
+    completions: {
+      create: WrapCreateFunction<
+        OpenAI.Chat.CompletionCreateParamsNonStreaming,
+        Promise<OpenAI.Chat.ChatCompletion>
+      > &
+        WrapCreateFunction<
+          OpenAI.Chat.CompletionCreateParamsStreaming,
+          Promise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>>
+        > &
+        WrapCreateFunction<
+          OpenAI.Chat.CompletionCreateParams,
+          | Promise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>>
+          | Promise<OpenAI.Chat.ChatCompletion>
+        >
+    }
+  }
+}
+
+export type WrappedOpenAi<T> = Omit<T, "chat"> & WrapCreate<T>

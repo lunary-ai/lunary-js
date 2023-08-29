@@ -1,35 +1,88 @@
 import "dotenv/config"
-import { Configuration, OpenAIApi } from "openai"
+import OpenAI from "openai"
 import monitor from "../src/index"
 
-// monitor.load({
-//   log: true,
-// })
-
-monitor(OpenAIApi, { tags: ["dev"] })
-
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+monitor.load({
+  log: true,
 })
 
-const openai = new OpenAIApi(configuration)
+const openai = monitor.openAI(
+  new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  })
+)
+
+// const openai = new OpenAI({
+//   apiKey: process.env.OPENAI_API_KEY,
+// })
 
 async function main() {
-  openai
-    .createChatCompletion({
-      model: "gpt-3.5-turbo",
-      temperature: 0.9,
+  const stream = await openai.chat.completions
+    .create({
+      model: "gpt-3.5-turbo-0613",
       messages: [
-        { role: "system", content: "You are an helpful assistant" },
-        { role: "user", content: "Hello friend" },
+        {
+          role: "user",
+          content: `root
+              ├── folder1
+              │   ├── file1.txt
+              │   └── file2.txt
+              └── folder2
+                  ├── file3.txt
+                      └── subfolder1
+                              └── file4.txt`,
+        },
       ],
+      functions: [
+        {
+          name: "buildTree",
+          description: "build a tree structure",
+          parameters: {
+            type: "object",
+            properties: {
+              name: {
+                type: "string",
+                description: "The name of the node",
+              },
+              children: {
+                type: "array",
+                description: "The tree nodes",
+                items: {
+                  $ref: "#",
+                },
+              },
+              type: {
+                type: "string",
+                description: "The type of the node",
+                enum: ["file", "folder"],
+              },
+            },
+            required: ["name", "children", "type"],
+          },
+        },
+      ],
+      stream: true,
     })
-    .identify("user-123")
-    .then((res) => console.log("SUCCESS HAPPENED", res.data.choices[0].message))
-    .catch((err) => console.log("An ERROR happened", err))
+    .identify("test")
 
-  // console.log(`GOT RESPONSE: ${chatCompletion}`)
-  // console.log(chatCompletion.data.choices[0].message)
+  for await (const part of stream) {
+    // process.stdout.write(part.choices[0]?.delta?.content || "")
+    console.log(part.choices[0]?.delta)
+  }
+
+  console.log(`Finished first stream.`)
+
+  // const result = await openai.chat.completions.create({
+  //   model: "gpt-3.5-turbo-0613",
+  //   messages: [
+  //     {
+  //       role: "user",
+  //       content: `Hello, I'm a human.`,
+  //     },
+  //   ],
+  // })
+
+  // console.log(result)
 }
 
 main()
