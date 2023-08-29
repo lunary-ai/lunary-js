@@ -3,9 +3,10 @@
     "target": "ESNext",
     // "module": "es2015",
     "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
     "declaration": true,
-    "outDir": "./lib/esm",
+    "outDir": "./dist",
     "strict": false, // TODO: strict: true
     "strictBindCallApply": true,
     // "noEmitOnError": true,
