@@ -67,14 +67,18 @@ var getFunctionInput = (func, args) => {
 // src/context.ts
 import { createContext } from "unctx";
 import { AsyncLocalStorage } from "node:async_hooks";
-var runIdCtx = createContext({
+var runId = createContext({
   asyncContext: true,
   AsyncLocalStorage
 });
-var userCtx = createContext({
+var user = createContext({
   asyncContext: true,
   AsyncLocalStorage
 });
+var context_default = {
+  runId,
+  user
+};
 
 // src/chainable.ts
 async function identify(userId, userProps) {
@@ -83,7 +87,7 @@ async function identify(userId, userProps) {
     userId,
     userProps
   };
-  return userCtx.callAsync(context, async () => {
+  return context_default.user.callAsync(context, async () => {
     return next(target);
   });
 }
@@ -124,13 +128,13 @@ var LLMonitor = class {
     if (lastEvent?.timestamp >= timestamp) {
       timestamp = lastEvent.timestamp + 1;
     }
-    const parentRunId = runIdCtx.tryUse();
-    const user = userCtx.tryUse();
+    const parentRunId = data.parentRunId ?? context_default.runId.tryUse();
+    const user2 = context_default.user.tryUse();
     const eventData = {
       event,
       type,
-      userId: user?.userId,
-      userProps: user?.userProps,
+      userId: user2?.userId,
+      userProps: user2?.userProps,
       app: this.appId,
       parentRunId,
       timestamp,
@@ -202,7 +206,7 @@ var LLMonitor = class {
   // Extract the actual execution logic into a function
   async executeWrappedFunction(target) {
     const { type, args, func, params } = target;
-    const runId = crypto.randomUUID();
+    const runId2 = crypto.randomUUID();
     const name = params?.nameParser ? params.nameParser(...args) : params?.name ?? func.name;
     const {
       inputParser,
@@ -218,7 +222,7 @@ var LLMonitor = class {
     const extraData = params?.extraParser ? params.extraParser(...args) : extra;
     const input = inputParser ? inputParser(...args) : getFunctionInput(func, args);
     this.trackEvent(type, "start", {
-      runId,
+      runId: runId2,
       input,
       name,
       extra: extraData,
@@ -227,13 +231,13 @@ var LLMonitor = class {
     const processOutput = async (output) => {
       const tokensUsage = tokensUsageParser ? await tokensUsageParser(output) : void 0;
       this.trackEvent(type, "end", {
-        runId,
+        runId: runId2,
         output: outputParser ? outputParser(output) : output,
         tokensUsage
       });
     };
     try {
-      const output = await runIdCtx.callAsync(runId, async () => {
+      const output = await context_default.runId.callAsync(runId2, async () => {
         return func(...args);
       });
       if (typeof enableWaitUntil === "function" ? enableWaitUntil(...args) : waitUntil) {
@@ -248,7 +252,7 @@ var LLMonitor = class {
       return output;
     } catch (error) {
       this.trackEvent(type, "error", {
-        runId,
+        runId: runId2,
         error: cleanError(error)
       });
       await this.processQueue();

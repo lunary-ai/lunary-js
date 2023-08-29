@@ -1,4 +1,4 @@
-import { userCtx } from "./context"
+import ctx from "./context"
 import { WrappableFn, cJSON } from "./types"
 
 /**
@@ -17,7 +17,7 @@ async function identify<T extends WrappableFn>(
     userProps,
   }
 
-  return userCtx.callAsync(context, async () => {
+  return ctx.user.callAsync(context, async () => {
     return next(target) // || target.func(...target.args)
   })
 }

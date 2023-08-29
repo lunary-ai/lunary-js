@@ -19,7 +19,16 @@ export interface LLMonitorOptions {
   name?: string
 }
 
-export type EventType = "log" | "tool" | "agent" | "llm" | "convo" | "chain"
+export type EventType =
+  | "log"
+  | "tool"
+  | "agent"
+  | "llm"
+  | "convo"
+  | "chain"
+  | "retriever"
+  | "embed"
+
 export type EventName = "start" | "end" | "error" | "info" | "warn"
 
 export interface Event {

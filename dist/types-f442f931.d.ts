@@ -7,10 +7,36 @@ interface LLMonitorOptions {
     log?: boolean;
     name?: string;
 }
+type EventType = "log" | "tool" | "agent" | "llm" | "convo" | "chain" | "retriever" | "embed";
+type EventName = "start" | "end" | "error" | "info" | "warn";
+interface Event {
+    type: EventType;
+    event: EventName;
+    app: string;
+    timestamp: number;
+    userId?: string;
+    userProps?: cJSON;
+    parentRunId?: string;
+    extra?: cJSON;
+    error?: {
+        message: string;
+        stack?: string;
+    };
+}
 type TokenUsage = {
     completion: number;
     prompt: number;
 };
+interface RunEvent extends Event {
+    runId: string;
+    input?: cJSON;
+    output?: cJSON;
+    tokensUsage?: TokenUsage;
+    [key: string]: unknown;
+}
+interface LogEvent extends Event {
+    message: string;
+}
 type WrapExtras = {
     name?: string;
     extra?: cJSON;
@@ -34,4 +60,4 @@ type WrappedReturn<T extends WrappableFn> = ReturnType<T> & {
 };
 type WrappedFn<T extends WrappableFn> = (...args: Parameters<T>) => WrappedReturn<T>;
 
-export { LLMonitorOptions as L, WrappableFn as W, WrapParams as a, WrappedFn as b, WrapExtras as c, WrappedReturn as d };
+export { EventType as E, LLMonitorOptions as L, RunEvent as R, WrappableFn as W, EventName as a, LogEvent as b, WrapParams as c, WrappedFn as d, WrapExtras as e, WrappedReturn as f };

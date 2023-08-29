@@ -18,7 +18,7 @@ import {
   WrappedFn,
 } from "./types"
 
-import { runIdCtx, userCtx } from "./context"
+import ctx from "./context"
 import chainable from "./chainable"
 
 class LLMonitor {
@@ -46,7 +46,7 @@ class LLMonitor {
     if (apiUrl) this.apiUrl = apiUrl
   }
 
-  private async trackEvent(
+  async trackEvent(
     type: EventType,
     event: EventName,
     data: Partial<RunEvent | LogEvent>
@@ -62,8 +62,8 @@ class LLMonitor {
       timestamp = lastEvent.timestamp + 1
     }
 
-    const parentRunId = runIdCtx.tryUse()
-    const user = userCtx.tryUse()
+    const parentRunId = data.parentRunId ?? ctx.runId.tryUse()
+    const user = ctx.user.tryUse()
 
     const eventData: Event = {
       event,
@@ -220,7 +220,7 @@ class LLMonitor {
 
     try {
       // Inject runId into context
-      const output = await runIdCtx.callAsync(runId, async () => {
+      const output = await ctx.runId.callAsync(runId, async () => {
         return func(...args)
       })
 
