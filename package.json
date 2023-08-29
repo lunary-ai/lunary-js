@@ -2,17 +2,6 @@
   "name": "llmonitor",
   "version": "0.5.0",
   "description": "llmonitor is an open-source monitoring and analytics platform for AI apps.",
-  "main": "dist/index.mjs",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "rm -rf ./dist && tsup src/index.ts src/openai.ts --format esm,cjs --dts && rm dist/index.d.mts"
-  },
-  "author": "llmonitor",
-  "license": "Apache-2.0",
-  "dependencies": {
-    "unctx": "^2.3.1"
-  },
   "exports": {
     ".": {
       "types": "./index.d.ts",
@@ -24,6 +13,14 @@
       "import": "./openai.mjs",
       "require": "./openai.js"
     }
+  },
+  "scripts": {
+    "build": "rm -rf ./dist && tsup src/index.ts src/openai.ts --format esm,cjs --dts && rm dist/index.d.mts"
+  },
+  "author": "llmonitor",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "unctx": "^2.3.1"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.62",
