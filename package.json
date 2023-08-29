@@ -4,14 +4,16 @@
   "description": "llmonitor is an open-source monitoring and analytics platform for AI apps.",
   "exports": {
     ".": {
-      "types": "./index.d.ts",
-      "import": "./index.mjs",
-      "require": "./index.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.mjs"
     },
     "./openai": {
-      "types": "./openai.d.ts",
-      "import": "./openai.mjs",
-      "require": "./openai.js"
+      "types": "./dist/openai.d.ts",
+      "import": "./dist/openai.mjs",
+      "require": "./dist/openai.js",
+      "default": "./dist/openai.mjs"
     }
   },
   "scripts": {
