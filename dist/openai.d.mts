@@ -2,7 +2,6 @@ import { c as WrapExtras, b as WrappedFn, d as WrappedReturn } from './types-a5e
 import OpenAI from 'openai';
 import OpenAIStreaming from 'openai/streaming';
 
-declare const teeAsync: (iterable: any) => any[];
 type WrappedOldOpenAi<T> = Omit<T, "createChatCompletion"> & {
     createChatCompletion: WrappedFn<T["createChatCompletion"]>;
 };
@@ -19,4 +18,4 @@ type WrappedOpenAi<T> = Omit<T, "chat"> & WrapCreate<T>;
 declare function openAIv3<T extends any>(openai: T, params?: WrapExtras): WrappedOldOpenAi<T>;
 declare function monitorOpenAI<T extends any>(openai: T, params?: WrapExtras): WrappedOpenAi<T>;
 
-export { monitorOpenAI, openAIv3, teeAsync };
+export { monitorOpenAI, openAIv3 };

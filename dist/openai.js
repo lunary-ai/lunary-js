@@ -20,8 +20,7 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var openai_exports = {};
 __export(openai_exports, {
   monitorOpenAI: () => monitorOpenAI,
-  openAIv3: () => openAIv3,
-  teeAsync: () => teeAsync
+  openAIv3: () => openAIv3
 });
 module.exports = __toCommonJS(openai_exports);
 
@@ -375,11 +374,11 @@ var parseOpenaiMessage = (message) => {
     function_call
   };
 };
-var AsyncIteratorProto = Object.getPrototypeOf(
-  Object.getPrototypeOf(async function* () {
-  }.prototype)
-);
 var teeAsync = (iterable) => {
+  const AsyncIteratorProto = Object.getPrototypeOf(
+    Object.getPrototypeOf(async function* () {
+    }.prototype)
+  );
   const iterator = iterable[Symbol.asyncIterator]();
   const buffers = [[], []];
   function makeIterator(buffer, i) {
@@ -501,6 +500,5 @@ function monitorOpenAI(openai, params = {}) {
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   monitorOpenAI,
-  openAIv3,
-  teeAsync
+  openAIv3
 });

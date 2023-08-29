@@ -14,11 +14,11 @@ var parseOpenaiMessage = (message) => {
     function_call
   };
 };
-var AsyncIteratorProto = Object.getPrototypeOf(
-  Object.getPrototypeOf(async function* () {
-  }.prototype)
-);
 var teeAsync = (iterable) => {
+  const AsyncIteratorProto = Object.getPrototypeOf(
+    Object.getPrototypeOf(async function* () {
+    }.prototype)
+  );
   const iterator = iterable[Symbol.asyncIterator]();
   const buffers = [[], []];
   function makeIterator(buffer, i) {
@@ -139,6 +139,5 @@ function monitorOpenAI(openai, params = {}) {
 }
 export {
   monitorOpenAI,
-  openAIv3,
-  teeAsync
+  openAIv3
 };
