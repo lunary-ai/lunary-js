@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    // "module": "es2015",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "esModuleInterop": true,
@@ -9,7 +8,6 @@
     "outDir": "./dist",
     "strict": false, // TODO: strict: true
     "strictBindCallApply": true,
-    // "noEmitOnError": true,
     "forceConsistentCasingInFileNames": true
   },
 
