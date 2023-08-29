@@ -15,7 +15,7 @@ export type cJSON =
 export interface LLMonitorOptions {
   appId?: string
   apiUrl?: string
-  log?: boolean
+  verbose?: boolean
   name?: string
 }
 
@@ -40,6 +40,7 @@ export interface Event {
   userProps?: cJSON
   parentRunId?: string
   extra?: cJSON
+  tags?: string[]
   error?: {
     message: string
     stack?: string

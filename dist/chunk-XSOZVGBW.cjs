@@ -114,17 +114,17 @@ var LLMonitor = (_class = class {
    * @param {LLMonitorOptions} options
    */
   constructor() {;_class.prototype.__init.call(this);_class.prototype.__init2.call(this);_class.prototype.__init3.call(this);
-    this.load({
+    this.init({
       appId: checkEnv("LLMONITOR_APP_ID"),
-      log: false,
+      verbose: false,
       apiUrl: checkEnv("LLMONITOR_API_URL") || "https://app.llmonitor.com"
     });
   }
-  load({ appId, log, apiUrl } = {}) {
+  init({ appId, verbose, apiUrl } = {}) {
     if (appId)
       this.appId = appId;
-    if (log)
-      this.logConsole = log;
+    if (verbose)
+      this.verbose = verbose;
     if (apiUrl)
       this.apiUrl = apiUrl;
   }
@@ -148,7 +148,7 @@ var LLMonitor = (_class = class {
       timestamp,
       ...data
     };
-    if (this.logConsole) {
+    if (this.verbose) {
       console.log(formatLog(eventData));
     }
     this.queue.push(eventData);

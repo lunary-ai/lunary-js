@@ -3,8 +3,8 @@ import OpenAI from "openai"
 import monitor from "../src/index"
 import { monitorOpenAI } from "../src/openai"
 
-monitor.load({
-  log: true,
+monitor.init({
+  verbose: true,
 })
 
 const openai = monitorOpenAI(

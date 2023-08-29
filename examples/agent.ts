@@ -4,8 +4,8 @@
 
 // import monitor from "../src"
 
-// monitor.load({
-//   log: true,
+// monitor.init({
+//   verbose: true,
 // })
 
 // monitor(ChatOpenAI)

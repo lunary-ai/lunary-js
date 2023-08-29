@@ -23,7 +23,7 @@ import chainable from "./chainable"
 
 class LLMonitor {
   appId?: string
-  logConsole?: boolean
+  verbose?: boolean
   apiUrl?: string
 
   private queue: any[] = []
@@ -33,16 +33,16 @@ class LLMonitor {
    * @param {LLMonitorOptions} options
    */
   constructor() {
-    this.load({
+    this.init({
       appId: checkEnv("LLMONITOR_APP_ID"),
-      log: false,
+      verbose: false,
       apiUrl: checkEnv("LLMONITOR_API_URL") || "https://app.llmonitor.com",
     })
   }
 
-  load({ appId, log, apiUrl }: LLMonitorOptions = {}) {
+  init({ appId, verbose, apiUrl }: LLMonitorOptions = {}) {
     if (appId) this.appId = appId
-    if (log) this.logConsole = log
+    if (verbose) this.verbose = verbose
     if (apiUrl) this.apiUrl = apiUrl
   }
 
@@ -76,7 +76,7 @@ class LLMonitor {
       ...data,
     }
 
-    if (this.logConsole) {
+    if (this.verbose) {
       console.log(formatLog(eventData))
     }
 

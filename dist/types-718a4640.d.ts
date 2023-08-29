@@ -4,7 +4,7 @@ type cJSON = string | number | boolean | {
 interface LLMonitorOptions {
     appId?: string;
     apiUrl?: string;
-    log?: boolean;
+    verbose?: boolean;
     name?: string;
 }
 type EventType = "log" | "tool" | "agent" | "llm" | "convo" | "chain" | "retriever" | "embed";
@@ -18,6 +18,7 @@ interface Event {
     userProps?: cJSON;
     parentRunId?: string;
     extra?: cJSON;
+    tags?: string[];
     error?: {
         message: string;
         stack?: string;

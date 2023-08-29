@@ -1,8 +1,8 @@
-import { L as LLMonitorOptions, E as EventType, a as EventName, R as RunEvent, b as LogEvent, W as WrappableFn, c as WrapParams, d as WrappedFn } from './types-f442f931.js';
+import { L as LLMonitorOptions, E as EventType, a as EventName, R as RunEvent, b as LogEvent, W as WrappableFn, c as WrapParams, d as WrappedFn } from './types-718a4640.js';
 
 declare class LLMonitor {
     appId?: string;
-    logConsole?: boolean;
+    verbose?: boolean;
     apiUrl?: string;
     private queue;
     private queueRunning;
@@ -10,7 +10,7 @@ declare class LLMonitor {
      * @param {LLMonitorOptions} options
      */
     constructor();
-    load({ appId, log, apiUrl }?: LLMonitorOptions): void;
+    init({ appId, verbose, apiUrl }?: LLMonitorOptions): void;
     trackEvent(type: EventType, event: EventName, data: Partial<RunEvent | LogEvent>): Promise<void>;
     private debouncedProcessQueue;
     private processQueue;
