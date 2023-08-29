@@ -76,7 +76,10 @@ export interface LogEvent extends Event {
 export interface ChatMessage {
   role: "human" | "ai" | "generic" | "system" | "function"
   text: string
-  function_call?: cJSON
+  functionCall?: {
+    name: string
+    arguments: cJSON
+  }
   [key: string]: cJSON
 }
 

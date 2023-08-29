@@ -24,7 +24,7 @@ const parseOpenaiMessage = (message) => {
   return {
     role: role.replace("assistant", "ai"),
     text: content,
-    function_call: function_call as cJSON,
+    functionCall: function_call as cJSON,
   } as ChatMessage
 }
 
