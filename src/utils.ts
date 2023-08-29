@@ -159,48 +159,5 @@ export const parseLangchainMessages = (input: any | any[] | any[][]): cJSON => {
   return parseMessage(input)
 }
 
-export const parseOpenaiMessage = (message) => {
-  if (!message) return undefined
-
-  // Is name (of the function gpt wanted to call) actually useful to report?
-  const { role, content, name, function_call } = message
-
-  return {
-    role: role.replace("assistant", "ai"),
-    text: content,
-    function_call: function_call as cJSON,
-  }
-}
-
 export const getInstanceParentClass = (obj: any) =>
   Object.getPrototypeOf(obj.constructor)
-
-// https://stackoverflow.com/questions/63543455/how-to-multicast-an-async-iterable
-
-const AsyncIteratorProto = Object.getPrototypeOf(
-  Object.getPrototypeOf(async function* () {}.prototype)
-)
-
-export const teeAsync = (iterable) => {
-  const iterator = iterable[Symbol.asyncIterator]()
-  const buffers = [[], []]
-  function makeIterator(buffer, i) {
-    return Object.assign(Object.create(AsyncIteratorProto), {
-      next() {
-        if (!buffer) return Promise.resolve({ done: true, value: undefined })
-        if (buffer.length) return buffer.shift()
-        const res = iterator.next()
-        if (buffers[i ^ 1]) buffers[i ^ 1].push(res)
-        return res
-      },
-      async return() {
-        if (buffer) {
-          buffer = buffers[i] = null
-          if (!buffers[i ^ 1]) await iterator.return()
-        }
-        return { done: true, value: undefined }
-      },
-    })
-  }
-  return buffers.map(makeIterator)
-}

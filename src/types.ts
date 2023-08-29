@@ -4,9 +4,6 @@
 
 // import { ChatOpenAI } from "langchain/chat_models/openai"
 
-import OpenAI from "openai"
-import OpenAIStreaming from "openai/streaming"
-
 // using 'JSON' causes problems with esbuild (probably because a type JSON alrady exists)
 export type cJSON =
   | string
@@ -73,13 +70,6 @@ export interface ChatMessage {
   [key: string]: cJSON
 }
 
-// Support for old OpenAI v3
-// Will be removed in the future
-export type WrappedOldOpenAi<T> = Omit<T, "createChatCompletion"> & {
-  // @ts-ignore
-  createChatCompletion: WrappedFn<T["createChatCompletion"]>
-}
-
 export type WrapExtras = {
   name?: string
   extra?: cJSON
@@ -106,45 +96,16 @@ export type WrapParams<T extends WrappableFn> = {
 
 export type WrappableFn = (...args: any[]) => any
 
-export type WrappedReturn<T extends WrappableFn> = ReturnType<T> & {
-  identify: Identify<T>
-}
-
 export type Identify<T extends WrappableFn> = (
   userId: string,
   userProps?: cJSON
 ) => ReturnType<T>
 
+export type WrappedReturn<T extends WrappableFn> = ReturnType<T> & {
+  identify: Identify<T>
+}
+
 // Create a type for the function returning that promise
 export type WrappedFn<T extends WrappableFn> = (
   ...args: Parameters<T>
 ) => WrappedReturn<T>
-
-type CreateFunction<T, U> = (body: T, options?: OpenAI.RequestOptions) => U
-
-type WrapCreateFunction<T, U> = (
-  body: T,
-  options?: OpenAI.RequestOptions
-) => WrappedReturn<CreateFunction<T, U>>
-
-type WrapCreate<T> = {
-  chat: {
-    completions: {
-      create: WrapCreateFunction<
-        OpenAI.Chat.CompletionCreateParamsNonStreaming,
-        Promise<OpenAI.Chat.ChatCompletion>
-      > &
-        WrapCreateFunction<
-          OpenAI.Chat.CompletionCreateParamsStreaming,
-          Promise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>>
-        > &
-        WrapCreateFunction<
-          OpenAI.Chat.CompletionCreateParams,
-          | Promise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>>
-          | Promise<OpenAI.Chat.ChatCompletion>
-        >
-    }
-  }
-}
-
-export type WrappedOpenAi<T> = Omit<T, "chat"> & WrapCreate<T>

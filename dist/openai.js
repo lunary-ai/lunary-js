@@ -16,12 +16,14 @@ var __copyProps = (to, from, except, desc) => {
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// src/index.ts
-var src_exports = {};
-__export(src_exports, {
-  default: () => src_default
+// src/openai.ts
+var openai_exports = {};
+__export(openai_exports, {
+  monitorOpenAI: () => monitorOpenAI,
+  openAIv3: () => openAIv3,
+  teeAsync: () => teeAsync
 });
-module.exports = __toCommonJS(src_exports);
+module.exports = __toCommonJS(openai_exports);
 
 // src/utils.ts
 var checkEnv = (variable) => {
@@ -62,6 +64,9 @@ var cleanError = (error) => {
       stack: error.stack
     };
   }
+};
+var cleanExtra = (extra) => {
+  return Object.fromEntries(Object.entries(extra).filter(([_, v]) => v != null));
 };
 function getArgumentNames(func) {
   let str = func.toString();
@@ -358,3 +363,144 @@ var llmonitor_default = LLMonitor;
 // src/index.ts
 var llmonitor = new llmonitor_default();
 var src_default = llmonitor;
+
+// src/openai.ts
+var parseOpenaiMessage = (message) => {
+  if (!message)
+    return void 0;
+  const { role, content, name, function_call } = message;
+  return {
+    role: role.replace("assistant", "ai"),
+    text: content,
+    function_call
+  };
+};
+var AsyncIteratorProto = Object.getPrototypeOf(
+  Object.getPrototypeOf(async function* () {
+  }.prototype)
+);
+var teeAsync = (iterable) => {
+  const iterator = iterable[Symbol.asyncIterator]();
+  const buffers = [[], []];
+  function makeIterator(buffer, i) {
+    return Object.assign(Object.create(AsyncIteratorProto), {
+      next() {
+        if (!buffer)
+          return Promise.resolve({ done: true, value: void 0 });
+        if (buffer.length)
+          return buffer.shift();
+        const res = iterator.next();
+        if (buffers[i ^ 1])
+          buffers[i ^ 1].push(res);
+        return res;
+      },
+      async return() {
+        if (buffer) {
+          buffer = buffers[i] = null;
+          if (!buffers[i ^ 1])
+            await iterator.return();
+        }
+        return { done: true, value: void 0 };
+      }
+    });
+  }
+  return buffers.map(makeIterator);
+};
+function openAIv3(openai, params = {}) {
+  const createChatCompletion = openai.createChatCompletion.bind(openai);
+  const wrapped = src_default.wrapModel(createChatCompletion, {
+    nameParser: (request) => request.model,
+    inputParser: (request) => request.messages.map(parseOpenaiMessage),
+    extraParser: (request) => {
+      const rawExtra = {
+        temperature: request.temperature,
+        maxTokens: request.max_tokens,
+        frequencyPenalty: request.frequency_penalty,
+        presencePenalty: request.presence_penalty,
+        stop: request.stop
+      };
+      return cleanExtra(rawExtra);
+    },
+    outputParser: ({ data }) => parseOpenaiMessage(data.choices[0].text || ""),
+    tokensUsageParser: async ({ data }) => ({
+      completion: data.usage?.completion_tokens,
+      prompt: data.usage?.prompt_tokens
+    }),
+    ...params
+  });
+  openai.createChatCompletion = wrapped;
+  return openai;
+}
+function monitorOpenAI(openai, params = {}) {
+  const createChatCompletion = openai.chat.completions.create.bind(openai);
+  async function handleStream(stream, onComplete, onError) {
+    try {
+      let tokens = 0;
+      let choices = [];
+      for await (const part of stream) {
+        tokens += 1;
+        const chunk = part.choices[0];
+        const { index, delta } = chunk;
+        const { content, function_call, role } = delta;
+        if (!choices[index]) {
+          choices.splice(index, 0, {
+            message: { role, content, function_call }
+          });
+          continue;
+        }
+        if (content)
+          choices[index].message.content += content;
+        if (role)
+          choices[index].message.role = role;
+        if (function_call?.name)
+          choices[index].message.function_call.name = function_call.name;
+        if (function_call?.arguments)
+          choices[index].message.function_call.arguments += function_call.arguments;
+      }
+      const res = {
+        choices,
+        usage: { completion_tokens: tokens, prompt_tokens: void 0 }
+      };
+      onComplete(res);
+    } catch (error) {
+      console.error(error);
+      onError(error);
+    }
+  }
+  const wrapped = src_default.wrapModel(createChatCompletion, {
+    nameParser: (request) => request.model,
+    inputParser: (request) => request.messages.map(parseOpenaiMessage),
+    extraParser: (request) => {
+      const rawExtra = {
+        temperature: request.temperature,
+        maxTokens: request.max_tokens,
+        frequencyPenalty: request.frequency_penalty,
+        presencePenalty: request.presence_penalty,
+        stop: request.stop
+      };
+      return cleanExtra(rawExtra);
+    },
+    outputParser: (res) => parseOpenaiMessage(res.choices[0].message || ""),
+    tokensUsageParser: async (res) => {
+      return {
+        completion: res.usage?.completion_tokens,
+        prompt: res.usage?.prompt_tokens
+      };
+    },
+    enableWaitUntil: (request) => !!request.stream,
+    waitUntil: (stream, onComplete, onError) => {
+      const [og, copy] = teeAsync(stream);
+      handleStream(copy, onComplete, onError);
+      return og;
+    },
+    ...params
+  });
+  openai.chat.completions.create = wrapped;
+  return openai;
+}
+// Annotate the CommonJS export names for ESM import in node:
+0 && (module.exports = {
+  monitorOpenAI,
+  openAIv3,
+  teeAsync
+});

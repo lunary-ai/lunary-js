@@ -1,28 +1,3 @@
-var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
-};
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
-};
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-
-// src/index.ts
-var src_exports = {};
-__export(src_exports, {
-  default: () => src_default
-});
-module.exports = __toCommonJS(src_exports);
-
 // src/utils.ts
 var checkEnv = (variable) => {
   if (typeof process !== "undefined" && process.env?.[variable]) {
@@ -63,6 +38,9 @@ var cleanError = (error) => {
     };
   }
 };
+var cleanExtra = (extra) => {
+  return Object.fromEntries(Object.entries(extra).filter(([_, v]) => v != null));
+};
 function getArgumentNames(func) {
   let str = func.toString();
   str = str.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/(.)*/g, "").replace(/{[\s\S]*}/, "").replace(/=>/g, "").trim();
@@ -87,15 +65,15 @@ var getFunctionInput = (func, args) => {
 };
 
 // src/context.ts
-var import_unctx = require("unctx");
-var import_node_async_hooks = require("async_hooks");
-var runIdCtx = (0, import_unctx.createContext)({
+import { createContext } from "unctx";
+import { AsyncLocalStorage } from "node:async_hooks";
+var runIdCtx = createContext({
   asyncContext: true,
-  AsyncLocalStorage: import_node_async_hooks.AsyncLocalStorage
+  AsyncLocalStorage
 });
-var userCtx = (0, import_unctx.createContext)({
+var userCtx = createContext({
   asyncContext: true,
-  AsyncLocalStorage: import_node_async_hooks.AsyncLocalStorage
+  AsyncLocalStorage
 });
 
 // src/chainable.ts
@@ -358,3 +336,8 @@ var llmonitor_default = LLMonitor;
 // src/index.ts
 var llmonitor = new llmonitor_default();
 var src_default = llmonitor;
+
+export {
+  cleanExtra,
+  src_default
+};

@@ -1,12 +1,13 @@
 import "dotenv/config"
 import OpenAI from "openai"
 import monitor from "../src/index"
+import { monitorOpenAI } from "../src/openai"
 
 monitor.load({
   log: true,
 })
 
-const openai = monitor.openAI(
+const openai = monitorOpenAI(
   new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   })
