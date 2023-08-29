@@ -10,6 +10,7 @@ import {
 
 import OpenAI from "openai"
 import OpenAIStreaming from "openai/streaming"
+
 import { cleanExtra } from "./utils"
 
 import monitor from "./index"

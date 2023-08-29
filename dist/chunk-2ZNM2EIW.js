@@ -1,5 +1,8 @@
+var __defProp = Object.defineProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+
 // src/utils.ts
-var checkEnv = (variable) => {
+var checkEnv = /* @__PURE__ */ __name((variable) => {
   if (typeof process !== "undefined" && process.env?.[variable]) {
     return process.env[variable];
   }
@@ -7,11 +10,11 @@ var checkEnv = (variable) => {
     return Deno.env.get(variable);
   }
   return void 0;
-};
-var formatLog = (event) => {
+}, "checkEnv");
+var formatLog = /* @__PURE__ */ __name((event) => {
   return JSON.stringify(event, null, 2);
-};
-var debounce = (func, timeout = 500) => {
+}, "formatLog");
+var debounce = /* @__PURE__ */ __name((func, timeout = 500) => {
   let timer;
   return (...args) => {
     clearTimeout(timer);
@@ -19,8 +22,8 @@ var debounce = (func, timeout = 500) => {
       func.apply(void 0, args);
     }, timeout);
   };
-};
-var cleanError = (error) => {
+}, "debounce");
+var cleanError = /* @__PURE__ */ __name((error) => {
   if (typeof error === "string")
     return {
       message: error
@@ -37,10 +40,10 @@ var cleanError = (error) => {
       stack: error.stack
     };
   }
-};
-var cleanExtra = (extra) => {
+}, "cleanError");
+var cleanExtra = /* @__PURE__ */ __name((extra) => {
   return Object.fromEntries(Object.entries(extra).filter(([_, v]) => v != null));
-};
+}, "cleanExtra");
 function getArgumentNames(func) {
   let str = func.toString();
   str = str.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/(.)*/g, "").replace(/{[\s\S]*}/, "").replace(/=>/g, "").trim();
@@ -55,14 +58,15 @@ function getArgumentNames(func) {
   });
   return params;
 }
-var getFunctionInput = (func, args) => {
+__name(getArgumentNames, "getArgumentNames");
+var getFunctionInput = /* @__PURE__ */ __name((func, args) => {
   const argNames = getArgumentNames(func);
   const input = argNames.length === 1 ? args[0] : argNames.reduce((obj, argName, index) => {
     obj[argName] = args[index];
     return obj;
   }, {});
   return input;
-};
+}, "getFunctionInput");
 
 // src/context.ts
 import { createContext } from "unctx";
@@ -91,12 +95,16 @@ async function identify(userId, userProps) {
     return next(target);
   });
 }
+__name(identify, "identify");
 var chainable_default = {
   identify
 };
 
 // src/llmonitor.ts
 var LLMonitor = class {
+  static {
+    __name(this, "LLMonitor");
+  }
   appId;
   logConsole;
   apiUrl;
@@ -172,7 +180,7 @@ var LLMonitor = class {
   }
   wrap(type, func, params) {
     const llmonitor2 = this;
-    const wrappedFn = (...args) => {
+    const wrappedFn = /* @__PURE__ */ __name((...args) => {
       const callInfo = {
         type,
         func,
@@ -200,7 +208,7 @@ var LLMonitor = class {
         }
       });
       return proxy;
-    };
+    }, "wrappedFn");
     return wrappedFn;
   }
   // Extract the actual execution logic into a function
@@ -228,14 +236,14 @@ var LLMonitor = class {
       extra: extraData,
       tags
     });
-    const processOutput = async (output) => {
+    const processOutput = /* @__PURE__ */ __name(async (output) => {
       const tokensUsage = tokensUsageParser ? await tokensUsageParser(output) : void 0;
       this.trackEvent(type, "end", {
         runId: runId2,
         output: outputParser ? outputParser(output) : output,
         tokensUsage
       });
-    };
+    }, "processOutput");
     try {
       const output = await context_default.runId.callAsync(runId2, async () => {
         return func(...args);
@@ -342,6 +350,7 @@ var llmonitor = new llmonitor_default();
 var src_default = llmonitor;
 
 export {
+  __name,
   cleanExtra,
   src_default
 };
