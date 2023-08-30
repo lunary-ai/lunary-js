@@ -41,6 +41,7 @@ export interface Event {
   parentRunId?: string
   extra?: cJSON
   tags?: string[]
+  runtime?: string
   error?: {
     message: string
     stack?: string

@@ -52,7 +52,9 @@ class LLMonitor {
     data: Partial<RunEvent | LogEvent>
   ) {
     if (!this.appId)
-      return console.error("LLMonitor: App ID not set. Not reporting anything.")
+      return console.warn(
+        "LLMonitor: App ID not set. Not reporting anything. Get one on the dashboard: https://app.llmonitor.com"
+      )
 
     // Add 1ms to timestamp if it's the same/lower than the last event
     // Keep the order of events in case they are sent in the same millisecond
@@ -65,6 +67,8 @@ class LLMonitor {
     const parentRunId = data.parentRunId ?? ctx.runId.tryUse()
     const user = ctx.user.tryUse()
 
+    const runtime = data.runtime ?? "llmonitor-js"
+
     const eventData: Event = {
       event,
       type,
@@ -73,6 +77,7 @@ class LLMonitor {
       app: this.appId,
       parentRunId,
       timestamp,
+      runtime,
       ...data,
     }
 
@@ -113,7 +118,7 @@ class LLMonitor {
       if (this.queue.length) this.processQueue()
     } catch (error) {
       this.queueRunning = false
-      console.warn("Error sending event(s) to LLMonitor", error)
+      console.error("Error sending event(s) to LLMonitor", error)
     }
   }
 
