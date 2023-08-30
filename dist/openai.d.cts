@@ -1,5 +1,6 @@
 import { e as WrapExtras, d as WrappedFn, f as WrappedReturn } from './types-718a4640.js';
 import OpenAI from 'openai';
+import { APIPromise } from 'openai/core';
 import OpenAIStreaming from 'openai/streaming';
 
 type WrappedOldOpenAi<T> = Omit<T, "createChatCompletion"> & {
@@ -10,7 +11,7 @@ type WrapCreateFunction<T, U> = (body: T, options?: OpenAI.RequestOptions) => Wr
 type WrapCreate<T> = {
     chat: {
         completions: {
-            create: WrapCreateFunction<OpenAI.Chat.CompletionCreateParamsNonStreaming, Promise<OpenAI.Chat.ChatCompletion>> & WrapCreateFunction<OpenAI.Chat.CompletionCreateParamsStreaming, Promise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>>> & WrapCreateFunction<OpenAI.Chat.CompletionCreateParams, Promise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>> | Promise<OpenAI.Chat.ChatCompletion>>;
+            create: WrapCreateFunction<OpenAI.Chat.CompletionCreateParamsNonStreaming, APIPromise<OpenAI.Chat.ChatCompletion>> & WrapCreateFunction<OpenAI.Chat.CompletionCreateParamsStreaming, APIPromise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>>> & WrapCreateFunction<OpenAI.Chat.CompletionCreateParams, APIPromise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>> | APIPromise<OpenAI.Chat.ChatCompletion>>;
         };
     };
 };

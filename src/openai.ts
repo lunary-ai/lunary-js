@@ -9,6 +9,7 @@ import {
 } from "./types"
 
 import OpenAI from "openai"
+import { APIPromise } from "openai/core"
 import OpenAIStreaming from "openai/streaming"
 
 import { cleanExtra } from "./utils"
@@ -78,16 +79,16 @@ type WrapCreate<T> = {
     completions: {
       create: WrapCreateFunction<
         OpenAI.Chat.CompletionCreateParamsNonStreaming,
-        Promise<OpenAI.Chat.ChatCompletion>
+        APIPromise<OpenAI.Chat.ChatCompletion>
       > &
         WrapCreateFunction<
           OpenAI.Chat.CompletionCreateParamsStreaming,
-          Promise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>>
+          APIPromise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>>
         > &
         WrapCreateFunction<
           OpenAI.Chat.CompletionCreateParams,
-          | Promise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>>
-          | Promise<OpenAI.Chat.ChatCompletion>
+          | APIPromise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>>
+          | APIPromise<OpenAI.Chat.ChatCompletion>
         >
     }
   }

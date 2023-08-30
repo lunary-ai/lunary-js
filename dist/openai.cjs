@@ -12,7 +12,7 @@ var parseOpenaiMessage = /* @__PURE__ */ _chunkXSOZVGBWcjs.__name.call(void 0, (
   return {
     role: role.replace("assistant", "ai"),
     text: content,
-    function_call
+    functionCall: function_call
   };
 }, "parseOpenaiMessage");
 var teeAsync = /* @__PURE__ */ _chunkXSOZVGBWcjs.__name.call(void 0, (iterable) => {
