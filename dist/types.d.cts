@@ -19,6 +19,7 @@ interface Event {
     parentRunId?: string;
     extra?: cJSON;
     tags?: string[];
+    runtime?: string;
     error?: {
         message: string;
         stack?: string;
@@ -37,6 +38,15 @@ interface RunEvent extends Event {
 }
 interface LogEvent extends Event {
     message: string;
+}
+interface ChatMessage {
+    role: "user" | "ai" | "system" | "function";
+    text: string;
+    functionCall?: {
+        name: string;
+        arguments: cJSON;
+    };
+    [key: string]: cJSON;
 }
 type WrapExtras = {
     name?: string;
@@ -61,4 +71,4 @@ type WrappedReturn<T extends WrappableFn> = ReturnType<T> & {
 };
 type WrappedFn<T extends WrappableFn> = (...args: Parameters<T>) => WrappedReturn<T>;
 
-export { EventType as E, LLMonitorOptions as L, RunEvent as R, WrappableFn as W, EventName as a, LogEvent as b, WrapParams as c, WrappedFn as d, WrapExtras as e, WrappedReturn as f };
+export { ChatMessage, Event, EventName, EventType, Identify, LLMonitorOptions, LogEvent, RunEvent, TokenUsage, WrapExtras, WrapParams, WrappableFn, WrappedFn, WrappedReturn, cJSON };

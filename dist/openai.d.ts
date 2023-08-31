@@ -1,4 +1,4 @@
-import { e as WrapExtras, d as WrappedFn, f as WrappedReturn } from './types-718a4640.js';
+import { WrapExtras, WrappedFn, WrappedReturn } from './types.js';
 import OpenAI from 'openai';
 import { APIPromise } from 'openai/core';
 import OpenAIStreaming from 'openai/streaming';

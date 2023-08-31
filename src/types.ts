@@ -1,9 +1,3 @@
-// import { BaseChatModel } from "langchain/chat_models/base"
-// import { BaseLanguageModel } from "langchain/base_language"
-// import { Tool, StructuredTool } from "langchain/tools"
-
-// import { ChatOpenAI } from "langchain/chat_models/openai"
-
 // using 'JSON' causes problems with esbuild (probably because a type JSON alrady exists)
 export type cJSON =
   | string
@@ -16,7 +10,6 @@ export interface LLMonitorOptions {
   appId?: string
   apiUrl?: string
   verbose?: boolean
-  name?: string
 }
 
 export type EventType =
@@ -64,14 +57,6 @@ export interface RunEvent extends Event {
 export interface LogEvent extends Event {
   message: string
 }
-
-// export type EntityToMonitor =
-//   | typeof BaseLanguageModel
-//   | typeof BaseChatModel
-//   | typeof ChatOpenAI
-//   // | typeof OpenAIApi
-//   | typeof Tool
-//   | typeof StructuredTool
 
 // Inspired from OpenAi's format, less heavy than Langchain's type
 export interface ChatMessage {
