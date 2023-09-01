@@ -13,58 +13,27 @@ const openai = monitorOpenAI(
   })
 )
 
-async function main() {
-  const stream = await openai.chat.completions
-    .create({
-      model: "gpt-3.5-turbo-0613",
-      messages: [
-        {
-          role: "user",
-          content: `root
-              ├── folder1
-              │   ├── file1.txt
-              │   └── file2.txt
-              └── folder2
-                  ├── file3.txt
-                      └── subfolder1
-                              └── file4.txt`,
-        },
-      ],
-      functions: [
-        {
-          name: "buildTree",
-          description: "build a tree structure",
-          parameters: {
-            type: "object",
-            properties: {
-              name: {
-                type: "string",
-                description: "The name of the node",
-              },
-              children: {
-                type: "array",
-                description: "The tree nodes",
-                items: {
-                  $ref: "#",
-                },
-              },
-              type: {
-                type: "string",
-                description: "The type of the node",
-                enum: ["file", "folder"],
-              },
-            },
-            required: ["name", "children", "type"],
-          },
-        },
-      ],
-      stream: true,
-    })
-    .identify("test")
+async function TranslatorAgent(input) {
+  const res = await openai.chat.completions.create({
+    model: "gpt-3.5-turbo-0613",
+    messages: [
+      {
+        role: "system",
+        content:
+          "You are a translator agent that hides jokes in each translation.",
+      },
+      {
+        role: "user",
+        content: `Translate this sentence from English to French: ${input}`,
+      },
+    ],
+  })
 
-  for await (const part of stream) {
-    console.log(part.choices[0]?.delta)
-  }
+  return res.choices[0].message.content
 }
 
-main()
+const translate = monitor.wrapAgent(TranslatorAgent)
+
+const res = await translate("Hello, what's your name").identify("user123")
+
+console.log(res)
