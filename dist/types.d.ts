@@ -5,10 +5,9 @@ interface LLMonitorOptions {
     appId?: string;
     apiUrl?: string;
     verbose?: boolean;
-    name?: string;
 }
-type EventType = "log" | "tool" | "agent" | "llm" | "convo" | "chain" | "retriever" | "embed";
-type EventName = "start" | "end" | "error" | "info" | "warn";
+type EventType = "log" | "tool" | "agent" | "llm" | "convo" | "chain" | "retriever" | "embed" | "chat" | "convo";
+type EventName = "start" | "end" | "error" | "info" | "warn" | "feedback";
 interface Event {
     type: EventType;
     event: EventName;

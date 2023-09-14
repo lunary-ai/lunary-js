@@ -21,8 +21,10 @@ export type EventType =
   | "chain"
   | "retriever"
   | "embed"
+  | "chat"
+  | "convo"
 
-export type EventName = "start" | "end" | "error" | "info" | "warn"
+export type EventName = "start" | "end" | "error" | "info" | "warn" | "feedback"
 
 export interface Event {
   type: EventType

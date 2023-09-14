@@ -19,6 +19,16 @@
       "types": "./dist/types.d.ts",
       "import": "./dist/types.js",
       "require": "./dist/types.cjs"
+    },
+    "./browser": {
+      "types": "./dist/browser.d.ts",
+      "import": "./dist/browser.js",
+      "require": "./dist/browser.cjs"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js",
+      "require": "./dist/react.cjs"
     }
   },
   "typesVersions": {
@@ -28,6 +38,12 @@
       ],
       "types": [
         "./dist/types.d.ts"
+      ],
+      "browser": [
+        "./dist/browser.d.ts"
+      ],
+      "react": [
+        "./dist/react.d.ts"
       ]
     }
   },
@@ -41,8 +57,10 @@
   },
   "devDependencies": {
     "@types/node": "^20.5.1",
+    "@types/react": "^18.2.21",
     "dotenv": "^16.3.1",
     "openai": "^4.3.0",
+    "react": "^18.0.2",
     "tsup": "^7.2.0",
     "typescript": "^5.1.6"
   },
@@ -50,10 +68,14 @@
     "semi": false
   },
   "peerDependencies": {
-    "openai": "^4.3.0"
+    "openai": "^4.3.0",
+    "react": "^17.0.2"
   },
   "peerDependenciesMeta": {
     "openai": {
+      "optional": true
+    },
+    "react": {
       "optional": true
     }
   }
