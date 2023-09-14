@@ -64,10 +64,12 @@ type WrapParams<T extends WrappableFn> = {
     waitUntil?: (result: Awaited<ReturnType<T>>, onComplete: (any: any) => any, onError: (any: any) => any) => ReturnType<T>;
 } & WrapExtras;
 type WrappableFn = (...args: any[]) => any;
-type Identify<T extends WrappableFn> = (userId: string, userProps?: cJSON) => ReturnType<T>;
+type Identify<T extends WrappableFn> = (userId: string, userProps?: cJSON) => WrappedReturn<T>;
+type SetParent<T extends WrappableFn> = (runId: string) => WrappedReturn<T>;
 type WrappedReturn<T extends WrappableFn> = ReturnType<T> & {
     identify: Identify<T>;
+    setParent: SetParent<T>;
 };
 type WrappedFn<T extends WrappableFn> = (...args: Parameters<T>) => WrappedReturn<T>;
 
-export { ChatMessage, Event, EventName, EventType, Identify, LLMonitorOptions, LogEvent, RunEvent, TokenUsage, WrapExtras, WrapParams, WrappableFn, WrappedFn, WrappedReturn, cJSON };
+export { ChatMessage, Event, EventName, EventType, Identify, LLMonitorOptions, LogEvent, RunEvent, SetParent, TokenUsage, WrapExtras, WrapParams, WrappableFn, WrappedFn, WrappedReturn, cJSON };

@@ -64,6 +64,10 @@ declare class LLMonitor {
      * }
      */
     error(message: string | any, error?: any): void;
+    /**
+     * Make sure the queue is flushed before exiting the program
+     */
+    flush(): Promise<void>;
 }
 
 declare const llmonitor: LLMonitor;

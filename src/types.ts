@@ -100,10 +100,15 @@ export type WrappableFn = (...args: any[]) => any
 export type Identify<T extends WrappableFn> = (
   userId: string,
   userProps?: cJSON
-) => ReturnType<T>
+) => WrappedReturn<T>
+
+export type SetParent<T extends WrappableFn> = (
+  runId: string
+) => WrappedReturn<T>
 
 export type WrappedReturn<T extends WrappableFn> = ReturnType<T> & {
   identify: Identify<T>
+  setParent: SetParent<T>
 }
 
 // Create a type for the function returning that promise

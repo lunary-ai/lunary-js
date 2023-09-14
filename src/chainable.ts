@@ -22,6 +22,22 @@ async function identify<T extends WrappableFn>(
   })
 }
 
+/**
+ * Inject a previous run ID into the context
+ * For example, to tie back to frontend events
+ * @param {string} runId - Previous run ID
+ */
+async function setParent<T extends WrappableFn>(
+  runId: string
+): Promise<ReturnType<T>> {
+  const { target, next } = this
+
+  return ctx.runId.callAsync(runId, async () => {
+    return next(target)
+  })
+}
+
 export default {
   identify,
+  setParent,
 }

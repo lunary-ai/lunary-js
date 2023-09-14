@@ -2,10 +2,10 @@
 
 
 
-var _chunkJ2ESM526cjs = require('./chunk-J2ESM526.cjs');
+var _chunkBW5AWA2Scjs = require('./chunk-BW5AWA2S.cjs');
 
 // src/openai.ts
-var parseOpenaiMessage = /* @__PURE__ */ _chunkJ2ESM526cjs.__name.call(void 0, (message) => {
+var parseOpenaiMessage = /* @__PURE__ */ _chunkBW5AWA2Scjs.__name.call(void 0, (message) => {
   if (!message)
     return void 0;
   const { role, content, name, function_call } = message;
@@ -15,7 +15,7 @@ var parseOpenaiMessage = /* @__PURE__ */ _chunkJ2ESM526cjs.__name.call(void 0, (
     functionCall: function_call
   };
 }, "parseOpenaiMessage");
-var teeAsync = /* @__PURE__ */ _chunkJ2ESM526cjs.__name.call(void 0, (iterable) => {
+var teeAsync = /* @__PURE__ */ _chunkBW5AWA2Scjs.__name.call(void 0, (iterable) => {
   const AsyncIteratorProto = Object.getPrototypeOf(
     Object.getPrototypeOf(async function* () {
     }.prototype)
@@ -44,12 +44,12 @@ var teeAsync = /* @__PURE__ */ _chunkJ2ESM526cjs.__name.call(void 0, (iterable) 
       }
     });
   }
-  _chunkJ2ESM526cjs.__name.call(void 0, makeIterator, "makeIterator");
+  _chunkBW5AWA2Scjs.__name.call(void 0, makeIterator, "makeIterator");
   return buffers.map(makeIterator);
 }, "teeAsync");
 function openAIv3(openai, params = {}) {
   const createChatCompletion = openai.createChatCompletion.bind(openai);
-  const wrapped = _chunkJ2ESM526cjs.src_default.wrapModel(createChatCompletion, {
+  const wrapped = _chunkBW5AWA2Scjs.src_default.wrapModel(createChatCompletion, {
     nameParser: (request) => request.model,
     inputParser: (request) => request.messages.map(parseOpenaiMessage),
     extraParser: (request) => {
@@ -60,7 +60,7 @@ function openAIv3(openai, params = {}) {
         presencePenalty: request.presence_penalty,
         stop: request.stop
       };
-      return _chunkJ2ESM526cjs.cleanExtra.call(void 0, rawExtra);
+      return _chunkBW5AWA2Scjs.cleanExtra.call(void 0, rawExtra);
     },
     outputParser: ({ data }) => parseOpenaiMessage(data.choices[0].text || ""),
     tokensUsageParser: async ({ data }) => ({
@@ -72,7 +72,7 @@ function openAIv3(openai, params = {}) {
   openai.createChatCompletion = wrapped;
   return openai;
 }
-_chunkJ2ESM526cjs.__name.call(void 0, openAIv3, "openAIv3");
+_chunkBW5AWA2Scjs.__name.call(void 0, openAIv3, "openAIv3");
 function monitorOpenAI(openai, params = {}) {
   const createChatCompletion = openai.chat.completions.create.bind(openai);
   async function handleStream(stream, onComplete, onError) {
@@ -109,8 +109,8 @@ function monitorOpenAI(openai, params = {}) {
       onError(error);
     }
   }
-  _chunkJ2ESM526cjs.__name.call(void 0, handleStream, "handleStream");
-  const wrapped = _chunkJ2ESM526cjs.src_default.wrapModel(createChatCompletion, {
+  _chunkBW5AWA2Scjs.__name.call(void 0, handleStream, "handleStream");
+  const wrapped = _chunkBW5AWA2Scjs.src_default.wrapModel(createChatCompletion, {
     nameParser: (request) => request.model,
     inputParser: (request) => request.messages.map(parseOpenaiMessage),
     extraParser: (request) => {
@@ -121,7 +121,7 @@ function monitorOpenAI(openai, params = {}) {
         presencePenalty: request.presence_penalty,
         stop: request.stop
       };
-      return _chunkJ2ESM526cjs.cleanExtra.call(void 0, rawExtra);
+      return _chunkBW5AWA2Scjs.cleanExtra.call(void 0, rawExtra);
     },
     outputParser: (res) => parseOpenaiMessage(res.choices[0].message || ""),
     tokensUsageParser: async (res) => {
@@ -141,7 +141,7 @@ function monitorOpenAI(openai, params = {}) {
   openai.chat.completions.create = wrapped;
   return openai;
 }
-_chunkJ2ESM526cjs.__name.call(void 0, monitorOpenAI, "monitorOpenAI");
+_chunkBW5AWA2Scjs.__name.call(void 0, monitorOpenAI, "monitorOpenAI");
 
 
 

@@ -1,8 +1,8 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});
 
-var _chunkJ2ESM526cjs = require('./chunk-J2ESM526.cjs');
+var _chunkBW5AWA2Scjs = require('./chunk-BW5AWA2S.cjs');
 
 
-exports.default = _chunkJ2ESM526cjs.src_default;
+exports.default = _chunkBW5AWA2Scjs.src_default;
 
 module.exports = exports.default

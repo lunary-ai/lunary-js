@@ -147,6 +147,13 @@ class LLMonitor {
             })
           }
 
+          if (prop === "setParent") {
+            return chainable.setParent.bind({
+              target,
+              next: llmonitor.executeWrappedFunction.bind(llmonitor),
+            })
+          }
+
           const promise = llmonitor.executeWrappedFunction(target)
 
           if (prop === "then") {
@@ -351,6 +358,13 @@ class LLMonitor {
       message,
       extra: cleanError(error),
     })
+  }
+
+  /**
+   * Make sure the queue is flushed before exiting the program
+   */
+  async flush() {
+    await this.processQueue()
   }
 }
 
