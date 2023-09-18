@@ -64,6 +64,7 @@ export interface LogEvent extends Event {
 export interface ChatMessage {
   role: "user" | "ai" | "system" | "function"
   text: string
+  functions?: cJSON[]
   functionCall?: {
     name: string
     arguments: cJSON
@@ -88,6 +89,7 @@ export type WrapParams<T extends WrappableFn> = {
   // Add the option to wait for a condition to be met before completing the run
   // Useful for streaming API
   enableWaitUntil?: (...args: Parameters<T>) => boolean
+  forceFlush?: (...args: Parameters<T>) => boolean
   waitUntil?: (
     result: Awaited<ReturnType<T>>,
     onComplete: (any) => any,

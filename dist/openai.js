@@ -1,8 +1,10 @@
 import {
-  __name,
-  cleanExtra,
   src_default
-} from "./chunk-M6VCMUGU.js";
+} from "./chunk-MSDDW5V7.js";
+import {
+  __name,
+  cleanExtra
+} from "./chunk-NILRUNLS.js";
 
 // src/openai.ts
 var parseOpenaiMessage = /* @__PURE__ */ __name((message) => {
@@ -119,7 +121,8 @@ function monitorOpenAI(openai, params = {}) {
         maxTokens: request.max_tokens,
         frequencyPenalty: request.frequency_penalty,
         presencePenalty: request.presence_penalty,
-        stop: request.stop
+        stop: request.stop,
+        functions: request.functions
       };
       return cleanExtra(rawExtra);
     },

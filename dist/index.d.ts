@@ -11,7 +11,7 @@ declare class LLMonitor {
      */
     constructor();
     init({ appId, verbose, apiUrl }?: LLMonitorOptions): void;
-    trackEvent(type: EventType, event: EventName, data: Partial<RunEvent | LogEvent>): Promise<void>;
+    trackEvent(type: EventType, event: EventName, data: Partial<RunEvent | LogEvent>): void;
     private debouncedProcessQueue;
     private processQueue;
     private wrap;

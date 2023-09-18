@@ -41,6 +41,7 @@ interface LogEvent extends Event {
 interface ChatMessage {
     role: "user" | "ai" | "system" | "function";
     text: string;
+    functions?: cJSON[];
     functionCall?: {
         name: string;
         arguments: cJSON;
@@ -61,6 +62,7 @@ type WrapParams<T extends WrappableFn> = {
     outputParser?: (result: Awaited<ReturnType<T>>) => cJSON;
     tokensUsageParser?: (result: Awaited<ReturnType<T>>) => Promise<TokenUsage>;
     enableWaitUntil?: (...args: Parameters<T>) => boolean;
+    forceFlush?: (...args: Parameters<T>) => boolean;
     waitUntil?: (result: Awaited<ReturnType<T>>, onComplete: (any: any) => any, onError: (any: any) => any) => ReturnType<T>;
 } & WrapExtras;
 type WrappableFn = (...args: any[]) => any;

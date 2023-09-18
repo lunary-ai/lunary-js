@@ -15,7 +15,8 @@ const openai = monitorOpenAI(
 
 async function TranslatorAgent(input) {
   const res = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo-0613",
+    model: "gpt-4",
+    temperature: 0,
     messages: [
       {
         role: "system",
@@ -27,7 +28,29 @@ async function TranslatorAgent(input) {
         content: `Translate this sentence from English to French: ${input}`,
       },
     ],
+    // stream: true,
+    functions: [
+      {
+        name: "get_current_weather",
+        description: "Get the current weather.",
+        parameters: {
+          type: "object",
+          properties: {
+            format: {
+              type: "string",
+              enum: ["celsius", "fahrenheit"],
+              description: "The temperature unit to use.",
+            },
+          },
+          required: ["format"],
+        },
+      },
+    ],
   })
+
+  // for await (const part of stream) {
+  //   process.stdout.write(part.choices[0]?.delta?.content || "")
+  // }
 
   return res.choices[0].message.content
 }

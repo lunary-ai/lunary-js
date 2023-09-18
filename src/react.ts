@@ -1,21 +1,31 @@
-import { useState } from "react"
-import LLMonitor, { Conversation } from "./browser"
+import { useEffect, useState } from "react"
+import llmonitor, { Conversation } from "./browser"
 
-function useChatMonitor(monitor: LLMonitor) {
-  const [chat, setChat] = useState<Conversation>(monitor.startChat())
+/*
+ * Separate entrypoint so we can have React as a peer dependency
+ */
 
-  const start = () => {
-    const newChat = monitor.startChat()
+function useChatMonitor() {
+  const [chat, setChat] = useState<Conversation>()
+
+  const restart = () => {
+    const newChat = llmonitor.startChat()
     setChat(newChat)
     return newChat
   }
 
+  useEffect(() => {
+    restart()
+  }, [])
+
   return {
-    start,
-    userMessage: chat.userMessage,
-    botMessage: chat.botMessage,
-    trackFeedback: chat.trackFeedback,
+    restart,
+    trackUserMessage: chat?.trackUserMessage,
+    trackBotMessage: chat?.trackBotMessage,
+    trackFeedback: llmonitor.trackFeedback,
   }
 }
+
+export default llmonitor
 
 export { useChatMonitor }

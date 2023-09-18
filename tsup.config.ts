@@ -2,7 +2,13 @@ import { defineConfig } from "tsup"
 
 // Split in two folders, otherwise because of bundle: false it will pick the wrong file during require
 export default defineConfig({
-  entry: ["src/index.ts", "src/openai.ts", "src/types.ts"],
+  entry: [
+    "src/index.ts",
+    "src/openai.ts",
+    "src/types.ts",
+    "src/browser.ts",
+    "src/react.ts",
+  ],
   format: ["cjs", "esm"],
   bundle: true,
   outDir: "dist",

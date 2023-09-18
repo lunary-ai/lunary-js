@@ -1,83 +1,22 @@
-var __defProp = Object.defineProperty;
-var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; } var _class;
 
-// src/utils.ts
-var checkEnv = /* @__PURE__ */ __name((variable) => {
-  if (typeof process !== "undefined" && process.env?.[variable]) {
-    return process.env[variable];
-  }
-  if (typeof Deno !== "undefined" && Deno.env?.get(variable)) {
-    return Deno.env.get(variable);
-  }
-  return void 0;
-}, "checkEnv");
-var formatLog = /* @__PURE__ */ __name((event) => {
-  return JSON.stringify(event, null, 2);
-}, "formatLog");
-var debounce = /* @__PURE__ */ __name((func, timeout = 500) => {
-  let timer;
-  return (...args) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      func.apply(void 0, args);
-    }, timeout);
-  };
-}, "debounce");
-var cleanError = /* @__PURE__ */ __name((error) => {
-  if (typeof error === "string")
-    return {
-      message: error
-    };
-  else if (error instanceof Error) {
-    return {
-      message: error.message,
-      stack: error.stack
-    };
-  } else {
-    error = new Error("Unknown error");
-    return {
-      message: error.message,
-      stack: error.stack
-    };
-  }
-}, "cleanError");
-var cleanExtra = /* @__PURE__ */ __name((extra) => {
-  return Object.fromEntries(Object.entries(extra).filter(([_, v]) => v != null));
-}, "cleanExtra");
-function getArgumentNames(func) {
-  let str = func.toString();
-  str = str.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/(.)*/g, "").replace(/{[\s\S]*}/, "").replace(/=>/g, "").trim();
-  const start = str.indexOf("(") + 1;
-  const end = str.length - 1;
-  const result = str.substring(start, end).split(",").map((el) => el.trim());
-  const params = [];
-  result.forEach((element) => {
-    element = element.replace(/=[\s\S]*/g, "").trim();
-    if (element.length > 0)
-      params.push(element);
-  });
-  return params;
-}
-__name(getArgumentNames, "getArgumentNames");
-var getFunctionInput = /* @__PURE__ */ __name((func, args) => {
-  const argNames = getArgumentNames(func);
-  const input = argNames.length === 1 ? args[0] : argNames.reduce((obj, argName, index) => {
-    obj[argName] = args[index];
-    return obj;
-  }, {});
-  return input;
-}, "getFunctionInput");
+
+
+
+
+
+var _chunkM3TFISX5cjs = require('./chunk-M3TFISX5.cjs');
 
 // src/context.ts
-import { createContext } from "unctx";
-import { AsyncLocalStorage } from "node:async_hooks";
-var runId = createContext({
+var _unctx = require('unctx');
+var _async_hooks = require('async_hooks');
+var runId = _unctx.createContext.call(void 0, {
   asyncContext: true,
-  AsyncLocalStorage
+  AsyncLocalStorage: _async_hooks.AsyncLocalStorage
 });
-var user = createContext({
+var user = _unctx.createContext.call(void 0, {
   asyncContext: true,
-  AsyncLocalStorage
+  AsyncLocalStorage: _async_hooks.AsyncLocalStorage
 });
 var context_default = {
   runId,
@@ -95,37 +34,37 @@ async function identify(userId, userProps) {
     return next(target);
   });
 }
-__name(identify, "identify");
+_chunkM3TFISX5cjs.__name.call(void 0, identify, "identify");
 async function setParent(runId2) {
   const { target, next } = this;
   return context_default.runId.callAsync(runId2, async () => {
     return next(target);
   });
 }
-__name(setParent, "setParent");
+_chunkM3TFISX5cjs.__name.call(void 0, setParent, "setParent");
 var chainable_default = {
   identify,
   setParent
 };
 
 // src/llmonitor.ts
-var LLMonitor = class {
+var LLMonitor = (_class = class {
   static {
-    __name(this, "LLMonitor");
+    _chunkM3TFISX5cjs.__name.call(void 0, this, "LLMonitor");
   }
-  appId;
-  verbose;
-  apiUrl;
-  queue = [];
-  queueRunning = false;
+  
+  
+  
+  __init() {this.queue = []}
+  __init2() {this.queueRunning = false}
   /**
    * @param {LLMonitorOptions} options
    */
-  constructor() {
+  constructor() {;_class.prototype.__init.call(this);_class.prototype.__init2.call(this);_class.prototype.__init3.call(this);
     this.init({
-      appId: checkEnv("LLMONITOR_APP_ID"),
+      appId: _chunkM3TFISX5cjs.checkEnv.call(void 0, "LLMONITOR_APP_ID"),
       verbose: false,
-      apiUrl: checkEnv("LLMONITOR_API_URL") || "https://app.llmonitor.com"
+      apiUrl: _chunkM3TFISX5cjs.checkEnv.call(void 0, "LLMONITOR_API_URL") || "https://app.llmonitor.com"
     });
   }
   init({ appId, verbose, apiUrl } = {}) {
@@ -136,24 +75,24 @@ var LLMonitor = class {
     if (apiUrl)
       this.apiUrl = apiUrl;
   }
-  async trackEvent(type, event, data) {
+  trackEvent(type, event, data) {
     if (!this.appId)
       return console.warn(
         "LLMonitor: App ID not set. Not reporting anything. Get one on the dashboard: https://app.llmonitor.com"
       );
     let timestamp = Date.now();
-    const lastEvent = this.queue?.[this.queue.length - 1];
-    if (lastEvent?.timestamp >= timestamp) {
+    const lastEvent = _optionalChain([this, 'access', _ => _.queue, 'optionalAccess', _2 => _2[this.queue.length - 1]]);
+    if (_optionalChain([lastEvent, 'optionalAccess', _3 => _3.timestamp]) >= timestamp) {
       timestamp = lastEvent.timestamp + 1;
     }
-    const parentRunId = data.parentRunId ?? context_default.runId.tryUse();
+    const parentRunId = _nullishCoalesce(data.parentRunId, () => ( context_default.runId.tryUse()));
     const user2 = context_default.user.tryUse();
-    const runtime = data.runtime ?? "llmonitor-js";
+    const runtime = _nullishCoalesce(data.runtime, () => ( "llmonitor-js"));
     const eventData = {
       event,
       type,
-      userId: user2?.userId,
-      userProps: user2?.userProps,
+      userId: _optionalChain([user2, 'optionalAccess', _4 => _4.userId]),
+      userProps: _optionalChain([user2, 'optionalAccess', _5 => _5.userProps]),
       app: this.appId,
       parentRunId,
       timestamp,
@@ -161,13 +100,13 @@ var LLMonitor = class {
       ...data
     };
     if (this.verbose) {
-      console.log(formatLog(eventData));
+      console.log(_chunkM3TFISX5cjs.formatLog.call(void 0, eventData));
     }
     this.queue.push(eventData);
     this.debouncedProcessQueue();
   }
   // Wait 500ms to allow other events to be added to the queue
-  debouncedProcessQueue = debounce(() => this.processQueue());
+  __init3() {this.debouncedProcessQueue = _chunkM3TFISX5cjs.debounce.call(void 0, () => this.processQueue())}
   async processQueue() {
     if (!this.queue.length || this.queueRunning)
       return;
@@ -192,7 +131,7 @@ var LLMonitor = class {
   }
   wrap(type, func, params) {
     const llmonitor2 = this;
-    const wrappedFn = /* @__PURE__ */ __name((...args) => {
+    const wrappedFn = /* @__PURE__ */ _chunkM3TFISX5cjs.__name.call(void 0, (...args) => {
       const callInfo = {
         type,
         func,
@@ -233,7 +172,7 @@ var LLMonitor = class {
   async executeWrappedFunction(target) {
     const { type, args, func, params } = target;
     const runId2 = crypto.randomUUID();
-    const name = params?.nameParser ? params.nameParser(...args) : params?.name ?? func.name;
+    const name = _optionalChain([params, 'optionalAccess', _6 => _6.nameParser]) ? params.nameParser(...args) : _nullishCoalesce(_optionalChain([params, 'optionalAccess', _7 => _7.name]), () => ( func.name));
     const {
       inputParser,
       outputParser,
@@ -245,8 +184,8 @@ var LLMonitor = class {
       userId,
       userProps
     } = params || {};
-    const extraData = params?.extraParser ? params.extraParser(...args) : extra;
-    const input = inputParser ? inputParser(...args) : getFunctionInput(func, args);
+    const extraData = _optionalChain([params, 'optionalAccess', _8 => _8.extraParser]) ? params.extraParser(...args) : extra;
+    const input = inputParser ? inputParser(...args) : _chunkM3TFISX5cjs.getFunctionInput.call(void 0, func, args);
     this.trackEvent(type, "start", {
       runId: runId2,
       input,
@@ -254,19 +193,25 @@ var LLMonitor = class {
       extra: extraData,
       tags
     });
-    const processOutput = /* @__PURE__ */ __name(async (output) => {
+    const shouldWaitUntil = typeof enableWaitUntil === "function" ? enableWaitUntil(...args) : waitUntil;
+    const processOutput = /* @__PURE__ */ _chunkM3TFISX5cjs.__name.call(void 0, async (output) => {
       const tokensUsage = tokensUsageParser ? await tokensUsageParser(output) : void 0;
       this.trackEvent(type, "end", {
         runId: runId2,
+        name,
+        // need name in case need to count tokens usage server-side
         output: outputParser ? outputParser(output) : output,
         tokensUsage
       });
+      if (shouldWaitUntil) {
+        await this.flush();
+      }
     }, "processOutput");
     try {
       const output = await context_default.runId.callAsync(runId2, async () => {
         return func(...args);
       });
-      if (typeof enableWaitUntil === "function" ? enableWaitUntil(...args) : waitUntil) {
+      if (shouldWaitUntil) {
         return waitUntil(
           output,
           (res) => processOutput(res),
@@ -279,7 +224,7 @@ var LLMonitor = class {
     } catch (error) {
       this.trackEvent(type, "error", {
         runId: runId2,
-        error: cleanError(error)
+        error: _chunkM3TFISX5cjs.cleanError.call(void 0, error)
       });
       await this.processQueue();
       throw error;
@@ -353,11 +298,11 @@ var LLMonitor = class {
   error(message, error) {
     if (typeof message === "object") {
       error = message;
-      message = error.message ?? void 0;
+      message = _nullishCoalesce(error.message, () => ( void 0));
     }
     this.trackEvent("log", "error", {
       message,
-      extra: cleanError(error)
+      extra: _chunkM3TFISX5cjs.cleanError.call(void 0, error)
     });
   }
   /**
@@ -366,15 +311,13 @@ var LLMonitor = class {
   async flush() {
     await this.processQueue();
   }
-};
+}, _class);
 var llmonitor_default = LLMonitor;
 
 // src/index.ts
 var llmonitor = new llmonitor_default();
 var src_default = llmonitor;
 
-export {
-  __name,
-  cleanExtra,
-  src_default
-};
+
+
+exports.src_default = src_default;

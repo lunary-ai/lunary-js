@@ -159,9 +159,12 @@ export function monitorOpenAI<T extends any>(
         }
 
         if (content) choices[index].message.content += content
+
         if (role) choices[index].message.role = role
+
         if (function_call?.name)
           choices[index].message.function_call.name = function_call.name
+
         if (function_call?.arguments)
           choices[index].message.function_call.arguments +=
             function_call.arguments
@@ -189,6 +192,7 @@ export function monitorOpenAI<T extends any>(
         frequencyPenalty: request.frequency_penalty,
         presencePenalty: request.presence_penalty,
         stop: request.stop,
+        functions: request.functions,
       }
       return cleanExtra(rawExtra)
     },

@@ -24,47 +24,75 @@ import {
 
 export class Conversation {
   private monitor: LLMonitor
-  convoId: string
+  private convoId: string
+  private started: boolean = false
 
   constructor(monitor: LLMonitor) {
     this.monitor = monitor
     this.convoId = crypto.randomUUID()
-    this.monitor.trackEvent("convo", "start", { runId: this.convoId })
   }
 
-  async userMessage(text: string, props: cJSON) {
-    const runId = crypto.randomUUID()
+  /*
+   * Track a new message from the user
+   *
+   * @param {string} text - The user message
+   * @param {cJSON} props - Extra properties to send with the message
+   * @param {string} customId - Set a custom ID for the message
+   * @returns {string} - The message ID, to reconcile with the bot's reply
+   * */
 
-    this.monitor.trackEvent("chat", "start", {
-      runId,
-      input: text,
-      parentRunId: this.convoId,
-      extra: props,
-      text,
-    })
+  trackUserMessage = (text: string, props?: cJSON, customId?: string) => {
+    const runId = customId ?? crypto.randomUUID()
+
+    if (!this.started) {
+      this.monitor
+        .trackEvent("convo", "start", {
+          runId: this.convoId,
+          input: text,
+        })
+        .then(() => {
+          this.monitor.trackEvent("chat", "start", {
+            runId,
+            input: text,
+            parentRunId: this.convoId,
+            extra: props,
+          })
+        })
+
+      this.started = true
+    } else {
+      this.monitor.trackEvent("chat", "start", {
+        runId,
+        input: text,
+        parentRunId: this.convoId,
+        extra: props,
+      })
+    }
 
     return runId
   }
 
-  async botMessage(replyToId: string, text: string, props: cJSON) {
-    this.monitor.trackEvent("chat", "end", {
-      runId: replyToId,
-      output: text,
-      extra: props,
-      text,
-    })
+  /*
+   * Track a new message from the bot
+   *
+   * @param {string} replyToId - The message ID to reply to
+   * @param {string} text - The bot message
+   * @param {cJSON} props - Extra properties to send with the message
+   * */
 
-    // report end of convo ID to update the end timestamp, can be sent multiple times
-    this.monitor.trackEvent("convo", "end", {
-      runId: this.convoId,
-    })
-  }
-
-  async trackFeedback(messageId: string, feedback: cJSON) {
-    this.monitor.trackEvent("chat", "feedback", {
-      runId: messageId,
-      extra: feedback,
-    })
+  trackBotMessage = (replyToId: string, text: string, props?: cJSON) => {
+    this.monitor
+      .trackEvent("chat", "end", {
+        runId: replyToId,
+        output: text,
+        extra: props,
+      })
+      .then(() => {
+        // report end of convo ID to update the end timestamp, can be sent multiple times
+        this.monitor.trackEvent("convo", "end", {
+          runId: this.convoId,
+        })
+      })
   }
 }
 
@@ -78,13 +106,12 @@ class LLMonitor {
   private queue: any[] = []
   private queueRunning: boolean = false
 
-  /**ti
+  /**
    * @param {LLMonitorOptions} options
    */
-  constructor(params: LLMonitorOptions = {}) {
+  constructor() {
     this.init({
       apiUrl: "https://app.llmonitor.com",
-      ...params,
     })
   }
 
@@ -94,7 +121,7 @@ class LLMonitor {
     if (apiUrl) this.apiUrl = apiUrl
   }
 
-  identify({ userId, userProps }: { userId: string; userProps: cJSON }) {
+  identify(userId: string, userProps: cJSON) {
     this.userId = userId
     this.userProps = userProps
   }
@@ -136,11 +163,8 @@ class LLMonitor {
 
     this.queue.push(eventData)
 
-    this.debouncedProcessQueue()
+    this.processQueue()
   }
-
-  // Wait 500ms to allow other events to be added to the queue
-  private debouncedProcessQueue = debounce(() => this.processQueue())
 
   private async processQueue() {
     if (!this.queue.length || this.queueRunning) return
@@ -171,12 +195,31 @@ class LLMonitor {
     }
   }
 
+  trackFeedback = (messageId: string, feedback: cJSON) => {
+    if (!messageId)
+      return console.error(
+        "LLMonitor: No message ID provided to track feedback"
+      )
+
+    if (typeof feedback !== "object")
+      return console.error(
+        "LLMonitor: Invalid feedback provided. Pass a valid object"
+      )
+
+    this.trackEvent("chat", "feedback", {
+      runId: messageId,
+      extra: feedback,
+    })
+  }
+
   startChat() {
     return new Conversation(this)
   }
 }
 
-export default LLMonitor
+const llmonitor = new LLMonitor()
+
+export default llmonitor
 
 // Example usage:
 

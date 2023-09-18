@@ -1,83 +1,22 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; } var _class;var __defProp = Object.defineProperty;
-var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
-
-// src/utils.ts
-var checkEnv = /* @__PURE__ */ __name((variable) => {
-  if (typeof process !== "undefined" && _optionalChain([process, 'access', _2 => _2.env, 'optionalAccess', _3 => _3[variable]])) {
-    return process.env[variable];
-  }
-  if (typeof Deno !== "undefined" && _optionalChain([Deno, 'access', _4 => _4.env, 'optionalAccess', _5 => _5.get, 'call', _6 => _6(variable)])) {
-    return Deno.env.get(variable);
-  }
-  return void 0;
-}, "checkEnv");
-var formatLog = /* @__PURE__ */ __name((event) => {
-  return JSON.stringify(event, null, 2);
-}, "formatLog");
-var debounce = /* @__PURE__ */ __name((func, timeout = 500) => {
-  let timer;
-  return (...args) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      func.apply(void 0, args);
-    }, timeout);
-  };
-}, "debounce");
-var cleanError = /* @__PURE__ */ __name((error) => {
-  if (typeof error === "string")
-    return {
-      message: error
-    };
-  else if (error instanceof Error) {
-    return {
-      message: error.message,
-      stack: error.stack
-    };
-  } else {
-    error = new Error("Unknown error");
-    return {
-      message: error.message,
-      stack: error.stack
-    };
-  }
-}, "cleanError");
-var cleanExtra = /* @__PURE__ */ __name((extra) => {
-  return Object.fromEntries(Object.entries(extra).filter(([_, v]) => v != null));
-}, "cleanExtra");
-function getArgumentNames(func) {
-  let str = func.toString();
-  str = str.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/(.)*/g, "").replace(/{[\s\S]*}/, "").replace(/=>/g, "").trim();
-  const start = str.indexOf("(") + 1;
-  const end = str.length - 1;
-  const result = str.substring(start, end).split(",").map((el) => el.trim());
-  const params = [];
-  result.forEach((element) => {
-    element = element.replace(/=[\s\S]*/g, "").trim();
-    if (element.length > 0)
-      params.push(element);
-  });
-  return params;
-}
-__name(getArgumentNames, "getArgumentNames");
-var getFunctionInput = /* @__PURE__ */ __name((func, args) => {
-  const argNames = getArgumentNames(func);
-  const input = argNames.length === 1 ? args[0] : argNames.reduce((obj, argName, index) => {
-    obj[argName] = args[index];
-    return obj;
-  }, {});
-  return input;
-}, "getFunctionInput");
+import {
+  __name,
+  checkEnv,
+  cleanError,
+  debounce,
+  formatLog,
+  getFunctionInput
+} from "./chunk-NILRUNLS.js";
 
 // src/context.ts
-var _unctx = require('unctx');
-var _async_hooks = require('async_hooks');
-var runId = _unctx.createContext.call(void 0, {
+import { createContext } from "unctx";
+import { AsyncLocalStorage } from "node:async_hooks";
+var runId = createContext({
   asyncContext: true,
-  AsyncLocalStorage: _async_hooks.AsyncLocalStorage
+  AsyncLocalStorage
 });
-var user = _unctx.createContext.call(void 0, {
+var user = createContext({
   asyncContext: true,
-  AsyncLocalStorage: _async_hooks.AsyncLocalStorage
+  AsyncLocalStorage
 });
 var context_default = {
   runId,
@@ -109,19 +48,19 @@ var chainable_default = {
 };
 
 // src/llmonitor.ts
-var LLMonitor = (_class = class {
+var LLMonitor = class {
   static {
     __name(this, "LLMonitor");
   }
-  
-  
-  
-  __init() {this.queue = []}
-  __init2() {this.queueRunning = false}
+  appId;
+  verbose;
+  apiUrl;
+  queue = [];
+  queueRunning = false;
   /**
    * @param {LLMonitorOptions} options
    */
-  constructor() {;_class.prototype.__init.call(this);_class.prototype.__init2.call(this);_class.prototype.__init3.call(this);
+  constructor() {
     this.init({
       appId: checkEnv("LLMONITOR_APP_ID"),
       verbose: false,
@@ -136,24 +75,24 @@ var LLMonitor = (_class = class {
     if (apiUrl)
       this.apiUrl = apiUrl;
   }
-  async trackEvent(type, event, data) {
+  trackEvent(type, event, data) {
     if (!this.appId)
       return console.warn(
         "LLMonitor: App ID not set. Not reporting anything. Get one on the dashboard: https://app.llmonitor.com"
       );
     let timestamp = Date.now();
-    const lastEvent = _optionalChain([this, 'access', _7 => _7.queue, 'optionalAccess', _8 => _8[this.queue.length - 1]]);
-    if (_optionalChain([lastEvent, 'optionalAccess', _9 => _9.timestamp]) >= timestamp) {
+    const lastEvent = this.queue?.[this.queue.length - 1];
+    if (lastEvent?.timestamp >= timestamp) {
       timestamp = lastEvent.timestamp + 1;
     }
-    const parentRunId = _nullishCoalesce(data.parentRunId, () => ( context_default.runId.tryUse()));
+    const parentRunId = data.parentRunId ?? context_default.runId.tryUse();
     const user2 = context_default.user.tryUse();
-    const runtime = _nullishCoalesce(data.runtime, () => ( "llmonitor-js"));
+    const runtime = data.runtime ?? "llmonitor-js";
     const eventData = {
       event,
       type,
-      userId: _optionalChain([user2, 'optionalAccess', _10 => _10.userId]),
-      userProps: _optionalChain([user2, 'optionalAccess', _11 => _11.userProps]),
+      userId: user2?.userId,
+      userProps: user2?.userProps,
       app: this.appId,
       parentRunId,
       timestamp,
@@ -167,7 +106,7 @@ var LLMonitor = (_class = class {
     this.debouncedProcessQueue();
   }
   // Wait 500ms to allow other events to be added to the queue
-  __init3() {this.debouncedProcessQueue = debounce(() => this.processQueue())}
+  debouncedProcessQueue = debounce(() => this.processQueue());
   async processQueue() {
     if (!this.queue.length || this.queueRunning)
       return;
@@ -233,7 +172,7 @@ var LLMonitor = (_class = class {
   async executeWrappedFunction(target) {
     const { type, args, func, params } = target;
     const runId2 = crypto.randomUUID();
-    const name = _optionalChain([params, 'optionalAccess', _12 => _12.nameParser]) ? params.nameParser(...args) : _nullishCoalesce(_optionalChain([params, 'optionalAccess', _13 => _13.name]), () => ( func.name));
+    const name = params?.nameParser ? params.nameParser(...args) : params?.name ?? func.name;
     const {
       inputParser,
       outputParser,
@@ -245,7 +184,7 @@ var LLMonitor = (_class = class {
       userId,
       userProps
     } = params || {};
-    const extraData = _optionalChain([params, 'optionalAccess', _14 => _14.extraParser]) ? params.extraParser(...args) : extra;
+    const extraData = params?.extraParser ? params.extraParser(...args) : extra;
     const input = inputParser ? inputParser(...args) : getFunctionInput(func, args);
     this.trackEvent(type, "start", {
       runId: runId2,
@@ -254,19 +193,25 @@ var LLMonitor = (_class = class {
       extra: extraData,
       tags
     });
+    const shouldWaitUntil = typeof enableWaitUntil === "function" ? enableWaitUntil(...args) : waitUntil;
     const processOutput = /* @__PURE__ */ __name(async (output) => {
       const tokensUsage = tokensUsageParser ? await tokensUsageParser(output) : void 0;
       this.trackEvent(type, "end", {
         runId: runId2,
+        name,
+        // need name in case need to count tokens usage server-side
         output: outputParser ? outputParser(output) : output,
         tokensUsage
       });
+      if (shouldWaitUntil) {
+        await this.flush();
+      }
     }, "processOutput");
     try {
       const output = await context_default.runId.callAsync(runId2, async () => {
         return func(...args);
       });
-      if (typeof enableWaitUntil === "function" ? enableWaitUntil(...args) : waitUntil) {
+      if (shouldWaitUntil) {
         return waitUntil(
           output,
           (res) => processOutput(res),
@@ -353,7 +298,7 @@ var LLMonitor = (_class = class {
   error(message, error) {
     if (typeof message === "object") {
       error = message;
-      message = _nullishCoalesce(error.message, () => ( void 0));
+      message = error.message ?? void 0;
     }
     this.trackEvent("log", "error", {
       message,
@@ -366,15 +311,13 @@ var LLMonitor = (_class = class {
   async flush() {
     await this.processQueue();
   }
-}, _class);
+};
 var llmonitor_default = LLMonitor;
 
 // src/index.ts
 var llmonitor = new llmonitor_default();
 var src_default = llmonitor;
 
-
-
-
-
-exports.__name = __name; exports.cleanExtra = cleanExtra; exports.src_default = src_default;
+export {
+  src_default
+};

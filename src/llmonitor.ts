@@ -46,7 +46,7 @@ class LLMonitor {
     if (apiUrl) this.apiUrl = apiUrl
   }
 
-  async trackEvent(
+  trackEvent(
     type: EventType,
     event: EventName,
     data: Partial<RunEvent | LogEvent>
@@ -217,6 +217,11 @@ class LLMonitor {
       tags,
     })
 
+    const shouldWaitUntil =
+      typeof enableWaitUntil === "function"
+        ? enableWaitUntil(...args)
+        : waitUntil
+
     const processOutput = async (output) => {
       // Allow parsing of token usage (useful for LLMs)
       const tokensUsage = tokensUsageParser
@@ -225,9 +230,15 @@ class LLMonitor {
 
       this.trackEvent(type, "end", {
         runId,
+        name, // need name in case need to count tokens usage server-side
         output: outputParser ? outputParser(output) : output,
         tokensUsage,
       })
+
+      if (shouldWaitUntil) {
+        // Process queue immediately, in case it's a stream, we can't ask the user to manually flush
+        await this.flush()
+      }
     }
 
     try {
@@ -236,11 +247,7 @@ class LLMonitor {
         return func(...args)
       })
 
-      if (
-        typeof enableWaitUntil === "function"
-          ? enableWaitUntil(...args)
-          : waitUntil
-      ) {
+      if (shouldWaitUntil) {
         // Support waiting for a callback to be called to complete the run
         // Useful for streaming API
         return waitUntil(
