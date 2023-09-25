@@ -28,7 +28,7 @@ async function TranslatorAgent(input) {
         content: `Translate this sentence from English to French: ${input}`,
       },
     ],
-    // stream: true,
+    stream: true,
     functions: [
       {
         name: "get_current_weather",
@@ -52,7 +52,7 @@ async function TranslatorAgent(input) {
   //   process.stdout.write(part.choices[0]?.delta?.content || "")
   // }
 
-  return res.choices[0].message.content
+  // return res.choices[0].message.content
 }
 
 const translate = monitor.wrapAgent(TranslatorAgent)

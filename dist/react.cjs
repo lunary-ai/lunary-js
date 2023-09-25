@@ -25,8 +25,30 @@ function useChatMonitor() {
   };
 }
 _chunkM3TFISX5cjs.__name.call(void 0, useChatMonitor, "useChatMonitor");
+var useMonitorVercelAI = /* @__PURE__ */ _chunkM3TFISX5cjs.__name.call(void 0, (props) => {
+  const { messages, isLoading } = props;
+  const { restart, trackFeedback, trackUserMessage, trackBotMessage } = useChatMonitor();
+  const previousMessages = _react.useRef.call(void 0, messages);
+  _react.useEffect.call(void 0, () => {
+    if (previousMessages.current.length < messages.length) {
+      const newMessage = messages[messages.length - 1];
+      if (newMessage.role === "user") {
+        trackUserMessage(newMessage.content, void 0, newMessage.id);
+      } else if (newMessage.role === "assistant" && // Make sure it's not streaming
+      !isLoading) {
+        const userMessage = messages[messages.length - 2];
+        trackBotMessage(userMessage.id, newMessage.content);
+      }
+    }
+  }, [isLoading, messages]);
+  return {
+    ...props,
+    trackFeedback
+  };
+}, "useMonitorVercelAI");
 var react_default = _chunk7S3HGTMVcjs.browser_default;
 
 
 
-exports.default = react_default; exports.useChatMonitor = useChatMonitor;
+
+exports.default = react_default; exports.useChatMonitor = useChatMonitor; exports.useMonitorVercelAI = useMonitorVercelAI;

@@ -7,5 +7,6 @@ declare function useChatMonitor(): {
     trackBotMessage: (replyToId: string, text: string, props?: cJSON) => void;
     trackFeedback: (messageId: string, feedback: cJSON) => void;
 };
+declare const useMonitorVercelAI: (props: any) => any;
 
-export { llmonitor as default, useChatMonitor };
+export { llmonitor as default, useChatMonitor, useMonitorVercelAI };

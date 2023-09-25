@@ -1,6 +1,6 @@
 {
   "name": "llmonitor",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "description": "llmonitor is an open-source monitoring and analytics platform for AI apps.",
   "type": "module",
   "types": "./dist/index.d.ts",
