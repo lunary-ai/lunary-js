@@ -21,6 +21,8 @@ import {
 import ctx from "./context"
 import chainable from "./chainable"
 
+const MAX_CHUNK_SIZE = 20
+
 class LLMonitor {
   appId?: string
   verbose?: boolean
@@ -87,7 +89,11 @@ class LLMonitor {
 
     this.queue.push(eventData)
 
-    this.debouncedProcessQueue()
+    if (this.queue.length > MAX_CHUNK_SIZE) {
+      this.processQueue()
+    } else {
+      this.debouncedProcessQueue()
+    }
   }
 
   // Wait 500ms to allow other events to be added to the queue
@@ -99,6 +105,8 @@ class LLMonitor {
     this.queueRunning = true
 
     try {
+      if (this.verbose) console.log("LLMonitor: Sending events now")
+
       const copy = this.queue.slice()
 
       await fetch(`${this.apiUrl}/api/report`, {
@@ -108,6 +116,8 @@ class LLMonitor {
         },
         body: JSON.stringify({ events: copy }),
       })
+
+      if (this.verbose) console.log("LLMonitor: Events sent")
 
       // Clear the events we just sent (don't clear it all in case new events were added while sending)
       this.queue = this.queue.slice(copy.length)

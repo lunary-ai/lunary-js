@@ -48,6 +48,7 @@ var chainable_default = {
 };
 
 // src/llmonitor.ts
+var MAX_CHUNK_SIZE = 20;
 var LLMonitor = class {
   static {
     __name(this, "LLMonitor");
@@ -103,7 +104,11 @@ var LLMonitor = class {
       console.log(formatLog(eventData));
     }
     this.queue.push(eventData);
-    this.debouncedProcessQueue();
+    if (this.queue.length > MAX_CHUNK_SIZE) {
+      this.processQueue();
+    } else {
+      this.debouncedProcessQueue();
+    }
   }
   // Wait 500ms to allow other events to be added to the queue
   debouncedProcessQueue = debounce(() => this.processQueue());
@@ -112,6 +117,8 @@ var LLMonitor = class {
       return;
     this.queueRunning = true;
     try {
+      if (this.verbose)
+        console.log("LLMonitor: Sending events now");
       const copy = this.queue.slice();
       await fetch(`${this.apiUrl}/api/report`, {
         method: "POST",
@@ -120,6 +127,8 @@ var LLMonitor = class {
         },
         body: JSON.stringify({ events: copy })
       });
+      if (this.verbose)
+        console.log("LLMonitor: Events sent");
       this.queue = this.queue.slice(copy.length);
       this.queueRunning = false;
       if (this.queue.length)

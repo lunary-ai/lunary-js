@@ -28,7 +28,7 @@ async function TranslatorAgent(input) {
         content: `Translate this sentence from English to French: ${input}`,
       },
     ],
-    stream: true,
+    // stream: true,
     functions: [
       {
         name: "get_current_weather",
@@ -52,11 +52,21 @@ async function TranslatorAgent(input) {
   //   process.stdout.write(part.choices[0]?.delta?.content || "")
   // }
 
-  // return res.choices[0].message.content
+  return res.choices[0].message.content
 }
 
 const translate = monitor.wrapAgent(TranslatorAgent)
 
-const res = await translate("Hello, what's your name").identify("user123")
+// const res = await translate("Hello, what's your name").identify("user123")
+
+const res = await Promise.all(
+  Array(5)
+    .fill(0)
+    .map((i, k) =>
+      translate(
+        `Hello, what's your name? (also add this token to your answer: ${k})`
+      ).identify("user123")
+    )
+)
 
 console.log(res)
