@@ -3,6 +3,8 @@ export type cJSON =
   | string
   | number
   | boolean
+  | null
+  | undefined
   | { [x: string]: cJSON }
   | Array<cJSON>
 
@@ -64,7 +66,6 @@ export interface LogEvent extends Event {
 export interface ChatMessage {
   role: "user" | "ai" | "system" | "function"
   text: string
-  functions?: cJSON[]
   functionCall?: {
     name: string
     arguments: cJSON
@@ -85,6 +86,9 @@ export type WrapParams<T extends WrappableFn> = {
   extraParser?: (...args: Parameters<T>) => cJSON
   nameParser?: (...args: Parameters<T>) => string
   outputParser?: (result: Awaited<ReturnType<T>>) => cJSON
+  tagsParser?: (...args: Parameters<T>) => string[]
+  userIdParser?: (...args: Parameters<T>) => string
+  userPropsParser?: (...args: Parameters<T>) => cJSON
   tokensUsageParser?: (result: Awaited<ReturnType<T>>) => Promise<TokenUsage>
   // Add the option to wait for a condition to be met before completing the run
   // Useful for streaming API

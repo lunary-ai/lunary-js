@@ -1,6 +1,6 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
-var _chunkKWO5BWE7cjs = require('./chunk-KWO5BWE7.cjs');
+var _chunkQDBMXBPPcjs = require('./chunk-QDBMXBPP.cjs');
 
 
 
@@ -51,7 +51,7 @@ var teeAsync = /* @__PURE__ */ _chunkM3TFISX5cjs.__name.call(void 0, (iterable) 
 }, "teeAsync");
 function openAIv3(openai, params = {}) {
   const createChatCompletion = openai.createChatCompletion.bind(openai);
-  const wrapped = _chunkKWO5BWE7cjs.src_default.wrapModel(createChatCompletion, {
+  const wrapped = _chunkQDBMXBPPcjs.src_default.wrapModel(createChatCompletion, {
     nameParser: (request) => request.model,
     inputParser: (request) => request.messages.map(parseOpenaiMessage),
     extraParser: (request) => {
@@ -60,7 +60,8 @@ function openAIv3(openai, params = {}) {
         maxTokens: request.max_tokens,
         frequencyPenalty: request.frequency_penalty,
         presencePenalty: request.presence_penalty,
-        stop: request.stop
+        stop: request.stop,
+        functionCall: request.function_call
       };
       return _chunkM3TFISX5cjs.cleanExtra.call(void 0, rawExtra);
     },
@@ -112,7 +113,7 @@ function monitorOpenAI(openai, params = {}) {
     }
   }
   _chunkM3TFISX5cjs.__name.call(void 0, handleStream, "handleStream");
-  const wrapped = _chunkKWO5BWE7cjs.src_default.wrapModel(createChatCompletion, {
+  const wrapped = _chunkQDBMXBPPcjs.src_default.wrapModel(createChatCompletion, {
     nameParser: (request) => request.model,
     inputParser: (request) => request.messages.map(parseOpenaiMessage),
     extraParser: (request) => {
@@ -132,6 +133,17 @@ function monitorOpenAI(openai, params = {}) {
         completion: _optionalChain([res, 'access', _7 => _7.usage, 'optionalAccess', _8 => _8.completion_tokens]),
         prompt: _optionalChain([res, 'access', _9 => _9.usage, 'optionalAccess', _10 => _10.prompt_tokens])
       };
+    },
+    tagsParser: (request) => {
+      const t = request.tags;
+      delete request.tags;
+      return t;
+    },
+    userIdParser: (request) => request.user,
+    userPropsParser: (request) => {
+      const props = request.userProps;
+      delete request.userProps;
+      return props;
     },
     enableWaitUntil: (request) => !!request.stream,
     waitUntil: (stream, onComplete, onError) => {

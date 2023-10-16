@@ -73,20 +73,24 @@ type WrapCreateFunction<T, U> = (
 ) => WrappedReturn<CreateFunction<T, U>>
 
 /* Just forwarding the types doesn't work, as it's an overloaded function (tried many solutions, couldn't get it to work) */
+type NewParams = {
+  tags?: string[] // add description to those that will show up in the IDE
+  userProps?: cJSON // add description to those that will show up in the IDE
+}
 
 type WrapCreate<T> = {
   chat: {
     completions: {
       create: WrapCreateFunction<
-        OpenAI.Chat.CompletionCreateParamsNonStreaming,
+        OpenAI.Chat.CompletionCreateParamsNonStreaming & NewParams,
         APIPromise<OpenAI.Chat.ChatCompletion>
       > &
         WrapCreateFunction<
-          OpenAI.Chat.CompletionCreateParamsStreaming,
+          OpenAI.Chat.CompletionCreateParamsStreaming & NewParams,
           APIPromise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>>
         > &
         WrapCreateFunction<
-          OpenAI.Chat.CompletionCreateParams,
+          OpenAI.Chat.CompletionCreateParams & NewParams,
           | APIPromise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>>
           | APIPromise<OpenAI.Chat.ChatCompletion>
         >
@@ -113,6 +117,7 @@ export function openAIv3<T extends any>(
         frequencyPenalty: request.frequency_penalty,
         presencePenalty: request.presence_penalty,
         stop: request.stop,
+        functionCall: request.function_call,
       }
       return cleanExtra(rawExtra)
     },
@@ -202,6 +207,17 @@ export function monitorOpenAI<T extends any>(
         completion: res.usage?.completion_tokens,
         prompt: res.usage?.prompt_tokens,
       }
+    },
+    tagsParser: (request) => {
+      const t = request.tags
+      delete request.tags // delete key otherwise openai will throw error
+      return t
+    },
+    userIdParser: (request) => request.user,
+    userPropsParser: (request) => {
+      const props = request.userProps
+      delete request.userProps // delete key otherwise openai will throw error
+      return props
     },
     enableWaitUntil: (request) => !!request.stream,
     waitUntil: (stream, onComplete, onError) => {

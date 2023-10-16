@@ -1,4 +1,4 @@
-type cJSON = string | number | boolean | {
+type cJSON = string | number | boolean | null | undefined | {
     [x: string]: cJSON;
 } | Array<cJSON>;
 interface LLMonitorOptions {
@@ -41,7 +41,6 @@ interface LogEvent extends Event {
 interface ChatMessage {
     role: "user" | "ai" | "system" | "function";
     text: string;
-    functions?: cJSON[];
     functionCall?: {
         name: string;
         arguments: cJSON;
@@ -60,6 +59,9 @@ type WrapParams<T extends WrappableFn> = {
     extraParser?: (...args: Parameters<T>) => cJSON;
     nameParser?: (...args: Parameters<T>) => string;
     outputParser?: (result: Awaited<ReturnType<T>>) => cJSON;
+    tagsParser?: (...args: Parameters<T>) => string[];
+    userIdParser?: (...args: Parameters<T>) => string;
+    userPropsParser?: (...args: Parameters<T>) => cJSON;
     tokensUsageParser?: (result: Awaited<ReturnType<T>>) => Promise<TokenUsage>;
     enableWaitUntil?: (...args: Parameters<T>) => boolean;
     forceFlush?: (...args: Parameters<T>) => boolean;

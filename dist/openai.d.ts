@@ -1,4 +1,4 @@
-import { WrapExtras, WrappedFn, WrappedReturn } from './types.js';
+import { WrapExtras, WrappedFn, WrappedReturn, cJSON } from './types.js';
 import OpenAI from 'openai';
 import { APIPromise } from 'openai/core';
 import OpenAIStreaming from 'openai/streaming';
@@ -8,10 +8,14 @@ type WrappedOldOpenAi<T> = Omit<T, "createChatCompletion"> & {
 };
 type CreateFunction<T, U> = (body: T, options?: OpenAI.RequestOptions) => U;
 type WrapCreateFunction<T, U> = (body: T, options?: OpenAI.RequestOptions) => WrappedReturn<CreateFunction<T, U>>;
+type NewParams = {
+    tags?: string[];
+    userProps?: cJSON;
+};
 type WrapCreate<T> = {
     chat: {
         completions: {
-            create: WrapCreateFunction<OpenAI.Chat.CompletionCreateParamsNonStreaming, APIPromise<OpenAI.Chat.ChatCompletion>> & WrapCreateFunction<OpenAI.Chat.CompletionCreateParamsStreaming, APIPromise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>>> & WrapCreateFunction<OpenAI.Chat.CompletionCreateParams, APIPromise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>> | APIPromise<OpenAI.Chat.ChatCompletion>>;
+            create: WrapCreateFunction<OpenAI.Chat.CompletionCreateParamsNonStreaming & NewParams, APIPromise<OpenAI.Chat.ChatCompletion>> & WrapCreateFunction<OpenAI.Chat.CompletionCreateParamsStreaming & NewParams, APIPromise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>>> & WrapCreateFunction<OpenAI.Chat.CompletionCreateParams & NewParams, APIPromise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>> | APIPromise<OpenAI.Chat.ChatCompletion>>;
         };
     };
 };

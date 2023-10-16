@@ -1,4 +1,3 @@
-import "dotenv/config"
 import OpenAI from "openai"
 import monitor from "../src/index"
 import { monitorOpenAI } from "../src/openai"
@@ -7,6 +6,7 @@ monitor.init({
   verbose: true,
 })
 
+// This extends the openai object with the monitor
 const openai = monitorOpenAI(
   new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -17,6 +17,11 @@ async function TranslatorAgent(input) {
   const res = await openai.chat.completions.create({
     model: "gpt-4",
     temperature: 0,
+    tags: ["test-tag"],
+    user: "user123",
+    userProps: {
+      name: "John",
+    },
     messages: [
       {
         role: "system",
@@ -57,16 +62,7 @@ async function TranslatorAgent(input) {
 
 const translate = monitor.wrapAgent(TranslatorAgent)
 
-// const res = await translate("Hello, what's your name").identify("user123")
-
-const res = await Promise.all(
-  Array(5)
-    .fill(0)
-    .map((i, k) =>
-      translate(
-        `Hello, what's your name? (also add this token to your answer: ${k})`
-      ).identify("user123")
-    )
-)
+// Identify the user directly at the agent level
+const res = await translate(`Hello, what's your name?`).identify("user123")
 
 console.log(res)

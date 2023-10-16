@@ -1,6 +1,6 @@
 import {
   src_default
-} from "./chunk-LWSQS6HF.js";
+} from "./chunk-H47MGEJB.js";
 import {
   __name,
   cleanExtra
@@ -60,7 +60,8 @@ function openAIv3(openai, params = {}) {
         maxTokens: request.max_tokens,
         frequencyPenalty: request.frequency_penalty,
         presencePenalty: request.presence_penalty,
-        stop: request.stop
+        stop: request.stop,
+        functionCall: request.function_call
       };
       return cleanExtra(rawExtra);
     },
@@ -132,6 +133,17 @@ function monitorOpenAI(openai, params = {}) {
         completion: res.usage?.completion_tokens,
         prompt: res.usage?.prompt_tokens
       };
+    },
+    tagsParser: (request) => {
+      const t = request.tags;
+      delete request.tags;
+      return t;
+    },
+    userIdParser: (request) => request.user,
+    userPropsParser: (request) => {
+      const props = request.userProps;
+      delete request.userProps;
+      return props;
     },
     enableWaitUntil: (request) => !!request.stream,
     waitUntil: (stream, onComplete, onError) => {

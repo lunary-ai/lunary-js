@@ -1,37 +1,32 @@
-// import "dotenv/config"
-// import { ChatOpenAI } from "langchain/chat_models/openai"
-// import { HumanMessage, SystemMessage } from "langchain/schema"
+// Langchain custom agent example
 
-// import monitor from "../src"
+import { ChatOpenAI } from "langchain/chat_models/openai"
+import { HumanMessage, SystemMessage } from "langchain/schema"
 
-// monitor.init({
-//   verbose: true,
-// })
+import monitor from "../src"
 
-// monitor(ChatOpenAI)
+const chat = new ChatOpenAI({
+  temperature: 0.2,
+  modelName: "gpt-3.5-turbo",
+  tags: ["test-tag"],
+})
 
-// const chat = new ChatOpenAI({
-//   temperature: 0.2,
-//   modelName: "gpt-3.5-turbo",
-//   tags: ["test-tag"],
-// })
+async function TranslatorAgent(query: string): Promise<string> {
+  const res = await chat.call([
+    new SystemMessage(
+      "You are a translator agent that hides jokes in each translation."
+    ),
+    new HumanMessage(
+      `Translate this sentence from English to French: ${query}`
+    ),
+  ])
 
-// async function TranslatorAgent(query: string): Promise<string> {
-//   const res = await chat.call([
-//     new SystemMessage(
-//       "You are a translator agent that hides jokes in each translation."
-//     ),
-//     new HumanMessage(
-//       `Translate this sentence from English to French: ${query}`
-//     ),
-//   ])
+  return res.content
+}
 
-//   return res.content
-// }
+// By wrapping the executor, we automatically track all input, outputs and errors
+// And tools and logs will be tied to the correct agent
+const translate = monitor.wrapAgent(TranslatorAgent)
 
-// // By wrapping the executor, we automatically track all input, outputs and errors
-// // And tools and logs will be tied to the correct agent
-// const translate = monitor.wrapAgent(TranslatorAgent)
-
-// const res = await translate("White house").identify("user123")
-// console.log(res)
+const res = await translate("White house").identify("user123")
+console.log(res)

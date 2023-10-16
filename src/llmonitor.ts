@@ -68,14 +68,23 @@ class LLMonitor {
 
     const parentRunId = data.parentRunId ?? ctx.runId.tryUse()
     const user = ctx.user.tryUse()
+    const userId = data.userId ?? user?.userId
+    let userProps = data.userProps ?? user?.userProps
+
+    if (userProps && !userId) {
+      console.warn(
+        "LLMonitor: userProps passed without userId. Ignoring userProps."
+      )
+      userProps = undefined
+    }
 
     const runtime = data.runtime ?? "llmonitor-js"
 
     const eventData: Event = {
       event,
       type,
-      userId: user?.userId,
-      userProps: user?.userProps,
+      userId,
+      userProps,
       app: this.appId,
       parentRunId,
       timestamp,
@@ -214,6 +223,13 @@ class LLMonitor {
 
     // Get extra data from function or params
     const extraData = params?.extraParser ? params.extraParser(...args) : extra
+    const tagsData = params?.tagsParser ? params.tagsParser(...args) : tags
+    const userIdData = params?.userIdParser
+      ? params.userIdParser(...args)
+      : userId
+    const userPropsData = params?.userPropsParser
+      ? params.userPropsParser(...args)
+      : userProps
 
     const input = inputParser
       ? inputParser(...args)
@@ -224,7 +240,9 @@ class LLMonitor {
       input,
       name,
       extra: extraData,
-      tags,
+      tags: tagsData,
+      userId: userIdData,
+      userProps: userPropsData,
     })
 
     const shouldWaitUntil =
