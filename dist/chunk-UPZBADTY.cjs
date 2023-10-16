@@ -76,6 +76,14 @@ var LLMonitor = (_class = class {
     if (apiUrl)
       this.apiUrl = apiUrl;
   }
+  /**
+   * Manually track a run event.
+   * @param {RunType} type - The type of the run.
+   * @param {EventName} event - The name of the event.
+   * @param {Partial<RunEvent | LogEvent>} data - The data associated with the event.
+   * @example
+   * monitor.trackEvent("llm", "start", { name: "gpt-4", input: "Hello I'm a bot" });
+   */
   trackEvent(type, event, data) {
     if (!this.appId)
       return console.warn(

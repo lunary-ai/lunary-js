@@ -1,4 +1,4 @@
-import { LLMonitorOptions, EventType, EventName, RunEvent, LogEvent, WrappableFn, WrapParams, WrappedFn } from './types.cjs';
+import { LLMonitorOptions, RunType, EventName, RunEvent, LogEvent, WrappableFn, WrapParams, WrappedFn } from './types.cjs';
 
 declare class LLMonitor {
     appId?: string;
@@ -11,7 +11,15 @@ declare class LLMonitor {
      */
     constructor();
     init({ appId, verbose, apiUrl }?: LLMonitorOptions): void;
-    trackEvent(type: EventType, event: EventName, data: Partial<RunEvent | LogEvent>): void;
+    /**
+     * Manually track a run event.
+     * @param {RunType} type - The type of the run.
+     * @param {EventName} event - The name of the event.
+     * @param {Partial<RunEvent | LogEvent>} data - The data associated with the event.
+     * @example
+     * monitor.trackEvent("llm", "start", { name: "gpt-4", input: "Hello I'm a bot" });
+     */
+    trackEvent(type: RunType, event: EventName, data: Partial<RunEvent | LogEvent>): void;
     private debouncedProcessQueue;
     private processQueue;
     private wrap;

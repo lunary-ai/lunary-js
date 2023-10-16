@@ -14,7 +14,7 @@ export interface LLMonitorOptions {
   verbose?: boolean
 }
 
-export type EventType =
+export type RunType =
   | "log"
   | "tool"
   | "agent"
@@ -29,7 +29,7 @@ export type EventType =
 export type EventName = "start" | "end" | "error" | "info" | "warn" | "feedback"
 
 export interface Event {
-  type: EventType
+  type: RunType
   event: EventName
   app: string
   timestamp: number

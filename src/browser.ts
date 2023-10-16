@@ -7,7 +7,7 @@ import { debounce, formatLog } from "./utils"
 import {
   Event,
   EventName,
-  EventType,
+  RunType,
   LLMonitorOptions,
   LogEvent,
   RunEvent,
@@ -127,7 +127,7 @@ class LLMonitor {
   }
 
   async trackEvent(
-    type: EventType,
+    type: RunType,
     event: EventName,
     data: Partial<RunEvent | LogEvent>
   ) {

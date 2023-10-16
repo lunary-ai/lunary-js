@@ -6,10 +6,10 @@ interface LLMonitorOptions {
     apiUrl?: string;
     verbose?: boolean;
 }
-type EventType = "log" | "tool" | "agent" | "llm" | "convo" | "chain" | "retriever" | "embed" | "chat" | "convo";
+type RunType = "log" | "tool" | "agent" | "llm" | "convo" | "chain" | "retriever" | "embed" | "chat" | "convo";
 type EventName = "start" | "end" | "error" | "info" | "warn" | "feedback";
 interface Event {
-    type: EventType;
+    type: RunType;
     event: EventName;
     app: string;
     timestamp: number;
@@ -76,4 +76,4 @@ type WrappedReturn<T extends WrappableFn> = ReturnType<T> & {
 };
 type WrappedFn<T extends WrappableFn> = (...args: Parameters<T>) => WrappedReturn<T>;
 
-export { ChatMessage, Event, EventName, EventType, Identify, LLMonitorOptions, LogEvent, RunEvent, SetParent, TokenUsage, WrapExtras, WrapParams, WrappableFn, WrappedFn, WrappedReturn, cJSON };
+export { ChatMessage, Event, EventName, Identify, LLMonitorOptions, LogEvent, RunEvent, RunType, SetParent, TokenUsage, WrapExtras, WrapParams, WrappableFn, WrappedFn, WrappedReturn, cJSON };

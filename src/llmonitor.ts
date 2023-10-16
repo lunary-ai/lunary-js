@@ -9,7 +9,7 @@ import {
 import {
   Event,
   EventName,
-  EventType,
+  RunType,
   LLMonitorOptions,
   LogEvent,
   RunEvent,
@@ -48,8 +48,16 @@ class LLMonitor {
     if (apiUrl) this.apiUrl = apiUrl
   }
 
+  /**
+   * Manually track a run event.
+   * @param {RunType} type - The type of the run.
+   * @param {EventName} event - The name of the event.
+   * @param {Partial<RunEvent | LogEvent>} data - The data associated with the event.
+   * @example
+   * monitor.trackEvent("llm", "start", { name: "gpt-4", input: "Hello I'm a bot" });
+   */
   trackEvent(
-    type: EventType,
+    type: RunType,
     event: EventName,
     data: Partial<RunEvent | LogEvent>
   ) {
@@ -142,7 +150,7 @@ class LLMonitor {
   }
 
   private wrap<T extends WrappableFn>(
-    type: EventType,
+    type: RunType,
     func: T,
     params?: WrapParams<T>
   ): WrappedFn<T> {
@@ -198,7 +206,6 @@ class LLMonitor {
 
   // Extract the actual execution logic into a function
   private async executeWrappedFunction<T extends WrappableFn>(target) {
-    // : Promise<ReturnType<T>> {
     const { type, args, func, params } = target
 
     // Generate a random ID for this run (will be injected into the context)

@@ -1,4 +1,4 @@
-import { cJSON, LLMonitorOptions, EventType, EventName, RunEvent, LogEvent } from './types.js';
+import { cJSON, LLMonitorOptions, RunType, EventName, RunEvent, LogEvent } from './types.js';
 
 declare class Conversation {
     private monitor;
@@ -22,7 +22,7 @@ declare class LLMonitor {
     constructor();
     init({ appId, verbose, apiUrl }?: LLMonitorOptions): void;
     identify(userId: string, userProps: cJSON): void;
-    trackEvent(type: EventType, event: EventName, data: Partial<RunEvent | LogEvent>): Promise<void>;
+    trackEvent(type: RunType, event: EventName, data: Partial<RunEvent | LogEvent>): Promise<void>;
     private processQueue;
     trackFeedback: (messageId: string, feedback: cJSON) => void;
     startChat(): Conversation;
