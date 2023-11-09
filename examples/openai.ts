@@ -15,40 +15,34 @@ const openai = monitorOpenAI(
 
 async function TranslatorAgent(input) {
   const res = await openai.chat.completions.create({
-    model: "gpt-4",
+    model: "gpt-4-1106-preview",
     temperature: 0,
     tags: ["test-tag"],
     user: "user123",
+    seed: 123,
     userProps: {
       name: "John",
     },
-    messages: [
+    tools: [
       {
-        role: "system",
-        content:
-          "You are a translator agent that hides jokes in each translation.",
-      },
-      {
-        role: "user",
-        content: `Translate this sentence from English to French: ${input}`,
-      },
-    ],
-    // stream: true,
-    functions: [
-      {
-        name: "get_current_weather",
-        description: "Get the current weather.",
-        parameters: {
-          type: "object",
-          properties: {
-            format: {
-              type: "string",
-              enum: ["celsius", "fahrenheit"],
-              description: "The temperature unit to use.",
+        type: "function",
+        function: {
+          name: "translate",
+          parameters: {
+            type: "object",
+            properties: {
+              text: { type: "string" },
+              from: { type: "string" },
+              to: { type: "string" },
             },
           },
-          required: ["format"],
         },
+      },
+    ],
+    messages: [
+      {
+        role: "user",
+        content: `Hello, translate ${input} from english to french`,
       },
     ],
   })
@@ -56,6 +50,8 @@ async function TranslatorAgent(input) {
   // for await (const part of stream) {
   //   process.stdout.write(part.choices[0]?.delta?.content || "")
   // }
+
+  console.log(res.choices[0].message)
 
   return res.choices[0].message.content
 }

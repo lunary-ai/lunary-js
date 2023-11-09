@@ -196,7 +196,7 @@ class LLMonitor {
   }
 
   trackFeedback = (messageId: string, feedback: cJSON) => {
-    if (!messageId)
+    if (!messageId || typeof messageId !== "string")
       return console.error(
         "LLMonitor: No message ID provided to track feedback"
       )

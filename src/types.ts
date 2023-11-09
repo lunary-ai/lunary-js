@@ -64,12 +64,8 @@ export interface LogEvent extends Event {
 
 // Inspired from OpenAi's format, less heavy than Langchain's type
 export interface ChatMessage {
-  role: "user" | "ai" | "system" | "function"
+  role: "user" | "ai" | "system" | "function" | "tool"
   text: string
-  functionCall?: {
-    name: string
-    arguments: cJSON
-  }
   [key: string]: cJSON
 }
 

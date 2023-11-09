@@ -20,12 +20,16 @@ const parseOpenaiMessage = (message) => {
   if (!message) return undefined
 
   // Is name (of the function gpt wanted to call) actually useful to report?
-  const { role, content, name, function_call } = message
+  const { role, content, name, function_call, tool_calls, tool_call_id } =
+    message
 
   return {
     role: role.replace("assistant", "ai"),
     text: content,
-    functionCall: function_call as cJSON,
+    function_call,
+    tool_calls,
+    tool_call_id,
+    name,
   } as ChatMessage
 }
 
@@ -97,6 +101,23 @@ type WrapCreate<T> = {
     }
   }
 }
+
+const PARAMS_TO_CAPTURE = [
+  "temperature",
+  "top_p",
+  "top_k",
+  "stop",
+  "presence_penalty",
+  "frequence_penalty",
+  "seed",
+  "function_call",
+  "functions",
+  "tools",
+  "tool_choice",
+  "response_format",
+  "max_tokens",
+  "logit_bias",
+]
 
 type WrappedOpenAi<T> = Omit<T, "chat"> & WrapCreate<T>
 
@@ -191,13 +212,9 @@ export function monitorOpenAI<T extends any>(
     nameParser: (request) => request.model,
     inputParser: (request) => request.messages.map(parseOpenaiMessage),
     extraParser: (request) => {
-      const rawExtra = {
-        temperature: request.temperature,
-        maxTokens: request.max_tokens,
-        frequencyPenalty: request.frequency_penalty,
-        presencePenalty: request.presence_penalty,
-        stop: request.stop,
-        functions: request.functions,
+      const rawExtra = {}
+      for (const param of PARAMS_TO_CAPTURE) {
+        if (request[param]) rawExtra[param] = request[param]
       }
       return cleanExtra(rawExtra)
     },
