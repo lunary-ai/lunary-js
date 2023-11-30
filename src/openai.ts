@@ -161,7 +161,10 @@ export function monitorOpenAI<T extends any>(
   params: WrapExtras = {}
 ): WrappedOpenAi<T> {
   // @ts-ignore
-  const createChatCompletion = openai.chat.completions.create.bind(openai)
+  const createChatCompletion = openai.chat.completions.create
+  const wrappedCreateChatCompletion = (...args) =>
+    // @ts-ignore
+    createChatCompletion.apply(openai.chat.completions, args)
 
   async function handleStream(stream, onComplete, onError) {
     try {
@@ -175,13 +178,12 @@ export function monitorOpenAI<T extends any>(
 
         const { index, delta } = chunk
 
-        const { content, function_call, role } = delta
+        const { content, function_call, role, tool_calls } = delta
 
         if (!choices[index]) {
           choices.splice(index, 0, {
-            message: { role, content, function_call },
+            message: { role, content, function_call, tool_calls: [] },
           })
-          continue
         }
 
         if (content) choices[index].message.content += content
@@ -194,7 +196,38 @@ export function monitorOpenAI<T extends any>(
         if (function_call?.arguments)
           choices[index].message.function_call.arguments +=
             function_call.arguments
+
+        if (tool_calls) {
+          for (const tool_call of tool_calls) {
+            const existingCallIndex = choices[
+              index
+            ].message.tool_calls.findIndex((tc) => tc.index === tool_call.index)
+
+            if (existingCallIndex === -1) {
+              choices[index].message.tool_calls.push(tool_call)
+            } else {
+              const existingCall =
+                choices[index].message.tool_calls[existingCallIndex]
+
+              if (tool_call.function?.arguments) {
+                existingCall.function.arguments += tool_call.function.arguments
+              }
+            }
+          }
+        }
       }
+
+      // remove the `index` property from the tool_calls if any
+      // as it's only used to help us merge the tool_calls
+      choices = choices.map((c) => {
+        if (c.message.tool_calls) {
+          c.message.tool_calls = c.message.tool_calls.map((tc) => {
+            const { index, ...rest } = tc
+            return rest
+          })
+        }
+        return c
+      })
 
       const res = {
         choices,
@@ -208,7 +241,7 @@ export function monitorOpenAI<T extends any>(
     }
   }
 
-  const wrapped = monitor.wrapModel(createChatCompletion, {
+  const wrapped = monitor.wrapModel(wrappedCreateChatCompletion, {
     nameParser: (request) => request.model,
     inputParser: (request) => request.messages.map(parseOpenaiMessage),
     extraParser: (request) => {

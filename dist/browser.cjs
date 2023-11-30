@@ -1,9 +1,9 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});
 
 
-var _chunk7S3HGTMVcjs = require('./chunk-7S3HGTMV.cjs');
+var _chunkLUWBT2SPcjs = require('./chunk-LUWBT2SP.cjs');
 require('./chunk-M3TFISX5.cjs');
 
 
 
-exports.Conversation = _chunk7S3HGTMVcjs.Conversation; exports.default = _chunk7S3HGTMVcjs.browser_default;
+exports.Conversation = _chunkLUWBT2SPcjs.Conversation; exports.default = _chunkLUWBT2SPcjs.browser_default;

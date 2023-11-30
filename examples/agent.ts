@@ -28,10 +28,9 @@ async function TranslatorAgent(query: string): Promise<string> {
 // And tools and logs will be tied to the correct agent
 const translate = monitor.wrapAgent(TranslatorAgent)
 
-const res = await translate("White house")
-  .identify("user123", {
-    email: "john@example.org",
-  })
-  .label(["test-tag"])
+const res = await translate("White house").identify("user123", {
+  email: "john@example.org",
+})
+// .label(["test-tag"])
 
 console.log(res)

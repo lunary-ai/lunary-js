@@ -1,17 +1,17 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; } var _class; var _class2;
-
-
-var _chunkM3TFISX5cjs = require('./chunk-M3TFISX5.cjs');
+import {
+  __name,
+  formatLog
+} from "./chunk-NILRUNLS.js";
 
 // src/browser.ts
-var Conversation = (_class = class {
+var Conversation = class {
   static {
-    _chunkM3TFISX5cjs.__name.call(void 0, this, "Conversation");
+    __name(this, "Conversation");
   }
-  
-  
-  __init() {this.started = false}
-  constructor(monitor) {;_class.prototype.__init.call(this);_class.prototype.__init2.call(this);_class.prototype.__init3.call(this);
+  monitor;
+  convoId;
+  started = false;
+  constructor(monitor) {
     this.monitor = monitor;
     this.convoId = crypto.randomUUID();
   }
@@ -23,8 +23,8 @@ var Conversation = (_class = class {
    * @param {string} customId - Set a custom ID for the message
    * @returns {string} - The message ID, to reconcile with the bot's reply
    * */
-  __init2() {this.trackUserMessage = (text, props, customId) => {
-    const runId = _nullishCoalesce(customId, () => ( crypto.randomUUID()));
+  trackUserMessage = (text, props, customId) => {
+    const runId = customId ?? crypto.randomUUID();
     if (!this.started) {
       this.monitor.trackEvent("convo", "start", {
         runId: this.convoId,
@@ -47,7 +47,7 @@ var Conversation = (_class = class {
       });
     }
     return runId;
-  }}
+  };
   /*
    * Track a new message from the bot
    *
@@ -55,7 +55,7 @@ var Conversation = (_class = class {
    * @param {string} text - The bot message
    * @param {cJSON} props - Extra properties to send with the message
    * */
-  __init3() {this.trackBotMessage = (replyToId, text, props) => {
+  trackBotMessage = (replyToId, text, props) => {
     this.monitor.trackEvent("chat", "end", {
       runId: replyToId,
       output: text,
@@ -65,23 +65,23 @@ var Conversation = (_class = class {
         runId: this.convoId
       });
     });
-  }}
-}, _class);
-var LLMonitor = (_class2 = class {
+  };
+};
+var LLMonitor = class {
   static {
-    _chunkM3TFISX5cjs.__name.call(void 0, this, "LLMonitor");
+    __name(this, "LLMonitor");
   }
-  
-  
-  
-  
-  
-  __init4() {this.queue = []}
-  __init5() {this.queueRunning = false}
+  appId;
+  verbose;
+  apiUrl;
+  userId;
+  userProps;
+  queue = [];
+  queueRunning = false;
   /**
    * @param {LLMonitorOptions} options
    */
-  constructor() {;_class2.prototype.__init4.call(this);_class2.prototype.__init5.call(this);_class2.prototype.__init6.call(this);
+  constructor() {
     this.init({
       apiUrl: "https://app.llmonitor.com"
     });
@@ -104,11 +104,11 @@ var LLMonitor = (_class2 = class {
         "LLMonitor: App ID not set. Not reporting anything. Get one on the dashboard: https://app.llmonitor.com"
       );
     let timestamp = Date.now();
-    const lastEvent = _optionalChain([this, 'access', _ => _.queue, 'optionalAccess', _2 => _2[this.queue.length - 1]]);
-    if (_optionalChain([lastEvent, 'optionalAccess', _3 => _3.timestamp]) >= timestamp) {
+    const lastEvent = this.queue?.[this.queue.length - 1];
+    if (lastEvent?.timestamp >= timestamp) {
       timestamp = lastEvent.timestamp + 1;
     }
-    const runtime = _nullishCoalesce(data.runtime, () => ( "llmonitor-browser"));
+    const runtime = data.runtime ?? "llmonitor-browser";
     const eventData = {
       event,
       type,
@@ -120,7 +120,7 @@ var LLMonitor = (_class2 = class {
       ...data
     };
     if (this.verbose) {
-      console.log(_chunkM3TFISX5cjs.formatLog.call(void 0, eventData));
+      console.log(formatLog(eventData));
     }
     this.queue.push(eventData);
     this.processQueue();
@@ -147,8 +147,8 @@ var LLMonitor = (_class2 = class {
       console.error("Error sending event(s) to LLMonitor", error);
     }
   }
-  __init6() {this.trackFeedback = (messageId, feedback) => {
-    if (!messageId)
+  trackFeedback = (messageId, feedback) => {
+    if (!messageId || typeof messageId !== "string")
       return console.error(
         "LLMonitor: No message ID provided to track feedback"
       );
@@ -160,15 +160,15 @@ var LLMonitor = (_class2 = class {
       runId: messageId,
       extra: feedback
     });
-  }}
+  };
   startChat() {
     return new Conversation(this);
   }
-}, _class2);
+};
 var llmonitor = new LLMonitor();
 var browser_default = llmonitor;
 
-
-
-
-exports.Conversation = Conversation; exports.browser_default = browser_default;
+export {
+  Conversation,
+  browser_default
+};

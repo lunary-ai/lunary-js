@@ -1,6 +1,6 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
-var _chunk7S3HGTMVcjs = require('./chunk-7S3HGTMV.cjs');
+var _chunkLUWBT2SPcjs = require('./chunk-LUWBT2SP.cjs');
 
 
 var _chunkM3TFISX5cjs = require('./chunk-M3TFISX5.cjs');
@@ -10,7 +10,7 @@ var _react = require('react');
 function useChatMonitor() {
   const [chat, setChat] = _react.useState.call(void 0, );
   const restart = /* @__PURE__ */ _chunkM3TFISX5cjs.__name.call(void 0, () => {
-    const newChat = _chunk7S3HGTMVcjs.browser_default.startChat();
+    const newChat = _chunkLUWBT2SPcjs.browser_default.startChat();
     setChat(newChat);
     return newChat;
   }, "restart");
@@ -21,7 +21,7 @@ function useChatMonitor() {
     restart,
     trackUserMessage: _optionalChain([chat, 'optionalAccess', _ => _.trackUserMessage]),
     trackBotMessage: _optionalChain([chat, 'optionalAccess', _2 => _2.trackBotMessage]),
-    trackFeedback: _chunk7S3HGTMVcjs.browser_default.trackFeedback
+    trackFeedback: _chunkLUWBT2SPcjs.browser_default.trackFeedback
   };
 }
 _chunkM3TFISX5cjs.__name.call(void 0, useChatMonitor, "useChatMonitor");
@@ -46,7 +46,7 @@ var useMonitorVercelAI = /* @__PURE__ */ _chunkM3TFISX5cjs.__name.call(void 0, (
     trackFeedback
   };
 }, "useMonitorVercelAI");
-var react_default = _chunk7S3HGTMVcjs.browser_default;
+var react_default = _chunkLUWBT2SPcjs.browser_default;
 
 
 

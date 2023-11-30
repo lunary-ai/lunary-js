@@ -1,6 +1,6 @@
 {
   "name": "llmonitor",
-  "version": "0.5.10",
+  "version": "0.5.11",
   "description": "llmonitor is an open-source monitoring and analytics platform for AI apps.",
   "type": "module",
   "types": "./dist/index.d.ts",
@@ -60,7 +60,7 @@
     "@types/react": "^18.2.21",
     "dotenv": "^16.3.1",
     "langchain": "^0.0.167",
-    "openai": "^4.17.0",
+    "openai": "^4.20.1",
     "react": "^18.0.2",
     "tsup": "^7.2.0",
     "typescript": "^5.1.6"

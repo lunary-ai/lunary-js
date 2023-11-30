@@ -39,12 +39,8 @@ interface LogEvent extends Event {
     message: string;
 }
 interface ChatMessage {
-    role: "user" | "ai" | "system" | "function";
+    role: "user" | "ai" | "system" | "function" | "tool";
     text: string;
-    functionCall?: {
-        name: string;
-        arguments: cJSON;
-    };
     [key: string]: cJSON;
 }
 type WrapExtras = {

@@ -1,7 +1,7 @@
 import {
   Conversation,
   browser_default
-} from "./chunk-ZRFACYGL.js";
+} from "./chunk-VSMIAQXC.js";
 import "./chunk-NILRUNLS.js";
 export {
   Conversation,

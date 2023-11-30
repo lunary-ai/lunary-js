@@ -7,21 +7,22 @@ monitor.init({
 })
 
 // This extends the openai object with the monitor
-const openai = monitorOpenAI(
-  new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  })
-)
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+})
+
+const monitored = monitorOpenAI(openai)
 
 async function TranslatorAgent(input) {
-  const res = await openai.chat.completions.create({
+  const stream = await monitored.chat.completions.create({
     model: "gpt-4-1106-preview",
     temperature: 0,
-    tags: ["test-tag"],
+    stream: true,
+    tags: ["translate"],
     user: "user123",
     seed: 123,
     userProps: {
-      name: "John",
+      name: "John Doe",
     },
     tools: [
       {
@@ -42,23 +43,23 @@ async function TranslatorAgent(input) {
     messages: [
       {
         role: "user",
-        content: `Hello, translate ${input} from english to french`,
+        content: `Hello, translate ${input} from french to english`,
       },
     ],
   })
 
-  // for await (const part of stream) {
-  //   process.stdout.write(part.choices[0]?.delta?.content || "")
-  // }
+  for await (const part of stream) {
+    process.stdout.write(part.choices[0]?.delta?.content || "")
+  }
 
-  console.log(res.choices[0].message)
+  // console.log(stream.choices[0].message)
 
-  return res.choices[0].message.content
+  return //res.choices[0].message.content
 }
 
 const translate = monitor.wrapAgent(TranslatorAgent)
 
 // Identify the user directly at the agent level
-const res = await translate(`Hello, what's your name?`).identify("user123")
+const res = await translate(`Glad to hear that.`).identify("user123")
 
 console.log(res)

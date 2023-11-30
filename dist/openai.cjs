@@ -10,11 +10,14 @@ var _chunkM3TFISX5cjs = require('./chunk-M3TFISX5.cjs');
 var parseOpenaiMessage = /* @__PURE__ */ _chunkM3TFISX5cjs.__name.call(void 0, (message) => {
   if (!message)
     return void 0;
-  const { role, content, name, function_call } = message;
+  const { role, content, name, function_call, tool_calls, tool_call_id } = message;
   return {
     role: role.replace("assistant", "ai"),
     text: content,
-    functionCall: function_call
+    function_call,
+    tool_calls,
+    tool_call_id,
+    name
   };
 }, "parseOpenaiMessage");
 var teeAsync = /* @__PURE__ */ _chunkM3TFISX5cjs.__name.call(void 0, (iterable) => {
@@ -49,6 +52,22 @@ var teeAsync = /* @__PURE__ */ _chunkM3TFISX5cjs.__name.call(void 0, (iterable) 
   _chunkM3TFISX5cjs.__name.call(void 0, makeIterator, "makeIterator");
   return buffers.map(makeIterator);
 }, "teeAsync");
+var PARAMS_TO_CAPTURE = [
+  "temperature",
+  "top_p",
+  "top_k",
+  "stop",
+  "presence_penalty",
+  "frequence_penalty",
+  "seed",
+  "function_call",
+  "functions",
+  "tools",
+  "tool_choice",
+  "response_format",
+  "max_tokens",
+  "logit_bias"
+];
 function openAIv3(openai, params = {}) {
   const createChatCompletion = openai.createChatCompletion.bind(openai);
   const wrapped = _chunkUPZBADTYcjs.src_default.wrapModel(createChatCompletion, {
@@ -77,7 +96,11 @@ function openAIv3(openai, params = {}) {
 }
 _chunkM3TFISX5cjs.__name.call(void 0, openAIv3, "openAIv3");
 function monitorOpenAI(openai, params = {}) {
-  const createChatCompletion = openai.chat.completions.create.bind(openai);
+  const createChatCompletion = openai.chat.completions.create;
+  const wrappedCreateChatCompletion = /* @__PURE__ */ _chunkM3TFISX5cjs.__name.call(void 0, (...args) => (
+    // @ts-ignore
+    createChatCompletion.apply(openai.chat.completions, args)
+  ), "wrappedCreateChatCompletion");
   async function handleStream(stream, onComplete, onError) {
     try {
       let tokens = 0;
@@ -86,12 +109,11 @@ function monitorOpenAI(openai, params = {}) {
         tokens += 1;
         const chunk = part.choices[0];
         const { index, delta } = chunk;
-        const { content, function_call, role } = delta;
+        const { content, function_call, role, tool_calls } = delta;
         if (!choices[index]) {
           choices.splice(index, 0, {
-            message: { role, content, function_call }
+            message: { role, content, function_call, tool_calls: [] }
           });
-          continue;
         }
         if (content)
           choices[index].message.content += content;
@@ -101,7 +123,29 @@ function monitorOpenAI(openai, params = {}) {
           choices[index].message.function_call.name = function_call.name;
         if (_optionalChain([function_call, 'optionalAccess', _6 => _6.arguments]))
           choices[index].message.function_call.arguments += function_call.arguments;
+        if (tool_calls) {
+          for (const tool_call of tool_calls) {
+            const existingCallIndex = choices[index].message.tool_calls.findIndex((tc) => tc.index === tool_call.index);
+            if (existingCallIndex === -1) {
+              choices[index].message.tool_calls.push(tool_call);
+            } else {
+              const existingCall = choices[index].message.tool_calls[existingCallIndex];
+              if (_optionalChain([tool_call, 'access', _7 => _7.function, 'optionalAccess', _8 => _8.arguments])) {
+                existingCall.function.arguments += tool_call.function.arguments;
+              }
+            }
+          }
+        }
       }
+      choices = choices.map((c) => {
+        if (c.message.tool_calls) {
+          c.message.tool_calls = c.message.tool_calls.map((tc) => {
+            const { index, ...rest } = tc;
+            return rest;
+          });
+        }
+        return c;
+      });
       const res = {
         choices,
         usage: { completion_tokens: tokens, prompt_tokens: void 0 }
@@ -113,25 +157,22 @@ function monitorOpenAI(openai, params = {}) {
     }
   }
   _chunkM3TFISX5cjs.__name.call(void 0, handleStream, "handleStream");
-  const wrapped = _chunkUPZBADTYcjs.src_default.wrapModel(createChatCompletion, {
+  const wrapped = _chunkUPZBADTYcjs.src_default.wrapModel(wrappedCreateChatCompletion, {
     nameParser: (request) => request.model,
     inputParser: (request) => request.messages.map(parseOpenaiMessage),
     extraParser: (request) => {
-      const rawExtra = {
-        temperature: request.temperature,
-        maxTokens: request.max_tokens,
-        frequencyPenalty: request.frequency_penalty,
-        presencePenalty: request.presence_penalty,
-        stop: request.stop,
-        functions: request.functions
-      };
+      const rawExtra = {};
+      for (const param of PARAMS_TO_CAPTURE) {
+        if (request[param])
+          rawExtra[param] = request[param];
+      }
       return _chunkM3TFISX5cjs.cleanExtra.call(void 0, rawExtra);
     },
     outputParser: (res) => parseOpenaiMessage(res.choices[0].message || ""),
     tokensUsageParser: async (res) => {
       return {
-        completion: _optionalChain([res, 'access', _7 => _7.usage, 'optionalAccess', _8 => _8.completion_tokens]),
-        prompt: _optionalChain([res, 'access', _9 => _9.usage, 'optionalAccess', _10 => _10.prompt_tokens])
+        completion: _optionalChain([res, 'access', _9 => _9.usage, 'optionalAccess', _10 => _10.completion_tokens]),
+        prompt: _optionalChain([res, 'access', _11 => _11.usage, 'optionalAccess', _12 => _12.prompt_tokens])
       };
     },
     tagsParser: (request) => {
