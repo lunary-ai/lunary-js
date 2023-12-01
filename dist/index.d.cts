@@ -1,5 +1,5 @@
 import { WrappableFn, WrapParams, WrappedFn } from './types.cjs';
-import { L as LLMonitor } from './llmonitor-5e338de4.js';
+import { L as LLMonitor } from './llmonitor-c9762f9d.js';
 
 declare class BackendMonitor extends LLMonitor {
     private wrap;

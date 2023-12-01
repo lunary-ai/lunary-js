@@ -1,7 +1,7 @@
-import { cJSON, LLMonitorOptions, RunType, EventName, RunEvent, LogEvent } from './types.cjs';
+import { cJSON, LLMonitorOptions, RunType, EventName, RunEvent, LogEvent } from './types.js';
 
 declare class Thread {
-    threadId: string;
+    id: string;
     private monitor;
     private started;
     constructor(monitor: LLMonitor, id?: string, started?: boolean);

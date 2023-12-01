@@ -10,14 +10,14 @@ import { cJSON } from "./types"
  */
 
 export class Thread {
-  public threadId: string
+  public id: string
 
   private monitor: LLMonitor
   private started: boolean
 
   constructor(monitor: LLMonitor, id?: string, started?: boolean) {
     this.monitor = monitor
-    this.threadId = id || crypto.randomUUID()
+    this.id = id || crypto.randomUUID()
     this.started = started || false
   }
 
@@ -36,14 +36,14 @@ export class Thread {
     if (!this.started) {
       // first open the thread
       this.monitor.trackEvent("thread", "start", {
-        runId: this.threadId,
+        runId: this.id,
         input: text,
       })
 
       this.monitor.trackEvent("chat", "start", {
         runId,
         input: text,
-        parentRunId: this.threadId,
+        parentRunId: this.id,
         extra: props,
       })
 
@@ -52,7 +52,7 @@ export class Thread {
       this.monitor.trackEvent("chat", "start", {
         runId,
         input: text,
-        parentRunId: this.threadId,
+        parentRunId: this.id,
         extra: props,
       })
     }

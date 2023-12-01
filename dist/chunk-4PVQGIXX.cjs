@@ -78,7 +78,7 @@ var Thread = (_class = class {
   
   constructor(monitor, id, started) {;_class.prototype.__init.call(this);_class.prototype.__init2.call(this);
     this.monitor = monitor;
-    this.threadId = id || crypto.randomUUID();
+    this.id = id || crypto.randomUUID();
     this.started = started || false;
   }
   /*
@@ -93,13 +93,13 @@ var Thread = (_class = class {
     const runId = _nullishCoalesce(customId, () => ( crypto.randomUUID()));
     if (!this.started) {
       this.monitor.trackEvent("thread", "start", {
-        runId: this.threadId,
+        runId: this.id,
         input: text
       });
       this.monitor.trackEvent("chat", "start", {
         runId,
         input: text,
-        parentRunId: this.threadId,
+        parentRunId: this.id,
         extra: props
       });
       this.started = true;
@@ -107,7 +107,7 @@ var Thread = (_class = class {
       this.monitor.trackEvent("chat", "start", {
         runId,
         input: text,
-        parentRunId: this.threadId,
+        parentRunId: this.id,
         extra: props
       });
     }

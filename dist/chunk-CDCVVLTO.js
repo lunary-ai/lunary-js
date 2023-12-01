@@ -73,12 +73,12 @@ var Thread = class {
   static {
     __name(this, "Thread");
   }
-  threadId;
+  id;
   monitor;
   started;
   constructor(monitor, id, started) {
     this.monitor = monitor;
-    this.threadId = id || crypto.randomUUID();
+    this.id = id || crypto.randomUUID();
     this.started = started || false;
   }
   /*
@@ -93,13 +93,13 @@ var Thread = class {
     const runId = customId ?? crypto.randomUUID();
     if (!this.started) {
       this.monitor.trackEvent("thread", "start", {
-        runId: this.threadId,
+        runId: this.id,
         input: text
       });
       this.monitor.trackEvent("chat", "start", {
         runId,
         input: text,
-        parentRunId: this.threadId,
+        parentRunId: this.id,
         extra: props
       });
       this.started = true;
@@ -107,7 +107,7 @@ var Thread = class {
       this.monitor.trackEvent("chat", "start", {
         runId,
         input: text,
-        parentRunId: this.threadId,
+        parentRunId: this.id,
         extra: props
       });
     }

@@ -1,6 +1,6 @@
 import { cJSON } from './types.cjs';
 import llmonitor from './browser.cjs';
-import { T as Thread } from './llmonitor-5e338de4.js';
+import { T as Thread } from './llmonitor-c9762f9d.js';
 
 declare function useChatMonitor(): {
     restart: () => Thread;

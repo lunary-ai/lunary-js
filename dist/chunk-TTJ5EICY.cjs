@@ -1,15 +1,15 @@
-import {
-  __name,
-  llmonitor_default
-} from "./chunk-ZDM3YLWS.js";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true});
+
+
+var _chunk4PVQGIXXcjs = require('./chunk-4PVQGIXX.cjs');
 
 // src/browser.ts
-var FrontendLLMonitor = class extends llmonitor_default {
+var FrontendLLMonitor = class extends _chunk4PVQGIXXcjs.llmonitor_default {
   static {
-    __name(this, "FrontendLLMonitor");
+    _chunk4PVQGIXXcjs.__name.call(void 0, this, "FrontendLLMonitor");
   }
-  userId;
-  userProps;
+  
+  
   /**
    * Identifies a user with a unique ID and properties.
    * @param {string} userId - The unique identifier for the user.
@@ -36,6 +36,6 @@ var FrontendLLMonitor = class extends llmonitor_default {
 var llmonitor = new FrontendLLMonitor();
 var browser_default = llmonitor;
 
-export {
-  browser_default
-};
+
+
+exports.browser_default = browser_default;

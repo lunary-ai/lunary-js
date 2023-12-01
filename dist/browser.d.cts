@@ -1,4 +1,4 @@
-import { L as LLMonitor } from './llmonitor-5e338de4.js';
+import { L as LLMonitor } from './llmonitor-c9762f9d.js';
 import { cJSON, RunType, EventName, RunEvent } from './types.cjs';
 
 declare class FrontendLLMonitor extends LLMonitor {
