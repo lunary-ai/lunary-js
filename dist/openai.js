@@ -1,10 +1,10 @@
 import {
   src_default
-} from "./chunk-DSKKX56B.js";
+} from "./chunk-O3SI3ZRW.js";
 import {
   __name,
   cleanExtra
-} from "./chunk-NILRUNLS.js";
+} from "./chunk-ZDM3YLWS.js";
 
 // src/openai.ts
 var parseOpenaiMessage = /* @__PURE__ */ __name((message) => {
@@ -12,7 +12,7 @@ var parseOpenaiMessage = /* @__PURE__ */ __name((message) => {
     return void 0;
   const { role, content, name, function_call, tool_calls, tool_call_id } = message;
   return {
-    role: role.replace("assistant", "ai"),
+    role,
     text: content,
     function_call,
     tool_calls,

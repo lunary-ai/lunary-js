@@ -7,14 +7,14 @@ monitor.init({
 })
 
 // This extends the openai object with the monitor
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
-
-const monitored = monitorOpenAI(openai)
+const openai = monitorOpenAI(
+  new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  })
+)
 
 async function TranslatorAgent(input) {
-  const stream = await monitored.chat.completions.create({
+  const stream = await openai.chat.completions.create({
     model: "gpt-4-1106-preview",
     temperature: 0,
     stream: true,
@@ -54,7 +54,7 @@ async function TranslatorAgent(input) {
 
   // console.log(stream.choices[0].message)
 
-  return //res.choices[0].message.content
+  // return res.choices[0].message.content
 }
 
 const translate = monitor.wrapAgent(TranslatorAgent)

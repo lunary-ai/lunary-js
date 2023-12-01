@@ -1,33 +1,50 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
-var _chunkLUWBT2SPcjs = require('./chunk-LUWBT2SP.cjs');
+var _chunkF32KE5VIcjs = require('./chunk-F32KE5VI.cjs');
 
 
-var _chunkM3TFISX5cjs = require('./chunk-M3TFISX5.cjs');
+var _chunkQLHFAYNHcjs = require('./chunk-QLHFAYNH.cjs');
 
 // src/react.ts
 var _react = require('react');
 function useChatMonitor() {
-  const [chat, setChat] = _react.useState.call(void 0, );
-  const restart = /* @__PURE__ */ _chunkM3TFISX5cjs.__name.call(void 0, () => {
-    const newChat = _chunkLUWBT2SPcjs.browser_default.startChat();
-    setChat(newChat);
-    return newChat;
+  const [thread, setThread] = _react.useState.call(void 0, );
+  const restart = /* @__PURE__ */ _chunkQLHFAYNHcjs.__name.call(void 0, () => {
+    const newThread = _chunkF32KE5VIcjs.browser_default.startThread();
+    setThread(newThread);
+    return newThread;
   }, "restart");
+  const resumeThread = /* @__PURE__ */ _chunkQLHFAYNHcjs.__name.call(void 0, (id) => {
+    const newThread = _chunkF32KE5VIcjs.browser_default.resumeThread(id);
+    setThread(newThread);
+    return newThread;
+  }, "resumeThread");
   _react.useEffect.call(void 0, () => {
     restart();
   }, []);
   return {
     restart,
-    trackUserMessage: _optionalChain([chat, 'optionalAccess', _ => _.trackUserMessage]),
-    trackBotMessage: _optionalChain([chat, 'optionalAccess', _2 => _2.trackBotMessage]),
-    trackFeedback: _chunkLUWBT2SPcjs.browser_default.trackFeedback
+    // Deprecated TODO: remove
+    restartThread: restart,
+    resumeThread,
+    trackUserMessage: _optionalChain([thread, 'optionalAccess', _ => _.trackUserMessage]),
+    trackBotMessage: _optionalChain([thread, 'optionalAccess', _2 => _2.trackBotMessage]),
+    trackFeedback: _chunkF32KE5VIcjs.browser_default.trackFeedback,
+    identify: _chunkF32KE5VIcjs.browser_default.identify
   };
 }
-_chunkM3TFISX5cjs.__name.call(void 0, useChatMonitor, "useChatMonitor");
-var useMonitorVercelAI = /* @__PURE__ */ _chunkM3TFISX5cjs.__name.call(void 0, (props) => {
+_chunkQLHFAYNHcjs.__name.call(void 0, useChatMonitor, "useChatMonitor");
+var useMonitorVercelAI = /* @__PURE__ */ _chunkQLHFAYNHcjs.__name.call(void 0, (props) => {
   const { messages, isLoading } = props;
-  const { restart, trackFeedback, trackUserMessage, trackBotMessage } = useChatMonitor();
+  const {
+    trackFeedback,
+    trackUserMessage,
+    trackBotMessage,
+    resumeThread,
+    restartThread,
+    identify,
+    restart
+  } = useChatMonitor();
   const previousMessages = _react.useRef.call(void 0, messages);
   _react.useEffect.call(void 0, () => {
     if (previousMessages.current.length < messages.length) {
@@ -43,10 +60,13 @@ var useMonitorVercelAI = /* @__PURE__ */ _chunkM3TFISX5cjs.__name.call(void 0, (
   }, [isLoading, messages]);
   return {
     ...props,
-    trackFeedback
+    trackFeedback,
+    resumeThread,
+    restartThread,
+    identify
   };
 }, "useMonitorVercelAI");
-var react_default = _chunkLUWBT2SPcjs.browser_default;
+var react_default = _chunkF32KE5VIcjs.browser_default;
 
 
 

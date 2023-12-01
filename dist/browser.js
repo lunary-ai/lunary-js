@@ -1,9 +1,7 @@
 import {
-  Conversation,
   browser_default
-} from "./chunk-VSMIAQXC.js";
-import "./chunk-NILRUNLS.js";
+} from "./chunk-EY5YQAIW.js";
+import "./chunk-ZDM3YLWS.js";
 export {
-  Conversation,
   browser_default as default
 };

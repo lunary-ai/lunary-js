@@ -6,7 +6,7 @@ interface LLMonitorOptions {
     apiUrl?: string;
     verbose?: boolean;
 }
-type RunType = "log" | "tool" | "agent" | "llm" | "convo" | "chain" | "retriever" | "embed" | "chat" | "convo";
+type RunType = "log" | "tool" | "agent" | "llm" | "chain" | "retriever" | "embed" | "thread" | "chat";
 type EventName = "start" | "end" | "error" | "info" | "warn" | "feedback";
 interface Event {
     type: RunType;
@@ -39,7 +39,7 @@ interface LogEvent extends Event {
     message: string;
 }
 interface ChatMessage {
-    role: "user" | "ai" | "system" | "function" | "tool";
+    role: "user" | "assistant" | "system" | "function" | "tool";
     text: string;
     [key: string]: cJSON;
 }

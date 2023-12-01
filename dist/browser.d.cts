@@ -1,32 +1,23 @@
-import { cJSON, LLMonitorOptions, RunType, EventName, RunEvent, LogEvent } from './types.cjs';
+import { L as LLMonitor } from './llmonitor-5e338de4.js';
+import { cJSON, RunType, EventName, RunEvent } from './types.cjs';
 
-declare class Conversation {
-    private monitor;
-    private convoId;
-    private started;
-    constructor(monitor: LLMonitor);
-    trackUserMessage: (text: string, props?: cJSON, customId?: string) => string;
-    trackBotMessage: (replyToId: string, text: string, props?: cJSON) => void;
-}
-declare class LLMonitor {
-    appId?: string;
-    verbose?: boolean;
-    apiUrl?: string;
-    userId?: string;
-    userProps?: cJSON;
-    private queue;
-    private queueRunning;
+declare class FrontendLLMonitor extends LLMonitor {
+    private userId?;
+    private userProps?;
     /**
-     * @param {LLMonitorOptions} options
+     * Identifies a user with a unique ID and properties.
+     * @param {string} userId - The unique identifier for the user.
+     * @param {cJSON} [userProps] - Custom properties to associate with the user.
      */
-    constructor();
-    init({ appId, verbose, apiUrl }?: LLMonitorOptions): void;
-    identify(userId: string, userProps: cJSON): void;
-    trackEvent(type: RunType, event: EventName, data: Partial<RunEvent | LogEvent>): Promise<void>;
-    private processQueue;
-    trackFeedback: (messageId: string, feedback: cJSON) => void;
-    startChat(): Conversation;
+    identify(userId: string, userProps?: cJSON): void;
+    /**
+     * Extends the trackEvent method to include userId and userProps.
+     * @param {RunType} type - The type of the run.
+     * @param {EventName} event - The name of the event.
+     * @param {Partial<RunEvent>} data - The data associated with the event.
+     */
+    trackEvent(type: RunType, event: EventName, data: Partial<RunEvent>): void;
 }
-declare const llmonitor: LLMonitor;
+declare const llmonitor: FrontendLLMonitor;
 
-export { Conversation, llmonitor as default };
+export = llmonitor;

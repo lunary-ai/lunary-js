@@ -1,10 +1,4 @@
-import {
-  checkEnv,
-  cleanError,
-  debounce,
-  formatLog,
-  getFunctionInput,
-} from "./utils"
+import { checkEnv, cleanError, debounce, formatLog } from "./utils"
 
 import {
   Event,
@@ -13,13 +7,10 @@ import {
   LLMonitorOptions,
   LogEvent,
   RunEvent,
-  WrapParams,
-  WrappableFn,
-  WrappedFn,
+  cJSON,
 } from "./types"
 
-import ctx from "./context"
-import chainable from "./chainable"
+import { Thread } from "./thread"
 
 const MAX_CHUNK_SIZE = 20
 
@@ -27,6 +18,7 @@ class LLMonitor {
   appId?: string
   verbose?: boolean
   apiUrl?: string
+  ctx?: any
 
   private queue: any[] = []
   private queueRunning: boolean = false
@@ -34,12 +26,14 @@ class LLMonitor {
   /**
    * @param {LLMonitorOptions} options
    */
-  constructor() {
+  constructor(ctx?) {
     this.init({
       appId: checkEnv("LLMONITOR_APP_ID"),
       verbose: false,
       apiUrl: checkEnv("LLMONITOR_API_URL") || "https://app.llmonitor.com",
     })
+
+    this.ctx = ctx
   }
 
   init({ appId, verbose, apiUrl }: LLMonitorOptions = {}) {
@@ -60,7 +54,7 @@ class LLMonitor {
     type: RunType,
     event: EventName,
     data: Partial<RunEvent | LogEvent>
-  ) {
+  ): void {
     if (!this.appId)
       return console.warn(
         "LLMonitor: App ID not set. Not reporting anything. Get one on the dashboard: https://app.llmonitor.com"
@@ -74,8 +68,8 @@ class LLMonitor {
       timestamp = lastEvent.timestamp + 1
     }
 
-    const parentRunId = data.parentRunId ?? ctx.runId.tryUse()
-    const user = ctx.user.tryUse()
+    const parentRunId = data.parentRunId ?? this.ctx?.runId.tryUse()
+    const user = this.ctx?.user?.tryUse()
     const userId = data.userId ?? user?.userId
     let userProps = data.userProps ?? user?.userProps
 
@@ -116,7 +110,7 @@ class LLMonitor {
   // Wait 500ms to allow other events to be added to the queue
   private debouncedProcessQueue = debounce(() => this.processQueue())
 
-  private async processQueue() {
+  async processQueue() {
     if (!this.queue.length || this.queueRunning) return
 
     this.queueRunning = true
@@ -149,200 +143,36 @@ class LLMonitor {
     }
   }
 
-  private wrap<T extends WrappableFn>(
-    type: RunType,
-    func: T,
-    params?: WrapParams<T>
-  ): WrappedFn<T> {
-    const llmonitor = this
+  trackFeedback = (runId: string, feedback: cJSON) => {
+    if (!runId || typeof runId !== "string")
+      return console.error(
+        "LLMonitor: No message ID provided to track feedback"
+      )
 
-    const wrappedFn = (...args: Parameters<T>) => {
-      // Don't pass the function directly to proxy to avoid it being called directly
-      const callInfo = {
-        type,
-        func,
-        args,
-        params,
-      }
+    if (typeof feedback !== "object")
+      return console.error(
+        "LLMonitor: Invalid feedback provided. Pass a valid object"
+      )
 
-      const proxy = new Proxy(callInfo, {
-        get: function (target, prop) {
-          if (prop === "identify") {
-            return chainable.identify.bind({
-              target,
-              next: llmonitor.executeWrappedFunction.bind(llmonitor),
-            })
-          }
-
-          if (prop === "setParent") {
-            return chainable.setParent.bind({
-              target,
-              next: llmonitor.executeWrappedFunction.bind(llmonitor),
-            })
-          }
-
-          const promise = llmonitor.executeWrappedFunction(target)
-
-          if (prop === "then") {
-            return (onFulfilled, onRejected) =>
-              promise.then(onFulfilled, onRejected)
-          }
-
-          if (prop === "catch") {
-            return (onRejected) => promise.catch(onRejected)
-          }
-
-          if (prop === "finally") {
-            return (onFinally) => promise.finally(onFinally)
-          }
-        },
-      }) as unknown
-
-      return proxy
-    }
-
-    return wrappedFn as WrappedFn<T>
-  }
-
-  // Extract the actual execution logic into a function
-  private async executeWrappedFunction<T extends WrappableFn>(target) {
-    const { type, args, func, params } = target
-
-    // Generate a random ID for this run (will be injected into the context)
-    const runId = crypto.randomUUID()
-
-    // Get agent name from function name or params
-    const name = params?.nameParser
-      ? params.nameParser(...args)
-      : params?.name ?? func.name
-
-    const {
-      inputParser,
-      outputParser,
-      tokensUsageParser,
-      waitUntil,
-      enableWaitUntil,
-      extra,
-      tags,
-      userId,
-      userProps,
-    }: WrapParams<T> = params || {}
-
-    // Get extra data from function or params
-    const extraData = params?.extraParser ? params.extraParser(...args) : extra
-    const tagsData = params?.tagsParser ? params.tagsParser(...args) : tags
-    const userIdData = params?.userIdParser
-      ? params.userIdParser(...args)
-      : userId
-    const userPropsData = params?.userPropsParser
-      ? params.userPropsParser(...args)
-      : userProps
-
-    const input = inputParser
-      ? inputParser(...args)
-      : getFunctionInput(func, args)
-
-    this.trackEvent(type, "start", {
+    this.trackEvent(null, "feedback", {
       runId,
-      input,
-      name,
-      extra: extraData,
-      tags: tagsData,
-      userId: userIdData,
-      userProps: userPropsData,
+      extra: feedback,
     })
-
-    const shouldWaitUntil =
-      typeof enableWaitUntil === "function"
-        ? enableWaitUntil(...args)
-        : waitUntil
-
-    const processOutput = async (output) => {
-      // Allow parsing of token usage (useful for LLMs)
-      const tokensUsage = tokensUsageParser
-        ? await tokensUsageParser(output)
-        : undefined
-
-      this.trackEvent(type, "end", {
-        runId,
-        name, // need name in case need to count tokens usage server-side
-        output: outputParser ? outputParser(output) : output,
-        tokensUsage,
-      })
-
-      if (shouldWaitUntil) {
-        // Process queue immediately, in case it's a stream, we can't ask the user to manually flush
-        await this.flush()
-      }
-    }
-
-    try {
-      // Inject runId into context
-      const output = await ctx.runId.callAsync(runId, async () => {
-        return func(...args)
-      })
-
-      if (shouldWaitUntil) {
-        // Support waiting for a callback to be called to complete the run
-        // Useful for streaming API
-        return waitUntil(
-          output,
-          (res) => processOutput(res),
-          (error) => console.error(error)
-        )
-      } else {
-        await processOutput(output)
-      }
-
-      return output
-    } catch (error) {
-      this.trackEvent(type, "error", {
-        runId,
-        error: cleanError(error),
-      })
-
-      // Process queue immediately as if there is an uncaught exception next, it won't be processed
-      // TODO: find a cleaner (and non platform-specific) way to do this
-      await this.processQueue()
-
-      throw error
-    }
   }
 
   /**
-   * Wrap an agent's Promise to track it's input, results and any errors.
-   * @param {Promise} func - Agent function
-   * @param {WrapParams} params - Wrap params
+   * @deprecated Use startThread() instead
    */
-  wrapAgent<T extends WrappableFn>(
-    func: T,
-    params?: WrapParams<T>
-  ): WrappedFn<T> {
-    return this.wrap("agent", func, params)
+  startChat(id?: string) {
+    return new Thread(this, id)
   }
 
-  /**
-   * Wrap an tool's Promise to track it's input, results and any errors.
-   * @param {Promise} func - Tool function
-   * @param {WrapParams} params - Wrap params
-   */
-  wrapTool<T extends WrappableFn>(
-    func: T,
-    params?: WrapParams<T>
-  ): WrappedFn<T> {
-    return this.wrap("tool", func, params)
+  startThread(id?: string) {
+    return new Thread(this, id)
   }
 
-  /**
-   * Wrap an model's Promise to track it's input, results and any errors.
-   * @param {Promise} func - Model generation function
-   * @param {WrapParams} params - Wrap params
-   */
-  wrapModel<T extends WrappableFn>(
-    func: T,
-    params?: WrapParams<T>
-  ): WrappedFn<T> {
-    return this.wrap("llm", func, params) as WrappedFn<T>
+  resumeThread(id: string) {
+    return new Thread(this, id, true)
   }
 
   /**

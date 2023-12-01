@@ -1,17 +1,24 @@
 import { useEffect, useRef, useState } from "react"
-import llmonitor, { Conversation } from "./browser"
+import monitor from "./browser"
+import { Thread } from "./thread"
 
 /*
  * Separate entrypoint so we can have React as a peer dependency
  */
 
 function useChatMonitor() {
-  const [chat, setChat] = useState<Conversation>()
+  const [thread, setThread] = useState<Thread>()
 
   const restart = () => {
-    const newChat = llmonitor.startChat()
-    setChat(newChat)
-    return newChat
+    const newThread = monitor.startThread()
+    setThread(newThread)
+    return newThread
+  }
+
+  const resumeThread = (id: string) => {
+    const newThread = monitor.resumeThread(id)
+    setThread(newThread)
+    return newThread
   }
 
   useEffect(() => {
@@ -19,10 +26,13 @@ function useChatMonitor() {
   }, [])
 
   return {
-    restart,
-    trackUserMessage: chat?.trackUserMessage,
-    trackBotMessage: chat?.trackBotMessage,
-    trackFeedback: llmonitor.trackFeedback,
+    restart, // Deprecated TODO: remove
+    restartThread: restart,
+    resumeThread,
+    trackUserMessage: thread?.trackUserMessage,
+    trackBotMessage: thread?.trackBotMessage,
+    trackFeedback: monitor.trackFeedback,
+    identify: monitor.identify,
   }
 }
 
@@ -33,8 +43,15 @@ function useChatMonitor() {
 const useMonitorVercelAI = (props) => {
   const { messages, isLoading } = props
 
-  const { restart, trackFeedback, trackUserMessage, trackBotMessage } =
-    useChatMonitor()
+  const {
+    trackFeedback,
+    trackUserMessage,
+    trackBotMessage,
+    resumeThread,
+    restartThread,
+    identify,
+    restart,
+  } = useChatMonitor()
 
   const previousMessages = useRef(messages)
 
@@ -58,9 +75,12 @@ const useMonitorVercelAI = (props) => {
   return {
     ...props,
     trackFeedback,
+    resumeThread,
+    restartThread,
+    identify,
   }
 }
 
-export default llmonitor
+export default monitor
 
 export { useChatMonitor, useMonitorVercelAI }

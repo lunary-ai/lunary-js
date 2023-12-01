@@ -1,11 +1,15 @@
 import { cJSON } from './types.cjs';
-import llmonitor, { Conversation } from './browser.cjs';
+import llmonitor from './browser.cjs';
+import { T as Thread } from './llmonitor-5e338de4.js';
 
 declare function useChatMonitor(): {
-    restart: () => Conversation;
+    restart: () => Thread;
+    restartThread: () => Thread;
+    resumeThread: (id: string) => Thread;
     trackUserMessage: (text: string, props?: cJSON, customId?: string) => string;
     trackBotMessage: (replyToId: string, text: string, props?: cJSON) => void;
-    trackFeedback: (messageId: string, feedback: cJSON) => void;
+    trackFeedback: (runId: string, feedback: cJSON) => void;
+    identify: (userId: string, userProps?: cJSON) => void;
 };
 declare const useMonitorVercelAI: (props: any) => any;
 

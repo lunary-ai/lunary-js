@@ -1,11 +1,9 @@
 import {
   __name,
-  checkEnv,
   cleanError,
-  debounce,
-  formatLog,
-  getFunctionInput
-} from "./chunk-NILRUNLS.js";
+  getFunctionInput,
+  llmonitor_default
+} from "./chunk-ZDM3YLWS.js";
 
 // src/context.ts
 import { createContext } from "unctx";
@@ -47,112 +45,10 @@ var chainable_default = {
   setParent
 };
 
-// src/llmonitor.ts
-var MAX_CHUNK_SIZE = 20;
-var LLMonitor = class {
+// src/index.ts
+var BackendMonitor = class extends llmonitor_default {
   static {
-    __name(this, "LLMonitor");
-  }
-  appId;
-  verbose;
-  apiUrl;
-  queue = [];
-  queueRunning = false;
-  /**
-   * @param {LLMonitorOptions} options
-   */
-  constructor() {
-    this.init({
-      appId: checkEnv("LLMONITOR_APP_ID"),
-      verbose: false,
-      apiUrl: checkEnv("LLMONITOR_API_URL") || "https://app.llmonitor.com"
-    });
-  }
-  init({ appId, verbose, apiUrl } = {}) {
-    if (appId)
-      this.appId = appId;
-    if (verbose)
-      this.verbose = verbose;
-    if (apiUrl)
-      this.apiUrl = apiUrl;
-  }
-  /**
-   * Manually track a run event.
-   * @param {RunType} type - The type of the run.
-   * @param {EventName} event - The name of the event.
-   * @param {Partial<RunEvent | LogEvent>} data - The data associated with the event.
-   * @example
-   * monitor.trackEvent("llm", "start", { name: "gpt-4", input: "Hello I'm a bot" });
-   */
-  trackEvent(type, event, data) {
-    if (!this.appId)
-      return console.warn(
-        "LLMonitor: App ID not set. Not reporting anything. Get one on the dashboard: https://app.llmonitor.com"
-      );
-    let timestamp = Date.now();
-    const lastEvent = this.queue?.[this.queue.length - 1];
-    if (lastEvent?.timestamp >= timestamp) {
-      timestamp = lastEvent.timestamp + 1;
-    }
-    const parentRunId = data.parentRunId ?? context_default.runId.tryUse();
-    const user2 = context_default.user.tryUse();
-    const userId = data.userId ?? user2?.userId;
-    let userProps = data.userProps ?? user2?.userProps;
-    if (userProps && !userId) {
-      console.warn(
-        "LLMonitor: userProps passed without userId. Ignoring userProps."
-      );
-      userProps = void 0;
-    }
-    const runtime = data.runtime ?? "llmonitor-js";
-    const eventData = {
-      event,
-      type,
-      userId,
-      userProps,
-      app: this.appId,
-      parentRunId,
-      timestamp,
-      runtime,
-      ...data
-    };
-    if (this.verbose) {
-      console.log(formatLog(eventData));
-    }
-    this.queue.push(eventData);
-    if (this.queue.length > MAX_CHUNK_SIZE) {
-      this.processQueue();
-    } else {
-      this.debouncedProcessQueue();
-    }
-  }
-  // Wait 500ms to allow other events to be added to the queue
-  debouncedProcessQueue = debounce(() => this.processQueue());
-  async processQueue() {
-    if (!this.queue.length || this.queueRunning)
-      return;
-    this.queueRunning = true;
-    try {
-      if (this.verbose)
-        console.log("LLMonitor: Sending events now");
-      const copy = this.queue.slice();
-      await fetch(`${this.apiUrl}/api/report`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ events: copy })
-      });
-      if (this.verbose)
-        console.log("LLMonitor: Events sent");
-      this.queue = this.queue.slice(copy.length);
-      this.queueRunning = false;
-      if (this.queue.length)
-        this.processQueue();
-    } catch (error) {
-      this.queueRunning = false;
-      console.error("Error sending event(s) to LLMonitor", error);
-    }
+    __name(this, "BackendMonitor");
   }
   wrap(type, func, params) {
     const llmonitor2 = this;
@@ -284,68 +180,8 @@ var LLMonitor = class {
   wrapModel(func, params) {
     return this.wrap("llm", func, params);
   }
-  /**
-   * Use this to log any external action or tool you use.
-   * @param {string} message - Log message
-   * @param {any} extra - Extra data to pass
-   * @example
-   * monitor.info("Running tool Google Search")
-   **/
-  info(message, extra) {
-    this.trackEvent("log", "info", {
-      message,
-      extra
-    });
-  }
-  log(message, extra) {
-    this.info(message, extra);
-  }
-  /**
-   * Use this to warn
-   * @param {string} message - Warning message
-   * @param {any} extra - Extra data to pass
-   * @example
-   * monitor.log("Running tool Google Search")
-   **/
-  warn(message, extra) {
-    this.trackEvent("log", "warn", {
-      message,
-      extra
-    });
-  }
-  /**
-   * Report any errors that occur during the conversation.
-   * @param {string} message - Error message
-   * @param {any} error - Error object
-   * @example
-   * try {
-   *   const answer = await model.generate("Hello")
-   *   monitor.result(answer)
-   * } catch (error) {
-   *   monitor.error("Error generating answer", error)
-   * }
-   */
-  error(message, error) {
-    if (typeof message === "object") {
-      error = message;
-      message = error.message ?? void 0;
-    }
-    this.trackEvent("log", "error", {
-      message,
-      extra: cleanError(error)
-    });
-  }
-  /**
-   * Make sure the queue is flushed before exiting the program
-   */
-  async flush() {
-    await this.processQueue();
-  }
 };
-var llmonitor_default = LLMonitor;
-
-// src/index.ts
-var llmonitor = new llmonitor_default();
+var llmonitor = new BackendMonitor(context_default);
 var src_default = llmonitor;
 
 export {

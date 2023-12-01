@@ -19,12 +19,11 @@ export type RunType =
   | "tool"
   | "agent"
   | "llm"
-  | "convo"
   | "chain"
   | "retriever"
   | "embed"
+  | "thread"
   | "chat"
-  | "convo"
 
 export type EventName = "start" | "end" | "error" | "info" | "warn" | "feedback"
 
@@ -64,7 +63,7 @@ export interface LogEvent extends Event {
 
 // Inspired from OpenAi's format, less heavy than Langchain's type
 export interface ChatMessage {
-  role: "user" | "ai" | "system" | "function" | "tool"
+  role: "user" | "assistant" | "system" | "function" | "tool"
   text: string
   [key: string]: cJSON
 }
