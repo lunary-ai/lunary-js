@@ -1,15 +1,15 @@
-import {
-  __name,
-  llmonitor_default
-} from "./chunk-CDCVVLTO.js";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true});
+
+
+var _chunkFUE6MNK6cjs = require('./chunk-FUE6MNK6.cjs');
 
 // src/browser.ts
-var FrontendLLMonitor = class extends llmonitor_default {
+var FrontendLunary = class extends _chunkFUE6MNK6cjs.lunary_default {
   static {
-    __name(this, "FrontendLLMonitor");
+    _chunkFUE6MNK6cjs.__name.call(void 0, this, "FrontendLunary");
   }
-  userId;
-  userProps;
+  
+  
   /**
    * Identifies a user with a unique ID and properties.
    * @param {string} userId - The unique identifier for the user.
@@ -33,9 +33,9 @@ var FrontendLLMonitor = class extends llmonitor_default {
     });
   }
 };
-var llmonitor = new FrontendLLMonitor();
-var browser_default = llmonitor;
+var lunary = new FrontendLunary();
+var browser_default = lunary;
 
-export {
-  browser_default
-};
+
+
+exports.browser_default = browser_default;

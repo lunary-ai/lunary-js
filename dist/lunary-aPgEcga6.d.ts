@@ -1,15 +1,24 @@
-import { cJSON, LLMonitorOptions, RunType, EventName, RunEvent, LogEvent } from './types.js';
+import { cJSON, LunaryOptions, RunType, EventName, RunEvent, LogEvent } from './types.cjs';
 
+type Message = {
+    id?: string;
+    role: "user" | "assistant" | "tool" | "system";
+    content?: string | null;
+    isRetry?: boolean;
+    extra?: cJSON;
+    feedback?: cJSON;
+};
 declare class Thread {
     id: string;
     private monitor;
     private started;
-    constructor(monitor: LLMonitor, id?: string, started?: boolean);
+    constructor(monitor: Lunary, id?: string, started?: boolean);
+    trackMessage: (message: Message) => string;
     trackUserMessage: (text: string, props?: cJSON, customId?: string) => string;
     trackBotMessage: (replyToId: string, text: string, props?: cJSON) => void;
 }
 
-declare class LLMonitor {
+declare class Lunary {
     appId?: string;
     verbose?: boolean;
     apiUrl?: string;
@@ -17,10 +26,10 @@ declare class LLMonitor {
     private queue;
     private queueRunning;
     /**
-     * @param {LLMonitorOptions} options
+     * @param {LunaryOptions} options
      */
     constructor(ctx?: any);
-    init({ appId, verbose, apiUrl }?: LLMonitorOptions): void;
+    init({ appId, verbose, apiUrl }?: LunaryOptions): void;
     /**
      * Manually track a run event.
      * @param {RunType} type - The type of the run.
@@ -39,6 +48,7 @@ declare class LLMonitor {
     startChat(id?: string): Thread;
     startThread(id?: string): Thread;
     resumeThread(id: string): Thread;
+    openThread(id?: string): Thread;
     /**
      * Use this to log any external action or tool you use.
      * @param {string} message - Log message
@@ -75,4 +85,4 @@ declare class LLMonitor {
     flush(): Promise<void>;
 }
 
-export { LLMonitor as L, Thread as T };
+export { Lunary as L, Thread as T };

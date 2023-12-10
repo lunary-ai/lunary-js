@@ -4,7 +4,7 @@ import {
   Event,
   EventName,
   RunType,
-  LLMonitorOptions,
+  LunaryOptions,
   LogEvent,
   RunEvent,
   cJSON,
@@ -14,7 +14,7 @@ import { Thread } from "./thread"
 
 const MAX_CHUNK_SIZE = 20
 
-class LLMonitor {
+class Lunary {
   appId?: string
   verbose?: boolean
   apiUrl?: string
@@ -24,19 +24,22 @@ class LLMonitor {
   private queueRunning: boolean = false
 
   /**
-   * @param {LLMonitorOptions} options
+   * @param {LunaryOptions} options
    */
   constructor(ctx?) {
     this.init({
-      appId: checkEnv("LLMONITOR_APP_ID"),
+      appId: checkEnv("LUNARY_APP_ID") || checkEnv("LLMONITOR_APP_ID"),
+      apiUrl:
+        checkEnv("LUNARY_API_URL") ||
+        checkEnv("LLMONITOR_API_URL") ||
+        "https://app.lunary.ai",
       verbose: false,
-      apiUrl: checkEnv("LLMONITOR_API_URL") || "https://app.llmonitor.com",
     })
 
     this.ctx = ctx
   }
 
-  init({ appId, verbose, apiUrl }: LLMonitorOptions = {}) {
+  init({ appId, verbose, apiUrl }: LunaryOptions = {}) {
     if (appId) this.appId = appId
     if (verbose) this.verbose = verbose
     if (apiUrl) this.apiUrl = apiUrl
@@ -57,7 +60,7 @@ class LLMonitor {
   ): void {
     if (!this.appId)
       return console.warn(
-        "LLMonitor: App ID not set. Not reporting anything. Get one on the dashboard: https://app.llmonitor.com"
+        "Lunary: App ID not set. Not reporting anything. Get one on the dashboard: https://app.lunary.ai"
       )
 
     // Add 1ms to timestamp if it's the same/lower than the last event
@@ -75,12 +78,12 @@ class LLMonitor {
 
     if (userProps && !userId) {
       console.warn(
-        "LLMonitor: userProps passed without userId. Ignoring userProps."
+        "Lunary: userProps passed without userId. Ignoring userProps."
       )
       userProps = undefined
     }
 
-    const runtime = data.runtime ?? "llmonitor-js"
+    const runtime = data.runtime ?? "lunary-js"
 
     const eventData: Event = {
       event,
@@ -116,7 +119,7 @@ class LLMonitor {
     this.queueRunning = true
 
     try {
-      if (this.verbose) console.log("LLMonitor: Sending events now")
+      if (this.verbose) console.log("Lunary: Sending events now")
 
       const copy = this.queue.slice()
 
@@ -128,7 +131,7 @@ class LLMonitor {
         body: JSON.stringify({ events: copy }),
       })
 
-      if (this.verbose) console.log("LLMonitor: Events sent")
+      if (this.verbose) console.log("Lunary: Events sent")
 
       // Clear the events we just sent (don't clear it all in case new events were added while sending)
       this.queue = this.queue.slice(copy.length)
@@ -139,19 +142,17 @@ class LLMonitor {
       if (this.queue.length) this.processQueue()
     } catch (error) {
       this.queueRunning = false
-      console.error("Error sending event(s) to LLMonitor", error)
+      console.error("Error sending event(s) to Lunary", error)
     }
   }
 
   trackFeedback = (runId: string, feedback: cJSON) => {
     if (!runId || typeof runId !== "string")
-      return console.error(
-        "LLMonitor: No message ID provided to track feedback"
-      )
+      return console.error("Lunary: No message ID provided to track feedback")
 
     if (typeof feedback !== "object")
       return console.error(
-        "LLMonitor: Invalid feedback provided. Pass a valid object"
+        "Lunary: Invalid feedback provided. Pass a valid object"
       )
 
     this.trackEvent(null, "feedback", {
@@ -173,6 +174,10 @@ class LLMonitor {
 
   resumeThread(id: string) {
     return new Thread(this, id, true)
+  }
+
+  openThread(id?: string) {
+    return new Thread(this, id)
   }
 
   /**
@@ -240,4 +245,4 @@ class LLMonitor {
   }
 }
 
-export default LLMonitor
+export default Lunary

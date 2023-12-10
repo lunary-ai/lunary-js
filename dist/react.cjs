@@ -1,21 +1,21 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
-var _chunkTTJ5EICYcjs = require('./chunk-TTJ5EICY.cjs');
+var _chunkWH4ULNQ6cjs = require('./chunk-WH4ULNQ6.cjs');
 
 
-var _chunk4PVQGIXXcjs = require('./chunk-4PVQGIXX.cjs');
+var _chunkFUE6MNK6cjs = require('./chunk-FUE6MNK6.cjs');
 
 // src/react.ts
 var _react = require('react');
 function useChatMonitor() {
   const [thread, setThread] = _react.useState.call(void 0, );
-  const restart = /* @__PURE__ */ _chunk4PVQGIXXcjs.__name.call(void 0, () => {
-    const newThread = _chunkTTJ5EICYcjs.browser_default.startThread();
+  const restart = /* @__PURE__ */ _chunkFUE6MNK6cjs.__name.call(void 0, () => {
+    const newThread = _chunkWH4ULNQ6cjs.browser_default.startThread();
     setThread(newThread);
     return newThread;
   }, "restart");
-  const resumeThread = /* @__PURE__ */ _chunk4PVQGIXXcjs.__name.call(void 0, (id) => {
-    const newThread = _chunkTTJ5EICYcjs.browser_default.resumeThread(id);
+  const resumeThread = /* @__PURE__ */ _chunkFUE6MNK6cjs.__name.call(void 0, (id) => {
+    const newThread = _chunkWH4ULNQ6cjs.browser_default.resumeThread(id);
     setThread(newThread);
     return newThread;
   }, "resumeThread");
@@ -27,19 +27,17 @@ function useChatMonitor() {
     // Deprecated TODO: remove
     restartThread: restart,
     resumeThread,
-    trackUserMessage: _optionalChain([thread, 'optionalAccess', _ => _.trackUserMessage]),
-    trackBotMessage: _optionalChain([thread, 'optionalAccess', _2 => _2.trackBotMessage]),
-    trackFeedback: _chunkTTJ5EICYcjs.browser_default.trackFeedback,
-    identify: _chunkTTJ5EICYcjs.browser_default.identify
+    trackMessage: _optionalChain([thread, 'optionalAccess', _ => _.trackMessage]),
+    trackFeedback: _chunkWH4ULNQ6cjs.browser_default.trackFeedback,
+    identify: _chunkWH4ULNQ6cjs.browser_default.identify
   };
 }
-_chunk4PVQGIXXcjs.__name.call(void 0, useChatMonitor, "useChatMonitor");
-var useMonitorVercelAI = /* @__PURE__ */ _chunk4PVQGIXXcjs.__name.call(void 0, (props) => {
+_chunkFUE6MNK6cjs.__name.call(void 0, useChatMonitor, "useChatMonitor");
+var useMonitorVercelAI = /* @__PURE__ */ _chunkFUE6MNK6cjs.__name.call(void 0, (props) => {
   const { messages, isLoading } = props;
   const {
     trackFeedback,
-    trackUserMessage,
-    trackBotMessage,
+    trackMessage,
     resumeThread,
     restartThread,
     identify,
@@ -50,23 +48,32 @@ var useMonitorVercelAI = /* @__PURE__ */ _chunk4PVQGIXXcjs.__name.call(void 0, (
     if (previousMessages.current.length < messages.length) {
       const newMessage = messages[messages.length - 1];
       if (newMessage.role === "user") {
-        trackUserMessage(newMessage.content, void 0, newMessage.id);
+        trackMessage({
+          role: "user",
+          id: newMessage.id,
+          content: newMessage.content
+        });
       } else if (newMessage.role === "assistant" && // Make sure it's not streaming
       !isLoading) {
         const userMessage = messages[messages.length - 2];
-        trackBotMessage(userMessage.id, newMessage.content);
+        trackMessage({
+          role: "assistant",
+          id: userMessage.id,
+          content: newMessage.content
+        });
       }
     }
   }, [isLoading, messages]);
   return {
     ...props,
     trackFeedback,
+    trackMessage,
     resumeThread,
     restartThread,
     identify
   };
 }, "useMonitorVercelAI");
-var react_default = _chunkTTJ5EICYcjs.browser_default;
+var react_default = _chunkWH4ULNQ6cjs.browser_default;
 
 
 

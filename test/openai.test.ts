@@ -1,44 +1,52 @@
-import { expect, test, describe, beforeEach, afterEach } from "bun:test"
+import {
+  expect,
+  test,
+  describe,
+  beforeEach,
+  afterEach,
+  afterAll,
+  spyOn,
+} from "bun:test"
 
 import monitor from "../src/index"
 import { monitorOpenAI } from "../src/openai"
 import OpenAI from "openai"
 
-import { WritableStreamBuffer } from "stream-buffers" // You might need a package like this to capture stdout
+monitor.init({
+  verbose: true,
+})
+
+const expectLogsContains = (spy, str: string) => {
+  expect(spy).toHaveBeenCalledWith(expect.stringContaining(str))
+}
 
 describe("openai", () => {
-  let stdoutBuffer: WritableStreamBuffer
+  // let stdoutBuffer: WritableStreamBuffer
+  let spy
 
   beforeEach(() => {
-    // Initialize the buffer before each test
-    stdoutBuffer = new WritableStreamBuffer()
-    // Redirect process.stdout.write to write to the buffer instead
-    process.stdout.write = stdoutBuffer.write.bind(stdoutBuffer)
-    monitor.init({
-      verbose: true,
-    })
+    spy = spyOn(console, "log").mockImplementation()
   })
 
   afterEach(() => {
-    // Reset process.stdout.write after each test
-    // process.stdout.write = process.stdout.constructor.prototype.write
+    spy.mockClear()
   })
 
-  const openai = monitorOpenAI(
-    new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    })
-  )
+  afterAll(() => {
+    spy.mockRestore()
+  })
 
-  // ... other tests ...
+  test("Basic OpenAI", async () => {
+    const openai = monitorOpenAI(
+      new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+      })
+    )
 
-  test("TranslatorAgent monitoring", async () => {
-    // Call the function that you want to test
-    await openai.chat.completions.create({
+    const result = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       temperature: 0,
-      // stream: true,
-      // tags: ["translate"],
+      tags: ["translate"],
       user: "user123",
       seed: 123,
       userProps: {
@@ -68,13 +76,26 @@ describe("openai", () => {
       ],
     })
 
-    // Get the output from the buffer
-    const verboseOutput = stdoutBuffer.getContentsAsString("utf8")
+    expect(result.model).toContain("gpt-3.5-turbo")
 
-    console.log(verboseOutput)
+    // @ts-ignore
+    // Make sure the response structure is correct
+    expect(result.choices[0].message?.tool_calls[0]?.function.name).toBe(
+      "translate"
+    )
 
-    // Check if the verbose output contains expected tracking information
-    // expect(verboseOutput).toContain("Tracking data for TranslatorAgent")
-    expect(verboseOutput).toContain(`"userId": "user123"`)
+    expectLogsContains(spy, `\"event\": \"start\"`)
+
+    expectLogsContains(spy, `\"name\": \"John Doe\"`)
+
+    expectLogsContains(spy, `\"event\": \"end\"`)
+
+    expectLogsContains(
+      spy,
+      `\"text\": \"Hello, translate 'Bonjour' from french to english\"`
+    )
+
+    // Make sure it reports the tool calls
+    expectLogsContains(spy, `\"arguments\": \"{`)
   })
 })

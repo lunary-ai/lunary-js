@@ -29,8 +29,7 @@ function useChatMonitor() {
     restart, // Deprecated TODO: remove
     restartThread: restart,
     resumeThread,
-    trackUserMessage: thread?.trackUserMessage,
-    trackBotMessage: thread?.trackBotMessage,
+    trackMessage: thread?.trackMessage,
     trackFeedback: monitor.trackFeedback,
     identify: monitor.identify,
   }
@@ -45,8 +44,8 @@ const useMonitorVercelAI = (props) => {
 
   const {
     trackFeedback,
-    trackUserMessage,
-    trackBotMessage,
+
+    trackMessage,
     resumeThread,
     restartThread,
     identify,
@@ -60,14 +59,24 @@ const useMonitorVercelAI = (props) => {
       const newMessage = messages[messages.length - 1]
 
       if (newMessage.role === "user") {
-        trackUserMessage(newMessage.content, undefined, newMessage.id)
+        // trackUserMessage(newMessage.content, undefined, newMessage.id)
+
+        trackMessage({
+          role: "user",
+          id: newMessage.id,
+          content: newMessage.content,
+        })
       } else if (
         newMessage.role === "assistant" &&
         // Make sure it's not streaming
         !isLoading
       ) {
         const userMessage = messages[messages.length - 2]
-        trackBotMessage(userMessage.id, newMessage.content)
+        trackMessage({
+          role: "assistant",
+          id: userMessage.id,
+          content: newMessage.content,
+        })
       }
     }
   }, [isLoading, messages])
@@ -75,6 +84,7 @@ const useMonitorVercelAI = (props) => {
   return {
     ...props,
     trackFeedback,
+    trackMessage,
     resumeThread,
     restartThread,
     identify,

@@ -1,7 +1,7 @@
 import { WrappableFn, WrapParams, WrappedFn } from './types.js';
-import { L as LLMonitor } from './llmonitor-90ca24a9.js';
+import { L as Lunary } from './lunary-QV5bwrsq.js';
 
-declare class BackendMonitor extends LLMonitor {
+declare class BackendMonitor extends Lunary {
     private wrap;
     private executeWrappedFunction;
     /**
@@ -23,6 +23,6 @@ declare class BackendMonitor extends LLMonitor {
      */
     wrapModel<T extends WrappableFn>(func: T, params?: WrapParams<T>): WrappedFn<T>;
 }
-declare const llmonitor: BackendMonitor;
+declare const lunary: BackendMonitor;
 
-export { llmonitor as default };
+export { lunary as default };

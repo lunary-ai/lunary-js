@@ -1,9 +1,9 @@
 import {
   browser_default
-} from "./chunk-5IUFDKZY.js";
+} from "./chunk-T2GTTJC6.js";
 import {
   __name
-} from "./chunk-CDCVVLTO.js";
+} from "./chunk-2VJOZGX4.js";
 
 // src/react.ts
 import { useEffect, useRef, useState } from "react";
@@ -27,8 +27,7 @@ function useChatMonitor() {
     // Deprecated TODO: remove
     restartThread: restart,
     resumeThread,
-    trackUserMessage: thread?.trackUserMessage,
-    trackBotMessage: thread?.trackBotMessage,
+    trackMessage: thread?.trackMessage,
     trackFeedback: browser_default.trackFeedback,
     identify: browser_default.identify
   };
@@ -38,8 +37,7 @@ var useMonitorVercelAI = /* @__PURE__ */ __name((props) => {
   const { messages, isLoading } = props;
   const {
     trackFeedback,
-    trackUserMessage,
-    trackBotMessage,
+    trackMessage,
     resumeThread,
     restartThread,
     identify,
@@ -50,17 +48,26 @@ var useMonitorVercelAI = /* @__PURE__ */ __name((props) => {
     if (previousMessages.current.length < messages.length) {
       const newMessage = messages[messages.length - 1];
       if (newMessage.role === "user") {
-        trackUserMessage(newMessage.content, void 0, newMessage.id);
+        trackMessage({
+          role: "user",
+          id: newMessage.id,
+          content: newMessage.content
+        });
       } else if (newMessage.role === "assistant" && // Make sure it's not streaming
       !isLoading) {
         const userMessage = messages[messages.length - 2];
-        trackBotMessage(userMessage.id, newMessage.content);
+        trackMessage({
+          role: "assistant",
+          id: userMessage.id,
+          content: newMessage.content
+        });
       }
     }
   }, [isLoading, messages]);
   return {
     ...props,
     trackFeedback,
+    trackMessage,
     resumeThread,
     restartThread,
     identify

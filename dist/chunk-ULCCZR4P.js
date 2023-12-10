@@ -2,8 +2,8 @@ import {
   __name,
   cleanError,
   getFunctionInput,
-  llmonitor_default
-} from "./chunk-CDCVVLTO.js";
+  lunary_default
+} from "./chunk-2VJOZGX4.js";
 
 // src/context.ts
 import { createContext } from "unctx";
@@ -46,12 +46,12 @@ var chainable_default = {
 };
 
 // src/index.ts
-var BackendMonitor = class extends llmonitor_default {
+var BackendMonitor = class extends lunary_default {
   static {
     __name(this, "BackendMonitor");
   }
   wrap(type, func, params) {
-    const llmonitor2 = this;
+    const lunary2 = this;
     const wrappedFn = /* @__PURE__ */ __name((...args) => {
       const callInfo = {
         type,
@@ -64,16 +64,16 @@ var BackendMonitor = class extends llmonitor_default {
           if (prop === "identify") {
             return chainable_default.identify.bind({
               target,
-              next: llmonitor2.executeWrappedFunction.bind(llmonitor2)
+              next: lunary2.executeWrappedFunction.bind(lunary2)
             });
           }
           if (prop === "setParent") {
             return chainable_default.setParent.bind({
               target,
-              next: llmonitor2.executeWrappedFunction.bind(llmonitor2)
+              next: lunary2.executeWrappedFunction.bind(lunary2)
             });
           }
-          const promise = llmonitor2.executeWrappedFunction(target);
+          const promise = lunary2.executeWrappedFunction(target);
           if (prop === "then") {
             return (onFulfilled, onRejected) => promise.then(onFulfilled, onRejected);
           }
@@ -181,8 +181,8 @@ var BackendMonitor = class extends llmonitor_default {
     return this.wrap("llm", func, params);
   }
 };
-var llmonitor = new BackendMonitor(context_default);
-var src_default = llmonitor;
+var lunary = new BackendMonitor(context_default);
+var src_default = lunary;
 
 export {
   src_default

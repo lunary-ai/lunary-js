@@ -35,6 +35,11 @@ const thread = await openai.beta.threads.create({
   ],
 })
 
+const message = await openai.beta.threads.messages.create(thread.id, {
+  role: "user",
+  content: "What is 2 + 2?",
+})
+
 console.log(thread)
 
 const run = await openai.beta.threads.runs.create(thread.id, {

@@ -1,7 +1,7 @@
 {
-  "name": "llmonitor",
+  "name": "lunary",
   "version": "0.6.1",
-  "description": "llmonitor is an open-source monitoring and analytics platform for AI apps.",
+  "description": "Lunary is an open-source monitoring and analytics platform for AI apps.",
   "type": "module",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -50,7 +50,7 @@
   "scripts": {
     "build": "tsup"
   },
-  "author": "llmonitor",
+  "author": "lunary",
   "license": "Apache-2.0",
   "dependencies": {
     "unctx": "^2.3.1"
@@ -58,6 +58,7 @@
   "devDependencies": {
     "@types/node": "^20.5.1",
     "@types/react": "^18.2.21",
+    "bun-types": "^1.0.15",
     "dotenv": "^16.3.1",
     "langchain": "^0.0.167",
     "openai": "^4.20.1",

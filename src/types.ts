@@ -8,7 +8,7 @@ export type cJSON =
   | { [x: string]: cJSON }
   | Array<cJSON>
 
-export interface LLMonitorOptions {
+export interface LunaryOptions {
   appId?: string
   apiUrl?: string
   verbose?: boolean
@@ -25,7 +25,14 @@ export type RunType =
   | "thread"
   | "chat"
 
-export type EventName = "start" | "end" | "error" | "info" | "warn" | "feedback"
+export type EventName =
+  | "start"
+  | "end"
+  | "error"
+  | "info"
+  | "warn"
+  | "feedback"
+  | "chat"
 
 export interface Event {
   type: RunType
@@ -61,10 +68,10 @@ export interface LogEvent extends Event {
   message: string
 }
 
-// Inspired from OpenAi's format, less heavy than Langchain's type
 export interface ChatMessage {
   role: "user" | "assistant" | "system" | "function" | "tool"
-  text: string
+
+  content?: string
   [key: string]: cJSON
 }
 

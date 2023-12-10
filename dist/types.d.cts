@@ -1,13 +1,13 @@
 type cJSON = string | number | boolean | null | undefined | {
     [x: string]: cJSON;
 } | Array<cJSON>;
-interface LLMonitorOptions {
+interface LunaryOptions {
     appId?: string;
     apiUrl?: string;
     verbose?: boolean;
 }
 type RunType = "log" | "tool" | "agent" | "llm" | "chain" | "retriever" | "embed" | "thread" | "chat";
-type EventName = "start" | "end" | "error" | "info" | "warn" | "feedback";
+type EventName = "start" | "end" | "error" | "info" | "warn" | "feedback" | "chat";
 interface Event {
     type: RunType;
     event: EventName;
@@ -40,7 +40,7 @@ interface LogEvent extends Event {
 }
 interface ChatMessage {
     role: "user" | "assistant" | "system" | "function" | "tool";
-    text: string;
+    content?: string;
     [key: string]: cJSON;
 }
 type WrapExtras = {
@@ -72,4 +72,4 @@ type WrappedReturn<T extends WrappableFn> = ReturnType<T> & {
 };
 type WrappedFn<T extends WrappableFn> = (...args: Parameters<T>) => WrappedReturn<T>;
 
-export { ChatMessage, Event, EventName, Identify, LLMonitorOptions, LogEvent, RunEvent, RunType, SetParent, TokenUsage, WrapExtras, WrapParams, WrappableFn, WrappedFn, WrappedReturn, cJSON };
+export type { ChatMessage, Event, EventName, Identify, LogEvent, LunaryOptions, RunEvent, RunType, SetParent, TokenUsage, WrapExtras, WrapParams, WrappableFn, WrappedFn, WrappedReturn, cJSON };

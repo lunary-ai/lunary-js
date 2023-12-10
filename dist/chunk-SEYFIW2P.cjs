@@ -3,7 +3,7 @@
 
 
 
-var _chunk4PVQGIXXcjs = require('./chunk-4PVQGIXX.cjs');
+var _chunkFUE6MNK6cjs = require('./chunk-FUE6MNK6.cjs');
 
 // src/context.ts
 var _unctx = require('unctx');
@@ -32,27 +32,27 @@ async function identify(userId, userProps) {
     return next(target);
   });
 }
-_chunk4PVQGIXXcjs.__name.call(void 0, identify, "identify");
+_chunkFUE6MNK6cjs.__name.call(void 0, identify, "identify");
 async function setParent(runId2) {
   const { target, next } = this;
   return context_default.runId.callAsync(runId2, async () => {
     return next(target);
   });
 }
-_chunk4PVQGIXXcjs.__name.call(void 0, setParent, "setParent");
+_chunkFUE6MNK6cjs.__name.call(void 0, setParent, "setParent");
 var chainable_default = {
   identify,
   setParent
 };
 
 // src/index.ts
-var BackendMonitor = class extends _chunk4PVQGIXXcjs.llmonitor_default {
+var BackendMonitor = class extends _chunkFUE6MNK6cjs.lunary_default {
   static {
-    _chunk4PVQGIXXcjs.__name.call(void 0, this, "BackendMonitor");
+    _chunkFUE6MNK6cjs.__name.call(void 0, this, "BackendMonitor");
   }
   wrap(type, func, params) {
-    const llmonitor2 = this;
-    const wrappedFn = /* @__PURE__ */ _chunk4PVQGIXXcjs.__name.call(void 0, (...args) => {
+    const lunary2 = this;
+    const wrappedFn = /* @__PURE__ */ _chunkFUE6MNK6cjs.__name.call(void 0, (...args) => {
       const callInfo = {
         type,
         func,
@@ -64,16 +64,16 @@ var BackendMonitor = class extends _chunk4PVQGIXXcjs.llmonitor_default {
           if (prop === "identify") {
             return chainable_default.identify.bind({
               target,
-              next: llmonitor2.executeWrappedFunction.bind(llmonitor2)
+              next: lunary2.executeWrappedFunction.bind(lunary2)
             });
           }
           if (prop === "setParent") {
             return chainable_default.setParent.bind({
               target,
-              next: llmonitor2.executeWrappedFunction.bind(llmonitor2)
+              next: lunary2.executeWrappedFunction.bind(lunary2)
             });
           }
-          const promise = llmonitor2.executeWrappedFunction(target);
+          const promise = lunary2.executeWrappedFunction(target);
           if (prop === "then") {
             return (onFulfilled, onRejected) => promise.then(onFulfilled, onRejected);
           }
@@ -109,7 +109,7 @@ var BackendMonitor = class extends _chunk4PVQGIXXcjs.llmonitor_default {
     const tagsData = _optionalChain([params, 'optionalAccess', _4 => _4.tagsParser]) ? params.tagsParser(...args) : tags;
     const userIdData = _optionalChain([params, 'optionalAccess', _5 => _5.userIdParser]) ? params.userIdParser(...args) : userId;
     const userPropsData = _optionalChain([params, 'optionalAccess', _6 => _6.userPropsParser]) ? params.userPropsParser(...args) : userProps;
-    const input = inputParser ? inputParser(...args) : _chunk4PVQGIXXcjs.getFunctionInput.call(void 0, func, args);
+    const input = inputParser ? inputParser(...args) : _chunkFUE6MNK6cjs.getFunctionInput.call(void 0, func, args);
     this.trackEvent(type, "start", {
       runId: runId2,
       input,
@@ -120,7 +120,7 @@ var BackendMonitor = class extends _chunk4PVQGIXXcjs.llmonitor_default {
       userProps: userPropsData
     });
     const shouldWaitUntil = typeof enableWaitUntil === "function" ? enableWaitUntil(...args) : waitUntil;
-    const processOutput = /* @__PURE__ */ _chunk4PVQGIXXcjs.__name.call(void 0, async (output) => {
+    const processOutput = /* @__PURE__ */ _chunkFUE6MNK6cjs.__name.call(void 0, async (output) => {
       const tokensUsage = tokensUsageParser ? await tokensUsageParser(output) : void 0;
       this.trackEvent(type, "end", {
         runId: runId2,
@@ -150,7 +150,7 @@ var BackendMonitor = class extends _chunk4PVQGIXXcjs.llmonitor_default {
     } catch (error) {
       this.trackEvent(type, "error", {
         runId: runId2,
-        error: _chunk4PVQGIXXcjs.cleanError.call(void 0, error)
+        error: _chunkFUE6MNK6cjs.cleanError.call(void 0, error)
       });
       await this.processQueue();
       throw error;
@@ -181,8 +181,8 @@ var BackendMonitor = class extends _chunk4PVQGIXXcjs.llmonitor_default {
     return this.wrap("llm", func, params);
   }
 };
-var llmonitor = new BackendMonitor(context_default);
-var src_default = llmonitor;
+var lunary = new BackendMonitor(context_default);
+var src_default = lunary;
 
 
 

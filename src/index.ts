@@ -5,17 +5,17 @@ import { RunType, WrapParams, WrappableFn, WrappedFn } from "./types"
 import ctx from "./context"
 import chainable from "./chainable"
 
-import LLMonitor from "./llmonitor"
+import Lunary from "./lunary"
 
-// extend the LLMonitor class to add a new method
+// extend the Lunary class to add a new method
 
-class BackendMonitor extends LLMonitor {
+class BackendMonitor extends Lunary {
   private wrap<T extends WrappableFn>(
     type: RunType,
     func: T,
     params?: WrapParams<T>
   ): WrappedFn<T> {
-    const llmonitor = this
+    const lunary = this
 
     const wrappedFn = (...args: Parameters<T>) => {
       // Don't pass the function directly to proxy to avoid it being called directly
@@ -31,18 +31,18 @@ class BackendMonitor extends LLMonitor {
           if (prop === "identify") {
             return chainable.identify.bind({
               target,
-              next: llmonitor.executeWrappedFunction.bind(llmonitor),
+              next: lunary.executeWrappedFunction.bind(lunary),
             })
           }
 
           if (prop === "setParent") {
             return chainable.setParent.bind({
               target,
-              next: llmonitor.executeWrappedFunction.bind(llmonitor),
+              next: lunary.executeWrappedFunction.bind(lunary),
             })
           }
 
-          const promise = llmonitor.executeWrappedFunction(target)
+          const promise = lunary.executeWrappedFunction(target)
 
           if (prop === "then") {
             return (onFulfilled, onRejected) =>
@@ -208,6 +208,6 @@ class BackendMonitor extends LLMonitor {
 }
 
 // Create a new instance of the monitor with the async context
-const llmonitor = new BackendMonitor(ctx)
+const lunary = new BackendMonitor(ctx)
 
-export default llmonitor
+export default lunary

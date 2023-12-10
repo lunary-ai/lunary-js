@@ -2,11 +2,11 @@
  * This is the entry point for the browser
  */
 
-import LLMonitor from "./llmonitor"
+import Lunary from "./lunary"
 
 import { EventName, RunEvent, RunType, cJSON } from "./types"
 
-class FrontendLLMonitor extends LLMonitor {
+class FrontendLunary extends Lunary {
   private userId?: string
   private userProps?: cJSON
 
@@ -35,6 +35,6 @@ class FrontendLLMonitor extends LLMonitor {
   }
 }
 
-const llmonitor = new FrontendLLMonitor()
+const lunary = new FrontendLunary()
 
-export default llmonitor
+export default lunary

@@ -2,14 +2,15 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
+    "types": ["bun-types"],
     "moduleResolution": "bundler",
     "esModuleInterop": true,
     "declaration": true,
     "outDir": "./dist",
+    "skipLibCheck": true,
     "strict": false, // TODO: strict: true
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true
   },
-
   "include": ["./src/*"]
 }

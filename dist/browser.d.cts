@@ -1,7 +1,7 @@
-import { L as LLMonitor } from './llmonitor-c9762f9d.js';
+import { L as Lunary } from './lunary-aPgEcga6.js';
 import { cJSON, RunType, EventName, RunEvent } from './types.cjs';
 
-declare class FrontendLLMonitor extends LLMonitor {
+declare class FrontendLunary extends Lunary {
     private userId?;
     private userProps?;
     /**
@@ -18,6 +18,6 @@ declare class FrontendLLMonitor extends LLMonitor {
      */
     trackEvent(type: RunType, event: EventName, data: Partial<RunEvent>): void;
 }
-declare const llmonitor: FrontendLLMonitor;
+declare const lunary: FrontendLunary;
 
-export = llmonitor;
+export = lunary;

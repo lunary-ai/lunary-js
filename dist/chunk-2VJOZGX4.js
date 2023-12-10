@@ -84,6 +84,49 @@ var Thread = class {
   /*
    * Track a new message from the user
    *
+   * @param {Message} message - The message to track
+   * @returns {string} - The message ID, to reconcile with feedback and backend LLM calls
+   * */
+  trackMessage = (message) => {
+    const runId = message.id ?? crypto.randomUUID();
+    this.monitor.trackEvent("thread", "chat", {
+      runId,
+      parentRunId: this.id,
+      message
+    });
+    return runId;
+  };
+  // trackMessage = (message: Message, isRetry = false) => {
+  // const runId = message.id ?? crypto.randomUUID()
+  // TODO: do this server-side
+  // if (!this.started) {
+  //   this.monitor.trackEvent("thread", "start", {
+  //     runId: this.id,
+  //     input: message.content,
+  //   })
+  //   this.started = true
+  // }
+  // const closeRun = message.role === "assistant"
+  // const event = closeRun ? "end" : "start"
+  // const data = {
+  //   runId,
+  //   input: {
+  //     role: message.role,
+  //     text: message.text,
+  //     extra: message.extra,
+  //   },
+  //   parentRunId: this.id,
+  //   feedback: message.feedback,
+  // }
+  // this.monitor.trackEvent("chat", event, data)
+  // this.lastMessage = closeRun ? null : message
+  // return runId
+  // }
+  /*
+   * Track a new message from the user
+   *
+   * @deprecated Use trackMessage instead
+   *
    * @param {string} text - The user message
    * @param {cJSON} props - Extra properties to send with the message
    * @param {string} customId - Set a custom ID for the message
@@ -96,25 +139,20 @@ var Thread = class {
         runId: this.id,
         input: text
       });
-      this.monitor.trackEvent("chat", "start", {
-        runId,
-        input: text,
-        parentRunId: this.id,
-        extra: props
-      });
       this.started = true;
-    } else {
-      this.monitor.trackEvent("chat", "start", {
-        runId,
-        input: text,
-        parentRunId: this.id,
-        extra: props
-      });
     }
+    this.monitor.trackEvent("chat", "start", {
+      runId,
+      input: text,
+      parentRunId: this.id,
+      extra: props
+    });
     return runId;
   };
   /*
    * Track a new message from the bot
+   *
+   * @deprecated Use trackMessage instead
    *
    * @param {string} replyToId - The message ID to reply to
    * @param {string} text - The bot message
@@ -129,11 +167,11 @@ var Thread = class {
   };
 };
 
-// src/llmonitor.ts
+// src/lunary.ts
 var MAX_CHUNK_SIZE = 20;
-var LLMonitor = class {
+var Lunary = class {
   static {
-    __name(this, "LLMonitor");
+    __name(this, "Lunary");
   }
   appId;
   verbose;
@@ -142,13 +180,13 @@ var LLMonitor = class {
   queue = [];
   queueRunning = false;
   /**
-   * @param {LLMonitorOptions} options
+   * @param {LunaryOptions} options
    */
   constructor(ctx) {
     this.init({
-      appId: checkEnv("LLMONITOR_APP_ID"),
-      verbose: false,
-      apiUrl: checkEnv("LLMONITOR_API_URL") || "https://app.llmonitor.com"
+      appId: checkEnv("LUNARY_APP_ID") || checkEnv("LLMONITOR_APP_ID"),
+      apiUrl: checkEnv("LUNARY_API_URL") || checkEnv("LLMONITOR_API_URL") || "https://app.lunary.ai",
+      verbose: false
     });
     this.ctx = ctx;
   }
@@ -171,7 +209,7 @@ var LLMonitor = class {
   trackEvent(type, event, data) {
     if (!this.appId)
       return console.warn(
-        "LLMonitor: App ID not set. Not reporting anything. Get one on the dashboard: https://app.llmonitor.com"
+        "Lunary: App ID not set. Not reporting anything. Get one on the dashboard: https://app.lunary.ai"
       );
     let timestamp = Date.now();
     const lastEvent = this.queue?.[this.queue.length - 1];
@@ -184,11 +222,11 @@ var LLMonitor = class {
     let userProps = data.userProps ?? user?.userProps;
     if (userProps && !userId) {
       console.warn(
-        "LLMonitor: userProps passed without userId. Ignoring userProps."
+        "Lunary: userProps passed without userId. Ignoring userProps."
       );
       userProps = void 0;
     }
-    const runtime = data.runtime ?? "llmonitor-js";
+    const runtime = data.runtime ?? "lunary-js";
     const eventData = {
       event,
       type,
@@ -218,7 +256,7 @@ var LLMonitor = class {
     this.queueRunning = true;
     try {
       if (this.verbose)
-        console.log("LLMonitor: Sending events now");
+        console.log("Lunary: Sending events now");
       const copy = this.queue.slice();
       await fetch(`${this.apiUrl}/api/report`, {
         method: "POST",
@@ -228,24 +266,22 @@ var LLMonitor = class {
         body: JSON.stringify({ events: copy })
       });
       if (this.verbose)
-        console.log("LLMonitor: Events sent");
+        console.log("Lunary: Events sent");
       this.queue = this.queue.slice(copy.length);
       this.queueRunning = false;
       if (this.queue.length)
         this.processQueue();
     } catch (error) {
       this.queueRunning = false;
-      console.error("Error sending event(s) to LLMonitor", error);
+      console.error("Error sending event(s) to Lunary", error);
     }
   }
   trackFeedback = (runId, feedback) => {
     if (!runId || typeof runId !== "string")
-      return console.error(
-        "LLMonitor: No message ID provided to track feedback"
-      );
+      return console.error("Lunary: No message ID provided to track feedback");
     if (typeof feedback !== "object")
       return console.error(
-        "LLMonitor: Invalid feedback provided. Pass a valid object"
+        "Lunary: Invalid feedback provided. Pass a valid object"
       );
     this.trackEvent(null, "feedback", {
       runId,
@@ -263,6 +299,9 @@ var LLMonitor = class {
   }
   resumeThread(id) {
     return new Thread(this, id, true);
+  }
+  openThread(id) {
+    return new Thread(this, id);
   }
   /**
    * Use this to log any external action or tool you use.
@@ -322,12 +361,12 @@ var LLMonitor = class {
     await this.processQueue();
   }
 };
-var llmonitor_default = LLMonitor;
+var lunary_default = Lunary;
 
 export {
   __name,
   cleanError,
   cleanExtra,
   getFunctionInput,
-  llmonitor_default
+  lunary_default
 };

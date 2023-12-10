@@ -1,10 +1,10 @@
 import {
   src_default
-} from "./chunk-6URYTMWA.js";
+} from "./chunk-ULCCZR4P.js";
 import {
   __name,
   cleanExtra
-} from "./chunk-CDCVVLTO.js";
+} from "./chunk-2VJOZGX4.js";
 
 // src/openai.ts
 var parseOpenaiMessage = /* @__PURE__ */ __name((message) => {
@@ -13,7 +13,7 @@ var parseOpenaiMessage = /* @__PURE__ */ __name((message) => {
   const { role, content, name, function_call, tool_calls, tool_call_id } = message;
   return {
     role,
-    text: content,
+    content,
     function_call,
     tool_calls,
     tool_call_id,
@@ -84,7 +84,7 @@ function openAIv3(openai, params = {}) {
       };
       return cleanExtra(rawExtra);
     },
-    outputParser: ({ data }) => parseOpenaiMessage(data.choices[0].text || ""),
+    outputParser: ({ data }) => parseOpenaiMessage(data.choices[0]),
     tokensUsageParser: async ({ data }) => ({
       completion: data.usage?.completion_tokens,
       prompt: data.usage?.prompt_tokens

@@ -24,8 +24,8 @@ const parseOpenaiMessage = (message) => {
     message
 
   return {
-    role: role,
-    text: content,
+    role,
+    content,
     function_call,
     tool_calls,
     tool_call_id,
@@ -139,10 +139,10 @@ export function openAIv3<T extends any>(
         presencePenalty: request.presence_penalty,
         stop: request.stop,
         functionCall: request.function_call,
-    }
+      }
       return cleanExtra(rawExtra)
     },
-    outputParser: ({ data }) => parseOpenaiMessage(data.choices[0].text || ""),
+    outputParser: ({ data }) => parseOpenaiMessage(data.choices[0]),
     tokensUsageParser: async ({ data }) => ({
       completion: data.usage?.completion_tokens,
       prompt: data.usage?.prompt_tokens,
