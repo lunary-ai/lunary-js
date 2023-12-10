@@ -35,9 +35,9 @@ export class Thread {
     }
   ) {
     this.monitor = monitor
-    this.id = options.id || crypto.randomUUID()
-    this.started = options.started || false
-    if (options.tags) this.tags = options.tags
+    this.id = options?.id || crypto.randomUUID()
+    this.started = options?.started || false
+    if (options?.tags) this.tags = options?.tags
   }
 
   /*
