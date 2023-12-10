@@ -1,5 +1,5 @@
 import Lunary from "./lunary"
-import { RunEvent, cJSON } from "./types"
+import { cJSON } from "./types"
 
 /*
  * Flow:
@@ -9,28 +9,12 @@ import { RunEvent, cJSON } from "./types"
  * - message.feedback(string)
  */
 
-// Annex 1: Logic for reconciliation
-
-// if previousRun and not retry_of
-//     if this is bot message, then append to previous output's array
-
-//     if this is user message:
-//         if previous run output has bot then create new run and add to input array
-//         if previous run is user and this is user, then append to previous input array
-
-// else if retry_of
-//     change ID of existingRun, set retry_of to previousRun, clear output, and:
-//        if bot message: set output with message
-//        if user message: replace input with message
-
-// else
-//     create new run with either input or output depending on role
-
 type Message = {
   id?: string
   role: "user" | "assistant" | "tool" | "system"
   content?: string | null
   isRetry?: boolean
+  tags?: string[]
   extra?: cJSON
   feedback?: cJSON
 }
@@ -40,11 +24,20 @@ export class Thread {
 
   private monitor: Lunary
   private started: boolean
+  private tags: string[]
 
-  constructor(monitor: Lunary, id?: string, started?: boolean) {
+  constructor(
+    monitor: Lunary,
+    options: {
+      id?: string
+      started?: boolean
+      tags?: string[]
+    }
+  ) {
     this.monitor = monitor
-    this.id = id || crypto.randomUUID()
-    this.started = started || false
+    this.id = options.id || crypto.randomUUID()
+    this.started = options.started || false
+    if (options.tags) this.tags = options.tags
   }
 
   /*
@@ -57,49 +50,18 @@ export class Thread {
   trackMessage = (message: Message) => {
     const runId = message.id ?? crypto.randomUUID()
 
+    // thread.chat is a special event
+    // the backend will reconcile the messages
     this.monitor.trackEvent("thread", "chat", {
       runId,
       parentRunId: this.id,
+      threadTags: this.tags,
+      feedback: message.feedback,
       message,
     })
 
     return runId
   }
-
-  // trackMessage = (message: Message, isRetry = false) => {
-  // const runId = message.id ?? crypto.randomUUID()
-
-  // TODO: do this server-side
-  // if (!this.started) {
-  //   this.monitor.trackEvent("thread", "start", {
-  //     runId: this.id,
-  //     input: message.content,
-  //   })
-
-  //   this.started = true
-  // }
-
-  // const closeRun = message.role === "assistant"
-
-  // const event = closeRun ? "end" : "start"
-
-  // const data = {
-  //   runId,
-  //   input: {
-  //     role: message.role,
-  //     text: message.text,
-  //     extra: message.extra,
-  //   },
-  //   parentRunId: this.id,
-  //   feedback: message.feedback,
-  // }
-
-  // this.monitor.trackEvent("chat", event, data)
-
-  // this.lastMessage = closeRun ? null : message
-
-  // return runId
-  // }
 
   /*
    * Track a new message from the user

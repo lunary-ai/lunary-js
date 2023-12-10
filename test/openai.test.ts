@@ -8,11 +8,11 @@ import {
   spyOn,
 } from "bun:test"
 
-import monitor from "../src/index"
+import lunary from "../src/index"
 import { monitorOpenAI } from "../src/openai"
 import OpenAI from "openai"
 
-monitor.init({
+lunary.init({
   verbose: true,
 })
 
@@ -21,11 +21,12 @@ const expectLogsContains = (spy, str: string) => {
 }
 
 describe("openai", () => {
-  // let stdoutBuffer: WritableStreamBuffer
   let spy
 
   beforeEach(() => {
-    spy = spyOn(console, "log").mockImplementation()
+    spy = spyOn(console, "log").mockImplementation((d) => {
+      process.stdout.write(d + "\n")
+    })
   })
 
   afterEach(() => {
@@ -92,10 +93,12 @@ describe("openai", () => {
 
     expectLogsContains(
       spy,
-      `\"text\": \"Hello, translate 'Bonjour' from french to english\"`
+      `\"content\": \"Hello, translate 'Bonjour' from french to english\"`
     )
 
     // Make sure it reports the tool calls
     expectLogsContains(spy, `\"arguments\": \"{`)
+
+    expectLogsContains(spy, `Events sent`)
   })
 })

@@ -5,6 +5,7 @@ type Message = {
     role: "user" | "assistant" | "tool" | "system";
     content?: string | null;
     isRetry?: boolean;
+    tags?: string[];
     extra?: cJSON;
     feedback?: cJSON;
 };
@@ -12,7 +13,12 @@ declare class Thread {
     id: string;
     private monitor;
     private started;
-    constructor(monitor: Lunary, id?: string, started?: boolean);
+    private tags;
+    constructor(monitor: Lunary, options: {
+        id?: string;
+        started?: boolean;
+        tags?: string[];
+    });
     trackMessage: (message: Message) => string;
     trackUserMessage: (text: string, props?: cJSON, customId?: string) => string;
     trackBotMessage: (replyToId: string, text: string, props?: cJSON) => void;
@@ -43,12 +49,21 @@ declare class Lunary {
     processQueue(): Promise<void>;
     trackFeedback: (runId: string, feedback: cJSON) => void;
     /**
-     * @deprecated Use startThread() instead
+     * @deprecated Use openThread() instead
      */
     startChat(id?: string): Thread;
+    /**
+     * @deprecated Use startThread() instead
+     */
     startThread(id?: string): Thread;
+    /**
+     * @deprecated Use resumeThread() instead
+     */
     resumeThread(id: string): Thread;
-    openThread(id?: string): Thread;
+    openThread(params?: string | {
+        id?: string;
+        tags?: string[];
+    }): Thread;
     /**
      * Use this to log any external action or tool you use.
      * @param {string} message - Log message

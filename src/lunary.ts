@@ -162,22 +162,31 @@ class Lunary {
   }
 
   /**
-   * @deprecated Use startThread() instead
+   * @deprecated Use openThread() instead
    */
   startChat(id?: string) {
-    return new Thread(this, id)
+    return new Thread(this, { id })
   }
 
+  /**
+   * @deprecated Use startThread() instead
+   */
   startThread(id?: string) {
-    return new Thread(this, id)
+    return new Thread(this, { id })
   }
 
+  /**
+   * @deprecated Use resumeThread() instead
+   */
   resumeThread(id: string) {
-    return new Thread(this, id, true)
+    return new Thread(this, { id, started: true })
   }
 
-  openThread(id?: string) {
-    return new Thread(this, id)
+  openThread(params?: string | { id?: string; tags?: string[] }) {
+    return new Thread(
+      this,
+      typeof params === "string" ? { id: params } : params
+    )
   }
 
   /**

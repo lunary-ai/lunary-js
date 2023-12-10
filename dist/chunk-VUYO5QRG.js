@@ -76,10 +76,13 @@ var Thread = class {
   id;
   monitor;
   started;
-  constructor(monitor, id, started) {
+  tags;
+  constructor(monitor, options) {
     this.monitor = monitor;
-    this.id = id || crypto.randomUUID();
-    this.started = started || false;
+    this.id = options.id || crypto.randomUUID();
+    this.started = options.started || false;
+    if (options.tags)
+      this.tags = options.tags;
   }
   /*
    * Track a new message from the user
@@ -92,36 +95,12 @@ var Thread = class {
     this.monitor.trackEvent("thread", "chat", {
       runId,
       parentRunId: this.id,
+      threadTags: this.tags,
+      feedback: message.feedback,
       message
     });
     return runId;
   };
-  // trackMessage = (message: Message, isRetry = false) => {
-  // const runId = message.id ?? crypto.randomUUID()
-  // TODO: do this server-side
-  // if (!this.started) {
-  //   this.monitor.trackEvent("thread", "start", {
-  //     runId: this.id,
-  //     input: message.content,
-  //   })
-  //   this.started = true
-  // }
-  // const closeRun = message.role === "assistant"
-  // const event = closeRun ? "end" : "start"
-  // const data = {
-  //   runId,
-  //   input: {
-  //     role: message.role,
-  //     text: message.text,
-  //     extra: message.extra,
-  //   },
-  //   parentRunId: this.id,
-  //   feedback: message.feedback,
-  // }
-  // this.monitor.trackEvent("chat", event, data)
-  // this.lastMessage = closeRun ? null : message
-  // return runId
-  // }
   /*
    * Track a new message from the user
    *
@@ -289,19 +268,28 @@ var Lunary = class {
     });
   };
   /**
-   * @deprecated Use startThread() instead
+   * @deprecated Use openThread() instead
    */
   startChat(id) {
-    return new Thread(this, id);
+    return new Thread(this, { id });
   }
+  /**
+   * @deprecated Use startThread() instead
+   */
   startThread(id) {
-    return new Thread(this, id);
+    return new Thread(this, { id });
   }
+  /**
+   * @deprecated Use resumeThread() instead
+   */
   resumeThread(id) {
-    return new Thread(this, id, true);
+    return new Thread(this, { id, started: true });
   }
-  openThread(id) {
-    return new Thread(this, id);
+  openThread(params) {
+    return new Thread(
+      this,
+      typeof params === "string" ? { id: params } : params
+    );
   }
   /**
    * Use this to log any external action or tool you use.
