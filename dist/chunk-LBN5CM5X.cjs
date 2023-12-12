@@ -1,12 +1,12 @@
-var __defProp = Object.defineProperty;
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; } var _class; var _class2;var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
 // src/utils.ts
 var checkEnv = /* @__PURE__ */ __name((variable) => {
-  if (typeof process !== "undefined" && process.env?.[variable]) {
+  if (typeof process !== "undefined" && _optionalChain([process, 'access', _2 => _2.env, 'optionalAccess', _3 => _3[variable]])) {
     return process.env[variable];
   }
-  if (typeof Deno !== "undefined" && Deno.env?.get(variable)) {
+  if (typeof Deno !== "undefined" && _optionalChain([Deno, 'access', _4 => _4.env, 'optionalAccess', _5 => _5.get, 'call', _6 => _6(variable)])) {
     return Deno.env.get(variable);
   }
   return void 0;
@@ -69,20 +69,20 @@ var getFunctionInput = /* @__PURE__ */ __name((func, args) => {
 }, "getFunctionInput");
 
 // src/thread.ts
-var Thread = class {
+var Thread = (_class = class {
   static {
     __name(this, "Thread");
   }
-  id;
-  monitor;
-  started;
-  tags;
-  constructor(monitor, options) {
+  
+  
+  
+  
+  constructor(monitor, options) {;_class.prototype.__init.call(this);_class.prototype.__init2.call(this);_class.prototype.__init3.call(this);
     this.monitor = monitor;
-    this.id = options.id || crypto.randomUUID();
-    this.started = options.started || false;
-    if (options.tags)
-      this.tags = options.tags;
+    this.id = _optionalChain([options, 'optionalAccess', _7 => _7.id]) || crypto.randomUUID();
+    this.started = _optionalChain([options, 'optionalAccess', _8 => _8.started]) || false;
+    if (_optionalChain([options, 'optionalAccess', _9 => _9.tags]))
+      this.tags = _optionalChain([options, 'optionalAccess', _10 => _10.tags]);
   }
   /*
    * Track a new message from the user
@@ -90,8 +90,8 @@ var Thread = class {
    * @param {Message} message - The message to track
    * @returns {string} - The message ID, to reconcile with feedback and backend LLM calls
    * */
-  trackMessage = (message) => {
-    const runId = message.id ?? crypto.randomUUID();
+  __init() {this.trackMessage = (message) => {
+    const runId = _nullishCoalesce(message.id, () => ( crypto.randomUUID()));
     this.monitor.trackEvent("thread", "chat", {
       runId,
       parentRunId: this.id,
@@ -100,7 +100,7 @@ var Thread = class {
       message
     });
     return runId;
-  };
+  }}
   /*
    * Track a new message from the user
    *
@@ -111,8 +111,8 @@ var Thread = class {
    * @param {string} customId - Set a custom ID for the message
    * @returns {string} - The message ID, to reconcile with the bot's reply
    * */
-  trackUserMessage = (text, props, customId) => {
-    const runId = customId ?? crypto.randomUUID();
+  __init2() {this.trackUserMessage = (text, props, customId) => {
+    const runId = _nullishCoalesce(customId, () => ( crypto.randomUUID()));
     if (!this.started) {
       this.monitor.trackEvent("thread", "start", {
         runId: this.id,
@@ -127,7 +127,7 @@ var Thread = class {
       extra: props
     });
     return runId;
-  };
+  }}
   /*
    * Track a new message from the bot
    *
@@ -137,31 +137,31 @@ var Thread = class {
    * @param {string} text - The bot message
    * @param {cJSON} props - Extra properties to send with the message
    * */
-  trackBotMessage = (replyToId, text, props) => {
+  __init3() {this.trackBotMessage = (replyToId, text, props) => {
     this.monitor.trackEvent("chat", "end", {
       runId: replyToId,
       output: text,
       extra: props
     });
-  };
-};
+  }}
+}, _class);
 
 // src/lunary.ts
 var MAX_CHUNK_SIZE = 20;
-var Lunary = class {
+var Lunary = (_class2 = class {
   static {
     __name(this, "Lunary");
   }
-  appId;
-  verbose;
-  apiUrl;
-  ctx;
-  queue = [];
-  queueRunning = false;
+  
+  
+  
+  
+  __init4() {this.queue = []}
+  __init5() {this.queueRunning = false}
   /**
    * @param {LunaryOptions} options
    */
-  constructor(ctx) {
+  constructor(ctx) {;_class2.prototype.__init4.call(this);_class2.prototype.__init5.call(this);_class2.prototype.__init6.call(this);_class2.prototype.__init7.call(this);
     this.init({
       appId: checkEnv("LUNARY_APP_ID") || checkEnv("LLMONITOR_APP_ID"),
       apiUrl: checkEnv("LUNARY_API_URL") || checkEnv("LLMONITOR_API_URL") || "https://app.lunary.ai",
@@ -191,21 +191,21 @@ var Lunary = class {
         "Lunary: App ID not set. Not reporting anything. Get one on the dashboard: https://app.lunary.ai"
       );
     let timestamp = Date.now();
-    const lastEvent = this.queue?.[this.queue.length - 1];
-    if (lastEvent?.timestamp >= timestamp) {
+    const lastEvent = _optionalChain([this, 'access', _11 => _11.queue, 'optionalAccess', _12 => _12[this.queue.length - 1]]);
+    if (_optionalChain([lastEvent, 'optionalAccess', _13 => _13.timestamp]) >= timestamp) {
       timestamp = lastEvent.timestamp + 1;
     }
-    const parentRunId = data.parentRunId ?? this.ctx?.runId.tryUse();
-    const user = this.ctx?.user?.tryUse();
-    const userId = data.userId ?? user?.userId;
-    let userProps = data.userProps ?? user?.userProps;
+    const parentRunId = _nullishCoalesce(data.parentRunId, () => ( _optionalChain([this, 'access', _14 => _14.ctx, 'optionalAccess', _15 => _15.runId, 'access', _16 => _16.tryUse, 'call', _17 => _17()])));
+    const user = _optionalChain([this, 'access', _18 => _18.ctx, 'optionalAccess', _19 => _19.user, 'optionalAccess', _20 => _20.tryUse, 'call', _21 => _21()]);
+    const userId = _nullishCoalesce(data.userId, () => ( _optionalChain([user, 'optionalAccess', _22 => _22.userId])));
+    let userProps = _nullishCoalesce(data.userProps, () => ( _optionalChain([user, 'optionalAccess', _23 => _23.userProps])));
     if (userProps && !userId) {
       console.warn(
         "Lunary: userProps passed without userId. Ignoring userProps."
       );
       userProps = void 0;
     }
-    const runtime = data.runtime ?? "lunary-js";
+    const runtime = _nullishCoalesce(data.runtime, () => ( "lunary-js"));
     const eventData = {
       event,
       type,
@@ -228,7 +228,7 @@ var Lunary = class {
     }
   }
   // Wait 500ms to allow other events to be added to the queue
-  debouncedProcessQueue = debounce(() => this.processQueue());
+  __init6() {this.debouncedProcessQueue = debounce(() => this.processQueue())}
   async processQueue() {
     if (!this.queue.length || this.queueRunning)
       return;
@@ -255,7 +255,7 @@ var Lunary = class {
       console.error("Error sending event(s) to Lunary", error);
     }
   }
-  trackFeedback = (runId, feedback) => {
+  __init7() {this.trackFeedback = (runId, feedback) => {
     if (!runId || typeof runId !== "string")
       return console.error("Lunary: No message ID provided to track feedback");
     if (typeof feedback !== "object")
@@ -266,7 +266,7 @@ var Lunary = class {
       runId,
       extra: feedback
     });
-  };
+  }}
   /**
    * @deprecated Use openThread() instead
    */
@@ -335,7 +335,7 @@ var Lunary = class {
   error(message, error) {
     if (typeof message === "object") {
       error = message;
-      message = error.message ?? void 0;
+      message = _nullishCoalesce(error.message, () => ( void 0));
     }
     this.trackEvent("log", "error", {
       message,
@@ -348,13 +348,13 @@ var Lunary = class {
   async flush() {
     await this.processQueue();
   }
-};
+}, _class2);
 var lunary_default = Lunary;
 
-export {
-  __name,
-  cleanError,
-  cleanExtra,
-  getFunctionInput,
-  lunary_default
-};
+
+
+
+
+
+
+exports.__name = __name; exports.cleanError = cleanError; exports.cleanExtra = cleanExtra; exports.getFunctionInput = getFunctionInput; exports.lunary_default = lunary_default;

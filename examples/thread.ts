@@ -10,7 +10,9 @@ const openai = monitorOpenAI(new OpenAI())
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-const thread = monitor.openThread()
+const thread = monitor.openThread({
+  tags: ["test"],
+})
 
 const id = thread.trackMessage({
   role: "user",
@@ -42,10 +44,10 @@ thread.trackMessage({
   },
 })
 
-await sleep(500)
+// await sleep(500)
 
-thread.trackMessage({
-  role: "assistant",
-  isRetry: true,
-  content: res.choices[0].message.content + " (retry)",
-})
+// thread.trackMessage({
+//   role: "assistant",
+//   isRetry: true,
+//   content: res.choices[0].message.content + " (retry)",
+// })
