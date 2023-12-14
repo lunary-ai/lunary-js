@@ -8,14 +8,10 @@ lunary.init({
 
 const openai = monitorOpenAI(new OpenAI())
 
-// @ts-ignore
-const template = await lunary.renderTemplate({
-  question: "What is the meaning of life?",
+const template = await lunary.renderTemplate("alert-family", {
+  name: "John",
 })
 
-const res = await openai.chat.completions.create({
-  ...template,
-  tags: ["third"],
-})
+const res = await openai.chat.completions.create(template)
 
 console.log(res.choices[0].message.content)

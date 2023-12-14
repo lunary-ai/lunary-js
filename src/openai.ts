@@ -270,6 +270,12 @@ export function monitorOpenAI<T extends any>(
       delete request.userProps // delete key otherwise openai will throw error
       return props
     },
+    templateParser: (request) => {
+      const templateId = request.templateId
+      delete request.templateId // delete key otherwise openai will throw error
+      delete request.text // extra key might be returned by openai
+      return templateId
+    },
     enableWaitUntil: (request) => !!request.stream,
     waitUntil: (stream, onComplete, onError) => {
       // Fork the stream in two to be able to process it / multicast it

@@ -81,6 +81,7 @@ class BackendMonitor extends Lunary {
       inputParser,
       outputParser,
       tokensUsageParser,
+      templateParser,
       waitUntil,
       enableWaitUntil,
       extra,
@@ -91,13 +92,20 @@ class BackendMonitor extends Lunary {
 
     // Get extra data from function or params
     const extraData = params?.extraParser ? params.extraParser(...args) : extra
+
     const tagsData = params?.tagsParser ? params.tagsParser(...args) : tags
+
     const userIdData = params?.userIdParser
       ? params.userIdParser(...args)
       : userId
+
     const userPropsData = params?.userPropsParser
       ? params.userPropsParser(...args)
       : userProps
+
+    const templateId = params?.templateParser
+      ? params.templateParser(...args)
+      : templateParser
 
     const input = inputParser
       ? inputParser(...args)
@@ -111,6 +119,7 @@ class BackendMonitor extends Lunary {
       tags: tagsData,
       userId: userIdData,
       userProps: userPropsData,
+      templateId,
     })
 
     const shouldWaitUntil =

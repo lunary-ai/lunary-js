@@ -151,15 +151,23 @@ class Lunary {
     }
   }
 
-  getRawTemplate = async (templateSlug: string) => {
-    const cacheEntry = this.templateCache[templateSlug]
+  /**
+   * Get a raw template's data from the API.
+   * @param {string} slug - The slug of the template to get.
+   * @returns {Promise<RawTemplate>} The template data.
+   * @example
+   * const template = await lunary.getRawTemplate("welcome")
+   * console.log(template)
+   */
+  getRawTemplate = async (slug: string) => {
+    const cacheEntry = this.templateCache[slug]
     const now = Date.now()
 
     if (cacheEntry && now - cacheEntry.timestamp < 60000) {
       return cacheEntry.data
     } else {
       const response = await fetch(
-        `${this.apiUrl}/api/v1/templates/${templateSlug}`,
+        `${this.apiUrl}/api/v1/template?slug=${slug}&app_id=${this.appId}`,
         {
           method: "GET",
           headers: {
@@ -167,38 +175,47 @@ class Lunary {
           },
         }
       )
+      console.log(response)
       const data = await response.json()
-      this.templateCache[templateSlug] = { timestamp: now, data }
+      this.templateCache[slug] = { timestamp: now, data }
       return data
     }
   }
 
   /**
    * Render a template with the given data in the OpenAI completion format.
-   * @param {string} templateSlug - The slug of the template to render.
+   * @param {string} slug - The slug of the template to render.
    * @param {any} data - The data to pass to the template.
    * @returns {Promise<Template>} The rendered template.
    * @example
    * const template = await lunary.renderTemplate("welcome", { name: "John" })
    * console.log(template)
    */
-  renderTemplate = async (
-    templateSlug: string,
-    data?: any
-  ): Promise<Template> => {
-    const { slug, content, extra, mode } = await this.getRawTemplate(
-      templateSlug
-    )
+  renderTemplate = async (slug: string, data?: any): Promise<Template> => {
+    const {
+      id: templateId,
+      content,
+      extra,
+      mode,
+    } = await this.getRawTemplate(slug)
 
-    const rendered =
-      typeof content === "string"
-        ? Mustache.render(content, data)
-        : content.map((t) => Mustache.render(t, data))
+    console.log(content, extra, mode)
+
+    const textMode = typeof content === "string"
+
+    const rendered = textMode
+      ? Mustache.render(content, data)
+      : content.map((t) => ({
+          ...t,
+          content: Mustache.render(t.content, data),
+        }))
+
+    console.log({ rendered })
 
     return {
       ...extra,
-      [mode === "text" ? "text" : "messages"]: rendered,
-      template: slug,
+      [textMode ? "text" : "messages"]: rendered,
+      templateId,
     }
   }
 

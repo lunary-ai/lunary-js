@@ -45,6 +45,7 @@ export interface Event {
   extra?: cJSON
   tags?: string[]
   runtime?: string
+  templateId?: string
   error?: {
     message: string
     stack?: string
@@ -91,6 +92,7 @@ export type WrapParams<T extends WrappableFn> = {
   tagsParser?: (...args: Parameters<T>) => string[]
   userIdParser?: (...args: Parameters<T>) => string
   userPropsParser?: (...args: Parameters<T>) => cJSON
+  templateParser?: (...args: Parameters<T>) => string
   tokensUsageParser?: (result: Awaited<ReturnType<T>>) => Promise<TokenUsage>
   // Add the option to wait for a condition to be met before completing the run
   // Useful for streaming API
@@ -127,7 +129,7 @@ export type WrappedFn<T extends WrappableFn> = (
 // Templates
 
 export interface Template {
-  template: string
+  templateId: string
   text?: string
   messages?: ChatMessage[]
   model?: string
