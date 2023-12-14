@@ -2,6 +2,7 @@
 
 import {
   ChatMessage,
+  Template,
   WrapExtras,
   WrappedFn,
   WrappedReturn,
@@ -71,30 +72,30 @@ type WrappedOldOpenAi<T> = Omit<T, "createChatCompletion"> & {
 
 type CreateFunction<T, U> = (body: T, options?: OpenAI.RequestOptions) => U
 
-type WrapCreateFunction<T, U> = (
-  body: T,
-  options?: OpenAI.RequestOptions
-) => WrappedReturn<CreateFunction<T, U>>
-
 /* Just forwarding the types doesn't work, as it's an overloaded function (tried many solutions, couldn't get it to work) */
 type NewParams = {
-  tags?: string[] // add description to those that will show up in the IDE
-  userProps?: cJSON // add description to those that will show up in the IDE
+  tags?: string[]
+  userProps?: cJSON
 }
+
+type WrapCreateFunction<T, U> = (
+  body: (T & NewParams) | Template,
+  options?: OpenAI.RequestOptions
+) => WrappedReturn<CreateFunction<T, U>>
 
 type WrapCreate<T> = {
   chat: {
     completions: {
       create: WrapCreateFunction<
-        OpenAI.Chat.CompletionCreateParamsNonStreaming & NewParams,
+        OpenAI.Chat.ChatCompletionCreateParams,
         APIPromise<OpenAI.Chat.ChatCompletion>
       > &
         WrapCreateFunction<
-          OpenAI.Chat.CompletionCreateParamsStreaming & NewParams,
+          OpenAI.Chat.ChatCompletionCreateParamsStreaming,
           APIPromise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>>
         > &
         WrapCreateFunction<
-          OpenAI.Chat.CompletionCreateParams & NewParams,
+          OpenAI.Chat.ChatCompletionCreateParams,
           | APIPromise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>>
           | APIPromise<OpenAI.Chat.ChatCompletion>
         >

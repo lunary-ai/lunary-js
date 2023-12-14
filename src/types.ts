@@ -123,3 +123,20 @@ export type WrappedReturn<T extends WrappableFn> = ReturnType<T> & {
 export type WrappedFn<T extends WrappableFn> = (
   ...args: Parameters<T>
 ) => WrappedReturn<T>
+
+// Templates
+
+export interface Template {
+  template: string
+  text?: string
+  messages?: ChatMessage[]
+  model?: string
+  temperature?: number
+  top_p?: number
+  max_tokens?: number
+  presence_penalty?: number
+  frequency_penalty?: number
+  stop?: string[]
+  function?: any
+  n?: number
+}

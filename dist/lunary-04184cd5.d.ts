@@ -1,4 +1,4 @@
-import { cJSON, LunaryOptions, RunType, EventName, RunEvent, LogEvent } from './types.cjs';
+import { cJSON, LunaryOptions, RunType, EventName, RunEvent, LogEvent, Template } from './types.cjs';
 
 type Message = {
     id?: string;
@@ -31,6 +31,7 @@ declare class Lunary {
     ctx?: any;
     private queue;
     private queueRunning;
+    private templateCache;
     /**
      * @param {LunaryOptions} options
      */
@@ -47,6 +48,24 @@ declare class Lunary {
     trackEvent(type: RunType, event: EventName, data: Partial<RunEvent | LogEvent>): void;
     private debouncedProcessQueue;
     processQueue(): Promise<void>;
+    getRawTemplate: (templateSlug: string) => Promise<any>;
+    /**
+     * Render a template with the given data in the OpenAI completion format.
+     * @param {string} templateSlug - The slug of the template to render.
+     * @param {any} data - The data to pass to the template.
+     * @returns {Promise<Template>} The rendered template.
+     * @example
+     * const template = await lunary.renderTemplate("welcome", { name: "John" })
+     * console.log(template)
+     */
+    renderTemplate: (templateSlug: string, data?: any) => Promise<Template>;
+    /**
+     * Attach feedback to a run.
+     * @param {string} runId - The ID of the run.
+     * @param {cJSON} feedback - The feedback to attach.
+     * @example
+     * monitor.trackFeedback("some-run-id", { thumbs: "up" });
+     **/
     trackFeedback: (runId: string, feedback: cJSON) => void;
     /**
      * @deprecated Use openThread() instead

@@ -8,9 +8,12 @@ import {
   LogEvent,
   RunEvent,
   cJSON,
+  Template,
 } from "./types"
 
 import { Thread } from "./thread"
+
+import Mustache from "mustache"
 
 const MAX_CHUNK_SIZE = 20
 
@@ -22,6 +25,8 @@ class Lunary {
 
   private queue: any[] = []
   private queueRunning: boolean = false
+
+  private templateCache: Record<string, { timestamp: number; data: any }> = {}
 
   /**
    * @param {LunaryOptions} options
@@ -146,6 +151,64 @@ class Lunary {
     }
   }
 
+  getRawTemplate = async (templateSlug: string) => {
+    const cacheEntry = this.templateCache[templateSlug]
+    const now = Date.now()
+
+    if (cacheEntry && now - cacheEntry.timestamp < 60000) {
+      return cacheEntry.data
+    } else {
+      const response = await fetch(
+        `${this.apiUrl}/api/v1/templates/${templateSlug}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      const data = await response.json()
+      this.templateCache[templateSlug] = { timestamp: now, data }
+      return data
+    }
+  }
+
+  /**
+   * Render a template with the given data in the OpenAI completion format.
+   * @param {string} templateSlug - The slug of the template to render.
+   * @param {any} data - The data to pass to the template.
+   * @returns {Promise<Template>} The rendered template.
+   * @example
+   * const template = await lunary.renderTemplate("welcome", { name: "John" })
+   * console.log(template)
+   */
+  renderTemplate = async (
+    templateSlug: string,
+    data?: any
+  ): Promise<Template> => {
+    const { slug, content, extra, mode } = await this.getRawTemplate(
+      templateSlug
+    )
+
+    const rendered =
+      typeof content === "string"
+        ? Mustache.render(content, data)
+        : content.map((t) => Mustache.render(t, data))
+
+    return {
+      ...extra,
+      [mode === "text" ? "text" : "messages"]: rendered,
+      template: slug,
+    }
+  }
+
+  /**
+   * Attach feedback to a run.
+   * @param {string} runId - The ID of the run.
+   * @param {cJSON} feedback - The feedback to attach.
+   * @example
+   * monitor.trackFeedback("some-run-id", { thumbs: "up" });
+   **/
   trackFeedback = (runId: string, feedback: cJSON) => {
     if (!runId || typeof runId !== "string")
       return console.error("Lunary: No message ID provided to track feedback")
