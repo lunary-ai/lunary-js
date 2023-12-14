@@ -232,7 +232,7 @@ class Lunary {
   }
 
   /**
-   * @deprecated Use startThread() instead
+   * @deprecated Use openThread() instead
    */
   startThread(id?: string) {
     return new Thread(this, { id })

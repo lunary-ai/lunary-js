@@ -1,7 +1,7 @@
 import Lunary from "./lunary"
 import { cJSON } from "./types"
 
-/*
+/**
  * Flow:
  * - const thread = monitor.startThread()
  * - const message = thread.userMessage(string)
@@ -40,7 +40,7 @@ export class Thread {
     if (options?.tags) this.tags = options?.tags
   }
 
-  /*
+  /**
    * Track a new message from the user
    *
    * @param {Message} message - The message to track
@@ -63,7 +63,7 @@ export class Thread {
     return runId
   }
 
-  /*
+  /**
    * Track a new message from the user
    *
    * @deprecated Use trackMessage instead
@@ -97,7 +97,7 @@ export class Thread {
     return runId
   }
 
-  /*
+  /**
    * Track a new message from the bot
    *
    * @deprecated Use trackMessage instead
