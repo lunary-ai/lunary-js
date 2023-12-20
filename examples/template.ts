@@ -8,7 +8,7 @@ lunary.init({
 
 const openai = monitorOpenAI(new OpenAI())
 
-const template = await lunary.renderTemplate("alert-family", {
+const template = await lunary.renderTemplate("many-grass", {
   name: "John",
 })
 

@@ -19,6 +19,7 @@ interface Event {
     extra?: cJSON;
     tags?: string[];
     runtime?: string;
+    templateId?: string;
     error?: {
         message: string;
         stack?: string;
@@ -58,6 +59,7 @@ type WrapParams<T extends WrappableFn> = {
     tagsParser?: (...args: Parameters<T>) => string[];
     userIdParser?: (...args: Parameters<T>) => string;
     userPropsParser?: (...args: Parameters<T>) => cJSON;
+    templateParser?: (...args: Parameters<T>) => string;
     tokensUsageParser?: (result: Awaited<ReturnType<T>>) => Promise<TokenUsage>;
     enableWaitUntil?: (...args: Parameters<T>) => boolean;
     forceFlush?: (...args: Parameters<T>) => boolean;
@@ -72,7 +74,7 @@ type WrappedReturn<T extends WrappableFn> = ReturnType<T> & {
 };
 type WrappedFn<T extends WrappableFn> = (...args: Parameters<T>) => WrappedReturn<T>;
 interface Template {
-    template: string;
+    templateId: string;
     text?: string;
     messages?: ChatMessage[];
     model?: string;

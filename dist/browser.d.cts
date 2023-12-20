@@ -1,4 +1,4 @@
-import { L as Lunary } from './lunary-04184cd5.js';
+import { L as Lunary } from './lunary-d0f577b0.js';
 import { cJSON, RunType, EventName, RunEvent } from './types.cjs';
 
 declare class FrontendLunary extends Lunary {

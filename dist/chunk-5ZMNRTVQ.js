@@ -3,7 +3,7 @@ import {
   cleanError,
   getFunctionInput,
   lunary_default
-} from "./chunk-Q4W2NCC4.js";
+} from "./chunk-KW55WUAH.js";
 
 // src/context.ts
 import { createContext } from "unctx";
@@ -98,6 +98,7 @@ var BackendMonitor = class extends lunary_default {
       inputParser,
       outputParser,
       tokensUsageParser,
+      templateParser,
       waitUntil,
       enableWaitUntil,
       extra,
@@ -109,6 +110,7 @@ var BackendMonitor = class extends lunary_default {
     const tagsData = params?.tagsParser ? params.tagsParser(...args) : tags;
     const userIdData = params?.userIdParser ? params.userIdParser(...args) : userId;
     const userPropsData = params?.userPropsParser ? params.userPropsParser(...args) : userProps;
+    const templateId = params?.templateParser ? params.templateParser(...args) : templateParser;
     const input = inputParser ? inputParser(...args) : getFunctionInput(func, args);
     this.trackEvent(type, "start", {
       runId: runId2,
@@ -117,7 +119,8 @@ var BackendMonitor = class extends lunary_default {
       extra: extraData,
       tags: tagsData,
       userId: userIdData,
-      userProps: userPropsData
+      userProps: userPropsData,
+      templateId
     });
     const shouldWaitUntil = typeof enableWaitUntil === "function" ? enableWaitUntil(...args) : waitUntil;
     const processOutput = /* @__PURE__ */ __name(async (output) => {

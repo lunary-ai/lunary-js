@@ -165,21 +165,29 @@ class Lunary {
 
     if (cacheEntry && now - cacheEntry.timestamp < 60000) {
       return cacheEntry.data
-    } else {
-      const response = await fetch(
-        `${this.apiUrl}/api/v1/template?slug=${slug}&app_id=${this.appId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      console.log(response)
-      const data = await response.json()
-      this.templateCache[slug] = { timestamp: now, data }
-      return data
     }
+
+    const response = await fetch(
+      `${this.apiUrl}/api/v1/template?slug=${slug}&app_id=${this.appId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(
+        `Lunary: Error fetching template: ${
+          response.statusText || response.status
+        } - ${await response.text()}`
+      )
+    }
+
+    const data = await response.json()
+    this.templateCache[slug] = { timestamp: now, data }
+    return data
   }
 
   /**
@@ -192,30 +200,25 @@ class Lunary {
    * console.log(template)
    */
   renderTemplate = async (slug: string, data?: any): Promise<Template> => {
-    const {
-      id: templateId,
-      content,
-      extra,
-      mode,
-    } = await this.getRawTemplate(slug)
-
-    console.log(content, extra, mode)
+    const { id: templateId, content, extra } = await this.getRawTemplate(slug)
 
     const textMode = typeof content === "string"
 
-    const rendered = textMode
-      ? Mustache.render(content, data)
-      : content.map((t) => ({
-          ...t,
-          content: Mustache.render(t.content, data),
-        }))
+    try {
+      const rendered = textMode
+        ? Mustache.render(content, data)
+        : content.map((t) => ({
+            ...t,
+            content: Mustache.render(t.content, data),
+          }))
 
-    console.log({ rendered })
-
-    return {
-      ...extra,
-      [textMode ? "text" : "messages"]: rendered,
-      templateId,
+      return {
+        ...extra,
+        [textMode ? "text" : "messages"]: rendered,
+        templateId,
+      }
+    } catch (error) {
+      throw new Error(`Error rendering template ${slug} - ` + error.message)
     }
   }
 

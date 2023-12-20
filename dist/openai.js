@@ -1,10 +1,10 @@
 import {
   src_default
-} from "./chunk-JK2QLMFM.js";
+} from "./chunk-5ZMNRTVQ.js";
 import {
   __name,
   cleanExtra
-} from "./chunk-Q4W2NCC4.js";
+} from "./chunk-KW55WUAH.js";
 
 // src/openai.ts
 var parseOpenaiMessage = /* @__PURE__ */ __name((message) => {
@@ -185,6 +185,12 @@ function monitorOpenAI(openai, params = {}) {
       const props = request.userProps;
       delete request.userProps;
       return props;
+    },
+    templateParser: (request) => {
+      const templateId = request.templateId;
+      delete request.templateId;
+      delete request.text;
+      return templateId;
     },
     enableWaitUntil: (request) => !!request.stream,
     waitUntil: (stream, onComplete, onError) => {

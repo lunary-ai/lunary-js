@@ -1,5 +1,12 @@
-import { cJSON, LunaryOptions, RunType, EventName, RunEvent, LogEvent, Template } from './types.cjs';
+import { cJSON, LunaryOptions, RunType, EventName, RunEvent, LogEvent, Template } from './types.js';
 
+/**
+ * Flow:
+ * - const thread = monitor.startThread()
+ * - const message = thread.userMessage(string)
+ * - message.botAnswer(string)
+ * - message.feedback(string)
+ */
 type Message = {
     id?: string;
     role: "user" | "assistant" | "tool" | "system";
@@ -19,8 +26,33 @@ declare class Thread {
         started?: boolean;
         tags?: string[];
     });
+    /**
+     * Track a new message from the user
+     *
+     * @param {Message} message - The message to track
+     * @returns {string} - The message ID, to reconcile with feedback and backend LLM calls
+     * */
     trackMessage: (message: Message) => string;
+    /**
+     * Track a new message from the user
+     *
+     * @deprecated Use trackMessage instead
+     *
+     * @param {string} text - The user message
+     * @param {cJSON} props - Extra properties to send with the message
+     * @param {string} customId - Set a custom ID for the message
+     * @returns {string} - The message ID, to reconcile with the bot's reply
+     * */
     trackUserMessage: (text: string, props?: cJSON, customId?: string) => string;
+    /**
+     * Track a new message from the bot
+     *
+     * @deprecated Use trackMessage instead
+     *
+     * @param {string} replyToId - The message ID to reply to
+     * @param {string} text - The bot message
+     * @param {cJSON} props - Extra properties to send with the message
+     * */
     trackBotMessage: (replyToId: string, text: string, props?: cJSON) => void;
 }
 
@@ -48,17 +80,25 @@ declare class Lunary {
     trackEvent(type: RunType, event: EventName, data: Partial<RunEvent | LogEvent>): void;
     private debouncedProcessQueue;
     processQueue(): Promise<void>;
-    getRawTemplate: (templateSlug: string) => Promise<any>;
+    /**
+     * Get a raw template's data from the API.
+     * @param {string} slug - The slug of the template to get.
+     * @returns {Promise<RawTemplate>} The template data.
+     * @example
+     * const template = await lunary.getRawTemplate("welcome")
+     * console.log(template)
+     */
+    getRawTemplate: (slug: string) => Promise<any>;
     /**
      * Render a template with the given data in the OpenAI completion format.
-     * @param {string} templateSlug - The slug of the template to render.
+     * @param {string} slug - The slug of the template to render.
      * @param {any} data - The data to pass to the template.
      * @returns {Promise<Template>} The rendered template.
      * @example
      * const template = await lunary.renderTemplate("welcome", { name: "John" })
      * console.log(template)
      */
-    renderTemplate: (templateSlug: string, data?: any) => Promise<Template>;
+    renderTemplate: (slug: string, data?: any) => Promise<Template>;
     /**
      * Attach feedback to a run.
      * @param {string} runId - The ID of the run.
@@ -72,7 +112,7 @@ declare class Lunary {
      */
     startChat(id?: string): Thread;
     /**
-     * @deprecated Use startThread() instead
+     * @deprecated Use openThread() instead
      */
     startThread(id?: string): Thread;
     /**
