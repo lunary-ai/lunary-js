@@ -124,7 +124,8 @@ class Lunary {
     this.queueRunning = true
 
     try {
-      if (this.verbose) console.log("Lunary: Sending events now")
+      if (this.verbose)
+        console.log(`Lunary: Sending events now to ${this.apiUrl}`)
 
       const copy = this.queue.slice()
 
