@@ -116,7 +116,7 @@ function monitorOpenAI(openai, params = {}) {
           });
         }
         if (content)
-          choices[index].message.content += content;
+          choices[index].message.content += content || "";
         if (role)
           choices[index].message.role = role;
         if (_optionalChain([function_call, 'optionalAccess', _5 => _5.name]))

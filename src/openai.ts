@@ -187,7 +187,7 @@ export function monitorOpenAI<T extends any>(
           })
         }
 
-        if (content) choices[index].message.content += content
+        if (content) choices[index].message.content += content || ""
 
         if (role) choices[index].message.role = role
 
