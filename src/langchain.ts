@@ -1,5 +1,5 @@
-import lunary from "lunary"
-import { LunaryOptions, ChatMessage, cJSON } from "lunary/types"
+import lunary from "./index"
+import { LunaryOptions, ChatMessage, cJSON } from "./types"
 
 import { BaseRun, RunUpdate as BaseRunUpdate, KVMap } from "langsmith/schemas"
 

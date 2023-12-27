@@ -1,15 +1,15 @@
-import {
-  __name,
-  lunary_default
-} from "./chunk-BEVSEFW7.js";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true});
+
+
+var _chunkLZBAGBH5cjs = require('./chunk-LZBAGBH5.cjs');
 
 // src/browser.ts
-var FrontendLunary = class extends lunary_default {
+var FrontendLunary = class extends _chunkLZBAGBH5cjs.lunary_default {
   static {
-    __name(this, "FrontendLunary");
+    _chunkLZBAGBH5cjs.__name.call(void 0, this, "FrontendLunary");
   }
-  userId;
-  userProps;
+  
+  
   /**
    * Identifies a user with a unique ID and properties.
    * @param {string} userId - The unique identifier for the user.
@@ -36,6 +36,6 @@ var FrontendLunary = class extends lunary_default {
 var lunary = new FrontendLunary();
 var browser_default = lunary;
 
-export {
-  browser_default
-};
+
+
+exports.browser_default = browser_default;

@@ -1,13 +1,13 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
-var _chunkZHVZZFETcjs = require('./chunk-ZHVZZFET.cjs');
+var _chunkJ4UXKIIMcjs = require('./chunk-J4UXKIIM.cjs');
 
 
 
-var _chunkMJQXZHIOcjs = require('./chunk-MJQXZHIO.cjs');
+var _chunkLZBAGBH5cjs = require('./chunk-LZBAGBH5.cjs');
 
 // src/openai.ts
-var parseOpenaiMessage = /* @__PURE__ */ _chunkMJQXZHIOcjs.__name.call(void 0, (message) => {
+var parseOpenaiMessage = /* @__PURE__ */ _chunkLZBAGBH5cjs.__name.call(void 0, (message) => {
   if (!message)
     return void 0;
   const { role, content, name, function_call, tool_calls, tool_call_id } = message;
@@ -20,7 +20,7 @@ var parseOpenaiMessage = /* @__PURE__ */ _chunkMJQXZHIOcjs.__name.call(void 0, (
     name
   };
 }, "parseOpenaiMessage");
-var teeAsync = /* @__PURE__ */ _chunkMJQXZHIOcjs.__name.call(void 0, (iterable) => {
+var teeAsync = /* @__PURE__ */ _chunkLZBAGBH5cjs.__name.call(void 0, (iterable) => {
   const AsyncIteratorProto = Object.getPrototypeOf(
     Object.getPrototypeOf(async function* () {
     }.prototype)
@@ -49,7 +49,7 @@ var teeAsync = /* @__PURE__ */ _chunkMJQXZHIOcjs.__name.call(void 0, (iterable) 
       }
     });
   }
-  _chunkMJQXZHIOcjs.__name.call(void 0, makeIterator, "makeIterator");
+  _chunkLZBAGBH5cjs.__name.call(void 0, makeIterator, "makeIterator");
   return buffers.map(makeIterator);
 }, "teeAsync");
 var PARAMS_TO_CAPTURE = [
@@ -70,7 +70,7 @@ var PARAMS_TO_CAPTURE = [
 ];
 function openAIv3(openai, params = {}) {
   const createChatCompletion = openai.createChatCompletion.bind(openai);
-  const wrapped = _chunkZHVZZFETcjs.src_default.wrapModel(createChatCompletion, {
+  const wrapped = _chunkJ4UXKIIMcjs.src_default.wrapModel(createChatCompletion, {
     nameParser: (request) => request.model,
     inputParser: (request) => request.messages.map(parseOpenaiMessage),
     extraParser: (request) => {
@@ -82,7 +82,7 @@ function openAIv3(openai, params = {}) {
         stop: request.stop,
         functionCall: request.function_call
       };
-      return _chunkMJQXZHIOcjs.cleanExtra.call(void 0, rawExtra);
+      return _chunkLZBAGBH5cjs.cleanExtra.call(void 0, rawExtra);
     },
     outputParser: ({ data }) => parseOpenaiMessage(data.choices[0]),
     tokensUsageParser: async ({ data }) => ({
@@ -94,10 +94,10 @@ function openAIv3(openai, params = {}) {
   openai.createChatCompletion = wrapped;
   return openai;
 }
-_chunkMJQXZHIOcjs.__name.call(void 0, openAIv3, "openAIv3");
+_chunkLZBAGBH5cjs.__name.call(void 0, openAIv3, "openAIv3");
 function monitorOpenAI(openai, params = {}) {
   const createChatCompletion = openai.chat.completions.create;
-  const wrappedCreateChatCompletion = /* @__PURE__ */ _chunkMJQXZHIOcjs.__name.call(void 0, (...args) => (
+  const wrappedCreateChatCompletion = /* @__PURE__ */ _chunkLZBAGBH5cjs.__name.call(void 0, (...args) => (
     // @ts-ignore
     createChatCompletion.apply(openai.chat.completions, args)
   ), "wrappedCreateChatCompletion");
@@ -156,8 +156,8 @@ function monitorOpenAI(openai, params = {}) {
       onError(error);
     }
   }
-  _chunkMJQXZHIOcjs.__name.call(void 0, handleStream, "handleStream");
-  const wrapped = _chunkZHVZZFETcjs.src_default.wrapModel(wrappedCreateChatCompletion, {
+  _chunkLZBAGBH5cjs.__name.call(void 0, handleStream, "handleStream");
+  const wrapped = _chunkJ4UXKIIMcjs.src_default.wrapModel(wrappedCreateChatCompletion, {
     nameParser: (request) => request.model,
     inputParser: (request) => request.messages.map(parseOpenaiMessage),
     extraParser: (request) => {
@@ -166,7 +166,7 @@ function monitorOpenAI(openai, params = {}) {
         if (request[param])
           rawExtra[param] = request[param];
       }
-      return _chunkMJQXZHIOcjs.cleanExtra.call(void 0, rawExtra);
+      return _chunkLZBAGBH5cjs.cleanExtra.call(void 0, rawExtra);
     },
     outputParser: (res) => parseOpenaiMessage(res.choices[0].message || ""),
     tokensUsageParser: async (res) => {
@@ -203,7 +203,7 @@ function monitorOpenAI(openai, params = {}) {
   openai.chat.completions.create = wrapped;
   return openai;
 }
-_chunkMJQXZHIOcjs.__name.call(void 0, monitorOpenAI, "monitorOpenAI");
+_chunkLZBAGBH5cjs.__name.call(void 0, monitorOpenAI, "monitorOpenAI");
 
 
 
