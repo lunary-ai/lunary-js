@@ -8,6 +8,7 @@ export default defineConfig({
     "src/types.ts",
     "src/browser.ts",
     "src/react.ts",
+    "src/langchain.ts",
   ],
   format: ["cjs", "esm"],
   bundle: true,
