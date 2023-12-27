@@ -88,4 +88,4 @@ interface Template {
     n?: number;
 }
 
-export { ChatMessage, Event, EventName, Identify, LogEvent, LunaryOptions, RunEvent, RunType, SetParent, Template, TokenUsage, WrapExtras, WrapParams, WrappableFn, WrappedFn, WrappedReturn, cJSON };
+export type { ChatMessage, Event, EventName, Identify, LogEvent, LunaryOptions, RunEvent, RunType, SetParent, Template, TokenUsage, WrapExtras, WrapParams, WrappableFn, WrappedFn, WrappedReturn, cJSON };

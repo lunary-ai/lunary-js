@@ -6,4 +6,4 @@ require('./chunk-MJQXZHIO.cjs');
 
 exports.default = _chunkFNQ4P6P5cjs.browser_default;
 
-module.exports = exports.default
+module.exports = exports.default;

@@ -57,16 +57,16 @@
     "unctx": "^2.3.1"
   },
   "devDependencies": {
-    "@types/node": "^20.5.1",
-    "@types/react": "^18.2.21",
-    "bun-types": "^1.0.15",
+    "@types/node": "^20.10.5",
+    "@types/react": "^18.2.45",
+    "bun-types": "^1.0.20",
     "dotenv": "^16.3.1",
-    "langchain": "^0.0.167",
-    "openai": "^4.20.1",
-    "react": "^18.0.2",
+    "langchain": "^0.0.212",
+    "openai": "^4.24.1",
+    "react": "^18.2.0",
     "stream-buffers": "^3.0.2",
-    "tsup": "^7.2.0",
-    "typescript": "^5.1.6"
+    "tsup": "^7.3.0",
+    "typescript": "^5.3.3"
   },
   "prettier": {
     "semi": false
