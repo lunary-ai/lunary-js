@@ -75,7 +75,6 @@ const convertToLunaryMessages = (
   }
 
   if (Array.isArray(input)) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore Confuses the compiler
     return input.length === 1
       ? convertToLunaryMessages(input[0])
@@ -116,7 +115,6 @@ const parseExtraAndName = (
 ) => {
   const params = {
     ...(extraParams?.invocation_params ?? {}),
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore this is a valid property
     ...(llm?.kwargs ?? {}),
     ...(metadata || {}),

@@ -1,11 +1,11 @@
 import {
   src_default
-} from "./chunk-V6JNVOTW.js";
+} from "./chunk-GJTWCJAD.js";
 import {
   __commonJS,
   __name,
   __toESM
-} from "./chunk-STSVXUX6.js";
+} from "./chunk-5X4HWXFA.js";
 
 // node_modules/decamelize/index.js
 var require_decamelize = __commonJS({
@@ -551,7 +551,6 @@ var parseOutput = /* @__PURE__ */ __name((rawOutput) => {
 var parseExtraAndName = /* @__PURE__ */ __name((llm, extraParams, metadata) => {
   const params = {
     ...extraParams?.invocation_params ?? {},
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore this is a valid property
     ...llm?.kwargs ?? {},
     ...metadata || {}

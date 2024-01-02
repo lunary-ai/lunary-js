@@ -1,10 +1,10 @@
 import {
   src_default
-} from "./chunk-V6JNVOTW.js";
+} from "./chunk-GJTWCJAD.js";
 import {
   __name,
   cleanExtra
-} from "./chunk-STSVXUX6.js";
+} from "./chunk-5X4HWXFA.js";
 
 // src/openai.ts
 var parseOpenaiMessage = /* @__PURE__ */ __name((message) => {
@@ -189,7 +189,7 @@ function monitorOpenAI(openai, params = {}) {
     templateParser: (request) => {
       const templateId = request.templateId;
       delete request.templateId;
-      delete request.text;
+      delete request.prompt;
       return templateId;
     },
     enableWaitUntil: (request) => !!request.stream,

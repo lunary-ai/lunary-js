@@ -1,4 +1,4 @@
-import { cJSON, LunaryOptions, RunType, EventName, RunEvent, LogEvent, Template } from './types.cjs';
+import { cJSON, LunaryOptions, RunType, EventName, RunEvent, LogEvent, Template } from './types.js';
 
 /**
  * Flow:
@@ -73,7 +73,7 @@ declare class Lunary {
      * Manually track a run event.
      * @param {RunType} type - The type of the run.
      * @param {EventName} event - The name of the event.
-     * @param {Partial<RunEvent | LogEvent>} data - The data associated with the event.
+     * @param {Partial<RunEvent>} data - The data associated with the event.
      * @example
      * monitor.trackEvent("llm", "start", { name: "gpt-4", input: "Hello I'm a bot" });
      */

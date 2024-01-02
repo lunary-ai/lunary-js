@@ -1,4 +1,4 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; } var _class; var _class2;var __create = Object.create;
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; } var _class; var _class2;var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
@@ -68,6 +68,10 @@ var cleanError = /* @__PURE__ */ __name((error) => {
 var cleanExtra = /* @__PURE__ */ __name((extra) => {
   return Object.fromEntries(Object.entries(extra).filter(([_, v]) => v != null));
 }, "cleanExtra");
+var compileTemplate = /* @__PURE__ */ __name((content, variables) => {
+  const regex = /{{(.*?)}}/g;
+  return content.replace(regex, (_, g1) => variables[g1] || "");
+}, "compileTemplate");
 function getArgumentNames(func) {
   let str = func.toString();
   str = str.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/(.)*/g, "").replace(/{[\s\S]*}/, "").replace(/=>/g, "").trim();
@@ -171,7 +175,6 @@ var Thread = (_class = class {
 }, _class);
 
 // src/lunary.ts
-var _mustache = require('mustache'); var _mustache2 = _interopRequireDefault(_mustache);
 var MAX_CHUNK_SIZE = 20;
 var Lunary = (_class2 = class {
   static {
@@ -207,14 +210,14 @@ var Lunary = (_class2 = class {
    * Manually track a run event.
    * @param {RunType} type - The type of the run.
    * @param {EventName} event - The name of the event.
-   * @param {Partial<RunEvent | LogEvent>} data - The data associated with the event.
+   * @param {Partial<RunEvent>} data - The data associated with the event.
    * @example
    * monitor.trackEvent("llm", "start", { name: "gpt-4", input: "Hello I'm a bot" });
    */
   trackEvent(type, event, data) {
     if (!this.appId)
       return console.warn(
-        "Lunary: App ID not set. Not reporting anything. Get one on the dashboard: https://app.lunary.ai"
+        "Lunary: Project tracking ID not set. Not reporting anything. Get one on the dashboard: https://app.lunary.ai"
       );
     let timestamp = Date.now();
     const lastEvent = _optionalChain([this, 'access', _11 => _11.queue, 'optionalAccess', _12 => _12[this.queue.length - 1]]);
@@ -225,6 +228,7 @@ var Lunary = (_class2 = class {
     const user = _optionalChain([this, 'access', _18 => _18.ctx, 'optionalAccess', _19 => _19.user, 'optionalAccess', _20 => _20.tryUse, 'call', _21 => _21()]);
     const userId = _nullishCoalesce(data.userId, () => ( _optionalChain([user, 'optionalAccess', _22 => _22.userId])));
     let userProps = _nullishCoalesce(data.userProps, () => ( _optionalChain([user, 'optionalAccess', _23 => _23.userProps])));
+    console.log({ userId, userProps, data });
     if (userProps && !userId) {
       console.warn(
         "Lunary: userProps passed without userId. Ignoring userProps."
@@ -241,7 +245,7 @@ var Lunary = (_class2 = class {
       parentRunId,
       timestamp,
       runtime,
-      ...data
+      ...cleanExtra(data)
     };
     if (this.verbose) {
       console.log(formatLog(eventData));
@@ -326,13 +330,13 @@ var Lunary = (_class2 = class {
     const { id: templateId, content, extra } = await this.getRawTemplate(slug);
     const textMode = typeof content === "string";
     try {
-      const rendered = textMode ? _mustache2.default.render(content, data) : content.map((t) => ({
+      const rendered = textMode ? compileTemplate(content, data) : content.map((t) => ({
         ...t,
-        content: _mustache2.default.render(t.content, data)
+        content: compileTemplate(t.content, data)
       }));
       return {
         ...extra,
-        [textMode ? "text" : "messages"]: rendered,
+        [textMode ? "prompt" : "messages"]: rendered,
         templateId
       };
     } catch (error) {

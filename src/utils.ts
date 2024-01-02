@@ -57,6 +57,12 @@ export const cleanExtra = (extra: object) => {
   return Object.fromEntries(Object.entries(extra).filter(([_, v]) => v != null))
 }
 
+// Replace {{variable}} with the value of the variable using regex
+export const compileTemplate = (content: string, variables) => {
+  const regex = /{{(.*?)}}/g
+  return content.replace(regex, (_, g1) => variables[g1] || "")
+}
+
 // JavaScript program to get the function argument' names dynamically
 // Works with both normal and arrow functions
 // Inspired from : https://www.geeksforgeeks.org/how-to-get-the-javascript-function-parameter-names-values-dynamically/

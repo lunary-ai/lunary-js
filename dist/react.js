@@ -1,21 +1,21 @@
 import {
   browser_default
-} from "./chunk-6BZITJIQ.js";
+} from "./chunk-PKMJD3UC.js";
 import {
   __name
-} from "./chunk-STSVXUX6.js";
+} from "./chunk-5X4HWXFA.js";
 
 // src/react.ts
 import { useEffect, useRef, useState } from "react";
 function useChatMonitor() {
   const [thread, setThread] = useState();
   const restart = /* @__PURE__ */ __name(() => {
-    const newThread = browser_default.startThread();
+    const newThread = browser_default.openThread();
     setThread(newThread);
     return newThread;
   }, "restart");
   const resumeThread = /* @__PURE__ */ __name((id) => {
-    const newThread = browser_default.resumeThread(id);
+    const newThread = browser_default.openThread(id);
     setThread(newThread);
     return newThread;
   }, "resumeThread");

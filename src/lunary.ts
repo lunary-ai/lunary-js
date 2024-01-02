@@ -1,4 +1,11 @@
-import { checkEnv, cleanError, debounce, formatLog } from "./utils"
+import {
+  checkEnv,
+  cleanError,
+  compileTemplate,
+  debounce,
+  cleanExtra,
+  formatLog,
+} from "./utils"
 
 import {
   Event,
@@ -12,8 +19,6 @@ import {
 } from "./types"
 
 import { Thread } from "./thread"
-
-import Mustache from "mustache"
 
 const MAX_CHUNK_SIZE = 20
 
@@ -54,7 +59,7 @@ class Lunary {
    * Manually track a run event.
    * @param {RunType} type - The type of the run.
    * @param {EventName} event - The name of the event.
-   * @param {Partial<RunEvent | LogEvent>} data - The data associated with the event.
+   * @param {Partial<RunEvent>} data - The data associated with the event.
    * @example
    * monitor.trackEvent("llm", "start", { name: "gpt-4", input: "Hello I'm a bot" });
    */
@@ -65,7 +70,7 @@ class Lunary {
   ): void {
     if (!this.appId)
       return console.warn(
-        "Lunary: App ID not set. Not reporting anything. Get one on the dashboard: https://app.lunary.ai"
+        "Lunary: Project tracking ID not set. Not reporting anything. Get one on the dashboard: https://app.lunary.ai"
       )
 
     // Add 1ms to timestamp if it's the same/lower than the last event
@@ -78,8 +83,11 @@ class Lunary {
 
     const parentRunId = data.parentRunId ?? this.ctx?.runId.tryUse()
     const user = this.ctx?.user?.tryUse()
+
     const userId = data.userId ?? user?.userId
     let userProps = data.userProps ?? user?.userProps
+
+    console.log({ userId, userProps, data })
 
     if (userProps && !userId) {
       console.warn(
@@ -99,7 +107,7 @@ class Lunary {
       parentRunId,
       timestamp,
       runtime,
-      ...data,
+      ...cleanExtra(data),
     }
 
     if (this.verbose) {
@@ -207,15 +215,15 @@ class Lunary {
 
     try {
       const rendered = textMode
-        ? Mustache.render(content, data)
+        ? compileTemplate(content, data)
         : content.map((t) => ({
             ...t,
-            content: Mustache.render(t.content, data),
+            content: compileTemplate(t.content, data),
           }))
 
       return {
         ...extra,
-        [textMode ? "text" : "messages"]: rendered,
+        [textMode ? "prompt" : "messages"]: rendered,
         templateId,
       }
     } catch (error) {

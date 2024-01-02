@@ -68,6 +68,10 @@ var cleanError = /* @__PURE__ */ __name((error) => {
 var cleanExtra = /* @__PURE__ */ __name((extra) => {
   return Object.fromEntries(Object.entries(extra).filter(([_, v]) => v != null));
 }, "cleanExtra");
+var compileTemplate = /* @__PURE__ */ __name((content, variables) => {
+  const regex = /{{(.*?)}}/g;
+  return content.replace(regex, (_, g1) => variables[g1] || "");
+}, "compileTemplate");
 function getArgumentNames(func) {
   let str = func.toString();
   str = str.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/(.)*/g, "").replace(/{[\s\S]*}/, "").replace(/=>/g, "").trim();
@@ -171,7 +175,6 @@ var Thread = class {
 };
 
 // src/lunary.ts
-import Mustache from "mustache";
 var MAX_CHUNK_SIZE = 20;
 var Lunary = class {
   static {
@@ -207,14 +210,14 @@ var Lunary = class {
    * Manually track a run event.
    * @param {RunType} type - The type of the run.
    * @param {EventName} event - The name of the event.
-   * @param {Partial<RunEvent | LogEvent>} data - The data associated with the event.
+   * @param {Partial<RunEvent>} data - The data associated with the event.
    * @example
    * monitor.trackEvent("llm", "start", { name: "gpt-4", input: "Hello I'm a bot" });
    */
   trackEvent(type, event, data) {
     if (!this.appId)
       return console.warn(
-        "Lunary: App ID not set. Not reporting anything. Get one on the dashboard: https://app.lunary.ai"
+        "Lunary: Project tracking ID not set. Not reporting anything. Get one on the dashboard: https://app.lunary.ai"
       );
     let timestamp = Date.now();
     const lastEvent = this.queue?.[this.queue.length - 1];
@@ -225,6 +228,7 @@ var Lunary = class {
     const user = this.ctx?.user?.tryUse();
     const userId = data.userId ?? user?.userId;
     let userProps = data.userProps ?? user?.userProps;
+    console.log({ userId, userProps, data });
     if (userProps && !userId) {
       console.warn(
         "Lunary: userProps passed without userId. Ignoring userProps."
@@ -241,7 +245,7 @@ var Lunary = class {
       parentRunId,
       timestamp,
       runtime,
-      ...data
+      ...cleanExtra(data)
     };
     if (this.verbose) {
       console.log(formatLog(eventData));
@@ -326,13 +330,13 @@ var Lunary = class {
     const { id: templateId, content, extra } = await this.getRawTemplate(slug);
     const textMode = typeof content === "string";
     try {
-      const rendered = textMode ? Mustache.render(content, data) : content.map((t) => ({
+      const rendered = textMode ? compileTemplate(content, data) : content.map((t) => ({
         ...t,
-        content: Mustache.render(t.content, data)
+        content: compileTemplate(t.content, data)
       }));
       return {
         ...extra,
-        [textMode ? "text" : "messages"]: rendered,
+        [textMode ? "prompt" : "messages"]: rendered,
         templateId
       };
     } catch (error) {

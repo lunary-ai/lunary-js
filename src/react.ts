@@ -10,13 +10,13 @@ function useChatMonitor() {
   const [thread, setThread] = useState<Thread>()
 
   const restart = () => {
-    const newThread = monitor.startThread()
+    const newThread = monitor.openThread()
     setThread(newThread)
     return newThread
   }
 
   const resumeThread = (id: string) => {
-    const newThread = monitor.resumeThread(id)
+    const newThread = monitor.openThread(id)
     setThread(newThread)
     return newThread
   }

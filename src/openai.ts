@@ -273,7 +273,7 @@ export function monitorOpenAI<T extends any>(
     templateParser: (request) => {
       const templateId = request.templateId
       delete request.templateId // delete key otherwise openai will throw error
-      delete request.text // extra key might be returned by openai
+      delete request.prompt // extra key might be returned by template fn
       return templateId
     },
     enableWaitUntil: (request) => !!request.stream,
