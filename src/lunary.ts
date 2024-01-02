@@ -87,8 +87,6 @@ class Lunary {
     const userId = data.userId ?? user?.userId
     let userProps = data.userProps ?? user?.userProps
 
-    console.log({ userId, userProps, data })
-
     if (userProps && !userId) {
       console.warn(
         "Lunary: userProps passed without userId. Ignoring userProps."

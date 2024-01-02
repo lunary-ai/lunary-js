@@ -8,7 +8,7 @@ declare function useChatMonitor(): {
     resumeThread: (id: string) => Thread;
     trackMessage: (message: {
         id?: string;
-        role: "user" | "assistant" | "system" | "tool";
+        role: "tool" | "user" | "assistant" | "system";
         content?: string;
         isRetry?: boolean;
         tags?: string[];

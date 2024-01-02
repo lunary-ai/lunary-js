@@ -9,15 +9,15 @@ lunary.init({
 const openai = monitorOpenAI(new OpenAI())
 
 const template = await lunary.renderTemplate("support-help", {
-  name: "John",
-  topic: "billing",
-  question: "I got charged twice for my last payment",
+  name: "Jane Doe",
+  topic: "account",
+  question: "I have forgotten my password.",
 })
 
 const res = await openai.chat.completions
   .create(template)
-  .identify("demo-user-1", {
-    name: "John Doe",
+  .identify("demo-user-2", {
+    name: "Jane Doe",
     email: "john.doe@example.org",
   })
 
