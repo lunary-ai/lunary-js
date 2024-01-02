@@ -105,12 +105,18 @@ var Thread = (_class = class {
   
   
   
+  
+  
   constructor(monitor, options) {;_class.prototype.__init.call(this);_class.prototype.__init2.call(this);_class.prototype.__init3.call(this);
     this.monitor = monitor;
     this.id = _optionalChain([options, 'optionalAccess', _7 => _7.id]) || crypto.randomUUID();
     this.started = _optionalChain([options, 'optionalAccess', _8 => _8.started]) || false;
     if (_optionalChain([options, 'optionalAccess', _9 => _9.tags]))
       this.tags = _optionalChain([options, 'optionalAccess', _10 => _10.tags]);
+    if (_optionalChain([options, 'optionalAccess', _11 => _11.userId]))
+      this.userId = _optionalChain([options, 'optionalAccess', _12 => _12.userId]);
+    if (_optionalChain([options, 'optionalAccess', _13 => _13.userProps]))
+      this.userProps = _optionalChain([options, 'optionalAccess', _14 => _14.userProps]);
   }
   /**
    * Track a new message from the user
@@ -124,6 +130,8 @@ var Thread = (_class = class {
       runId,
       parentRunId: this.id,
       threadTags: this.tags,
+      userId: this.userId,
+      userProps: this.userProps,
       feedback: message.feedback,
       message
     });
@@ -220,14 +228,14 @@ var Lunary = (_class2 = class {
         "Lunary: Project tracking ID not set. Not reporting anything. Get one on the dashboard: https://app.lunary.ai"
       );
     let timestamp = Date.now();
-    const lastEvent = _optionalChain([this, 'access', _11 => _11.queue, 'optionalAccess', _12 => _12[this.queue.length - 1]]);
-    if (_optionalChain([lastEvent, 'optionalAccess', _13 => _13.timestamp]) >= timestamp) {
+    const lastEvent = _optionalChain([this, 'access', _15 => _15.queue, 'optionalAccess', _16 => _16[this.queue.length - 1]]);
+    if (_optionalChain([lastEvent, 'optionalAccess', _17 => _17.timestamp]) >= timestamp) {
       timestamp = lastEvent.timestamp + 1;
     }
-    const parentRunId = _nullishCoalesce(data.parentRunId, () => ( _optionalChain([this, 'access', _14 => _14.ctx, 'optionalAccess', _15 => _15.runId, 'access', _16 => _16.tryUse, 'call', _17 => _17()])));
-    const user = _optionalChain([this, 'access', _18 => _18.ctx, 'optionalAccess', _19 => _19.user, 'optionalAccess', _20 => _20.tryUse, 'call', _21 => _21()]);
-    const userId = _nullishCoalesce(data.userId, () => ( _optionalChain([user, 'optionalAccess', _22 => _22.userId])));
-    let userProps = _nullishCoalesce(data.userProps, () => ( _optionalChain([user, 'optionalAccess', _23 => _23.userProps])));
+    const parentRunId = _nullishCoalesce(data.parentRunId, () => ( _optionalChain([this, 'access', _18 => _18.ctx, 'optionalAccess', _19 => _19.runId, 'access', _20 => _20.tryUse, 'call', _21 => _21()])));
+    const user = _optionalChain([this, 'access', _22 => _22.ctx, 'optionalAccess', _23 => _23.user, 'optionalAccess', _24 => _24.tryUse, 'call', _25 => _25()]);
+    const userId = _nullishCoalesce(data.userId, () => ( _optionalChain([user, 'optionalAccess', _26 => _26.userId])));
+    let userProps = _nullishCoalesce(data.userProps, () => ( _optionalChain([user, 'optionalAccess', _27 => _27.userProps])));
     if (userProps && !userId) {
       console.warn(
         "Lunary: userProps passed without userId. Ignoring userProps."
@@ -343,11 +351,11 @@ var Lunary = (_class2 = class {
     }
   }}
   /**
-   * Attach feedback to a run.
-   * @param {string} runId - The ID of the run.
+   * Attach feedback to a message or run directly.
+   * @param {string} runId - The ID of the message or the run.
    * @param {cJSON} feedback - The feedback to attach.
    * @example
-   * monitor.trackFeedback("some-run-id", { thumbs: "up" });
+   * monitor.trackFeedback("some-id", { thumbs: "up" });
    **/
   __init10() {this.trackFeedback = (runId, feedback) => {
     if (!runId || typeof runId !== "string")
@@ -374,7 +382,7 @@ var Lunary = (_class2 = class {
     return new Thread(this, { id });
   }
   /**
-   * @deprecated Use resumeThread() instead
+   * @deprecated Use openThread() instead
    */
   resumeThread(id) {
     return new Thread(this, { id, started: true });

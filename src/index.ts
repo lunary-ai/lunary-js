@@ -7,7 +7,7 @@ import chainable from "./chainable"
 
 import Lunary from "./lunary"
 
-// extend the Lunary class to add a new method
+// Extended Lunary class with backend-specific methods and context injection
 
 class BackendMonitor extends Lunary {
   private wrap<T extends WrappableFn>(

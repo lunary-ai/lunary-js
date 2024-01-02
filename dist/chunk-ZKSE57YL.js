@@ -105,12 +105,18 @@ var Thread = class {
   monitor;
   started;
   tags;
+  userId;
+  userProps;
   constructor(monitor, options) {
     this.monitor = monitor;
     this.id = options?.id || crypto.randomUUID();
     this.started = options?.started || false;
     if (options?.tags)
       this.tags = options?.tags;
+    if (options?.userId)
+      this.userId = options?.userId;
+    if (options?.userProps)
+      this.userProps = options?.userProps;
   }
   /**
    * Track a new message from the user
@@ -124,6 +130,8 @@ var Thread = class {
       runId,
       parentRunId: this.id,
       threadTags: this.tags,
+      userId: this.userId,
+      userProps: this.userProps,
       feedback: message.feedback,
       message
     });
@@ -343,11 +351,11 @@ var Lunary = class {
     }
   };
   /**
-   * Attach feedback to a run.
-   * @param {string} runId - The ID of the run.
+   * Attach feedback to a message or run directly.
+   * @param {string} runId - The ID of the message or the run.
    * @param {cJSON} feedback - The feedback to attach.
    * @example
-   * monitor.trackFeedback("some-run-id", { thumbs: "up" });
+   * monitor.trackFeedback("some-id", { thumbs: "up" });
    **/
   trackFeedback = (runId, feedback) => {
     if (!runId || typeof runId !== "string")
@@ -374,7 +382,7 @@ var Lunary = class {
     return new Thread(this, { id });
   }
   /**
-   * @deprecated Use resumeThread() instead
+   * @deprecated Use openThread() instead
    */
   resumeThread(id) {
     return new Thread(this, { id, started: true });

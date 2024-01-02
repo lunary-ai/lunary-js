@@ -230,11 +230,11 @@ class Lunary {
   }
 
   /**
-   * Attach feedback to a run.
-   * @param {string} runId - The ID of the run.
+   * Attach feedback to a message or run directly.
+   * @param {string} runId - The ID of the message or the run.
    * @param {cJSON} feedback - The feedback to attach.
    * @example
-   * monitor.trackFeedback("some-run-id", { thumbs: "up" });
+   * monitor.trackFeedback("some-id", { thumbs: "up" });
    **/
   trackFeedback = (runId: string, feedback: cJSON) => {
     if (!runId || typeof runId !== "string")
@@ -266,13 +266,17 @@ class Lunary {
   }
 
   /**
-   * @deprecated Use resumeThread() instead
+   * @deprecated Use openThread() instead
    */
   resumeThread(id: string) {
     return new Thread(this, { id, started: true })
   }
 
-  openThread(params?: string | { id?: string; tags?: string[] }) {
+  openThread(
+    params?:
+      | string
+      | { id?: string; tags?: string[]; userId?: string; userProps?: cJSON }
+  ) {
     return new Thread(
       this,
       typeof params === "string" ? { id: params } : params

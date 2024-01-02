@@ -1,7 +1,7 @@
 import {
   __name,
   lunary_default
-} from "./chunk-VQJOMZGA.js";
+} from "./chunk-ZKSE57YL.js";
 
 // src/browser.ts
 var FrontendLunary = class extends lunary_default {

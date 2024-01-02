@@ -21,10 +21,14 @@ declare class Thread {
     private monitor;
     private started;
     private tags;
+    private userId;
+    private userProps;
     constructor(monitor: Lunary, options: {
         id?: string;
         started?: boolean;
         tags?: string[];
+        userId?: string;
+        userProps?: cJSON;
     });
     /**
      * Track a new message from the user
@@ -100,11 +104,11 @@ declare class Lunary {
      */
     renderTemplate: (slug: string, data?: any) => Promise<Template>;
     /**
-     * Attach feedback to a run.
-     * @param {string} runId - The ID of the run.
+     * Attach feedback to a message or run directly.
+     * @param {string} runId - The ID of the message or the run.
      * @param {cJSON} feedback - The feedback to attach.
      * @example
-     * monitor.trackFeedback("some-run-id", { thumbs: "up" });
+     * monitor.trackFeedback("some-id", { thumbs: "up" });
      **/
     trackFeedback: (runId: string, feedback: cJSON) => void;
     /**
@@ -116,12 +120,14 @@ declare class Lunary {
      */
     startThread(id?: string): Thread;
     /**
-     * @deprecated Use resumeThread() instead
+     * @deprecated Use openThread() instead
      */
     resumeThread(id: string): Thread;
     openThread(params?: string | {
         id?: string;
         tags?: string[];
+        userId?: string;
+        userProps?: cJSON;
     }): Thread;
     /**
      * Use this to log any external action or tool you use.

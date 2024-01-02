@@ -25,6 +25,8 @@ export class Thread {
   private monitor: Lunary
   private started: boolean
   private tags: string[]
+  private userId: string
+  private userProps: cJSON
 
   constructor(
     monitor: Lunary,
@@ -32,12 +34,16 @@ export class Thread {
       id?: string
       started?: boolean
       tags?: string[]
+      userId?: string
+      userProps?: cJSON
     }
   ) {
     this.monitor = monitor
     this.id = options?.id || crypto.randomUUID()
     this.started = options?.started || false
     if (options?.tags) this.tags = options?.tags
+    if (options?.userId) this.userId = options?.userId
+    if (options?.userProps) this.userProps = options?.userProps
   }
 
   /**
@@ -56,6 +62,8 @@ export class Thread {
       runId,
       parentRunId: this.id,
       threadTags: this.tags,
+      userId: this.userId,
+      userProps: this.userProps,
       feedback: message.feedback,
       message,
     })
