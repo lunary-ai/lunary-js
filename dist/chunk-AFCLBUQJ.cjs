@@ -198,7 +198,7 @@ var Lunary = (_class2 = class {
   /**
    * @param {LunaryOptions} options
    */
-  constructor(ctx) {;_class2.prototype.__init4.call(this);_class2.prototype.__init5.call(this);_class2.prototype.__init6.call(this);_class2.prototype.__init7.call(this);_class2.prototype.__init8.call(this);_class2.prototype.__init9.call(this);_class2.prototype.__init10.call(this);
+  constructor(ctx) {;_class2.prototype.__init4.call(this);_class2.prototype.__init5.call(this);_class2.prototype.__init6.call(this);_class2.prototype.__init7.call(this);_class2.prototype.__init8.call(this);_class2.prototype.__init9.call(this);_class2.prototype.__init10.call(this);_class2.prototype.__init11.call(this);
     this.init({
       appId: checkEnv("LUNARY_APP_ID") || checkEnv("LLMONITOR_APP_ID"),
       apiUrl: checkEnv("LUNARY_API_URL") || checkEnv("LLMONITOR_API_URL") || "https://app.lunary.ai",
@@ -293,6 +293,30 @@ var Lunary = (_class2 = class {
     }
   }
   /**
+   * Get a dataset's runs from the API.
+   * @param {string} datasetSlug - The slug of the dataset to get.
+   * @returns {Promise<Run[]>} The dataset's runs.
+   */
+  __init8() {this.getDataset = async (datasetId) => {
+    try {
+      const response = await fetch(
+        `${this.apiUrl}/v1/projects/${this.appId}/datasets/${datasetId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
+      const data = await response.json();
+      return data.runs;
+    } catch (e) {
+      throw new Error(
+        `Lunary: Error fetching dataset: you must be on the Unlimited or Enterprise plan to use this feature.`
+      );
+    }
+  }}
+  /**
    * Get a raw template's data from the API.
    * @param {string} slug - The slug of the template to get.
    * @returns {Promise<RawTemplate>} The template data.
@@ -300,7 +324,7 @@ var Lunary = (_class2 = class {
    * const template = await lunary.getRawTemplate("welcome")
    * console.log(template)
    */
-  __init8() {this.getRawTemplate = async (slug) => {
+  __init9() {this.getRawTemplate = async (slug) => {
     const cacheEntry = this.templateCache[slug];
     const now = Date.now();
     if (cacheEntry && now - cacheEntry.timestamp < 6e4) {
@@ -333,7 +357,7 @@ var Lunary = (_class2 = class {
    * const template = await lunary.renderTemplate("welcome", { name: "John" })
    * console.log(template)
    */
-  __init9() {this.renderTemplate = async (slug, data) => {
+  __init10() {this.renderTemplate = async (slug, data) => {
     const { id: templateId, content, extra } = await this.getRawTemplate(slug);
     const textMode = typeof content === "string";
     try {
@@ -357,7 +381,7 @@ var Lunary = (_class2 = class {
    * @example
    * monitor.trackFeedback("some-id", { thumbs: "up" });
    **/
-  __init10() {this.trackFeedback = (runId, feedback) => {
+  __init11() {this.trackFeedback = (runId, feedback) => {
     if (!runId || typeof runId !== "string")
       return console.error("Lunary: No message ID provided to track feedback");
     if (typeof feedback !== "object")

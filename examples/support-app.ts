@@ -49,28 +49,40 @@ async function handleUserMessage(user, topic, question) {
   })
 
   // track user message
-  const msgId = thread.trackMessage({
+  const questionId = thread.trackMessage({
     role: "user",
     content: question,
   })
 
-  const res = await agent(user, topic, question).setParent(msgId)
+  const res = await agent(user, topic, question).setParent(questionId)
 
   // track assistant response
-  thread.trackMessage({
+  const responseId = thread.trackMessage({
     role: "assistant",
     content: res,
   })
 
+  // // sleep
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+
+  // thread.trackMessage({
+  //   role: "user",
+  //   content: "Thanks! Let me try that.",
+  // })
+
   // you can also track feedback
 
-  lunary.trackFeedback()
+  lunary.trackFeedback(responseId, { thumbs: "down" })
 }
 
 const user = {
-  id: "demo-user-2",
-  name: "Jane Doe",
-  email: "jane.doe@example.org",
+  id: "demo-user-4",
+  name: "Test User 2",
+  email: "test.user2@example.org",
 }
 
-await handleUserMessage(user, "account", "I have forgotten my password.")
+await handleUserMessage(
+  user,
+  "billing",
+  "Hi, I would like to cancel my subscription."
+)

@@ -85,6 +85,12 @@ declare class Lunary {
     private debouncedProcessQueue;
     processQueue(): Promise<void>;
     /**
+     * Get a dataset's runs from the API.
+     * @param {string} datasetSlug - The slug of the dataset to get.
+     * @returns {Promise<Run[]>} The dataset's runs.
+     */
+    getDataset: (datasetId: string) => Promise<any>;
+    /**
      * Get a raw template's data from the API.
      * @param {string} slug - The slug of the template to get.
      * @returns {Promise<RawTemplate>} The template data.

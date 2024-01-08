@@ -293,6 +293,30 @@ var Lunary = class {
     }
   }
   /**
+   * Get a dataset's runs from the API.
+   * @param {string} datasetSlug - The slug of the dataset to get.
+   * @returns {Promise<Run[]>} The dataset's runs.
+   */
+  getDataset = async (datasetId) => {
+    try {
+      const response = await fetch(
+        `${this.apiUrl}/v1/projects/${this.appId}/datasets/${datasetId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
+      const data = await response.json();
+      return data.runs;
+    } catch (e) {
+      throw new Error(
+        `Lunary: Error fetching dataset: you must be on the Unlimited or Enterprise plan to use this feature.`
+      );
+    }
+  };
+  /**
    * Get a raw template's data from the API.
    * @param {string} slug - The slug of the template to get.
    * @returns {Promise<RawTemplate>} The template data.

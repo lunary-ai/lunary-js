@@ -1,6 +1,6 @@
 {
   "name": "lunary",
-  "version": "0.6.14",
+  "version": "0.6.15",
   "description": "Lunary is an open-source platform for AI developers.",
   "type": "module",
   "types": "./dist/index.d.ts",
