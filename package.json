@@ -29,6 +29,11 @@
       "types": "./dist/react.d.ts",
       "import": "./dist/react.js",
       "require": "./dist/react.cjs"
+    },
+    "./langchain": {
+      "types": "./dist/langchain.d.ts",
+      "import": "./dist/langchain.js",
+      "require": "./dist/langchain.cjs"
     }
   },
   "typesVersions": {
@@ -44,6 +49,9 @@
       ],
       "react": [
         "./dist/react.d.ts"
+      ],
+      "langchain": [
+        "./dist/langchain.d.ts"
       ]
     }
   },
