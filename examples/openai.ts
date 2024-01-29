@@ -14,10 +14,10 @@ const openai = monitorOpenAI(
 )
 
 async function TranslatorAgent(input) {
-  const stream = await openai.chat.completions.create({
-    model: "gpt-4-1106-preview",
+  const res = await openai.chat.completions.create({
+    model: "gpt-4",
     temperature: 0,
-    stream: true,
+    // stream: true,
     tags: ["translate"],
     user: "user123",
     seed: 123,
@@ -48,13 +48,13 @@ async function TranslatorAgent(input) {
     ],
   })
 
-  for await (const part of stream) {
-    process.stdout.write(part.choices[0]?.delta?.content || "")
-  }
+  // for await (const part of stream) {
+  //   process.stdout.write(part.choices[0]?.delta?.content || "")
+  // }
 
   // console.log(stream.choices[0].message)
 
-  // return res.choices[0].message.content
+  return res.choices[0].message.content
 }
 
 const translate = monitor.wrapAgent(TranslatorAgent)

@@ -1,14 +1,14 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; } var _class;
 
-var _chunkOTRT6GGCcjs = require('./chunk-OTRT6GGC.cjs');
+var _chunk2FH6JKXEcjs = require('./chunk-2FH6JKXE.cjs');
 
 
 
 
-var _chunkAFCLBUQJcjs = require('./chunk-AFCLBUQJ.cjs');
+var _chunkBL5H2X2Kcjs = require('./chunk-BL5H2X2K.cjs');
 
 // node_modules/decamelize/index.js
-var require_decamelize = _chunkAFCLBUQJcjs.__commonJS.call(void 0, {
+var require_decamelize = _chunkBL5H2X2Kcjs.__commonJS.call(void 0, {
   "node_modules/decamelize/index.js"(exports, module) {
     "use strict";
     module.exports = function(str, sep) {
@@ -22,7 +22,7 @@ var require_decamelize = _chunkAFCLBUQJcjs.__commonJS.call(void 0, {
 });
 
 // node_modules/camelcase/index.js
-var require_camelcase = _chunkAFCLBUQJcjs.__commonJS.call(void 0, {
+var require_camelcase = _chunkBL5H2X2Kcjs.__commonJS.call(void 0, {
   "node_modules/camelcase/index.js"(exports, module) {
     "use strict";
     var UPPERCASE = /[\p{Lu}]/u;
@@ -33,7 +33,7 @@ var require_camelcase = _chunkAFCLBUQJcjs.__commonJS.call(void 0, {
     var LEADING_SEPARATORS = new RegExp("^" + SEPARATORS.source);
     var SEPARATORS_AND_IDENTIFIER = new RegExp(SEPARATORS.source + IDENTIFIER.source, "gu");
     var NUMBERS_AND_IDENTIFIER = new RegExp("\\d+" + IDENTIFIER.source, "gu");
-    var preserveCamelCase = /* @__PURE__ */ _chunkAFCLBUQJcjs.__name.call(void 0, (string, toLowerCase, toUpperCase) => {
+    var preserveCamelCase = /* @__PURE__ */ _chunkBL5H2X2Kcjs.__name.call(void 0, (string, toLowerCase, toUpperCase) => {
       let isLastCharLower = false;
       let isLastCharUpper = false;
       let isLastLastCharUpper = false;
@@ -58,16 +58,16 @@ var require_camelcase = _chunkAFCLBUQJcjs.__commonJS.call(void 0, {
       }
       return string;
     }, "preserveCamelCase");
-    var preserveConsecutiveUppercase = /* @__PURE__ */ _chunkAFCLBUQJcjs.__name.call(void 0, (input, toLowerCase) => {
+    var preserveConsecutiveUppercase = /* @__PURE__ */ _chunkBL5H2X2Kcjs.__name.call(void 0, (input, toLowerCase) => {
       LEADING_CAPITAL.lastIndex = 0;
       return input.replace(LEADING_CAPITAL, (m1) => toLowerCase(m1));
     }, "preserveConsecutiveUppercase");
-    var postProcess = /* @__PURE__ */ _chunkAFCLBUQJcjs.__name.call(void 0, (input, toUpperCase) => {
+    var postProcess = /* @__PURE__ */ _chunkBL5H2X2Kcjs.__name.call(void 0, (input, toUpperCase) => {
       SEPARATORS_AND_IDENTIFIER.lastIndex = 0;
       NUMBERS_AND_IDENTIFIER.lastIndex = 0;
       return input.replace(SEPARATORS_AND_IDENTIFIER, (_, identifier) => toUpperCase(identifier)).replace(NUMBERS_AND_IDENTIFIER, (m) => toUpperCase(m));
     }, "postProcess");
-    var camelCase2 = /* @__PURE__ */ _chunkAFCLBUQJcjs.__name.call(void 0, (input, options) => {
+    var camelCase2 = /* @__PURE__ */ _chunkBL5H2X2Kcjs.__name.call(void 0, (input, options) => {
       if (!(typeof input === "string" || Array.isArray(input))) {
         throw new TypeError("Expected the input to be `string | string[]`");
       }
@@ -120,7 +120,7 @@ function getEnvironmentVariable(name) {
     return void 0;
   }
 }
-_chunkAFCLBUQJcjs.__name.call(void 0, getEnvironmentVariable, "getEnvironmentVariable");
+_chunkBL5H2X2Kcjs.__name.call(void 0, getEnvironmentVariable, "getEnvironmentVariable");
 
 // node_modules/uuid/dist/esm-node/rng.js
 var _crypto = require('crypto'); var _crypto2 = _interopRequireDefault(_crypto);
@@ -133,7 +133,7 @@ function rng() {
   }
   return rnds8Pool.slice(poolPtr, poolPtr += 16);
 }
-_chunkAFCLBUQJcjs.__name.call(void 0, rng, "rng");
+_chunkBL5H2X2Kcjs.__name.call(void 0, rng, "rng");
 
 // node_modules/uuid/dist/esm-node/stringify.js
 var byteToHex = [];
@@ -143,7 +143,7 @@ for (let i = 0; i < 256; ++i) {
 function unsafeStringify(arr, offset = 0) {
   return byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + "-" + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + "-" + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + "-" + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + "-" + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]];
 }
-_chunkAFCLBUQJcjs.__name.call(void 0, unsafeStringify, "unsafeStringify");
+_chunkBL5H2X2Kcjs.__name.call(void 0, unsafeStringify, "unsafeStringify");
 
 // node_modules/uuid/dist/esm-node/native.js
 
@@ -169,16 +169,16 @@ function v4(options, buf, offset) {
   }
   return unsafeStringify(rnds);
 }
-_chunkAFCLBUQJcjs.__name.call(void 0, v4, "v4");
+_chunkBL5H2X2Kcjs.__name.call(void 0, v4, "v4");
 var v4_default = v4;
 
 // node_modules/@langchain/core/dist/load/map_keys.js
-var import_decamelize = _chunkAFCLBUQJcjs.__toESM.call(void 0, require_decamelize(), 1);
-var import_camelcase = _chunkAFCLBUQJcjs.__toESM.call(void 0, require_camelcase(), 1);
+var import_decamelize = _chunkBL5H2X2Kcjs.__toESM.call(void 0, require_decamelize(), 1);
+var import_camelcase = _chunkBL5H2X2Kcjs.__toESM.call(void 0, require_camelcase(), 1);
 function keyToJson(key, map) {
   return _optionalChain([map, 'optionalAccess', _4 => _4[key]]) || (0, import_decamelize.default)(key);
 }
-_chunkAFCLBUQJcjs.__name.call(void 0, keyToJson, "keyToJson");
+_chunkBL5H2X2Kcjs.__name.call(void 0, keyToJson, "keyToJson");
 function mapKeys(fields, mapper, map) {
   const mapped = {};
   for (const key in fields) {
@@ -188,13 +188,13 @@ function mapKeys(fields, mapper, map) {
   }
   return mapped;
 }
-_chunkAFCLBUQJcjs.__name.call(void 0, mapKeys, "mapKeys");
+_chunkBL5H2X2Kcjs.__name.call(void 0, mapKeys, "mapKeys");
 
 // node_modules/@langchain/core/dist/load/serializable.js
 function shallowCopy(obj) {
   return Array.isArray(obj) ? [...obj] : { ...obj };
 }
-_chunkAFCLBUQJcjs.__name.call(void 0, shallowCopy, "shallowCopy");
+_chunkBL5H2X2Kcjs.__name.call(void 0, shallowCopy, "shallowCopy");
 function replaceSecrets(root, secretsMap) {
   const result = shallowCopy(root);
   for (const [path, secretId] of Object.entries(secretsMap)) {
@@ -217,7 +217,7 @@ function replaceSecrets(root, secretsMap) {
   }
   return result;
 }
-_chunkAFCLBUQJcjs.__name.call(void 0, replaceSecrets, "replaceSecrets");
+_chunkBL5H2X2Kcjs.__name.call(void 0, replaceSecrets, "replaceSecrets");
 function get_lc_unique_name(serializableClass) {
   const parentClass = Object.getPrototypeOf(serializableClass);
   const lcNameIsSubclassed = typeof serializableClass.lc_name === "function" && (typeof parentClass.lc_name !== "function" || serializableClass.lc_name() !== parentClass.lc_name());
@@ -227,10 +227,10 @@ function get_lc_unique_name(serializableClass) {
     return serializableClass.name;
   }
 }
-_chunkAFCLBUQJcjs.__name.call(void 0, get_lc_unique_name, "get_lc_unique_name");
+_chunkBL5H2X2Kcjs.__name.call(void 0, get_lc_unique_name, "get_lc_unique_name");
 var Serializable = class _Serializable {
   static {
-    _chunkAFCLBUQJcjs.__name.call(void 0, this, "Serializable");
+    _chunkBL5H2X2Kcjs.__name.call(void 0, this, "Serializable");
   }
   /**
    * The name of the serializable. Override to provide an alias or
@@ -352,12 +352,12 @@ var Serializable = class _Serializable {
 // node_modules/@langchain/core/dist/callbacks/base.js
 var BaseCallbackHandlerMethodsClass = class {
   static {
-    _chunkAFCLBUQJcjs.__name.call(void 0, this, "BaseCallbackHandlerMethodsClass");
+    _chunkBL5H2X2Kcjs.__name.call(void 0, this, "BaseCallbackHandlerMethodsClass");
   }
 };
 var BaseCallbackHandler = class _BaseCallbackHandler extends BaseCallbackHandlerMethodsClass {
   static {
-    _chunkAFCLBUQJcjs.__name.call(void 0, this, "BaseCallbackHandler");
+    _chunkBL5H2X2Kcjs.__name.call(void 0, this, "BaseCallbackHandler");
   }
   get lc_namespace() {
     return ["langchain_core", "callbacks", this.name];
@@ -456,7 +456,7 @@ var BaseCallbackHandler = class _BaseCallbackHandler extends BaseCallbackHandler
   static fromMethods(methods) {
     class Handler extends _BaseCallbackHandler {
       static {
-        _chunkAFCLBUQJcjs.__name.call(void 0, this, "Handler");
+        _chunkBL5H2X2Kcjs.__name.call(void 0, this, "Handler");
       }
       constructor() {
         super();
@@ -474,7 +474,7 @@ var BaseCallbackHandler = class _BaseCallbackHandler extends BaseCallbackHandler
 };
 
 // src/langchain.ts
-var parseRole = /* @__PURE__ */ _chunkAFCLBUQJcjs.__name.call(void 0, (ids) => {
+var parseRole = /* @__PURE__ */ _chunkBL5H2X2Kcjs.__name.call(void 0, (ids) => {
   const roleHint = ids[ids.length - 1];
   if (roleHint.includes("Human"))
     return "user";
@@ -497,8 +497,8 @@ var PARAMS_TO_CAPTURE = [
   "tool_choice",
   "response_format"
 ];
-var convertToLunaryMessages = /* @__PURE__ */ _chunkAFCLBUQJcjs.__name.call(void 0, (input) => {
-  const parseMessage = /* @__PURE__ */ _chunkAFCLBUQJcjs.__name.call(void 0, (raw) => {
+var convertToLunaryMessages = /* @__PURE__ */ _chunkBL5H2X2Kcjs.__name.call(void 0, (input) => {
+  const parseMessage = /* @__PURE__ */ _chunkBL5H2X2Kcjs.__name.call(void 0, (raw) => {
     if (typeof raw === "string")
       return raw;
     if ("message" in raw)
@@ -522,7 +522,7 @@ var convertToLunaryMessages = /* @__PURE__ */ _chunkAFCLBUQJcjs.__name.call(void
   }
   return parseMessage(input);
 }, "convertToLunaryMessages");
-var parseInput = /* @__PURE__ */ _chunkAFCLBUQJcjs.__name.call(void 0, (rawInput) => {
+var parseInput = /* @__PURE__ */ _chunkBL5H2X2Kcjs.__name.call(void 0, (rawInput) => {
   if (!rawInput)
     return null;
   const { input, inputs, question } = rawInput;
@@ -534,7 +534,7 @@ var parseInput = /* @__PURE__ */ _chunkAFCLBUQJcjs.__name.call(void 0, (rawInput
     return question;
   return rawInput;
 }, "parseInput");
-var parseOutput = /* @__PURE__ */ _chunkAFCLBUQJcjs.__name.call(void 0, (rawOutput) => {
+var parseOutput = /* @__PURE__ */ _chunkBL5H2X2Kcjs.__name.call(void 0, (rawOutput) => {
   if (!rawOutput)
     return null;
   const { text, output, answer, result } = rawOutput;
@@ -548,7 +548,7 @@ var parseOutput = /* @__PURE__ */ _chunkAFCLBUQJcjs.__name.call(void 0, (rawOutp
     return result;
   return rawOutput;
 }, "parseOutput");
-var parseExtraAndName = /* @__PURE__ */ _chunkAFCLBUQJcjs.__name.call(void 0, (llm, extraParams, metadata) => {
+var parseExtraAndName = /* @__PURE__ */ _chunkBL5H2X2Kcjs.__name.call(void 0, (llm, extraParams, metadata) => {
   const params = {
     ..._nullishCoalesce(_optionalChain([extraParams, 'optionalAccess', _7 => _7.invocation_params]), () => ( {})),
     // @ts-ignore this is a valid property
@@ -566,13 +566,13 @@ var parseExtraAndName = /* @__PURE__ */ _chunkAFCLBUQJcjs.__name.call(void 0, (l
 }, "parseExtraAndName");
 var LunaryHandler = (_class = class extends BaseCallbackHandler {
   static {
-    _chunkAFCLBUQJcjs.__name.call(void 0, this, "LunaryHandler");
+    _chunkBL5H2X2Kcjs.__name.call(void 0, this, "LunaryHandler");
   }
   __init() {this.name = "lunary_handler"}
   
   constructor(fields = {}) {
     super(fields);_class.prototype.__init.call(this);;
-    this.lunary = _chunkOTRT6GGCcjs.src_default;
+    this.lunary = _chunk2FH6JKXEcjs.src_default;
     if (fields) {
       const { appId, apiUrl, verbose } = fields;
       this.lunary.init({

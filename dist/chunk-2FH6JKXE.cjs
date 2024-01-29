@@ -3,7 +3,7 @@
 
 
 
-var _chunkAFCLBUQJcjs = require('./chunk-AFCLBUQJ.cjs');
+var _chunkBL5H2X2Kcjs = require('./chunk-BL5H2X2K.cjs');
 
 // src/context.ts
 var _unctx = require('unctx');
@@ -32,27 +32,27 @@ async function identify(userId, userProps) {
     return next(target);
   });
 }
-_chunkAFCLBUQJcjs.__name.call(void 0, identify, "identify");
+_chunkBL5H2X2Kcjs.__name.call(void 0, identify, "identify");
 async function setParent(runId2) {
   const { target, next } = this;
   return context_default.runId.callAsync(runId2, async () => {
     return next(target);
   });
 }
-_chunkAFCLBUQJcjs.__name.call(void 0, setParent, "setParent");
+_chunkBL5H2X2Kcjs.__name.call(void 0, setParent, "setParent");
 var chainable_default = {
   identify,
   setParent
 };
 
 // src/index.ts
-var BackendMonitor = class extends _chunkAFCLBUQJcjs.lunary_default {
+var BackendMonitor = class extends _chunkBL5H2X2Kcjs.lunary_default {
   static {
-    _chunkAFCLBUQJcjs.__name.call(void 0, this, "BackendMonitor");
+    _chunkBL5H2X2Kcjs.__name.call(void 0, this, "BackendMonitor");
   }
   wrap(type, func, params) {
     const lunary2 = this;
-    const wrappedFn = /* @__PURE__ */ _chunkAFCLBUQJcjs.__name.call(void 0, (...args) => {
+    const wrappedFn = /* @__PURE__ */ _chunkBL5H2X2Kcjs.__name.call(void 0, (...args) => {
       const callInfo = {
         type,
         func,
@@ -103,6 +103,7 @@ var BackendMonitor = class extends _chunkAFCLBUQJcjs.lunary_default {
       enableWaitUntil,
       extra,
       tags,
+      track,
       userId,
       userProps
     } = params || {};
@@ -111,19 +112,21 @@ var BackendMonitor = class extends _chunkAFCLBUQJcjs.lunary_default {
     const userIdData = _optionalChain([params, 'optionalAccess', _5 => _5.userIdParser]) ? params.userIdParser(...args) : userId;
     const userPropsData = _optionalChain([params, 'optionalAccess', _6 => _6.userPropsParser]) ? params.userPropsParser(...args) : userProps;
     const templateId = _optionalChain([params, 'optionalAccess', _7 => _7.templateParser]) ? params.templateParser(...args) : templateParser;
-    const input = inputParser ? inputParser(...args) : _chunkAFCLBUQJcjs.getFunctionInput.call(void 0, func, args);
-    this.trackEvent(type, "start", {
-      runId: runId2,
-      input,
-      name,
-      extra: extraData,
-      tags: tagsData,
-      userId: userIdData,
-      userProps: userPropsData,
-      templateId
-    });
+    const input = inputParser ? inputParser(...args) : _chunkBL5H2X2Kcjs.getFunctionInput.call(void 0, func, args);
+    if (track !== false) {
+      this.trackEvent(type, "start", {
+        runId: runId2,
+        input,
+        name,
+        extra: extraData,
+        tags: tagsData,
+        userId: userIdData,
+        userProps: userPropsData,
+        templateId
+      });
+    }
     const shouldWaitUntil = typeof enableWaitUntil === "function" ? enableWaitUntil(...args) : waitUntil;
-    const processOutput = /* @__PURE__ */ _chunkAFCLBUQJcjs.__name.call(void 0, async (output) => {
+    const processOutput = /* @__PURE__ */ _chunkBL5H2X2Kcjs.__name.call(void 0, async (output) => {
       const tokensUsage = tokensUsageParser ? await tokensUsageParser(output) : void 0;
       this.trackEvent(type, "end", {
         runId: runId2,
@@ -146,18 +149,28 @@ var BackendMonitor = class extends _chunkAFCLBUQJcjs.lunary_default {
           (res) => processOutput(res),
           (error) => console.error(error)
         );
-      } else {
+      } else if (track !== false) {
         await processOutput(output);
       }
       return output;
     } catch (error) {
-      this.trackEvent(type, "error", {
-        runId: runId2,
-        error: _chunkAFCLBUQJcjs.cleanError.call(void 0, error)
-      });
-      await this.processQueue();
+      if (track !== false) {
+        this.trackEvent(type, "error", {
+          runId: runId2,
+          error: _chunkBL5H2X2Kcjs.cleanError.call(void 0, error)
+        });
+        await this.processQueue();
+      }
       throw error;
     }
+  }
+  /**
+   * TODO: This is not functional yet
+   * Wrap anything to inject user or message ID context.
+   * @param {Promise} func - Function to wrap
+   **/
+  wrapContext(func) {
+    return this.wrap(null, func, { track: false });
   }
   /**
    * Wrap an agent's Promise to track it's input, results and any errors.

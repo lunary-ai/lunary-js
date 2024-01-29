@@ -3,7 +3,7 @@ import {
   cleanError,
   getFunctionInput,
   lunary_default
-} from "./chunk-632QYEL3.js";
+} from "./chunk-VDW7T4GE.js";
 
 // src/context.ts
 import { createContext } from "unctx";
@@ -103,6 +103,7 @@ var BackendMonitor = class extends lunary_default {
       enableWaitUntil,
       extra,
       tags,
+      track,
       userId,
       userProps
     } = params || {};
@@ -112,16 +113,18 @@ var BackendMonitor = class extends lunary_default {
     const userPropsData = params?.userPropsParser ? params.userPropsParser(...args) : userProps;
     const templateId = params?.templateParser ? params.templateParser(...args) : templateParser;
     const input = inputParser ? inputParser(...args) : getFunctionInput(func, args);
-    this.trackEvent(type, "start", {
-      runId: runId2,
-      input,
-      name,
-      extra: extraData,
-      tags: tagsData,
-      userId: userIdData,
-      userProps: userPropsData,
-      templateId
-    });
+    if (track !== false) {
+      this.trackEvent(type, "start", {
+        runId: runId2,
+        input,
+        name,
+        extra: extraData,
+        tags: tagsData,
+        userId: userIdData,
+        userProps: userPropsData,
+        templateId
+      });
+    }
     const shouldWaitUntil = typeof enableWaitUntil === "function" ? enableWaitUntil(...args) : waitUntil;
     const processOutput = /* @__PURE__ */ __name(async (output) => {
       const tokensUsage = tokensUsageParser ? await tokensUsageParser(output) : void 0;
@@ -146,18 +149,28 @@ var BackendMonitor = class extends lunary_default {
           (res) => processOutput(res),
           (error) => console.error(error)
         );
-      } else {
+      } else if (track !== false) {
         await processOutput(output);
       }
       return output;
     } catch (error) {
-      this.trackEvent(type, "error", {
-        runId: runId2,
-        error: cleanError(error)
-      });
-      await this.processQueue();
+      if (track !== false) {
+        this.trackEvent(type, "error", {
+          runId: runId2,
+          error: cleanError(error)
+        });
+        await this.processQueue();
+      }
       throw error;
     }
+  }
+  /**
+   * TODO: This is not functional yet
+   * Wrap anything to inject user or message ID context.
+   * @param {Promise} func - Function to wrap
+   **/
+  wrapContext(func) {
+    return this.wrap(null, func, { track: false });
   }
   /**
    * Wrap an agent's Promise to track it's input, results and any errors.

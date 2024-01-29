@@ -61,7 +61,7 @@ declare class Thread {
 }
 
 declare class Lunary {
-    appId?: string;
+    publicKey?: string;
     verbose?: boolean;
     apiUrl?: string;
     ctx?: any;
@@ -72,7 +72,7 @@ declare class Lunary {
      * @param {LunaryOptions} options
      */
     constructor(ctx?: any);
-    init({ appId, verbose, apiUrl }?: LunaryOptions): void;
+    init({ appId, publicKey, verbose, apiUrl }?: LunaryOptions): void;
     /**
      * Manually track a run event.
      * @param {RunType} type - The type of the run.
@@ -116,7 +116,12 @@ declare class Lunary {
      * @example
      * monitor.trackFeedback("some-id", { thumbs: "up" });
      **/
-    trackFeedback: (runId: string, feedback: cJSON) => void;
+    trackFeedback: (runId: string, feedback: cJSON, overwrite?: boolean) => void;
+    /**
+     * Get feedback for a message or run.
+     * @param {string} runId - The ID of the message or the run.
+     */
+    getFeedback: (runId: string) => Promise<any>;
     /**
      * @deprecated Use openThread() instead
      */

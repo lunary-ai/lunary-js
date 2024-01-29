@@ -86,6 +86,7 @@ class BackendMonitor extends Lunary {
       enableWaitUntil,
       extra,
       tags,
+      track,
       userId,
       userProps,
     }: WrapParams<T> = params || {}
@@ -111,16 +112,18 @@ class BackendMonitor extends Lunary {
       ? inputParser(...args)
       : getFunctionInput(func, args)
 
-    this.trackEvent(type, "start", {
-      runId,
-      input,
-      name,
-      extra: extraData,
-      tags: tagsData,
-      userId: userIdData,
-      userProps: userPropsData,
-      templateId,
-    })
+    if (track !== false) {
+      this.trackEvent(type, "start", {
+        runId,
+        input,
+        name,
+        extra: extraData,
+        tags: tagsData,
+        userId: userIdData,
+        userProps: userPropsData,
+        templateId,
+      })
+    }
 
     const shouldWaitUntil =
       typeof enableWaitUntil === "function"
@@ -160,23 +163,34 @@ class BackendMonitor extends Lunary {
           (res) => processOutput(res),
           (error) => console.error(error)
         )
-      } else {
+      } else if (track !== false) {
         await processOutput(output)
       }
 
       return output
     } catch (error) {
-      this.trackEvent(type, "error", {
-        runId,
-        error: cleanError(error),
-      })
+      if (track !== false) {
+        this.trackEvent(type, "error", {
+          runId,
+          error: cleanError(error),
+        })
 
-      // Process queue immediately as if there is an uncaught exception next, it won't be processed
-      // TODO: find a cleaner (and non platform-specific) way to do this
-      await this.processQueue()
+        // Process queue immediately as if there is an uncaught exception next, it won't be processed
+        // TODO: find a cleaner (and non platform-specific) way to do this
+        await this.processQueue()
+      }
 
       throw error
     }
+  }
+
+  /**
+   * TODO: This is not functional yet
+   * Wrap anything to inject user or message ID context.
+   * @param {Promise} func - Function to wrap
+   **/
+  wrapContext<T extends WrappableFn>(func: T): WrappedFn<T> {
+    return this.wrap(null, func, { track: false })
   }
 
   /**

@@ -1,9 +1,15 @@
-import { WrappableFn, WrapParams, WrappedFn } from './types.cjs';
-import { L as Lunary } from './lunary-HbnUxRrH.js';
+import { WrappableFn, WrappedFn, WrapParams } from './types.cjs';
+import { L as Lunary } from './lunary-VYE2OsMZ.js';
 
 declare class BackendMonitor extends Lunary {
     private wrap;
     private executeWrappedFunction;
+    /**
+     * TODO: This is not functional yet
+     * Wrap anything to inject user or message ID context.
+     * @param {Promise} func - Function to wrap
+     **/
+    wrapContext<T extends WrappableFn>(func: T): WrappedFn<T>;
     /**
      * Wrap an agent's Promise to track it's input, results and any errors.
      * @param {Promise} func - Agent function

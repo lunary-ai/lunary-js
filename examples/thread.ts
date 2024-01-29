@@ -13,6 +13,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 const thread = monitor.openThread({
   // id: "some-test-lunary-jhoishjgsjggosejktps-gushggseogkespksisejg",
   tags: ["third"],
+  userId: "user123",
 })
 
 thread.trackMessage({
@@ -43,16 +44,14 @@ const res = await openai.chat.completions
   })
   .setParent(id)
 
-console.log(res.choices[0].message.content)
-
 await sleep(500)
 
 thread.trackMessage({
   role: "assistant",
   content: "Yes, sure.",
-  // feedback: {
-  //   thumbs: "up",
-  // },
+  feedback: {
+    thumbs: "up",
+  },
 })
 
 await sleep(500)

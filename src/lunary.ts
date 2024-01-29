@@ -23,7 +23,7 @@ import { Thread } from "./thread"
 const MAX_CHUNK_SIZE = 20
 
 class Lunary {
-  appId?: string
+  publicKey?: string
   verbose?: boolean
   apiUrl?: string
   ctx?: any
@@ -38,19 +38,23 @@ class Lunary {
    */
   constructor(ctx?) {
     this.init({
-      appId: checkEnv("LUNARY_APP_ID") || checkEnv("LLMONITOR_APP_ID"),
+      appId:
+        checkEnv("LUNARY_APP_ID") ||
+        checkEnv("LUNARY_PUBLIC_KEY") ||
+        checkEnv("LLMONITOR_APP_ID"),
       apiUrl:
         checkEnv("LUNARY_API_URL") ||
         checkEnv("LLMONITOR_API_URL") ||
-        "https://app.lunary.ai",
+        "https://api.lunary.ai",
       verbose: false,
     })
 
     this.ctx = ctx
   }
 
-  init({ appId, verbose, apiUrl }: LunaryOptions = {}) {
-    if (appId) this.appId = appId
+  init({ appId, publicKey, verbose, apiUrl }: LunaryOptions = {}) {
+    if (appId) this.publicKey = appId
+    if (publicKey) this.publicKey = publicKey
     if (verbose) this.verbose = verbose
     if (apiUrl) this.apiUrl = apiUrl
   }
@@ -68,9 +72,9 @@ class Lunary {
     event: EventName,
     data: Partial<RunEvent | LogEvent>
   ): void {
-    if (!this.appId)
+    if (!this.publicKey)
       return console.warn(
-        "Lunary: Project tracking ID not set. Not reporting anything. Get one on the dashboard: https://app.lunary.ai"
+        "Lunary: Project ID not set. Not reporting anything. Get one on the dashboard: https://app.lunary.ai"
       )
 
     // Add 1ms to timestamp if it's the same/lower than the last event
@@ -101,7 +105,6 @@ class Lunary {
       type,
       userId,
       userProps,
-      app: this.appId,
       parentRunId,
       timestamp,
       runtime,
@@ -135,10 +138,11 @@ class Lunary {
 
       const copy = this.queue.slice()
 
-      await fetch(`${this.apiUrl}/api/report`, {
+      await fetch(`${this.apiUrl}/v1/runs/ingest`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + this.publicKey,
         },
         body: JSON.stringify({ events: copy }),
       })
@@ -166,7 +170,7 @@ class Lunary {
   getDataset = async (datasetId: string) => {
     try {
       const response = await fetch(
-        `${this.apiUrl}/v1/projects/${this.appId}/datasets/${datasetId}`,
+        `${this.apiUrl}/v1/projects/${this.publicKey}/datasets/${datasetId}`,
         {
           method: "GET",
           headers: {
@@ -201,15 +205,13 @@ class Lunary {
       return cacheEntry.data
     }
 
-    const response = await fetch(
-      `${this.apiUrl}/api/v1/template?slug=${slug}&app_id=${this.appId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
+    const response = await fetch(`${this.apiUrl}/v1/template?slug=${slug}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.publicKey,
+      },
+    })
 
     if (!response.ok) {
       throw new Error(
@@ -263,7 +265,7 @@ class Lunary {
    * @example
    * monitor.trackFeedback("some-id", { thumbs: "up" });
    **/
-  trackFeedback = (runId: string, feedback: cJSON) => {
+  trackFeedback = (runId: string, feedback: cJSON, overwrite = false) => {
     if (!runId || typeof runId !== "string")
       return console.error("Lunary: No message ID provided to track feedback")
 
@@ -274,8 +276,38 @@ class Lunary {
 
     this.trackEvent(null, "feedback", {
       runId,
+      overwrite,
       extra: feedback,
     })
+  }
+
+  /**
+   * Get feedback for a message or run.
+   * @param {string} runId - The ID of the message or the run.
+   */
+  getFeedback = async (runId: string) => {
+    if (!runId || typeof runId !== "string")
+      return console.error("Lunary: No message ID provided to get feedback")
+
+    const response = await fetch(`${this.apiUrl}/v1/runs/${runId}/feedback`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.publicKey,
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(
+        `Lunary: Error fetching feedback: ${
+          response.statusText || response.status
+        } - ${await response.text()}`
+      )
+    }
+
+    const data = await response.json()
+
+    return data
   }
 
   /**

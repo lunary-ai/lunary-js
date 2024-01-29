@@ -9,7 +9,8 @@ export type cJSON =
   | Array<cJSON>
 
 export interface LunaryOptions {
-  appId?: string
+  appId?: string // deprecated
+  publicKey?: string
   apiUrl?: string
   verbose?: boolean
 }
@@ -37,7 +38,6 @@ export type EventName =
 export interface Event {
   type: RunType
   event: EventName
-  app: string
   timestamp: number
   userId?: string
   userProps?: cJSON
@@ -85,6 +85,7 @@ export type WrapExtras = {
 }
 
 export type WrapParams<T extends WrappableFn> = {
+  track?: boolean
   inputParser?: (...args: Parameters<T>) => cJSON
   extraParser?: (...args: Parameters<T>) => cJSON
   nameParser?: (...args: Parameters<T>) => string

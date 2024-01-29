@@ -1,6 +1,6 @@
 {
   "name": "lunary",
-  "version": "0.6.16",
+  "version": "0.7.0",
   "description": "Lunary is an open-source platform for AI developers.",
   "type": "module",
   "types": "./dist/index.d.ts",
@@ -61,8 +61,7 @@
   "author": "lunary",
   "license": "Apache-2.0",
   "dependencies": {
-    "unctx": "^2.3.1",
-    "update": "^0.7.4"
+    "unctx": "^2.3.1"
   },
   "devDependencies": {
     "@types/node": "^20.10.6",

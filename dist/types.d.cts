@@ -3,6 +3,7 @@ type cJSON = string | number | boolean | null | undefined | {
 } | Array<cJSON>;
 interface LunaryOptions {
     appId?: string;
+    publicKey?: string;
     apiUrl?: string;
     verbose?: boolean;
 }
@@ -11,7 +12,6 @@ type EventName = "start" | "end" | "error" | "info" | "warn" | "feedback" | "cha
 interface Event {
     type: RunType;
     event: EventName;
-    app: string;
     timestamp: number;
     userId?: string;
     userProps?: cJSON;
@@ -52,6 +52,7 @@ type WrapExtras = {
     userProps?: cJSON;
 };
 type WrapParams<T extends WrappableFn> = {
+    track?: boolean;
     inputParser?: (...args: Parameters<T>) => cJSON;
     extraParser?: (...args: Parameters<T>) => cJSON;
     nameParser?: (...args: Parameters<T>) => string;
