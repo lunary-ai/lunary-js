@@ -205,13 +205,16 @@ class Lunary {
       return cacheEntry.data
     }
 
-    const response = await fetch(`${this.apiUrl}/v1/template?slug=${slug}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + this.publicKey,
-      },
-    })
+    const response = await fetch(
+      `${this.apiUrl}/v1/template_versions/latest?slug=${slug}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + this.publicKey,
+        },
+      }
+    )
 
     if (!response.ok) {
       throw new Error(
