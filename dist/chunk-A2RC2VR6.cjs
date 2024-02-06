@@ -1,20 +1,20 @@
-import {
-  __name,
-  cleanError,
-  getFunctionInput,
-  lunary_default
-} from "./chunk-VDW7T4GE.js";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+
+
+
+
+var _chunkFZXUPFN4cjs = require('./chunk-FZXUPFN4.cjs');
 
 // src/context.ts
-import { createContext } from "unctx";
-import { AsyncLocalStorage } from "node:async_hooks";
-var runId = createContext({
+var _unctx = require('unctx');
+var _async_hooks = require('async_hooks');
+var runId = _unctx.createContext.call(void 0, {
   asyncContext: true,
-  AsyncLocalStorage
+  AsyncLocalStorage: _async_hooks.AsyncLocalStorage
 });
-var user = createContext({
+var user = _unctx.createContext.call(void 0, {
   asyncContext: true,
-  AsyncLocalStorage
+  AsyncLocalStorage: _async_hooks.AsyncLocalStorage
 });
 var context_default = {
   runId,
@@ -32,27 +32,27 @@ async function identify(userId, userProps) {
     return next(target);
   });
 }
-__name(identify, "identify");
+_chunkFZXUPFN4cjs.__name.call(void 0, identify, "identify");
 async function setParent(runId2) {
   const { target, next } = this;
   return context_default.runId.callAsync(runId2, async () => {
     return next(target);
   });
 }
-__name(setParent, "setParent");
+_chunkFZXUPFN4cjs.__name.call(void 0, setParent, "setParent");
 var chainable_default = {
   identify,
   setParent
 };
 
 // src/index.ts
-var BackendMonitor = class extends lunary_default {
+var BackendMonitor = class extends _chunkFZXUPFN4cjs.lunary_default {
   static {
-    __name(this, "BackendMonitor");
+    _chunkFZXUPFN4cjs.__name.call(void 0, this, "BackendMonitor");
   }
   wrap(type, func, params) {
     const lunary2 = this;
-    const wrappedFn = /* @__PURE__ */ __name((...args) => {
+    const wrappedFn = /* @__PURE__ */ _chunkFZXUPFN4cjs.__name.call(void 0, (...args) => {
       const callInfo = {
         type,
         func,
@@ -93,7 +93,7 @@ var BackendMonitor = class extends lunary_default {
   async executeWrappedFunction(target) {
     const { type, args, func, params } = target;
     const runId2 = crypto.randomUUID();
-    const name = params?.nameParser ? params.nameParser(...args) : params?.name ?? func.name;
+    const name = _optionalChain([params, 'optionalAccess', _ => _.nameParser]) ? params.nameParser(...args) : _nullishCoalesce(_optionalChain([params, 'optionalAccess', _2 => _2.name]), () => ( func.name));
     const {
       inputParser,
       outputParser,
@@ -107,12 +107,12 @@ var BackendMonitor = class extends lunary_default {
       userId,
       userProps
     } = params || {};
-    const extraData = params?.extraParser ? params.extraParser(...args) : extra;
-    const tagsData = params?.tagsParser ? params.tagsParser(...args) : tags;
-    const userIdData = params?.userIdParser ? params.userIdParser(...args) : userId;
-    const userPropsData = params?.userPropsParser ? params.userPropsParser(...args) : userProps;
-    const templateId = params?.templateParser ? params.templateParser(...args) : templateParser;
-    const input = inputParser ? inputParser(...args) : getFunctionInput(func, args);
+    const extraData = _optionalChain([params, 'optionalAccess', _3 => _3.extraParser]) ? params.extraParser(...args) : extra;
+    const tagsData = _optionalChain([params, 'optionalAccess', _4 => _4.tagsParser]) ? params.tagsParser(...args) : tags;
+    const userIdData = _optionalChain([params, 'optionalAccess', _5 => _5.userIdParser]) ? params.userIdParser(...args) : userId;
+    const userPropsData = _optionalChain([params, 'optionalAccess', _6 => _6.userPropsParser]) ? params.userPropsParser(...args) : userProps;
+    const templateId = _optionalChain([params, 'optionalAccess', _7 => _7.templateParser]) ? params.templateParser(...args) : templateParser;
+    const input = inputParser ? inputParser(...args) : _chunkFZXUPFN4cjs.getFunctionInput.call(void 0, func, args);
     if (track !== false) {
       this.trackEvent(type, "start", {
         runId: runId2,
@@ -126,7 +126,7 @@ var BackendMonitor = class extends lunary_default {
       });
     }
     const shouldWaitUntil = typeof enableWaitUntil === "function" ? enableWaitUntil(...args) : waitUntil;
-    const processOutput = /* @__PURE__ */ __name(async (output) => {
+    const processOutput = /* @__PURE__ */ _chunkFZXUPFN4cjs.__name.call(void 0, async (output) => {
       const tokensUsage = tokensUsageParser ? await tokensUsageParser(output) : void 0;
       this.trackEvent(type, "end", {
         runId: runId2,
@@ -157,7 +157,7 @@ var BackendMonitor = class extends lunary_default {
       if (track !== false) {
         this.trackEvent(type, "error", {
           runId: runId2,
-          error: cleanError(error)
+          error: _chunkFZXUPFN4cjs.cleanError.call(void 0, error)
         });
         await this.processQueue();
       }
@@ -200,6 +200,6 @@ var BackendMonitor = class extends lunary_default {
 var lunary = new BackendMonitor(context_default);
 var src_default = lunary;
 
-export {
-  src_default
-};
+
+
+exports.src_default = src_default;

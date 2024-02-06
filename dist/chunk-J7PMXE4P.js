@@ -1,4 +1,4 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; } var _class; var _class2;var __create = Object.create;
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
@@ -27,10 +27,10 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 
 // src/utils.ts
 var checkEnv = /* @__PURE__ */ __name((variable) => {
-  if (typeof process !== "undefined" && _optionalChain([process, 'access', _2 => _2.env, 'optionalAccess', _3 => _3[variable]])) {
+  if (typeof process !== "undefined" && process.env?.[variable]) {
     return process.env[variable];
   }
-  if (typeof Deno !== "undefined" && _optionalChain([Deno, 'access', _4 => _4.env, 'optionalAccess', _5 => _5.get, 'call', _6 => _6(variable)])) {
+  if (typeof Deno !== "undefined" && Deno.env?.get(variable)) {
     return Deno.env.get(variable);
   }
   return void 0;
@@ -97,26 +97,26 @@ var getFunctionInput = /* @__PURE__ */ __name((func, args) => {
 }, "getFunctionInput");
 
 // src/thread.ts
-var Thread = (_class = class {
+var Thread = class {
   static {
     __name(this, "Thread");
   }
-  
-  
-  
-  
-  
-  
-  constructor(monitor, options) {;_class.prototype.__init.call(this);_class.prototype.__init2.call(this);_class.prototype.__init3.call(this);
+  id;
+  monitor;
+  started;
+  tags;
+  userId;
+  userProps;
+  constructor(monitor, options) {
     this.monitor = monitor;
-    this.id = _optionalChain([options, 'optionalAccess', _7 => _7.id]) || crypto.randomUUID();
-    this.started = _optionalChain([options, 'optionalAccess', _8 => _8.started]) || false;
-    if (_optionalChain([options, 'optionalAccess', _9 => _9.tags]))
-      this.tags = _optionalChain([options, 'optionalAccess', _10 => _10.tags]);
-    if (_optionalChain([options, 'optionalAccess', _11 => _11.userId]))
-      this.userId = _optionalChain([options, 'optionalAccess', _12 => _12.userId]);
-    if (_optionalChain([options, 'optionalAccess', _13 => _13.userProps]))
-      this.userProps = _optionalChain([options, 'optionalAccess', _14 => _14.userProps]);
+    this.id = options?.id || crypto.randomUUID();
+    this.started = options?.started || false;
+    if (options?.tags)
+      this.tags = options?.tags;
+    if (options?.userId)
+      this.userId = options?.userId;
+    if (options?.userProps)
+      this.userProps = options?.userProps;
   }
   /**
    * Track a new message from the user
@@ -124,8 +124,8 @@ var Thread = (_class = class {
    * @param {Message} message - The message to track
    * @returns {string} - The message ID, to reconcile with feedback and backend LLM calls
    * */
-  __init() {this.trackMessage = (message) => {
-    const runId = _nullishCoalesce(message.id, () => ( crypto.randomUUID()));
+  trackMessage = (message) => {
+    const runId = message.id ?? crypto.randomUUID();
     this.monitor.trackEvent("thread", "chat", {
       runId,
       parentRunId: this.id,
@@ -136,7 +136,7 @@ var Thread = (_class = class {
       message
     });
     return runId;
-  }}
+  };
   /**
    * Track a new message from the user
    *
@@ -147,8 +147,8 @@ var Thread = (_class = class {
    * @param {string} customId - Set a custom ID for the message
    * @returns {string} - The message ID, to reconcile with the bot's reply
    * */
-  __init2() {this.trackUserMessage = (text, props, customId) => {
-    const runId = _nullishCoalesce(customId, () => ( crypto.randomUUID()));
+  trackUserMessage = (text, props, customId) => {
+    const runId = customId ?? crypto.randomUUID();
     if (!this.started) {
       this.monitor.trackEvent("thread", "start", {
         runId: this.id,
@@ -163,7 +163,7 @@ var Thread = (_class = class {
       extra: props
     });
     return runId;
-  }}
+  };
   /**
    * Track a new message from the bot
    *
@@ -173,32 +173,32 @@ var Thread = (_class = class {
    * @param {string} text - The bot message
    * @param {cJSON} props - Extra properties to send with the message
    * */
-  __init3() {this.trackBotMessage = (replyToId, text, props) => {
+  trackBotMessage = (replyToId, text, props) => {
     this.monitor.trackEvent("chat", "end", {
       runId: replyToId,
       output: text,
       extra: props
     });
-  }}
-}, _class);
+  };
+};
 
 // src/lunary.ts
 var MAX_CHUNK_SIZE = 20;
-var Lunary = (_class2 = class {
+var Lunary = class {
   static {
     __name(this, "Lunary");
   }
-  
-  
-  
-  
-  __init4() {this.queue = []}
-  __init5() {this.queueRunning = false}
-  __init6() {this.templateCache = {}}
+  publicKey;
+  verbose;
+  apiUrl;
+  ctx;
+  queue = [];
+  queueRunning = false;
+  templateCache = {};
   /**
    * @param {LunaryOptions} options
    */
-  constructor(ctx) {;_class2.prototype.__init4.call(this);_class2.prototype.__init5.call(this);_class2.prototype.__init6.call(this);_class2.prototype.__init7.call(this);_class2.prototype.__init8.call(this);_class2.prototype.__init9.call(this);_class2.prototype.__init10.call(this);_class2.prototype.__init11.call(this);_class2.prototype.__init12.call(this);
+  constructor(ctx) {
     this.init({
       appId: checkEnv("LUNARY_APP_ID") || checkEnv("LUNARY_PUBLIC_KEY") || checkEnv("LLMONITOR_APP_ID"),
       apiUrl: checkEnv("LUNARY_API_URL") || checkEnv("LLMONITOR_API_URL") || "https://api.lunary.ai",
@@ -230,21 +230,21 @@ var Lunary = (_class2 = class {
         "Lunary: Project ID not set. Not reporting anything. Get one on the dashboard: https://app.lunary.ai"
       );
     let timestamp = Date.now();
-    const lastEvent = _optionalChain([this, 'access', _15 => _15.queue, 'optionalAccess', _16 => _16[this.queue.length - 1]]);
-    if (_optionalChain([lastEvent, 'optionalAccess', _17 => _17.timestamp]) >= timestamp) {
+    const lastEvent = this.queue?.[this.queue.length - 1];
+    if (lastEvent?.timestamp >= timestamp) {
       timestamp = lastEvent.timestamp + 1;
     }
-    const parentRunId = _nullishCoalesce(data.parentRunId, () => ( _optionalChain([this, 'access', _18 => _18.ctx, 'optionalAccess', _19 => _19.runId, 'access', _20 => _20.tryUse, 'call', _21 => _21()])));
-    const user = _optionalChain([this, 'access', _22 => _22.ctx, 'optionalAccess', _23 => _23.user, 'optionalAccess', _24 => _24.tryUse, 'call', _25 => _25()]);
-    const userId = _nullishCoalesce(data.userId, () => ( _optionalChain([user, 'optionalAccess', _26 => _26.userId])));
-    let userProps = _nullishCoalesce(data.userProps, () => ( _optionalChain([user, 'optionalAccess', _27 => _27.userProps])));
+    const parentRunId = data.parentRunId ?? this.ctx?.runId.tryUse();
+    const user = this.ctx?.user?.tryUse();
+    const userId = data.userId ?? user?.userId;
+    let userProps = data.userProps ?? user?.userProps;
     if (userProps && !userId) {
       console.warn(
         "Lunary: userProps passed without userId. Ignoring userProps."
       );
       userProps = void 0;
     }
-    const runtime = _nullishCoalesce(data.runtime, () => ( "lunary-js"));
+    const runtime = data.runtime ?? "lunary-js";
     const eventData = {
       event,
       type,
@@ -266,7 +266,7 @@ var Lunary = (_class2 = class {
     }
   }
   // Wait 500ms to allow other events to be added to the queue
-  __init7() {this.debouncedProcessQueue = debounce(() => this.processQueue())}
+  debouncedProcessQueue = debounce(() => this.processQueue());
   async processQueue() {
     if (!this.queue.length || this.queueRunning)
       return;
@@ -299,7 +299,7 @@ var Lunary = (_class2 = class {
    * @param {string} datasetSlug - The slug of the dataset to get.
    * @returns {Promise<Run[]>} The dataset's runs.
    */
-  __init8() {this.getDataset = async (datasetId) => {
+  getDataset = async (datasetId) => {
     try {
       const response = await fetch(
         `${this.apiUrl}/v1/projects/${this.publicKey}/datasets/${datasetId}`,
@@ -317,7 +317,7 @@ var Lunary = (_class2 = class {
         `Lunary: Error fetching dataset: you must be on the Unlimited or Enterprise plan to use this feature.`
       );
     }
-  }}
+  };
   /**
    * Get a raw template's data from the API.
    * @param {string} slug - The slug of the template to get.
@@ -326,19 +326,22 @@ var Lunary = (_class2 = class {
    * const template = await lunary.getRawTemplate("welcome")
    * console.log(template)
    */
-  __init9() {this.getRawTemplate = async (slug) => {
+  getRawTemplate = async (slug) => {
     const cacheEntry = this.templateCache[slug];
     const now = Date.now();
     if (cacheEntry && now - cacheEntry.timestamp < 6e4) {
       return cacheEntry.data;
     }
-    const response = await fetch(`${this.apiUrl}/v1/template?slug=${slug}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + this.publicKey
+    const response = await fetch(
+      `${this.apiUrl}/v1/template_versions/latest?slug=${slug}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + this.publicKey
+        }
       }
-    });
+    );
     if (!response.ok) {
       throw new Error(
         `Lunary: Error fetching template: ${response.statusText || response.status} - ${await response.text()}`
@@ -347,7 +350,7 @@ var Lunary = (_class2 = class {
     const data = await response.json();
     this.templateCache[slug] = { timestamp: now, data };
     return data;
-  }}
+  };
   /**
    * Render a template with the given data in the OpenAI completion format.
    * @param {string} slug - The slug of the template to render.
@@ -357,7 +360,7 @@ var Lunary = (_class2 = class {
    * const template = await lunary.renderTemplate("welcome", { name: "John" })
    * console.log(template)
    */
-  __init10() {this.renderTemplate = async (slug, data) => {
+  renderTemplate = async (slug, data) => {
     const { id: templateId, content, extra } = await this.getRawTemplate(slug);
     const textMode = typeof content === "string";
     try {
@@ -373,7 +376,7 @@ var Lunary = (_class2 = class {
     } catch (error) {
       throw new Error(`Error rendering template ${slug} - ` + error.message);
     }
-  }}
+  };
   /**
    * Attach feedback to a message or run directly.
    * @param {string} runId - The ID of the message or the run.
@@ -381,7 +384,7 @@ var Lunary = (_class2 = class {
    * @example
    * monitor.trackFeedback("some-id", { thumbs: "up" });
    **/
-  __init11() {this.trackFeedback = (runId, feedback, overwrite = false) => {
+  trackFeedback = (runId, feedback, overwrite = false) => {
     if (!runId || typeof runId !== "string")
       return console.error("Lunary: No message ID provided to track feedback");
     if (typeof feedback !== "object")
@@ -393,12 +396,12 @@ var Lunary = (_class2 = class {
       overwrite,
       extra: feedback
     });
-  }}
+  };
   /**
    * Get feedback for a message or run.
    * @param {string} runId - The ID of the message or the run.
    */
-  __init12() {this.getFeedback = async (runId) => {
+  getFeedback = async (runId) => {
     if (!runId || typeof runId !== "string")
       return console.error("Lunary: No message ID provided to get feedback");
     const response = await fetch(`${this.apiUrl}/v1/runs/${runId}/feedback`, {
@@ -415,7 +418,7 @@ var Lunary = (_class2 = class {
     }
     const data = await response.json();
     return data;
-  }}
+  };
   /**
    * @deprecated Use openThread() instead
    */
@@ -484,7 +487,7 @@ var Lunary = (_class2 = class {
   error(message, error) {
     if (typeof message === "object") {
       error = message;
-      message = _nullishCoalesce(error.message, () => ( void 0));
+      message = error.message ?? void 0;
     }
     this.trackEvent("log", "error", {
       message,
@@ -497,15 +500,15 @@ var Lunary = (_class2 = class {
   async flush() {
     await this.processQueue();
   }
-}, _class2);
+};
 var lunary_default = Lunary;
 
-
-
-
-
-
-
-
-
-exports.__name = __name; exports.__commonJS = __commonJS; exports.__toESM = __toESM; exports.cleanError = cleanError; exports.cleanExtra = cleanExtra; exports.getFunctionInput = getFunctionInput; exports.lunary_default = lunary_default;
+export {
+  __name,
+  __commonJS,
+  __toESM,
+  cleanError,
+  cleanExtra,
+  getFunctionInput,
+  lunary_default
+};
