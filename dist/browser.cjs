@@ -1,9 +1,9 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});
 
-var _chunkYT7K6KSWcjs = require('./chunk-YT7K6KSW.cjs');
-require('./chunk-FZXUPFN4.cjs');
+var _chunkGU527OPEcjs = require('./chunk-GU527OPE.cjs');
+require('./chunk-XUNQSDBR.cjs');
 
 
-exports.default = _chunkYT7K6KSWcjs.browser_default;
+exports.default = _chunkGU527OPEcjs.browser_default;
 
 module.exports = exports.default;

@@ -1,9 +1,10 @@
 import {
   __name,
   cleanError,
+  generateUUID,
   getFunctionInput,
   lunary_default
-} from "./chunk-J7PMXE4P.js";
+} from "./chunk-EY5DUN4Y.js";
 
 // src/context.ts
 import { createContext } from "unctx";
@@ -92,7 +93,7 @@ var BackendMonitor = class extends lunary_default {
   // Extract the actual execution logic into a function
   async executeWrappedFunction(target) {
     const { type, args, func, params } = target;
-    const runId2 = crypto.randomUUID();
+    const runId2 = generateUUID();
     const name = params?.nameParser ? params.nameParser(...args) : params?.name ?? func.name;
     const {
       inputParser,

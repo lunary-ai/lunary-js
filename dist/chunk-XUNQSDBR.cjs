@@ -95,6 +95,20 @@ var getFunctionInput = /* @__PURE__ */ __name((func, args) => {
   }, {});
   return input;
 }, "getFunctionInput");
+var generateUUID = /* @__PURE__ */ __name(() => {
+  let d = (/* @__PURE__ */ new Date()).getTime(), d2 = typeof performance !== "undefined" && performance.now && performance.now() * 1e3 || 0;
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    let r = Math.random() * 16;
+    if (d > 0) {
+      r = (d + r) % 16 | 0;
+      d = Math.floor(d / 16);
+    } else {
+      r = (d2 + r) % 16 | 0;
+      d2 = Math.floor(d2 / 16);
+    }
+    return (c == "x" ? r : r & 7 | 8).toString(16);
+  });
+}, "generateUUID");
 
 // src/thread.ts
 var Thread = (_class = class {
@@ -109,7 +123,7 @@ var Thread = (_class = class {
   
   constructor(monitor, options) {;_class.prototype.__init.call(this);_class.prototype.__init2.call(this);_class.prototype.__init3.call(this);
     this.monitor = monitor;
-    this.id = _optionalChain([options, 'optionalAccess', _7 => _7.id]) || crypto.randomUUID();
+    this.id = _optionalChain([options, 'optionalAccess', _7 => _7.id]) || generateUUID();
     this.started = _optionalChain([options, 'optionalAccess', _8 => _8.started]) || false;
     if (_optionalChain([options, 'optionalAccess', _9 => _9.tags]))
       this.tags = _optionalChain([options, 'optionalAccess', _10 => _10.tags]);
@@ -125,7 +139,7 @@ var Thread = (_class = class {
    * @returns {string} - The message ID, to reconcile with feedback and backend LLM calls
    * */
   __init() {this.trackMessage = (message) => {
-    const runId = _nullishCoalesce(message.id, () => ( crypto.randomUUID()));
+    const runId = _nullishCoalesce(message.id, () => ( generateUUID()));
     this.monitor.trackEvent("thread", "chat", {
       runId,
       parentRunId: this.id,
@@ -148,7 +162,7 @@ var Thread = (_class = class {
    * @returns {string} - The message ID, to reconcile with the bot's reply
    * */
   __init2() {this.trackUserMessage = (text, props, customId) => {
-    const runId = _nullishCoalesce(customId, () => ( crypto.randomUUID()));
+    const runId = _nullishCoalesce(customId, () => ( generateUUID()));
     if (!this.started) {
       this.monitor.trackEvent("thread", "start", {
         runId: this.id,
@@ -511,4 +525,5 @@ var lunary_default = Lunary;
 
 
 
-exports.__name = __name; exports.__commonJS = __commonJS; exports.__toESM = __toESM; exports.cleanError = cleanError; exports.cleanExtra = cleanExtra; exports.getFunctionInput = getFunctionInput; exports.lunary_default = lunary_default;
+
+exports.__name = __name; exports.__commonJS = __commonJS; exports.__toESM = __toESM; exports.cleanError = cleanError; exports.cleanExtra = cleanExtra; exports.getFunctionInput = getFunctionInput; exports.generateUUID = generateUUID; exports.lunary_default = lunary_default;

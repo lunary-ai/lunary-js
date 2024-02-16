@@ -1,4 +1,4 @@
-import { cleanError, getFunctionInput } from "./utils"
+import { cleanError, generateUUID, getFunctionInput } from "./utils"
 
 import { RunType, WrapParams, WrappableFn, WrappedFn } from "./types"
 
@@ -70,7 +70,7 @@ class BackendMonitor extends Lunary {
     const { type, args, func, params } = target
 
     // Generate a random ID for this run (will be injected into the context)
-    const runId = crypto.randomUUID()
+    const runId = generateUUID()
 
     // Get agent name from function name or params
     const name = params?.nameParser

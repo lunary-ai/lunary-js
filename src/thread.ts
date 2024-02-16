@@ -1,5 +1,6 @@
 import Lunary from "./lunary"
 import { cJSON } from "./types"
+import { generateUUID } from "./utils"
 
 /**
  * Flow:
@@ -39,7 +40,7 @@ export class Thread {
     }
   ) {
     this.monitor = monitor
-    this.id = options?.id || crypto.randomUUID()
+    this.id = options?.id || generateUUID()
     this.started = options?.started || false
     if (options?.tags) this.tags = options?.tags
     if (options?.userId) this.userId = options?.userId
@@ -54,7 +55,7 @@ export class Thread {
    * */
 
   trackMessage = (message: Message) => {
-    const runId = message.id ?? crypto.randomUUID()
+    const runId = message.id ?? generateUUID()
 
     // thread.chat is a special event
     // the backend will reconcile the messages
@@ -83,7 +84,7 @@ export class Thread {
    * */
 
   trackUserMessage = (text: string, props?: cJSON, customId?: string) => {
-    const runId = customId ?? crypto.randomUUID()
+    const runId = customId ?? generateUUID()
 
     if (!this.started) {
       // first open the thread

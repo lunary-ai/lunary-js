@@ -1,21 +1,21 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
-var _chunkYT7K6KSWcjs = require('./chunk-YT7K6KSW.cjs');
+var _chunkGU527OPEcjs = require('./chunk-GU527OPE.cjs');
 
 
-var _chunkFZXUPFN4cjs = require('./chunk-FZXUPFN4.cjs');
+var _chunkXUNQSDBRcjs = require('./chunk-XUNQSDBR.cjs');
 
 // src/react.ts
 var _react = require('react');
 function useChatMonitor() {
   const [thread, setThread] = _react.useState.call(void 0, );
-  const restart = /* @__PURE__ */ _chunkFZXUPFN4cjs.__name.call(void 0, () => {
-    const newThread = _chunkYT7K6KSWcjs.browser_default.openThread();
+  const restart = /* @__PURE__ */ _chunkXUNQSDBRcjs.__name.call(void 0, () => {
+    const newThread = _chunkGU527OPEcjs.browser_default.openThread();
     setThread(newThread);
     return newThread;
   }, "restart");
-  const resumeThread = /* @__PURE__ */ _chunkFZXUPFN4cjs.__name.call(void 0, (id) => {
-    const newThread = _chunkYT7K6KSWcjs.browser_default.openThread(id);
+  const resumeThread = /* @__PURE__ */ _chunkXUNQSDBRcjs.__name.call(void 0, (id) => {
+    const newThread = _chunkGU527OPEcjs.browser_default.openThread(id);
     setThread(newThread);
     return newThread;
   }, "resumeThread");
@@ -28,12 +28,12 @@ function useChatMonitor() {
     restartThread: restart,
     resumeThread,
     trackMessage: _optionalChain([thread, 'optionalAccess', _ => _.trackMessage]),
-    trackFeedback: _chunkYT7K6KSWcjs.browser_default.trackFeedback,
-    identify: _chunkYT7K6KSWcjs.browser_default.identify
+    trackFeedback: _chunkGU527OPEcjs.browser_default.trackFeedback,
+    identify: _chunkGU527OPEcjs.browser_default.identify
   };
 }
-_chunkFZXUPFN4cjs.__name.call(void 0, useChatMonitor, "useChatMonitor");
-var useMonitorVercelAI = /* @__PURE__ */ _chunkFZXUPFN4cjs.__name.call(void 0, (props) => {
+_chunkXUNQSDBRcjs.__name.call(void 0, useChatMonitor, "useChatMonitor");
+var useMonitorVercelAI = /* @__PURE__ */ _chunkXUNQSDBRcjs.__name.call(void 0, (props) => {
   const { messages, isLoading } = props;
   const {
     trackFeedback,
@@ -73,7 +73,7 @@ var useMonitorVercelAI = /* @__PURE__ */ _chunkFZXUPFN4cjs.__name.call(void 0, (
     identify
   };
 }, "useMonitorVercelAI");
-var react_default = _chunkYT7K6KSWcjs.browser_default;
+var react_default = _chunkGU527OPEcjs.browser_default;
 
 
 

@@ -95,6 +95,20 @@ var getFunctionInput = /* @__PURE__ */ __name((func, args) => {
   }, {});
   return input;
 }, "getFunctionInput");
+var generateUUID = /* @__PURE__ */ __name(() => {
+  let d = (/* @__PURE__ */ new Date()).getTime(), d2 = typeof performance !== "undefined" && performance.now && performance.now() * 1e3 || 0;
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    let r = Math.random() * 16;
+    if (d > 0) {
+      r = (d + r) % 16 | 0;
+      d = Math.floor(d / 16);
+    } else {
+      r = (d2 + r) % 16 | 0;
+      d2 = Math.floor(d2 / 16);
+    }
+    return (c == "x" ? r : r & 7 | 8).toString(16);
+  });
+}, "generateUUID");
 
 // src/thread.ts
 var Thread = class {
@@ -109,7 +123,7 @@ var Thread = class {
   userProps;
   constructor(monitor, options) {
     this.monitor = monitor;
-    this.id = options?.id || crypto.randomUUID();
+    this.id = options?.id || generateUUID();
     this.started = options?.started || false;
     if (options?.tags)
       this.tags = options?.tags;
@@ -125,7 +139,7 @@ var Thread = class {
    * @returns {string} - The message ID, to reconcile with feedback and backend LLM calls
    * */
   trackMessage = (message) => {
-    const runId = message.id ?? crypto.randomUUID();
+    const runId = message.id ?? generateUUID();
     this.monitor.trackEvent("thread", "chat", {
       runId,
       parentRunId: this.id,
@@ -148,7 +162,7 @@ var Thread = class {
    * @returns {string} - The message ID, to reconcile with the bot's reply
    * */
   trackUserMessage = (text, props, customId) => {
-    const runId = customId ?? crypto.randomUUID();
+    const runId = customId ?? generateUUID();
     if (!this.started) {
       this.monitor.trackEvent("thread", "start", {
         runId: this.id,
@@ -510,5 +524,6 @@ export {
   cleanError,
   cleanExtra,
   getFunctionInput,
+  generateUUID,
   lunary_default
 };

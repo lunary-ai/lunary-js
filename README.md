@@ -17,12 +17,33 @@ This is a typed JS library compatible with Node.js, Deno, Vercel Edge functions 
 
 It is compatible with Langchain JS, AutoGPT and all the other libraries.
 
-To get started, get an app ID by registering [here](https://lunary.ai).
+To get started, get a project ID by registering [here](https://lunary.ai).
 
 ## 🛠️ Installation
 
 ```bash
 npm install lunary
+```
+
+## 🚀 Basic Usage with OpenAI
+
+```javascript
+import { monitorOpenAI } from "lunary/openai"
+
+// This extends the openai object with the monitor
+const openai = monitorOpenAI(new OpenAI())
+
+// Use OpenAI as usual
+const result = await openai.chat.completions.create({
+  messages: [
+    {
+      role: "user",
+      content: "Hello!",
+    },
+  ],
+})
+
+console.log(result.choices[0])
 ```
 
 ## 📖 Documentation
