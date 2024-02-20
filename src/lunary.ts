@@ -5,6 +5,7 @@ import {
   debounce,
   cleanExtra,
   formatLog,
+  sleep,
 } from "./utils"
 
 import {
@@ -28,7 +29,7 @@ class Lunary {
   apiUrl?: string
   ctx?: any
 
-  private queue: any[] = []
+  queue: any[] = []
   private queueRunning: boolean = false
 
   private templateCache: Record<string, { timestamp: number; data: any }> = {}
@@ -406,7 +407,20 @@ class Lunary {
    * Make sure the queue is flushed before exiting the program
    */
   async flush() {
-    await this.processQueue()
+    if (!this.queueRunning) {
+      return await this.processQueue()
+    }
+
+    // Wait for a maximum of 10 seconds to send the already running queue
+    let counter = 0
+    while (this.queueRunning) {
+      sleep(100)
+      counter++
+
+      if (counter === 10) {
+        break
+      }
+    }
   }
 }
 

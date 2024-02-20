@@ -140,3 +140,7 @@ export const generateUUID = () => {
     return (c == "x" ? r : (r & 0x7) | 0x8).toString(16)
   })
 }
+
+export async function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
