@@ -1,6 +1,6 @@
 import { cJSON } from './types.js';
 import lunary from './browser.js';
-import { T as Thread } from './lunary-a0w7muwL.js';
+import { T as Thread } from './lunary-oWlcAtol.js';
 
 declare function useChatMonitor(): {
     restart: () => Thread;
@@ -8,7 +8,7 @@ declare function useChatMonitor(): {
     resumeThread: (id: string) => Thread;
     trackMessage: (message: {
         id?: string;
-        role: "user" | "assistant" | "system" | "tool";
+        role: "tool" | "user" | "assistant" | "system";
         content?: string;
         isRetry?: boolean;
         tags?: string[];
