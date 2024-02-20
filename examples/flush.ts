@@ -6,7 +6,6 @@ const openai = new OpenAI()
 
 monitorOpenAI(openai)
 
-console.log(lunary.queue)
 const chatCompletion = await openai.chat.completions.create({
   messages: [
     {
@@ -17,8 +16,5 @@ const chatCompletion = await openai.chat.completions.create({
   model: "gpt-4-turbo-preview",
 })
 
-console.log(lunary.queue)
-await lunary.flush()
+await lunary.flush() // the chat completion output should be shown on the dashboard
 process.exit(0)
-
-// console.log(chatCompletion.choices[0])
