@@ -169,15 +169,13 @@ class Lunary {
    */
   getDataset = async (datasetId: string) => {
     try {
-      const response = await fetch(
-        `${this.apiUrl}/v1/projects/${this.publicKey}/datasets/${datasetId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      const response = await fetch(`${this.apiUrl}/v1/datasets/${datasetId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + this.publicKey,
+        },
+      })
 
       const data = await response.json()
 
