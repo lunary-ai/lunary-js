@@ -65,7 +65,7 @@ declare class Lunary {
     verbose?: boolean;
     apiUrl?: string;
     ctx?: any;
-    private queue;
+    queue: any[];
     private queueRunning;
     private templateCache;
     /**
