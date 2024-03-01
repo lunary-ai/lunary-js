@@ -76,7 +76,7 @@ type WrappedReturn<T extends WrappableFn> = ReturnType<T> & {
 type WrappedFn<T extends WrappableFn> = (...args: Parameters<T>) => WrappedReturn<T>;
 interface Template {
     templateId: string;
-    text?: string;
+    prompt?: string;
     messages?: ChatMessage[];
     model?: string;
     temperature?: number;

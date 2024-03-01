@@ -1,6 +1,6 @@
 {
   "name": "lunary",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "description": "Lunary is an open-source platform for AI developers.",
   "type": "module",
   "types": "./dist/index.d.ts",
@@ -64,11 +64,14 @@
     "unctx": "^2.3.1"
   },
   "devDependencies": {
-    "@types/node": "^20.10.6",
-    "@types/react": "^18.2.46",
-    "bun-types": "^1.0.21",
-    "dotenv": "^16.3.1",
-    "langchain": "^0.0.213",
+    "@langchain/community": "^0.0.34",
+    "@langchain/openai": "^0.0.15",
+    "@types/node": "^20.11.24",
+    "@types/react": "^18.2.61",
+    "bun-types": "^1.0.29",
+    "dotenv": "^16.4.5",
+    "hnswlib-node": "^1.4.2",
+    "langchain": "^0.1.25",
     "openai": "^4.24.1",
     "react": "^18.2.0",
     "stream-buffers": "^3.0.2",

@@ -1,32 +1,9 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; } var _class; var _class2;var __create = Object.create;
-var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
-var __commonJS = (cb, mod) => function __require() {
-  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
-};
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
-};
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; } var _class; var _class2;
+
+var _chunkEC6JY3PVcjs = require('./chunk-EC6JY3PV.cjs');
 
 // src/utils.ts
-var checkEnv = /* @__PURE__ */ __name((variable) => {
+var checkEnv = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (variable) => {
   if (typeof process !== "undefined" && _optionalChain([process, 'access', _2 => _2.env, 'optionalAccess', _3 => _3[variable]])) {
     return process.env[variable];
   }
@@ -35,10 +12,10 @@ var checkEnv = /* @__PURE__ */ __name((variable) => {
   }
   return void 0;
 }, "checkEnv");
-var formatLog = /* @__PURE__ */ __name((event) => {
+var formatLog = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (event) => {
   return JSON.stringify(event, null, 2);
 }, "formatLog");
-var debounce = /* @__PURE__ */ __name((func, timeout = 500) => {
+var debounce = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (func, timeout = 500) => {
   let timer;
   return (...args) => {
     clearTimeout(timer);
@@ -47,7 +24,7 @@ var debounce = /* @__PURE__ */ __name((func, timeout = 500) => {
     }, timeout);
   };
 }, "debounce");
-var cleanError = /* @__PURE__ */ __name((error) => {
+var cleanError = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (error) => {
   if (typeof error === "string")
     return {
       message: error
@@ -65,10 +42,10 @@ var cleanError = /* @__PURE__ */ __name((error) => {
     };
   }
 }, "cleanError");
-var cleanExtra = /* @__PURE__ */ __name((extra) => {
+var cleanExtra = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (extra) => {
   return Object.fromEntries(Object.entries(extra).filter(([_, v]) => v != null));
 }, "cleanExtra");
-var compileTemplate = /* @__PURE__ */ __name((content, variables) => {
+var compileTemplate = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (content, variables) => {
   const regex = /{{(.*?)}}/g;
   return content.replace(regex, (_, g1) => variables[g1] || "");
 }, "compileTemplate");
@@ -86,8 +63,8 @@ function getArgumentNames(func) {
   });
   return params;
 }
-__name(getArgumentNames, "getArgumentNames");
-var getFunctionInput = /* @__PURE__ */ __name((func, args) => {
+_chunkEC6JY3PVcjs.__name.call(void 0, getArgumentNames, "getArgumentNames");
+var getFunctionInput = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (func, args) => {
   const argNames = getArgumentNames(func);
   const input = argNames.length === 1 ? args[0] : argNames.reduce((obj, argName, index) => {
     obj[argName] = args[index];
@@ -95,7 +72,7 @@ var getFunctionInput = /* @__PURE__ */ __name((func, args) => {
   }, {});
   return input;
 }, "getFunctionInput");
-var generateUUID = /* @__PURE__ */ __name(() => {
+var generateUUID = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => {
   let d = (/* @__PURE__ */ new Date()).getTime(), d2 = typeof performance !== "undefined" && performance.now && performance.now() * 1e3 || 0;
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
     let r = Math.random() * 16;
@@ -112,12 +89,12 @@ var generateUUID = /* @__PURE__ */ __name(() => {
 async function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
-__name(sleep, "sleep");
+_chunkEC6JY3PVcjs.__name.call(void 0, sleep, "sleep");
 
 // src/thread.ts
 var Thread = (_class = class {
   static {
-    __name(this, "Thread");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "Thread");
   }
   
   
@@ -204,7 +181,7 @@ var Thread = (_class = class {
 var MAX_CHUNK_SIZE = 20;
 var Lunary = (_class2 = class {
   static {
-    __name(this, "Lunary");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "Lunary");
   }
   
   
@@ -319,15 +296,13 @@ var Lunary = (_class2 = class {
    */
   __init8() {this.getDataset = async (datasetId) => {
     try {
-      const response = await fetch(
-        `${this.apiUrl}/v1/projects/${this.publicKey}/datasets/${datasetId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json"
-          }
+      const response = await fetch(`${this.apiUrl}/v1/datasets/${datasetId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + this.publicKey
         }
-      );
+      });
       const data = await response.json();
       return data.runs;
     } catch (e) {
@@ -537,7 +512,4 @@ var lunary_default = Lunary;
 
 
 
-
-
-
-exports.__name = __name; exports.__commonJS = __commonJS; exports.__toESM = __toESM; exports.cleanError = cleanError; exports.cleanExtra = cleanExtra; exports.getFunctionInput = getFunctionInput; exports.generateUUID = generateUUID; exports.lunary_default = lunary_default;
+exports.cleanError = cleanError; exports.cleanExtra = cleanExtra; exports.getFunctionInput = getFunctionInput; exports.generateUUID = generateUUID; exports.lunary_default = lunary_default;

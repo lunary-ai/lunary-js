@@ -3,8 +3,10 @@
 
 
 
+var _chunkVZJ4LSGDcjs = require('./chunk-VZJ4LSGD.cjs');
 
-var _chunkS2I3FHXCcjs = require('./chunk-S2I3FHXC.cjs');
+
+var _chunkEC6JY3PVcjs = require('./chunk-EC6JY3PV.cjs');
 
 // src/context.ts
 var _unctx = require('unctx');
@@ -33,27 +35,27 @@ async function identify(userId, userProps) {
     return next(target);
   });
 }
-_chunkS2I3FHXCcjs.__name.call(void 0, identify, "identify");
+_chunkEC6JY3PVcjs.__name.call(void 0, identify, "identify");
 async function setParent(runId2) {
   const { target, next } = this;
   return context_default.runId.callAsync(runId2, async () => {
     return next(target);
   });
 }
-_chunkS2I3FHXCcjs.__name.call(void 0, setParent, "setParent");
+_chunkEC6JY3PVcjs.__name.call(void 0, setParent, "setParent");
 var chainable_default = {
   identify,
   setParent
 };
 
 // src/index.ts
-var BackendMonitor = class extends _chunkS2I3FHXCcjs.lunary_default {
+var BackendMonitor = class extends _chunkVZJ4LSGDcjs.lunary_default {
   static {
-    _chunkS2I3FHXCcjs.__name.call(void 0, this, "BackendMonitor");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "BackendMonitor");
   }
   wrap(type, func, params) {
     const lunary2 = this;
-    const wrappedFn = /* @__PURE__ */ _chunkS2I3FHXCcjs.__name.call(void 0, (...args) => {
+    const wrappedFn = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (...args) => {
       const callInfo = {
         type,
         func,
@@ -93,7 +95,7 @@ var BackendMonitor = class extends _chunkS2I3FHXCcjs.lunary_default {
   // Extract the actual execution logic into a function
   async executeWrappedFunction(target) {
     const { type, args, func, params } = target;
-    const runId2 = _chunkS2I3FHXCcjs.generateUUID.call(void 0, );
+    const runId2 = _chunkVZJ4LSGDcjs.generateUUID.call(void 0, );
     const name = _optionalChain([params, 'optionalAccess', _ => _.nameParser]) ? params.nameParser(...args) : _nullishCoalesce(_optionalChain([params, 'optionalAccess', _2 => _2.name]), () => ( func.name));
     const {
       inputParser,
@@ -113,7 +115,7 @@ var BackendMonitor = class extends _chunkS2I3FHXCcjs.lunary_default {
     const userIdData = _optionalChain([params, 'optionalAccess', _5 => _5.userIdParser]) ? params.userIdParser(...args) : userId;
     const userPropsData = _optionalChain([params, 'optionalAccess', _6 => _6.userPropsParser]) ? params.userPropsParser(...args) : userProps;
     const templateId = _optionalChain([params, 'optionalAccess', _7 => _7.templateParser]) ? params.templateParser(...args) : templateParser;
-    const input = inputParser ? inputParser(...args) : _chunkS2I3FHXCcjs.getFunctionInput.call(void 0, func, args);
+    const input = inputParser ? inputParser(...args) : _chunkVZJ4LSGDcjs.getFunctionInput.call(void 0, func, args);
     if (track !== false) {
       this.trackEvent(type, "start", {
         runId: runId2,
@@ -127,7 +129,7 @@ var BackendMonitor = class extends _chunkS2I3FHXCcjs.lunary_default {
       });
     }
     const shouldWaitUntil = typeof enableWaitUntil === "function" ? enableWaitUntil(...args) : waitUntil;
-    const processOutput = /* @__PURE__ */ _chunkS2I3FHXCcjs.__name.call(void 0, async (output) => {
+    const processOutput = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, async (output) => {
       const tokensUsage = tokensUsageParser ? await tokensUsageParser(output) : void 0;
       this.trackEvent(type, "end", {
         runId: runId2,
@@ -158,7 +160,7 @@ var BackendMonitor = class extends _chunkS2I3FHXCcjs.lunary_default {
       if (track !== false) {
         this.trackEvent(type, "error", {
           runId: runId2,
-          error: _chunkS2I3FHXCcjs.cleanError.call(void 0, error)
+          error: _chunkVZJ4LSGDcjs.cleanError.call(void 0, error)
         });
         await this.processQueue();
       }

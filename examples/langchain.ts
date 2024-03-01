@@ -1,22 +1,40 @@
-import { LunaryHandler } from "../src/langchain"
-import { initializeAgentExecutorWithOptions } from "langchain/agents"
-import { ChatOpenAI } from "langchain/chat_models/openai"
-import { Calculator } from "langchain/tools/calculator"
+import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai"
+import { HNSWLib } from "@langchain/community/vectorstores/hnswlib"
+import { formatDocumentsAsString } from "langchain/util/document"
+import { PromptTemplate } from "@langchain/core/prompts"
+import {
+  RunnableSequence,
+  RunnablePassthrough,
+} from "@langchain/core/runnables"
+import { StringOutputParser } from "@langchain/core/output_parsers"
 
-const tools = [new Calculator()]
-const chat = new ChatOpenAI({ modelName: "gpt-3.5-turbo", temperature: 0 })
+import { LunaryHandler, getLangChainTemplate } from "../src/langchain"
 
-const executor = await initializeAgentExecutorWithOptions(tools, chat, {
-  agentType: "openai-functions",
-})
+const handler = new LunaryHandler()
 
-// Adding the handler to the `run` method will automatically add it to LLM runs
-const result = await executor.run(
-  "What is the approximate result of 78 to the power of 5?",
-  {
-    callbacks: [new LunaryHandler()],
-    metadata: { agentName: "SuperCalculator" }, // Give a name to your agent to track it in the dashboard
-  }
+const model = new ChatOpenAI({})
+
+const vectorStore = await HNSWLib.fromTexts(
+  ["mitochondria is the powerhouse of the cell"],
+  [{ id: 1 }],
+  new OpenAIEmbeddings()
 )
+const retriever = vectorStore.asRetriever()
+
+const prompt = await getLangChainTemplate("context-prompt")
+
+const chain = RunnableSequence.from([
+  {
+    context: retriever.pipe(formatDocumentsAsString),
+    question: new RunnablePassthrough(),
+  },
+  prompt,
+  model,
+  new StringOutputParser(),
+])
+
+const result = await chain.invoke("What is the powerhouse of the cell?", {
+  callbacks: [handler],
+})
 
 console.log(result)

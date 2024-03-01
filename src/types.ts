@@ -131,7 +131,7 @@ export type WrappedFn<T extends WrappableFn> = (
 
 export interface Template {
   templateId: string
-  text?: string
+  prompt?: string
   messages?: ChatMessage[]
   model?: string
   temperature?: number

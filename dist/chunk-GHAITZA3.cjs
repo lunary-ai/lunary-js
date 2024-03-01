@@ -1,12 +1,14 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});
 
+var _chunkVZJ4LSGDcjs = require('./chunk-VZJ4LSGD.cjs');
 
-var _chunkS2I3FHXCcjs = require('./chunk-S2I3FHXC.cjs');
+
+var _chunkEC6JY3PVcjs = require('./chunk-EC6JY3PV.cjs');
 
 // src/browser.ts
-var FrontendLunary = class extends _chunkS2I3FHXCcjs.lunary_default {
+var FrontendLunary = class extends _chunkVZJ4LSGDcjs.lunary_default {
   static {
-    _chunkS2I3FHXCcjs.__name.call(void 0, this, "FrontendLunary");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "FrontendLunary");
   }
   
   

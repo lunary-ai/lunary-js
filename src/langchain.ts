@@ -11,6 +11,7 @@ import {
   BaseCallbackHandler,
   BaseCallbackHandlerInput,
 } from "@langchain/core/callbacks/base"
+import { ChatPromptTemplate, PromptTemplate } from "@langchain/core/prompts"
 
 import { Serialized } from "@langchain/core/load/serializable"
 
@@ -303,6 +304,52 @@ export class LunaryHandler
     })
   }
 
+  async handleRetrieverStart(
+    retriever: Serialized,
+    query: string,
+    runId: string,
+    parentRunId?: string,
+    tags?: string[],
+    metadata?: KVMap,
+    name?: string
+  ) {
+    const { userId, userProps, ...rest } = metadata || {}
+    const retrieverName = name || retriever.id.at(-1)
+
+    await this.lunary.trackEvent("retriever", "start", {
+      runId,
+      parentRunId,
+      name: retrieverName,
+      userId,
+      userProps,
+      input: query,
+      extra: rest,
+      tags,
+      runtime: "langchain-js",
+    })
+  }
+
+  async handleRetrieverEnd(
+    documents: any[],
+    runId: string,
+    parentRunId?: string,
+    tags?: string[]
+  ): Promise<void> {
+    const docMetadatas = documents.map((doc, i) => ({
+      summary:
+        doc.pageContent?.length > 400
+          ? doc.pageContent.slice(0, 400) + "..."
+          : doc.pageContent,
+      ...doc.metadata,
+    }))
+
+    await this.lunary.trackEvent("retriever", "end", {
+      runId,
+      output: docMetadatas,
+      tags,
+    })
+  }
+
   async handleToolStart(
     tool: Serialized,
     input: string,
@@ -339,5 +386,32 @@ export class LunaryHandler
       runId,
       error,
     })
+  }
+}
+// replace {{ }} with { } for langchain templates format
+
+const replaceDoubleCurlyBraces = (str: string) =>
+  str.replaceAll("{{", "{").replaceAll("}}", "}")
+
+export async function getLangChainTemplate(
+  slug: string
+): Promise<PromptTemplate | ChatPromptTemplate> {
+  const template = await lunary.renderTemplate(slug)
+
+  if (template.prompt) {
+    const text = replaceDoubleCurlyBraces(template.prompt)
+    const prompt = PromptTemplate.fromTemplate(text)
+    return prompt
+  } else {
+    const messages: [string, string][] = template.messages.map((message) => {
+      const text = replaceDoubleCurlyBraces(message.content)
+      return [
+        message.role.replace("user", "human").replace("assistant", "ai"),
+        text,
+      ]
+    })
+
+    const prompt = ChatPromptTemplate.fromMessages(messages)
+    return prompt
   }
 }
