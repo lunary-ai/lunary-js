@@ -67,15 +67,15 @@ class BackendMonitor extends Lunary {
 
   // Extract the actual execution logic into a function
   private async executeWrappedFunction<T extends WrappableFn>(target) {
-    const { type, args, func, params } = target
+    const { type, args, func, params: properties } = target
 
     // Generate a random ID for this run (will be injected into the context)
     const runId = generateUUID()
 
     // Get agent name from function name or params
-    const name = params?.nameParser
-      ? params.nameParser(...args)
-      : params?.name ?? func.name
+    const name = properties?.nameParser
+      ? properties.nameParser(...args)
+      : properties?.name ?? func.name
 
     const {
       inputParser,
@@ -85,27 +85,36 @@ class BackendMonitor extends Lunary {
       waitUntil,
       enableWaitUntil,
       extra,
+      metadata,
+      params,
       tags,
       track,
       userId,
       userProps,
-    }: WrapParams<T> = params || {}
+    }: WrapParams<T> = properties || {}
 
     // Get extra data from function or params
-    const extraData = params?.extraParser ? params.extraParser(...args) : extra
+    const paramsData = properties?.paramsParser
+      ? properties.paramsParser(...args)
+      : params || extra // extra is deprecated
+    const metadataData = properties?.metadataParser
+      ? properties.metadataParser(...args)
+      : metadata
 
-    const tagsData = params?.tagsParser ? params.tagsParser(...args) : tags
+    const tagsData = properties?.tagsParser
+      ? properties.tagsParser(...args)
+      : tags
 
-    const userIdData = params?.userIdParser
-      ? params.userIdParser(...args)
+    const userIdData = properties?.userIdParser
+      ? properties.userIdParser(...args)
       : userId
 
-    const userPropsData = params?.userPropsParser
-      ? params.userPropsParser(...args)
+    const userPropsData = properties?.userPropsParser
+      ? properties.userPropsParser(...args)
       : userProps
 
-    const templateId = params?.templateParser
-      ? params.templateParser(...args)
+    const templateId = properties?.templateParser
+      ? properties.templateParser(...args)
       : templateParser
 
     const input = inputParser
@@ -117,7 +126,8 @@ class BackendMonitor extends Lunary {
         runId,
         input,
         name,
-        extra: extraData,
+        params: paramsData,
+        metadata: metadataData,
         tags: tagsData,
         userId: userIdData,
         userProps: userPropsData,

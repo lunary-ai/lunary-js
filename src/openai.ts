@@ -64,18 +64,13 @@ const teeAsync = (iterable) => {
   return buffers.map(makeIterator)
 }
 
-// Will be removed in the future
-type WrappedOldOpenAi<T> = Omit<T, "createChatCompletion"> & {
-  // @ts-ignore
-  createChatCompletion: WrappedFn<T["createChatCompletion"]>
-}
-
 type CreateFunction<T, U> = (body: T, options?: OpenAI.RequestOptions) => U
 
 /* Just forwarding the types doesn't work, as it's an overloaded function (tried many solutions, couldn't get it to work) */
 type NewParams = {
   tags?: string[]
   userProps?: cJSON
+  metadata?: cJSON
 }
 
 type WrapCreateFunction<T, U> = (
@@ -121,41 +116,6 @@ const PARAMS_TO_CAPTURE = [
 ]
 
 type WrappedOpenAi<T> = Omit<T, "chat"> & WrapCreate<T>
-
-export function openAIv3<T extends any>(
-  openai: T,
-  params: WrapExtras = {}
-): WrappedOldOpenAi<T> {
-  // @ts-ignore
-  const createChatCompletion = openai.createChatCompletion.bind(openai)
-
-  const wrapped = monitor.wrapModel(createChatCompletion, {
-    nameParser: (request) => request.model,
-    inputParser: (request) => request.messages.map(parseOpenaiMessage),
-    extraParser: (request) => {
-      const rawExtra = {
-        temperature: request.temperature,
-        maxTokens: request.max_tokens,
-        frequencyPenalty: request.frequency_penalty,
-        presencePenalty: request.presence_penalty,
-        stop: request.stop,
-        functionCall: request.function_call,
-      }
-      return cleanExtra(rawExtra)
-    },
-    outputParser: ({ data }) => parseOpenaiMessage(data.choices[0]),
-    tokensUsageParser: async ({ data }) => ({
-      completion: data.usage?.completion_tokens,
-      prompt: data.usage?.prompt_tokens,
-    }),
-    ...params,
-  })
-
-  // @ts-ignore
-  openai.createChatCompletion = wrapped
-
-  return openai as WrappedOldOpenAi<T>
-}
 
 export function monitorOpenAI<T extends any>(
   openai: T,
@@ -245,12 +205,17 @@ export function monitorOpenAI<T extends any>(
   const wrapped = monitor.wrapModel(wrappedCreateChatCompletion, {
     nameParser: (request) => request.model,
     inputParser: (request) => request.messages.map(parseOpenaiMessage),
-    extraParser: (request) => {
+    paramsParser: (request) => {
       const rawExtra = {}
       for (const param of PARAMS_TO_CAPTURE) {
         if (request[param]) rawExtra[param] = request[param]
       }
       return cleanExtra(rawExtra)
+    },
+    metadataParser(request) {
+      const metadata = request.metadata
+      delete request.metadata // delete key otherwise openai will throw error
+      return metadata
     },
     outputParser: (res) => parseOpenaiMessage(res.choices[0].message || ""),
     tokensUsageParser: async (res) => {

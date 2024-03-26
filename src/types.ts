@@ -42,7 +42,9 @@ export interface Event {
   userId?: string
   userProps?: cJSON
   parentRunId?: string
-  extra?: cJSON
+  params?: cJSON
+  metadata?: cJSON
+  extra?: cJSON // @deprecated
   tags?: string[]
   runtime?: string
   templateId?: string
@@ -78,7 +80,9 @@ export interface ChatMessage {
 
 export type WrapExtras = {
   name?: string
-  extra?: cJSON
+  metadata?: cJSON
+  params?: cJSON
+  extra?: cJSON // @deprecated
   tags?: string[]
   userId?: string
   userProps?: cJSON
@@ -87,7 +91,8 @@ export type WrapExtras = {
 export type WrapParams<T extends WrappableFn> = {
   track?: boolean
   inputParser?: (...args: Parameters<T>) => cJSON
-  extraParser?: (...args: Parameters<T>) => cJSON
+  metadataParser?: (...args: Parameters<T>) => cJSON
+  paramsParser?: (...args: Parameters<T>) => cJSON
   nameParser?: (...args: Parameters<T>) => string
   outputParser?: (result: Awaited<ReturnType<T>>) => cJSON
   tagsParser?: (...args: Parameters<T>) => string[]
@@ -132,6 +137,7 @@ export type WrappedFn<T extends WrappableFn> = (
 export interface Template {
   templateId: string
   prompt?: string
+  stream?: boolean
   messages?: ChatMessage[]
   model?: string
   temperature?: number
@@ -139,6 +145,8 @@ export interface Template {
   max_tokens?: number
   presence_penalty?: number
   frequency_penalty?: number
+  tools?: any[]
+  seed?: number
   stop?: string[]
   function?: any
   n?: number

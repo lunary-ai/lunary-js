@@ -40,8 +40,8 @@ class Lunary {
   constructor(ctx?) {
     this.init({
       appId:
-        checkEnv("LUNARY_APP_ID") ||
         checkEnv("LUNARY_PUBLIC_KEY") ||
+        checkEnv("LUNARY_APP_ID") ||
         checkEnv("LLMONITOR_APP_ID"),
       apiUrl:
         checkEnv("LUNARY_API_URL") ||

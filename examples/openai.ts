@@ -1,5 +1,5 @@
 import OpenAI from "openai"
-import monitor from "../src/index"
+
 import { monitorOpenAI } from "../src/openai"
 
 // This extends the openai object with the monitor
@@ -20,7 +20,11 @@ async function streaming(input) {
     userProps: {
       name: "John Doe",
     },
-
+    metadata: {
+      test: "hello",
+      isTest: true,
+      testAmount: 123,
+    },
     messages: [
       {
         role: "user",

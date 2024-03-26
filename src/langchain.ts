@@ -114,7 +114,7 @@ const parseExtraAndName = (
   extraParams?: KVMap,
   metadata?: KVMap
 ) => {
-  const params = {
+  const allParams = {
     ...(extraParams?.invocation_params ?? {}),
     // @ts-ignore this is a valid property
     ...(llm?.kwargs ?? {}),
@@ -122,20 +122,34 @@ const parseExtraAndName = (
   }
 
   const { model, model_name, modelName, model_id, userId, userProps, ...rest } =
-    params
+    allParams
 
   const name = model || modelName || model_name || model_id || llm.id.at(-1)
 
   // Filter rest to only include params we want to capture
-  const extra = Object.fromEntries(
-    Object.entries(rest).filter(
+  const params = Object.fromEntries(
+    Object.entries(rest).filter(([key]) => PARAMS_TO_CAPTURE.includes(key))
+  ) as cJSON
+
+  // parse metadata, everything except model & user data that may be passed in
+  const cleanedMetadata = Object.fromEntries(
+    Object.entries(metadata).filter(
       ([key]) =>
-        PARAMS_TO_CAPTURE.includes(key) ||
-        ["string", "number", "boolean"].includes(typeof rest[key])
+        !PARAMS_TO_CAPTURE.includes(key) &&
+        ![
+          "model",
+          "model_name",
+          "modelName",
+          "model_id",
+          "userId",
+          "userProps",
+          "tags",
+        ].includes(key) &&
+        ["string", "number", "boolean"].includes(typeof metadata[key])
     )
   ) as cJSON
 
-  return { name, extra, userId, userProps }
+  return { name, params, cleanedMetadata, userId, userProps }
 }
 
 export interface Run extends BaseRun {
@@ -172,10 +186,12 @@ export class LunaryHandler
         verbose,
         appId:
           appId ??
+          getEnvironmentVariable("LUNARY_PUBLIC_KEY") ??
           getEnvironmentVariable("LUNARY_APP_ID") ??
           getEnvironmentVariable("LLMONITOR_APP_ID"),
         apiUrl:
           apiUrl ??
+          getEnvironmentVariable("LUNARY_PUBLIC_KEY") ??
           getEnvironmentVariable("LUNARY_API_URL") ??
           getEnvironmentVariable("LLMONITOR_API_URL"),
       })
@@ -191,18 +207,16 @@ export class LunaryHandler
     tags?: string[],
     metadata?: KVMap
   ): Promise<void> {
-    const { name, extra, userId, userProps } = parseExtraAndName(
-      llm,
-      extraParams,
-      metadata
-    )
+    const { name, params, cleanedMetadata, userId, userProps } =
+      parseExtraAndName(llm, extraParams, metadata)
 
     await this.lunary.trackEvent("llm", "start", {
       runId,
       parentRunId,
       name,
       input: convertToLunaryMessages(prompts),
-      extra,
+      params,
+      metadata: cleanedMetadata,
       userId,
       userProps,
       tags,
@@ -219,18 +233,16 @@ export class LunaryHandler
     tags?: string[],
     metadata?: KVMap
   ): Promise<void> {
-    const { name, extra, userId, userProps } = parseExtraAndName(
-      llm,
-      extraParams,
-      metadata
-    )
+    const { name, params, cleanedMetadata, userId, userProps } =
+      parseExtraAndName(llm, extraParams, metadata)
 
     await this.lunary.trackEvent("llm", "start", {
       runId,
       parentRunId,
       name,
       input: convertToLunaryMessages(messages),
-      extra,
+      params,
+      metadata: cleanedMetadata,
       userId,
       userProps,
       tags,
@@ -266,10 +278,10 @@ export class LunaryHandler
     tags?: string[],
     metadata?: KVMap
   ): Promise<void> {
-    const { agentName, userId, userProps, ...rest } = metadata || {}
+    const { agentName, name, userId, userProps, ...rest } = metadata || {}
 
-    // allow the user to specify an agent name
-    const name = agentName || chain.id.at(-1)
+    // allow the user to specify a name for the chain or agent
+    const actualName = name || agentName || chain.id.at(-1)
 
     // Attempt to automatically detect if this is an agent or chain
     const runType =
@@ -280,11 +292,11 @@ export class LunaryHandler
     await this.lunary.trackEvent(runType, "start", {
       runId,
       parentRunId,
-      name,
+      name: actualName,
       userId,
       userProps,
       input: parseInput(inputs) as cJSON,
-      extra: rest,
+      metadata: rest,
       tags,
       runtime: "langchain-js",
     })
@@ -323,7 +335,7 @@ export class LunaryHandler
       userId,
       userProps,
       input: query,
-      extra: rest,
+      metadata: rest,
       tags,
       runtime: "langchain-js",
     })
@@ -368,7 +380,7 @@ export class LunaryHandler
       userId,
       userProps,
       input,
-      extra: rest,
+      metadata: rest,
       tags,
       runtime: "langchain-js",
     })
