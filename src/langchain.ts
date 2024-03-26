@@ -191,7 +191,6 @@ export class LunaryHandler
           getEnvironmentVariable("LLMONITOR_APP_ID"),
         apiUrl:
           apiUrl ??
-          getEnvironmentVariable("LUNARY_PUBLIC_KEY") ??
           getEnvironmentVariable("LUNARY_API_URL") ??
           getEnvironmentVariable("LLMONITOR_API_URL"),
       })

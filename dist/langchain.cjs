@@ -1,7 +1,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; } var _class;
 
-var _chunk46OGN4ICcjs = require('./chunk-46OGN4IC.cjs');
-require('./chunk-VZJ4LSGD.cjs');
+var _chunk4WMCGW76cjs = require('./chunk-4WMCGW76.cjs');
+require('./chunk-LKAHLLML.cjs');
 
 
 var _chunkFOTR2RYBcjs = require('./chunk-FOTR2RYB.cjs');
@@ -90,20 +90,31 @@ var parseOutput = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (rawOutp
   return rawOutput;
 }, "parseOutput");
 var parseExtraAndName = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (llm, extraParams, metadata) => {
-  const params = {
+  const allParams = {
     ..._nullishCoalesce(_optionalChain([extraParams, 'optionalAccess', _ => _.invocation_params]), () => ( {})),
     // @ts-ignore this is a valid property
     ..._nullishCoalesce(_optionalChain([llm, 'optionalAccess', _2 => _2.kwargs]), () => ( {})),
     ...metadata || {}
   };
-  const { model, model_name, modelName, model_id, userId, userProps, ...rest } = params;
+  const { model, model_name, modelName, model_id, userId, userProps, ...rest } = allParams;
   const name = model || modelName || model_name || model_id || llm.id.at(-1);
-  const extra = Object.fromEntries(
-    Object.entries(rest).filter(
-      ([key]) => PARAMS_TO_CAPTURE.includes(key) || ["string", "number", "boolean"].includes(typeof rest[key])
+  const params = Object.fromEntries(
+    Object.entries(rest).filter(([key]) => PARAMS_TO_CAPTURE.includes(key))
+  );
+  const cleanedMetadata = Object.fromEntries(
+    Object.entries(metadata).filter(
+      ([key]) => !PARAMS_TO_CAPTURE.includes(key) && ![
+        "model",
+        "model_name",
+        "modelName",
+        "model_id",
+        "userId",
+        "userProps",
+        "tags"
+      ].includes(key) && ["string", "number", "boolean"].includes(typeof metadata[key])
     )
   );
-  return { name, extra, userId, userProps };
+  return { name, params, cleanedMetadata, userId, userProps };
 }, "parseExtraAndName");
 var LunaryHandler = (_class = class extends _chunkZUM2FNN6cjs.BaseCallbackHandler {
   static {
@@ -113,28 +124,25 @@ var LunaryHandler = (_class = class extends _chunkZUM2FNN6cjs.BaseCallbackHandle
   
   constructor(fields = {}) {
     super(fields);_class.prototype.__init.call(this);;
-    this.lunary = _chunk46OGN4ICcjs.src_default;
+    this.lunary = _chunk4WMCGW76cjs.src_default;
     if (fields) {
       const { appId, apiUrl, verbose } = fields;
       this.lunary.init({
         verbose,
-        appId: _nullishCoalesce(_nullishCoalesce(appId, () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LUNARY_APP_ID"))), () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LLMONITOR_APP_ID"))),
+        appId: _nullishCoalesce(_nullishCoalesce(_nullishCoalesce(appId, () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LUNARY_PUBLIC_KEY"))), () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LUNARY_APP_ID"))), () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LLMONITOR_APP_ID"))),
         apiUrl: _nullishCoalesce(_nullishCoalesce(apiUrl, () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LUNARY_API_URL"))), () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LLMONITOR_API_URL")))
       });
     }
   }
   async handleLLMStart(llm, prompts, runId, parentRunId, extraParams, tags, metadata) {
-    const { name, extra, userId, userProps } = parseExtraAndName(
-      llm,
-      extraParams,
-      metadata
-    );
+    const { name, params, cleanedMetadata, userId, userProps } = parseExtraAndName(llm, extraParams, metadata);
     await this.lunary.trackEvent("llm", "start", {
       runId,
       parentRunId,
       name,
       input: convertToLunaryMessages(prompts),
-      extra,
+      params,
+      metadata: cleanedMetadata,
       userId,
       userProps,
       tags,
@@ -142,17 +150,14 @@ var LunaryHandler = (_class = class extends _chunkZUM2FNN6cjs.BaseCallbackHandle
     });
   }
   async handleChatModelStart(llm, messages, runId, parentRunId, extraParams, tags, metadata) {
-    const { name, extra, userId, userProps } = parseExtraAndName(
-      llm,
-      extraParams,
-      metadata
-    );
+    const { name, params, cleanedMetadata, userId, userProps } = parseExtraAndName(llm, extraParams, metadata);
     await this.lunary.trackEvent("llm", "start", {
       runId,
       parentRunId,
       name,
       input: convertToLunaryMessages(messages),
-      extra,
+      params,
+      metadata: cleanedMetadata,
       userId,
       userProps,
       tags,
@@ -177,17 +182,17 @@ var LunaryHandler = (_class = class extends _chunkZUM2FNN6cjs.BaseCallbackHandle
     });
   }
   async handleChainStart(chain, inputs, runId, parentRunId, tags, metadata) {
-    const { agentName, userId, userProps, ...rest } = metadata || {};
-    const name = agentName || chain.id.at(-1);
+    const { agentName, name, userId, userProps, ...rest } = metadata || {};
+    const actualName = name || agentName || chain.id.at(-1);
     const runType = agentName || ["AgentExecutor", "PlanAndExecute"].includes(name) ? "agent" : "chain";
     await this.lunary.trackEvent(runType, "start", {
       runId,
       parentRunId,
-      name,
+      name: actualName,
       userId,
       userProps,
       input: parseInput(inputs),
-      extra: rest,
+      metadata: rest,
       tags,
       runtime: "langchain-js"
     });
@@ -214,7 +219,7 @@ var LunaryHandler = (_class = class extends _chunkZUM2FNN6cjs.BaseCallbackHandle
       userId,
       userProps,
       input: query,
-      extra: rest,
+      metadata: rest,
       tags,
       runtime: "langchain-js"
     });
@@ -240,7 +245,7 @@ var LunaryHandler = (_class = class extends _chunkZUM2FNN6cjs.BaseCallbackHandle
       userId,
       userProps,
       input,
-      extra: rest,
+      metadata: rest,
       tags,
       runtime: "langchain-js"
     });
@@ -260,7 +265,7 @@ var LunaryHandler = (_class = class extends _chunkZUM2FNN6cjs.BaseCallbackHandle
 }, _class);
 var replaceDoubleCurlyBraces = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (str) => str.replaceAll("{{", "{").replaceAll("}}", "}"), "replaceDoubleCurlyBraces");
 async function getLangChainTemplate(slug) {
-  const template = await _chunk46OGN4ICcjs.src_default.renderTemplate(slug);
+  const template = await _chunk4WMCGW76cjs.src_default.renderTemplate(slug);
   if (template.prompt) {
     const text = replaceDoubleCurlyBraces(template.prompt);
     const prompt = _chunkZUM2FNN6cjs.PromptTemplate.fromTemplate(text);

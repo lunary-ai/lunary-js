@@ -1,9 +1,7 @@
 import OpenAI from "openai"
 import { monitorOpenAI } from "../src/openai"
 
-const openai = new OpenAI()
-
-monitorOpenAI(openai)
+const openai = monitorOpenAI(new OpenAI())
 
 const chatCompletion = await openai.chat.completions.create({
   messages: [

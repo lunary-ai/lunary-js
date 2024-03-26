@@ -16,6 +16,8 @@ interface Event {
     userId?: string;
     userProps?: cJSON;
     parentRunId?: string;
+    params?: cJSON;
+    metadata?: cJSON;
     extra?: cJSON;
     tags?: string[];
     runtime?: string;
@@ -46,6 +48,8 @@ interface ChatMessage {
 }
 type WrapExtras = {
     name?: string;
+    metadata?: cJSON;
+    params?: cJSON;
     extra?: cJSON;
     tags?: string[];
     userId?: string;
@@ -54,7 +58,8 @@ type WrapExtras = {
 type WrapParams<T extends WrappableFn> = {
     track?: boolean;
     inputParser?: (...args: Parameters<T>) => cJSON;
-    extraParser?: (...args: Parameters<T>) => cJSON;
+    metadataParser?: (...args: Parameters<T>) => cJSON;
+    paramsParser?: (...args: Parameters<T>) => cJSON;
     nameParser?: (...args: Parameters<T>) => string;
     outputParser?: (result: Awaited<ReturnType<T>>) => cJSON;
     tagsParser?: (...args: Parameters<T>) => string[];
@@ -77,6 +82,7 @@ type WrappedFn<T extends WrappableFn> = (...args: Parameters<T>) => WrappedRetur
 interface Template {
     templateId: string;
     prompt?: string;
+    stream?: boolean;
     messages?: ChatMessage[];
     model?: string;
     temperature?: number;
@@ -84,6 +90,8 @@ interface Template {
     max_tokens?: number;
     presence_penalty?: number;
     frequency_penalty?: number;
+    tools?: any[];
+    seed?: number;
     stop?: string[];
     function?: any;
     n?: number;

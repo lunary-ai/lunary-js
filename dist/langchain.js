@@ -1,7 +1,7 @@
 import {
   src_default
-} from "./chunk-JULUA5HT.js";
-import "./chunk-2DRTHKIK.js";
+} from "./chunk-ZYD5QO2H.js";
+import "./chunk-OR46OCV2.js";
 import {
   ChatPromptTemplate
 } from "./chunk-POGBUKPE.js";
@@ -90,20 +90,31 @@ var parseOutput = /* @__PURE__ */ __name((rawOutput) => {
   return rawOutput;
 }, "parseOutput");
 var parseExtraAndName = /* @__PURE__ */ __name((llm, extraParams, metadata) => {
-  const params = {
+  const allParams = {
     ...extraParams?.invocation_params ?? {},
     // @ts-ignore this is a valid property
     ...llm?.kwargs ?? {},
     ...metadata || {}
   };
-  const { model, model_name, modelName, model_id, userId, userProps, ...rest } = params;
+  const { model, model_name, modelName, model_id, userId, userProps, ...rest } = allParams;
   const name = model || modelName || model_name || model_id || llm.id.at(-1);
-  const extra = Object.fromEntries(
-    Object.entries(rest).filter(
-      ([key]) => PARAMS_TO_CAPTURE.includes(key) || ["string", "number", "boolean"].includes(typeof rest[key])
+  const params = Object.fromEntries(
+    Object.entries(rest).filter(([key]) => PARAMS_TO_CAPTURE.includes(key))
+  );
+  const cleanedMetadata = Object.fromEntries(
+    Object.entries(metadata).filter(
+      ([key]) => !PARAMS_TO_CAPTURE.includes(key) && ![
+        "model",
+        "model_name",
+        "modelName",
+        "model_id",
+        "userId",
+        "userProps",
+        "tags"
+      ].includes(key) && ["string", "number", "boolean"].includes(typeof metadata[key])
     )
   );
-  return { name, extra, userId, userProps };
+  return { name, params, cleanedMetadata, userId, userProps };
 }, "parseExtraAndName");
 var LunaryHandler = class extends BaseCallbackHandler {
   static {
@@ -118,23 +129,20 @@ var LunaryHandler = class extends BaseCallbackHandler {
       const { appId, apiUrl, verbose } = fields;
       this.lunary.init({
         verbose,
-        appId: appId ?? getEnvironmentVariable("LUNARY_APP_ID") ?? getEnvironmentVariable("LLMONITOR_APP_ID"),
+        appId: appId ?? getEnvironmentVariable("LUNARY_PUBLIC_KEY") ?? getEnvironmentVariable("LUNARY_APP_ID") ?? getEnvironmentVariable("LLMONITOR_APP_ID"),
         apiUrl: apiUrl ?? getEnvironmentVariable("LUNARY_API_URL") ?? getEnvironmentVariable("LLMONITOR_API_URL")
       });
     }
   }
   async handleLLMStart(llm, prompts, runId, parentRunId, extraParams, tags, metadata) {
-    const { name, extra, userId, userProps } = parseExtraAndName(
-      llm,
-      extraParams,
-      metadata
-    );
+    const { name, params, cleanedMetadata, userId, userProps } = parseExtraAndName(llm, extraParams, metadata);
     await this.lunary.trackEvent("llm", "start", {
       runId,
       parentRunId,
       name,
       input: convertToLunaryMessages(prompts),
-      extra,
+      params,
+      metadata: cleanedMetadata,
       userId,
       userProps,
       tags,
@@ -142,17 +150,14 @@ var LunaryHandler = class extends BaseCallbackHandler {
     });
   }
   async handleChatModelStart(llm, messages, runId, parentRunId, extraParams, tags, metadata) {
-    const { name, extra, userId, userProps } = parseExtraAndName(
-      llm,
-      extraParams,
-      metadata
-    );
+    const { name, params, cleanedMetadata, userId, userProps } = parseExtraAndName(llm, extraParams, metadata);
     await this.lunary.trackEvent("llm", "start", {
       runId,
       parentRunId,
       name,
       input: convertToLunaryMessages(messages),
-      extra,
+      params,
+      metadata: cleanedMetadata,
       userId,
       userProps,
       tags,
@@ -177,17 +182,17 @@ var LunaryHandler = class extends BaseCallbackHandler {
     });
   }
   async handleChainStart(chain, inputs, runId, parentRunId, tags, metadata) {
-    const { agentName, userId, userProps, ...rest } = metadata || {};
-    const name = agentName || chain.id.at(-1);
+    const { agentName, name, userId, userProps, ...rest } = metadata || {};
+    const actualName = name || agentName || chain.id.at(-1);
     const runType = agentName || ["AgentExecutor", "PlanAndExecute"].includes(name) ? "agent" : "chain";
     await this.lunary.trackEvent(runType, "start", {
       runId,
       parentRunId,
-      name,
+      name: actualName,
       userId,
       userProps,
       input: parseInput(inputs),
-      extra: rest,
+      metadata: rest,
       tags,
       runtime: "langchain-js"
     });
@@ -214,7 +219,7 @@ var LunaryHandler = class extends BaseCallbackHandler {
       userId,
       userProps,
       input: query,
-      extra: rest,
+      metadata: rest,
       tags,
       runtime: "langchain-js"
     });
@@ -240,7 +245,7 @@ var LunaryHandler = class extends BaseCallbackHandler {
       userId,
       userProps,
       input,
-      extra: rest,
+      metadata: rest,
       tags,
       runtime: "langchain-js"
     });

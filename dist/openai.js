@@ -1,9 +1,9 @@
 import {
   src_default
-} from "./chunk-JULUA5HT.js";
+} from "./chunk-ZYD5QO2H.js";
 import {
   cleanExtra
-} from "./chunk-2DRTHKIK.js";
+} from "./chunk-OR46OCV2.js";
 import {
   __name
 } from "./chunk-AGSXOS4O.js";
@@ -70,33 +70,6 @@ var PARAMS_TO_CAPTURE = [
   "max_tokens",
   "logit_bias"
 ];
-function openAIv3(openai, params = {}) {
-  const createChatCompletion = openai.createChatCompletion.bind(openai);
-  const wrapped = src_default.wrapModel(createChatCompletion, {
-    nameParser: (request) => request.model,
-    inputParser: (request) => request.messages.map(parseOpenaiMessage),
-    extraParser: (request) => {
-      const rawExtra = {
-        temperature: request.temperature,
-        maxTokens: request.max_tokens,
-        frequencyPenalty: request.frequency_penalty,
-        presencePenalty: request.presence_penalty,
-        stop: request.stop,
-        functionCall: request.function_call
-      };
-      return cleanExtra(rawExtra);
-    },
-    outputParser: ({ data }) => parseOpenaiMessage(data.choices[0]),
-    tokensUsageParser: async ({ data }) => ({
-      completion: data.usage?.completion_tokens,
-      prompt: data.usage?.prompt_tokens
-    }),
-    ...params
-  });
-  openai.createChatCompletion = wrapped;
-  return openai;
-}
-__name(openAIv3, "openAIv3");
 function monitorOpenAI(openai, params = {}) {
   const createChatCompletion = openai.chat.completions.create;
   const wrappedCreateChatCompletion = /* @__PURE__ */ __name((...args) => (
@@ -162,13 +135,18 @@ function monitorOpenAI(openai, params = {}) {
   const wrapped = src_default.wrapModel(wrappedCreateChatCompletion, {
     nameParser: (request) => request.model,
     inputParser: (request) => request.messages.map(parseOpenaiMessage),
-    extraParser: (request) => {
+    paramsParser: (request) => {
       const rawExtra = {};
       for (const param of PARAMS_TO_CAPTURE) {
         if (request[param])
           rawExtra[param] = request[param];
       }
       return cleanExtra(rawExtra);
+    },
+    metadataParser(request) {
+      const metadata = request.metadata;
+      delete request.metadata;
+      return metadata;
     },
     outputParser: (res) => parseOpenaiMessage(res.choices[0].message || ""),
     tokensUsageParser: async (res) => {
@@ -207,6 +185,5 @@ function monitorOpenAI(openai, params = {}) {
 }
 __name(monitorOpenAI, "monitorOpenAI");
 export {
-  monitorOpenAI,
-  openAIv3
+  monitorOpenAI
 };

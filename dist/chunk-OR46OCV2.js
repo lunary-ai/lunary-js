@@ -195,7 +195,7 @@ var Lunary = class {
    */
   constructor(ctx) {
     this.init({
-      appId: checkEnv("LUNARY_APP_ID") || checkEnv("LUNARY_PUBLIC_KEY") || checkEnv("LLMONITOR_APP_ID"),
+      appId: checkEnv("LUNARY_PUBLIC_KEY") || checkEnv("LUNARY_APP_ID") || checkEnv("LLMONITOR_APP_ID"),
       apiUrl: checkEnv("LUNARY_API_URL") || checkEnv("LLMONITOR_API_URL") || "https://api.lunary.ai",
       verbose: false
     });
@@ -325,6 +325,7 @@ var Lunary = class {
     if (cacheEntry && now - cacheEntry.timestamp < 6e4) {
       return cacheEntry.data;
     }
+    console.log(`${this.apiUrl}/v1/template_versions/latest?slug=${slug}`);
     const response = await fetch(
       `${this.apiUrl}/v1/template_versions/latest?slug=${slug}`,
       {

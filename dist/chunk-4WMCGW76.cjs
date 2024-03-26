@@ -3,7 +3,7 @@
 
 
 
-var _chunkVZJ4LSGDcjs = require('./chunk-VZJ4LSGD.cjs');
+var _chunkLKAHLLMLcjs = require('./chunk-LKAHLLML.cjs');
 
 
 var _chunkEC6JY3PVcjs = require('./chunk-EC6JY3PV.cjs');
@@ -49,7 +49,7 @@ var chainable_default = {
 };
 
 // src/index.ts
-var BackendMonitor = class extends _chunkVZJ4LSGDcjs.lunary_default {
+var BackendMonitor = class extends _chunkLKAHLLMLcjs.lunary_default {
   static {
     _chunkEC6JY3PVcjs.__name.call(void 0, this, "BackendMonitor");
   }
@@ -94,9 +94,9 @@ var BackendMonitor = class extends _chunkVZJ4LSGDcjs.lunary_default {
   }
   // Extract the actual execution logic into a function
   async executeWrappedFunction(target) {
-    const { type, args, func, params } = target;
-    const runId2 = _chunkVZJ4LSGDcjs.generateUUID.call(void 0, );
-    const name = _optionalChain([params, 'optionalAccess', _ => _.nameParser]) ? params.nameParser(...args) : _nullishCoalesce(_optionalChain([params, 'optionalAccess', _2 => _2.name]), () => ( func.name));
+    const { type, args, func, params: properties } = target;
+    const runId2 = _chunkLKAHLLMLcjs.generateUUID.call(void 0, );
+    const name = _optionalChain([properties, 'optionalAccess', _ => _.nameParser]) ? properties.nameParser(...args) : _nullishCoalesce(_optionalChain([properties, 'optionalAccess', _2 => _2.name]), () => ( func.name));
     const {
       inputParser,
       outputParser,
@@ -105,23 +105,27 @@ var BackendMonitor = class extends _chunkVZJ4LSGDcjs.lunary_default {
       waitUntil,
       enableWaitUntil,
       extra,
+      metadata,
+      params,
       tags,
       track,
       userId,
       userProps
-    } = params || {};
-    const extraData = _optionalChain([params, 'optionalAccess', _3 => _3.extraParser]) ? params.extraParser(...args) : extra;
-    const tagsData = _optionalChain([params, 'optionalAccess', _4 => _4.tagsParser]) ? params.tagsParser(...args) : tags;
-    const userIdData = _optionalChain([params, 'optionalAccess', _5 => _5.userIdParser]) ? params.userIdParser(...args) : userId;
-    const userPropsData = _optionalChain([params, 'optionalAccess', _6 => _6.userPropsParser]) ? params.userPropsParser(...args) : userProps;
-    const templateId = _optionalChain([params, 'optionalAccess', _7 => _7.templateParser]) ? params.templateParser(...args) : templateParser;
-    const input = inputParser ? inputParser(...args) : _chunkVZJ4LSGDcjs.getFunctionInput.call(void 0, func, args);
+    } = properties || {};
+    const paramsData = _optionalChain([properties, 'optionalAccess', _3 => _3.paramsParser]) ? properties.paramsParser(...args) : params || extra;
+    const metadataData = _optionalChain([properties, 'optionalAccess', _4 => _4.metadataParser]) ? properties.metadataParser(...args) : metadata;
+    const tagsData = _optionalChain([properties, 'optionalAccess', _5 => _5.tagsParser]) ? properties.tagsParser(...args) : tags;
+    const userIdData = _optionalChain([properties, 'optionalAccess', _6 => _6.userIdParser]) ? properties.userIdParser(...args) : userId;
+    const userPropsData = _optionalChain([properties, 'optionalAccess', _7 => _7.userPropsParser]) ? properties.userPropsParser(...args) : userProps;
+    const templateId = _optionalChain([properties, 'optionalAccess', _8 => _8.templateParser]) ? properties.templateParser(...args) : templateParser;
+    const input = inputParser ? inputParser(...args) : _chunkLKAHLLMLcjs.getFunctionInput.call(void 0, func, args);
     if (track !== false) {
       this.trackEvent(type, "start", {
         runId: runId2,
         input,
         name,
-        extra: extraData,
+        params: paramsData,
+        metadata: metadataData,
         tags: tagsData,
         userId: userIdData,
         userProps: userPropsData,
@@ -160,7 +164,7 @@ var BackendMonitor = class extends _chunkVZJ4LSGDcjs.lunary_default {
       if (track !== false) {
         this.trackEvent(type, "error", {
           runId: runId2,
-          error: _chunkVZJ4LSGDcjs.cleanError.call(void 0, error)
+          error: _chunkLKAHLLMLcjs.cleanError.call(void 0, error)
         });
         await this.processQueue();
       }

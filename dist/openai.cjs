@@ -1,9 +1,9 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
-var _chunk46OGN4ICcjs = require('./chunk-46OGN4IC.cjs');
+var _chunk4WMCGW76cjs = require('./chunk-4WMCGW76.cjs');
 
 
-var _chunkVZJ4LSGDcjs = require('./chunk-VZJ4LSGD.cjs');
+var _chunkLKAHLLMLcjs = require('./chunk-LKAHLLML.cjs');
 
 
 var _chunkEC6JY3PVcjs = require('./chunk-EC6JY3PV.cjs');
@@ -70,33 +70,6 @@ var PARAMS_TO_CAPTURE = [
   "max_tokens",
   "logit_bias"
 ];
-function openAIv3(openai, params = {}) {
-  const createChatCompletion = openai.createChatCompletion.bind(openai);
-  const wrapped = _chunk46OGN4ICcjs.src_default.wrapModel(createChatCompletion, {
-    nameParser: (request) => request.model,
-    inputParser: (request) => request.messages.map(parseOpenaiMessage),
-    extraParser: (request) => {
-      const rawExtra = {
-        temperature: request.temperature,
-        maxTokens: request.max_tokens,
-        frequencyPenalty: request.frequency_penalty,
-        presencePenalty: request.presence_penalty,
-        stop: request.stop,
-        functionCall: request.function_call
-      };
-      return _chunkVZJ4LSGDcjs.cleanExtra.call(void 0, rawExtra);
-    },
-    outputParser: ({ data }) => parseOpenaiMessage(data.choices[0]),
-    tokensUsageParser: async ({ data }) => ({
-      completion: _optionalChain([data, 'access', _ => _.usage, 'optionalAccess', _2 => _2.completion_tokens]),
-      prompt: _optionalChain([data, 'access', _3 => _3.usage, 'optionalAccess', _4 => _4.prompt_tokens])
-    }),
-    ...params
-  });
-  openai.createChatCompletion = wrapped;
-  return openai;
-}
-_chunkEC6JY3PVcjs.__name.call(void 0, openAIv3, "openAIv3");
 function monitorOpenAI(openai, params = {}) {
   const createChatCompletion = openai.chat.completions.create;
   const wrappedCreateChatCompletion = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (...args) => (
@@ -121,9 +94,9 @@ function monitorOpenAI(openai, params = {}) {
           choices[index].message.content += content || "";
         if (role)
           choices[index].message.role = role;
-        if (_optionalChain([function_call, 'optionalAccess', _5 => _5.name]))
+        if (_optionalChain([function_call, 'optionalAccess', _ => _.name]))
           choices[index].message.function_call.name = function_call.name;
-        if (_optionalChain([function_call, 'optionalAccess', _6 => _6.arguments]))
+        if (_optionalChain([function_call, 'optionalAccess', _2 => _2.arguments]))
           choices[index].message.function_call.arguments += function_call.arguments;
         if (tool_calls) {
           for (const tool_call of tool_calls) {
@@ -132,7 +105,7 @@ function monitorOpenAI(openai, params = {}) {
               choices[index].message.tool_calls.push(tool_call);
             } else {
               const existingCall = choices[index].message.tool_calls[existingCallIndex];
-              if (_optionalChain([tool_call, 'access', _7 => _7.function, 'optionalAccess', _8 => _8.arguments])) {
+              if (_optionalChain([tool_call, 'access', _3 => _3.function, 'optionalAccess', _4 => _4.arguments])) {
                 existingCall.function.arguments += tool_call.function.arguments;
               }
             }
@@ -159,22 +132,27 @@ function monitorOpenAI(openai, params = {}) {
     }
   }
   _chunkEC6JY3PVcjs.__name.call(void 0, handleStream, "handleStream");
-  const wrapped = _chunk46OGN4ICcjs.src_default.wrapModel(wrappedCreateChatCompletion, {
+  const wrapped = _chunk4WMCGW76cjs.src_default.wrapModel(wrappedCreateChatCompletion, {
     nameParser: (request) => request.model,
     inputParser: (request) => request.messages.map(parseOpenaiMessage),
-    extraParser: (request) => {
+    paramsParser: (request) => {
       const rawExtra = {};
       for (const param of PARAMS_TO_CAPTURE) {
         if (request[param])
           rawExtra[param] = request[param];
       }
-      return _chunkVZJ4LSGDcjs.cleanExtra.call(void 0, rawExtra);
+      return _chunkLKAHLLMLcjs.cleanExtra.call(void 0, rawExtra);
+    },
+    metadataParser(request) {
+      const metadata = request.metadata;
+      delete request.metadata;
+      return metadata;
     },
     outputParser: (res) => parseOpenaiMessage(res.choices[0].message || ""),
     tokensUsageParser: async (res) => {
       return {
-        completion: _optionalChain([res, 'access', _9 => _9.usage, 'optionalAccess', _10 => _10.completion_tokens]),
-        prompt: _optionalChain([res, 'access', _11 => _11.usage, 'optionalAccess', _12 => _12.prompt_tokens])
+        completion: _optionalChain([res, 'access', _5 => _5.usage, 'optionalAccess', _6 => _6.completion_tokens]),
+        prompt: _optionalChain([res, 'access', _7 => _7.usage, 'optionalAccess', _8 => _8.prompt_tokens])
       };
     },
     tagsParser: (request) => {
@@ -208,5 +186,4 @@ function monitorOpenAI(openai, params = {}) {
 _chunkEC6JY3PVcjs.__name.call(void 0, monitorOpenAI, "monitorOpenAI");
 
 
-
-exports.monitorOpenAI = monitorOpenAI; exports.openAIv3 = openAIv3;
+exports.monitorOpenAI = monitorOpenAI;

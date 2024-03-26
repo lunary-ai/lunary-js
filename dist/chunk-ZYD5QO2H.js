@@ -3,7 +3,7 @@ import {
   generateUUID,
   getFunctionInput,
   lunary_default
-} from "./chunk-2DRTHKIK.js";
+} from "./chunk-OR46OCV2.js";
 import {
   __name
 } from "./chunk-AGSXOS4O.js";
@@ -94,9 +94,9 @@ var BackendMonitor = class extends lunary_default {
   }
   // Extract the actual execution logic into a function
   async executeWrappedFunction(target) {
-    const { type, args, func, params } = target;
+    const { type, args, func, params: properties } = target;
     const runId2 = generateUUID();
-    const name = params?.nameParser ? params.nameParser(...args) : params?.name ?? func.name;
+    const name = properties?.nameParser ? properties.nameParser(...args) : properties?.name ?? func.name;
     const {
       inputParser,
       outputParser,
@@ -105,23 +105,27 @@ var BackendMonitor = class extends lunary_default {
       waitUntil,
       enableWaitUntil,
       extra,
+      metadata,
+      params,
       tags,
       track,
       userId,
       userProps
-    } = params || {};
-    const extraData = params?.extraParser ? params.extraParser(...args) : extra;
-    const tagsData = params?.tagsParser ? params.tagsParser(...args) : tags;
-    const userIdData = params?.userIdParser ? params.userIdParser(...args) : userId;
-    const userPropsData = params?.userPropsParser ? params.userPropsParser(...args) : userProps;
-    const templateId = params?.templateParser ? params.templateParser(...args) : templateParser;
+    } = properties || {};
+    const paramsData = properties?.paramsParser ? properties.paramsParser(...args) : params || extra;
+    const metadataData = properties?.metadataParser ? properties.metadataParser(...args) : metadata;
+    const tagsData = properties?.tagsParser ? properties.tagsParser(...args) : tags;
+    const userIdData = properties?.userIdParser ? properties.userIdParser(...args) : userId;
+    const userPropsData = properties?.userPropsParser ? properties.userPropsParser(...args) : userProps;
+    const templateId = properties?.templateParser ? properties.templateParser(...args) : templateParser;
     const input = inputParser ? inputParser(...args) : getFunctionInput(func, args);
     if (track !== false) {
       this.trackEvent(type, "start", {
         runId: runId2,
         input,
         name,
-        extra: extraData,
+        params: paramsData,
+        metadata: metadataData,
         tags: tagsData,
         userId: userIdData,
         userProps: userPropsData,
