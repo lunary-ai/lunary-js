@@ -15,7 +15,7 @@ Use it with any LLM model and custom agents (not limited to OpenAI).
 
 This is a typed JS library compatible with Node.js, Deno, Vercel Edge functions and Cloudflare Workers.
 
-It is compatible with Langchain JS, AutoGPT and all the other libraries.
+It is compatible with Langchain JS, AutoGPT and other libraries.
 
 To get started, get a project ID by registering [here](https://lunary.ai).
 
