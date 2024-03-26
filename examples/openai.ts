@@ -2,10 +2,6 @@ import OpenAI from "openai"
 import monitor from "../src/index"
 import { monitorOpenAI } from "../src/openai"
 
-monitor.init({
-  verbose: true,
-})
-
 // This extends the openai object with the monitor
 const openai = monitorOpenAI(
   new OpenAI({
@@ -13,11 +9,37 @@ const openai = monitorOpenAI(
   })
 )
 
-async function TranslatorAgent(input) {
-  const res = await openai.chat.completions.create({
-    model: "gpt-4",
+async function streaming(input) {
+  const stream = await openai.chat.completions.create({
+    model: "gpt-4-turbo-preview",
     temperature: 0,
-    // stream: true,
+    stream: true,
+    tags: ["translate"],
+    user: "user123",
+    seed: 123,
+    userProps: {
+      name: "John Doe",
+    },
+
+    messages: [
+      {
+        role: "user",
+        content: `Hello, translate ${input} from french to english`,
+      },
+    ],
+  })
+
+  for await (const part of stream) {
+    process.stdout.write(part.choices[0]?.delta?.content || "")
+  }
+
+  return
+}
+
+async function nonStreaming(input) {
+  const res = await openai.chat.completions.create({
+    model: "gpt-4-turbo-preview",
+    temperature: 0,
     tags: ["translate"],
     user: "user123",
     seed: 123,
@@ -48,18 +70,8 @@ async function TranslatorAgent(input) {
     ],
   })
 
-  // for await (const part of stream) {
-  //   process.stdout.write(part.choices[0]?.delta?.content || "")
-  // }
-
-  // console.log(stream.choices[0].message)
-
   return res.choices[0].message.content
 }
 
-const translate = monitor.wrapAgent(TranslatorAgent)
-
-// Identify the user directly at the agent level
-const res = await translate(`Glad to hear that.`).identify("user123")
-
-console.log(res)
+await streaming("bonjour")
+// await nonStreaming("bonjour")

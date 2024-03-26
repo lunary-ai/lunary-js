@@ -87,17 +87,17 @@ type WrapCreate<T> = {
   chat: {
     completions: {
       create: WrapCreateFunction<
-        OpenAI.Chat.ChatCompletionCreateParams,
-        APIPromise<OpenAI.Chat.ChatCompletion>
+        OpenAI.Chat.ChatCompletionCreateParamsNonStreaming,
+        APIPromise<OpenAI.ChatCompletion>
       > &
         WrapCreateFunction<
           OpenAI.Chat.ChatCompletionCreateParamsStreaming,
-          APIPromise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>>
+          APIPromise<OpenAIStreaming.Stream<OpenAI.ChatCompletionChunk>>
         > &
         WrapCreateFunction<
           OpenAI.Chat.ChatCompletionCreateParams,
-          | APIPromise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>>
-          | APIPromise<OpenAI.Chat.ChatCompletion>
+          | APIPromise<OpenAI.ChatCompletion>
+          | APIPromise<OpenAIStreaming.Stream<OpenAI.ChatCompletionChunk>>
         >
     }
   }

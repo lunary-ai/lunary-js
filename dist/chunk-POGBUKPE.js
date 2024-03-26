@@ -15,7 +15,7 @@ import {
   isBaseMessage,
   parseFString,
   renderTemplate
-} from "./chunk-CG7GNE34.js";
+} from "./chunk-6KX3NNHJ.js";
 import {
   __name
 } from "./chunk-AGSXOS4O.js";
@@ -598,8 +598,7 @@ var ChatPromptTemplate = class _ChatPromptTemplate extends BaseChatPromptTemplat
    * @param promptMessages Messages to be passed to the chat model
    * @returns A new ChatPromptTemplate
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static fromMessages(promptMessages) {
+  static fromMessages(promptMessages, extra) {
     const flattenedMessages = promptMessages.reduce((acc, promptMessage) => acc.concat(
       // eslint-disable-next-line no-instanceof/no-instanceof
       promptMessage instanceof _ChatPromptTemplate ? promptMessage.promptMessages : [_coerceMessagePromptTemplateLike(promptMessage)]
@@ -619,7 +618,8 @@ var ChatPromptTemplate = class _ChatPromptTemplate extends BaseChatPromptTemplat
         inputVariables.add(inputVariable);
       }
     }
-    return new _ChatPromptTemplate({
+    return new this({
+      ...extra,
       inputVariables: [...inputVariables],
       promptMessages: flattenedMessages,
       partialVariables: flattenedPartialVariables

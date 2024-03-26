@@ -15,7 +15,7 @@ type WrapCreateFunction<T, U> = (body: (T & NewParams) | Template, options?: Ope
 type WrapCreate<T> = {
     chat: {
         completions: {
-            create: WrapCreateFunction<OpenAI.Chat.ChatCompletionCreateParams, APIPromise<OpenAI.Chat.ChatCompletion>> & WrapCreateFunction<OpenAI.Chat.ChatCompletionCreateParamsStreaming, APIPromise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>>> & WrapCreateFunction<OpenAI.Chat.ChatCompletionCreateParams, APIPromise<OpenAIStreaming.Stream<OpenAI.Chat.ChatCompletionChunk>> | APIPromise<OpenAI.Chat.ChatCompletion>>;
+            create: WrapCreateFunction<OpenAI.Chat.ChatCompletionCreateParamsNonStreaming, APIPromise<OpenAI.ChatCompletion>> & WrapCreateFunction<OpenAI.Chat.ChatCompletionCreateParamsStreaming, APIPromise<OpenAIStreaming.Stream<OpenAI.ChatCompletionChunk>>> & WrapCreateFunction<OpenAI.Chat.ChatCompletionCreateParams, APIPromise<OpenAI.ChatCompletion> | APIPromise<OpenAIStreaming.Stream<OpenAI.ChatCompletionChunk>>>;
         };
     };
 };

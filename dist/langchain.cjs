@@ -4,12 +4,12 @@ var _chunk46OGN4ICcjs = require('./chunk-46OGN4IC.cjs');
 require('./chunk-VZJ4LSGD.cjs');
 
 
-var _chunkW3S5C44Acjs = require('./chunk-W3S5C44A.cjs');
+var _chunkFOTR2RYBcjs = require('./chunk-FOTR2RYB.cjs');
 
 
 
 
-var _chunkYDKLITBQcjs = require('./chunk-YDKLITBQ.cjs');
+var _chunkZUM2FNN6cjs = require('./chunk-ZUM2FNN6.cjs');
 
 
 var _chunkEC6JY3PVcjs = require('./chunk-EC6JY3PV.cjs');
@@ -105,7 +105,7 @@ var parseExtraAndName = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (l
   );
   return { name, extra, userId, userProps };
 }, "parseExtraAndName");
-var LunaryHandler = (_class = class extends _chunkYDKLITBQcjs.BaseCallbackHandler {
+var LunaryHandler = (_class = class extends _chunkZUM2FNN6cjs.BaseCallbackHandler {
   static {
     _chunkEC6JY3PVcjs.__name.call(void 0, this, "LunaryHandler");
   }
@@ -118,8 +118,8 @@ var LunaryHandler = (_class = class extends _chunkYDKLITBQcjs.BaseCallbackHandle
       const { appId, apiUrl, verbose } = fields;
       this.lunary.init({
         verbose,
-        appId: _nullishCoalesce(_nullishCoalesce(appId, () => ( _chunkYDKLITBQcjs.getEnvironmentVariable.call(void 0, "LUNARY_APP_ID"))), () => ( _chunkYDKLITBQcjs.getEnvironmentVariable.call(void 0, "LLMONITOR_APP_ID"))),
-        apiUrl: _nullishCoalesce(_nullishCoalesce(apiUrl, () => ( _chunkYDKLITBQcjs.getEnvironmentVariable.call(void 0, "LUNARY_API_URL"))), () => ( _chunkYDKLITBQcjs.getEnvironmentVariable.call(void 0, "LLMONITOR_API_URL")))
+        appId: _nullishCoalesce(_nullishCoalesce(appId, () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LUNARY_APP_ID"))), () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LLMONITOR_APP_ID"))),
+        apiUrl: _nullishCoalesce(_nullishCoalesce(apiUrl, () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LUNARY_API_URL"))), () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LLMONITOR_API_URL")))
       });
     }
   }
@@ -263,7 +263,7 @@ async function getLangChainTemplate(slug) {
   const template = await _chunk46OGN4ICcjs.src_default.renderTemplate(slug);
   if (template.prompt) {
     const text = replaceDoubleCurlyBraces(template.prompt);
-    const prompt = _chunkYDKLITBQcjs.PromptTemplate.fromTemplate(text);
+    const prompt = _chunkZUM2FNN6cjs.PromptTemplate.fromTemplate(text);
     return prompt;
   } else {
     const messages = template.messages.map((message) => {
@@ -273,7 +273,7 @@ async function getLangChainTemplate(slug) {
         text
       ];
     });
-    const prompt = _chunkW3S5C44Acjs.ChatPromptTemplate.fromMessages(messages);
+    const prompt = _chunkFOTR2RYBcjs.ChatPromptTemplate.fromMessages(messages);
     return prompt;
   }
 }
