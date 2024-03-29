@@ -33,6 +33,7 @@ class Lunary {
   private queueRunning: boolean = false
 
   private templateCache: Record<string, { timestamp: number; data: any }> = {}
+  private didWarnAboutAppId = false
 
   /**
    * @param {LunaryOptions} options
@@ -73,10 +74,12 @@ class Lunary {
     event: EventName,
     data: Partial<RunEvent | LogEvent>
   ): void {
-    if (!this.publicKey)
+    if (!this.publicKey && !this.didWarnAboutAppId) {
+      this.didWarnAboutAppId = true
       return console.warn(
         "Lunary: Project ID not set. Not reporting anything. Get one on the dashboard: https://app.lunary.ai"
       )
+    }
 
     // Add 1ms to timestamp if it's the same/lower than the last event
     // Keep the order of events in case they are sent in the same millisecond

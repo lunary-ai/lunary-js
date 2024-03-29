@@ -1,7 +1,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
-var _chunk5XO3CFLXcjs = require('./chunk-5XO3CFLX.cjs');
-require('./chunk-LKAHLLML.cjs');
+var _chunkFMSLYPOPcjs = require('./chunk-FMSLYPOP.cjs');
+require('./chunk-GUNXXRA5.cjs');
 
 
 var _chunkEC6JY3PVcjs = require('./chunk-EC6JY3PV.cjs');
@@ -11,12 +11,12 @@ var _react = require('react');
 function useChatMonitor() {
   const [thread, setThread] = _react.useState.call(void 0, );
   const restart = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => {
-    const newThread = _chunk5XO3CFLXcjs.browser_default.openThread();
+    const newThread = _chunkFMSLYPOPcjs.browser_default.openThread();
     setThread(newThread);
     return newThread;
   }, "restart");
   const resumeThread = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (id) => {
-    const newThread = _chunk5XO3CFLXcjs.browser_default.openThread(id);
+    const newThread = _chunkFMSLYPOPcjs.browser_default.openThread(id);
     setThread(newThread);
     return newThread;
   }, "resumeThread");
@@ -29,8 +29,8 @@ function useChatMonitor() {
     restartThread: restart,
     resumeThread,
     trackMessage: _optionalChain([thread, 'optionalAccess', _ => _.trackMessage]),
-    trackFeedback: _chunk5XO3CFLXcjs.browser_default.trackFeedback,
-    identify: _chunk5XO3CFLXcjs.browser_default.identify
+    trackFeedback: _chunkFMSLYPOPcjs.browser_default.trackFeedback,
+    identify: _chunkFMSLYPOPcjs.browser_default.identify
   };
 }
 _chunkEC6JY3PVcjs.__name.call(void 0, useChatMonitor, "useChatMonitor");
@@ -74,7 +74,7 @@ var useMonitorVercelAI = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (
     identify
   };
 }, "useMonitorVercelAI");
-var react_default = _chunk5XO3CFLXcjs.browser_default;
+var react_default = _chunkFMSLYPOPcjs.browser_default;
 
 
 

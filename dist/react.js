@@ -1,7 +1,7 @@
 import {
   browser_default
-} from "./chunk-JQUP2JBN.js";
-import "./chunk-OR46OCV2.js";
+} from "./chunk-GF74NPDX.js";
+import "./chunk-QCHTJLFR.js";
 import {
   __name
 } from "./chunk-AGSXOS4O.js";

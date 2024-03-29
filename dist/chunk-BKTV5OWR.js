@@ -6,130 +6,17 @@ import {
   ChatMessage,
   ChatPromptValue,
   HumanMessage,
-  ImagePromptValue,
   PromptTemplate,
   Runnable,
   SystemMessage,
   checkValidTemplate,
   coerceMessageLikeToMessage,
   isBaseMessage,
-  parseFString,
   renderTemplate
-} from "./chunk-6KX3NNHJ.js";
+} from "./chunk-NX24P6ZI.js";
 import {
   __name
 } from "./chunk-AGSXOS4O.js";
-
-// node_modules/@langchain/core/dist/prompts/image.js
-var ImagePromptTemplate = class _ImagePromptTemplate extends BasePromptTemplate {
-  static {
-    __name(this, "ImagePromptTemplate");
-  }
-  static lc_name() {
-    return "ImagePromptTemplate";
-  }
-  constructor(input) {
-    super(input);
-    Object.defineProperty(this, "lc_namespace", {
-      enumerable: true,
-      configurable: true,
-      writable: true,
-      value: ["langchain_core", "prompts", "image"]
-    });
-    Object.defineProperty(this, "template", {
-      enumerable: true,
-      configurable: true,
-      writable: true,
-      value: void 0
-    });
-    Object.defineProperty(this, "templateFormat", {
-      enumerable: true,
-      configurable: true,
-      writable: true,
-      value: "f-string"
-    });
-    Object.defineProperty(this, "validateTemplate", {
-      enumerable: true,
-      configurable: true,
-      writable: true,
-      value: true
-    });
-    this.template = input.template;
-    this.templateFormat = input.templateFormat ?? this.templateFormat;
-    this.validateTemplate = input.validateTemplate ?? this.validateTemplate;
-    if (this.validateTemplate) {
-      let totalInputVariables = this.inputVariables;
-      if (this.partialVariables) {
-        totalInputVariables = totalInputVariables.concat(Object.keys(this.partialVariables));
-      }
-      checkValidTemplate([
-        { type: "image_url", image_url: this.template }
-      ], this.templateFormat, totalInputVariables);
-    }
-  }
-  _getPromptType() {
-    return "prompt";
-  }
-  /**
-   * Partially applies values to the prompt template.
-   * @param values The values to be partially applied to the prompt template.
-   * @returns A new instance of ImagePromptTemplate with the partially applied values.
-   */
-  async partial(values) {
-    const newInputVariables = this.inputVariables.filter((iv) => !(iv in values));
-    const newPartialVariables = {
-      ...this.partialVariables ?? {},
-      ...values
-    };
-    const promptDict = {
-      ...this,
-      inputVariables: newInputVariables,
-      partialVariables: newPartialVariables
-    };
-    return new _ImagePromptTemplate(promptDict);
-  }
-  /**
-   * Formats the prompt template with the provided values.
-   * @param values The values to be used to format the prompt template.
-   * @returns A promise that resolves to a string which is the formatted prompt.
-   */
-  async format(values) {
-    const formatted = {};
-    for (const [key, value] of Object.entries(this.template)) {
-      if (typeof value === "string") {
-        formatted[key] = value.replace(/{([^{}]*)}/g, (match, group) => {
-          const replacement = values[group];
-          return typeof replacement === "string" || typeof replacement === "number" ? String(replacement) : match;
-        });
-      } else {
-        formatted[key] = value;
-      }
-    }
-    const url = values.url || formatted.url;
-    const detail = values.detail || formatted.detail;
-    if (!url) {
-      throw new Error("Must provide either an image URL.");
-    }
-    if (typeof url !== "string") {
-      throw new Error("url must be a string.");
-    }
-    const output = { url };
-    if (detail) {
-      output.detail = detail;
-    }
-    return output;
-  }
-  /**
-   * Formats the prompt given the input values and returns a formatted
-   * prompt value.
-   * @param values The input values to format the prompt.
-   * @returns A Promise that resolves to a formatted prompt value.
-   */
-  async formatPromptValue(values) {
-    const formattedPrompt = await this.format(values);
-    return new ImagePromptValue(formattedPrompt);
-  }
-};
 
 // node_modules/@langchain/core/dist/prompts/chat.js
 var BaseMessagePromptTemplate = class extends Runnable {
@@ -227,221 +114,46 @@ var ChatMessagePromptTemplate = class extends BaseMessageStringPromptTemplate {
     return new this(PromptTemplate.fromTemplate(template), role);
   }
 };
-var _StringImageMessagePromptTemplate = class extends BaseMessagePromptTemplate {
-  static {
-    __name(this, "_StringImageMessagePromptTemplate");
-  }
-  static _messageClass() {
-    throw new Error("Can not invoke _messageClass from inside _StringImageMessagePromptTemplate");
-  }
-  constructor(fields, additionalOptions) {
-    if (!("prompt" in fields)) {
-      fields = { prompt: fields };
-    }
-    super(fields);
-    Object.defineProperty(this, "lc_namespace", {
-      enumerable: true,
-      configurable: true,
-      writable: true,
-      value: ["langchain_core", "prompts", "chat"]
-    });
-    Object.defineProperty(this, "lc_serializable", {
-      enumerable: true,
-      configurable: true,
-      writable: true,
-      value: true
-    });
-    Object.defineProperty(this, "inputVariables", {
-      enumerable: true,
-      configurable: true,
-      writable: true,
-      value: []
-    });
-    Object.defineProperty(this, "additionalOptions", {
-      enumerable: true,
-      configurable: true,
-      writable: true,
-      value: {}
-    });
-    Object.defineProperty(this, "prompt", {
-      enumerable: true,
-      configurable: true,
-      writable: true,
-      value: void 0
-    });
-    Object.defineProperty(this, "messageClass", {
-      enumerable: true,
-      configurable: true,
-      writable: true,
-      value: void 0
-    });
-    Object.defineProperty(this, "chatMessageClass", {
-      enumerable: true,
-      configurable: true,
-      writable: true,
-      value: void 0
-    });
-    this.prompt = fields.prompt;
-    if (Array.isArray(this.prompt)) {
-      let inputVariables = [];
-      this.prompt.forEach((prompt) => {
-        if ("inputVariables" in prompt) {
-          inputVariables = inputVariables.concat(prompt.inputVariables);
-        }
-      });
-      this.inputVariables = inputVariables;
-    } else {
-      this.inputVariables = this.prompt.inputVariables;
-    }
-    this.additionalOptions = additionalOptions ?? this.additionalOptions;
-  }
-  createMessage(content) {
-    const constructor = this.constructor;
-    if (constructor._messageClass()) {
-      const MsgClass = constructor._messageClass();
-      return new MsgClass({ content });
-    } else if (constructor.chatMessageClass) {
-      const MsgClass = constructor.chatMessageClass();
-      return new MsgClass({
-        content,
-        role: this.getRoleFromMessageClass(MsgClass.lc_name())
-      });
-    } else {
-      throw new Error("No message class defined");
-    }
-  }
-  getRoleFromMessageClass(name) {
-    switch (name) {
-      case "HumanMessage":
-        return "human";
-      case "AIMessage":
-        return "ai";
-      case "SystemMessage":
-        return "system";
-      case "ChatMessage":
-        return "chat";
-      default:
-        throw new Error("Invalid message class name");
-    }
-  }
-  static fromTemplate(template, additionalOptions) {
-    if (typeof template === "string") {
-      return new this(PromptTemplate.fromTemplate(template));
-    }
-    const prompt = [];
-    for (const item of template) {
-      if (typeof item === "string" || typeof item === "object" && "text" in item) {
-        let text = "";
-        if (typeof item === "string") {
-          text = item;
-        } else if (typeof item.text === "string") {
-          text = item.text ?? "";
-        }
-        prompt.push(PromptTemplate.fromTemplate(text));
-      } else if (typeof item === "object" && "image_url" in item) {
-        let imgTemplate = item.image_url ?? "";
-        let imgTemplateObject;
-        let inputVariables = [];
-        if (typeof imgTemplate === "string") {
-          const parsedTemplate = parseFString(imgTemplate);
-          const variables = parsedTemplate.flatMap((item2) => item2.type === "variable" ? [item2.name] : []);
-          if ((variables?.length ?? 0) > 0) {
-            if (variables.length > 1) {
-              throw new Error(`Only one format variable allowed per image template.
-Got: ${variables}
-From: ${imgTemplate}`);
-            }
-            inputVariables = [variables[0]];
-          } else {
-            inputVariables = [];
-          }
-          imgTemplate = { url: imgTemplate };
-          imgTemplateObject = new ImagePromptTemplate({
-            template: imgTemplate,
-            inputVariables
-          });
-        } else if (typeof imgTemplate === "object") {
-          if ("url" in imgTemplate) {
-            const parsedTemplate = parseFString(imgTemplate.url);
-            inputVariables = parsedTemplate.flatMap((item2) => item2.type === "variable" ? [item2.name] : []);
-          } else {
-            inputVariables = [];
-          }
-          imgTemplateObject = new ImagePromptTemplate({
-            template: imgTemplate,
-            inputVariables
-          });
-        } else {
-          throw new Error("Invalid image template");
-        }
-        prompt.push(imgTemplateObject);
-      }
-    }
-    return new this({ prompt, additionalOptions });
-  }
-  async format(input) {
-    if (this.prompt instanceof BaseStringPromptTemplate) {
-      const text = await this.prompt.format(input);
-      return this.createMessage(text);
-    } else {
-      const content = [];
-      for (const prompt of this.prompt) {
-        let inputs = {};
-        if (!("inputVariables" in prompt)) {
-          throw new Error(`Prompt ${prompt} does not have inputVariables defined.`);
-        }
-        for (const item of prompt.inputVariables) {
-          if (!inputs) {
-            inputs = { [item]: input[item] };
-          }
-          inputs = { ...inputs, [item]: input[item] };
-        }
-        if (prompt instanceof BaseStringPromptTemplate) {
-          const formatted = await prompt.format(inputs);
-          content.push({ type: "text", text: formatted });
-        } else if (prompt instanceof ImagePromptTemplate) {
-          const formatted = await prompt.format(inputs);
-          content.push({ type: "image_url", image_url: formatted });
-        }
-      }
-      return this.createMessage(content);
-    }
-  }
-  async formatMessages(values) {
-    return [await this.format(values)];
-  }
-};
-var HumanMessagePromptTemplate = class extends _StringImageMessagePromptTemplate {
+var HumanMessagePromptTemplate = class extends BaseMessageStringPromptTemplate {
   static {
     __name(this, "HumanMessagePromptTemplate");
-  }
-  static _messageClass() {
-    return HumanMessage;
   }
   static lc_name() {
     return "HumanMessagePromptTemplate";
   }
+  async format(values) {
+    return new HumanMessage(await this.prompt.format(values));
+  }
+  static fromTemplate(template) {
+    return new this(PromptTemplate.fromTemplate(template));
+  }
 };
-var AIMessagePromptTemplate = class extends _StringImageMessagePromptTemplate {
+var AIMessagePromptTemplate = class extends BaseMessageStringPromptTemplate {
   static {
     __name(this, "AIMessagePromptTemplate");
-  }
-  static _messageClass() {
-    return AIMessage;
   }
   static lc_name() {
     return "AIMessagePromptTemplate";
   }
+  async format(values) {
+    return new AIMessage(await this.prompt.format(values));
+  }
+  static fromTemplate(template) {
+    return new this(PromptTemplate.fromTemplate(template));
+  }
 };
-var SystemMessagePromptTemplate = class extends _StringImageMessagePromptTemplate {
+var SystemMessagePromptTemplate = class extends BaseMessageStringPromptTemplate {
   static {
     __name(this, "SystemMessagePromptTemplate");
   }
-  static _messageClass() {
-    return SystemMessage;
-  }
   static lc_name() {
     return "SystemMessagePromptTemplate";
+  }
+  async format(values) {
+    return new SystemMessage(await this.prompt.format(values));
+  }
+  static fromTemplate(template) {
+    return new this(PromptTemplate.fromTemplate(template));
   }
 };
 function _isBaseMessagePromptTemplate(baseMessagePromptTemplateLike) {
@@ -530,22 +242,13 @@ var ChatPromptTemplate = class _ChatPromptTemplate extends BaseChatPromptTemplat
       return message;
     }
     const formattedMessageContent = await Promise.all(message.content.map(async (item) => {
-      if (item.type !== "image_url") {
+      if (item.type !== "image_url" || typeof item.image_url === "string" || !item.image_url?.url) {
         return item;
       }
-      let imageUrl = "";
-      if (typeof item.image_url === "string") {
-        imageUrl = item.image_url;
-      } else {
-        imageUrl = item.image_url.url;
-      }
+      const imageUrl = item.image_url.url;
       const promptTemplatePlaceholder = PromptTemplate.fromTemplate(imageUrl);
       const formattedUrl = await promptTemplatePlaceholder.format(inputValues);
-      if (typeof item.image_url !== "string" && "url" in item.image_url) {
-        item.image_url.url = formattedUrl;
-      } else {
-        item.image_url = formattedUrl;
-      }
+      item.image_url.url = formattedUrl;
       return item;
     }));
     message.content = formattedMessageContent;
@@ -598,7 +301,8 @@ var ChatPromptTemplate = class _ChatPromptTemplate extends BaseChatPromptTemplat
    * @param promptMessages Messages to be passed to the chat model
    * @returns A new ChatPromptTemplate
    */
-  static fromMessages(promptMessages, extra) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static fromMessages(promptMessages) {
     const flattenedMessages = promptMessages.reduce((acc, promptMessage) => acc.concat(
       // eslint-disable-next-line no-instanceof/no-instanceof
       promptMessage instanceof _ChatPromptTemplate ? promptMessage.promptMessages : [_coerceMessagePromptTemplateLike(promptMessage)]
@@ -618,8 +322,7 @@ var ChatPromptTemplate = class _ChatPromptTemplate extends BaseChatPromptTemplat
         inputVariables.add(inputVariable);
       }
     }
-    return new this({
-      ...extra,
+    return new _ChatPromptTemplate({
       inputVariables: [...inputVariables],
       promptMessages: flattenedMessages,
       partialVariables: flattenedPartialVariables

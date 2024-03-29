@@ -190,10 +190,11 @@ var Lunary = (_class2 = class {
   __init4() {this.queue = []}
   __init5() {this.queueRunning = false}
   __init6() {this.templateCache = {}}
+  __init7() {this.didWarnAboutAppId = false}
   /**
    * @param {LunaryOptions} options
    */
-  constructor(ctx) {;_class2.prototype.__init4.call(this);_class2.prototype.__init5.call(this);_class2.prototype.__init6.call(this);_class2.prototype.__init7.call(this);_class2.prototype.__init8.call(this);_class2.prototype.__init9.call(this);_class2.prototype.__init10.call(this);_class2.prototype.__init11.call(this);_class2.prototype.__init12.call(this);
+  constructor(ctx) {;_class2.prototype.__init4.call(this);_class2.prototype.__init5.call(this);_class2.prototype.__init6.call(this);_class2.prototype.__init7.call(this);_class2.prototype.__init8.call(this);_class2.prototype.__init9.call(this);_class2.prototype.__init10.call(this);_class2.prototype.__init11.call(this);_class2.prototype.__init12.call(this);_class2.prototype.__init13.call(this);
     this.init({
       appId: checkEnv("LUNARY_PUBLIC_KEY") || checkEnv("LUNARY_APP_ID") || checkEnv("LLMONITOR_APP_ID"),
       apiUrl: checkEnv("LUNARY_API_URL") || checkEnv("LLMONITOR_API_URL") || "https://api.lunary.ai",
@@ -220,10 +221,12 @@ var Lunary = (_class2 = class {
    * monitor.trackEvent("llm", "start", { name: "gpt-4", input: "Hello I'm a bot" });
    */
   trackEvent(type, event, data) {
-    if (!this.publicKey)
+    if (!this.publicKey && !this.didWarnAboutAppId) {
+      this.didWarnAboutAppId = true;
       return console.warn(
         "Lunary: Project ID not set. Not reporting anything. Get one on the dashboard: https://app.lunary.ai"
       );
+    }
     let timestamp = Date.now();
     const lastEvent = _optionalChain([this, 'access', _15 => _15.queue, 'optionalAccess', _16 => _16[this.queue.length - 1]]);
     if (_optionalChain([lastEvent, 'optionalAccess', _17 => _17.timestamp]) >= timestamp) {
@@ -261,7 +264,7 @@ var Lunary = (_class2 = class {
     }
   }
   // Wait 500ms to allow other events to be added to the queue
-  __init7() {this.debouncedProcessQueue = debounce(() => this.processQueue())}
+  __init8() {this.debouncedProcessQueue = debounce(() => this.processQueue())}
   async processQueue() {
     if (!this.queue.length || this.queueRunning)
       return;
@@ -294,7 +297,7 @@ var Lunary = (_class2 = class {
    * @param {string} datasetSlug - The slug of the dataset to get.
    * @returns {Promise<Run[]>} The dataset's runs.
    */
-  __init8() {this.getDataset = async (datasetId) => {
+  __init9() {this.getDataset = async (datasetId) => {
     try {
       const response = await fetch(`${this.apiUrl}/v1/datasets/${datasetId}`, {
         method: "GET",
@@ -319,7 +322,7 @@ var Lunary = (_class2 = class {
    * const template = await lunary.getRawTemplate("welcome")
    * console.log(template)
    */
-  __init9() {this.getRawTemplate = async (slug) => {
+  __init10() {this.getRawTemplate = async (slug) => {
     const cacheEntry = this.templateCache[slug];
     const now = Date.now();
     if (cacheEntry && now - cacheEntry.timestamp < 6e4) {
@@ -354,7 +357,7 @@ var Lunary = (_class2 = class {
    * const template = await lunary.renderTemplate("welcome", { name: "John" })
    * console.log(template)
    */
-  __init10() {this.renderTemplate = async (slug, data) => {
+  __init11() {this.renderTemplate = async (slug, data) => {
     const { id: templateId, content, extra } = await this.getRawTemplate(slug);
     const textMode = typeof content === "string";
     try {
@@ -378,7 +381,7 @@ var Lunary = (_class2 = class {
    * @example
    * monitor.trackFeedback("some-id", { thumbs: "up" });
    **/
-  __init11() {this.trackFeedback = (runId, feedback, overwrite = false) => {
+  __init12() {this.trackFeedback = (runId, feedback, overwrite = false) => {
     if (!runId || typeof runId !== "string")
       return console.error("Lunary: No message ID provided to track feedback");
     if (typeof feedback !== "object")
@@ -395,7 +398,7 @@ var Lunary = (_class2 = class {
    * Get feedback for a message or run.
    * @param {string} runId - The ID of the message or the run.
    */
-  __init12() {this.getFeedback = async (runId) => {
+  __init13() {this.getFeedback = async (runId) => {
     if (!runId || typeof runId !== "string")
       return console.error("Lunary: No message ID provided to get feedback");
     const response = await fetch(`${this.apiUrl}/v1/runs/${runId}/feedback`, {

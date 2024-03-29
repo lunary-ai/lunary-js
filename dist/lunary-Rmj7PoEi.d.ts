@@ -68,6 +68,7 @@ declare class Lunary {
     queue: any[];
     private queueRunning;
     private templateCache;
+    private didWarnAboutAppId;
     /**
      * @param {LunaryOptions} options
      */

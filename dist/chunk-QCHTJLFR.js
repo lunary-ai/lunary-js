@@ -190,6 +190,7 @@ var Lunary = class {
   queue = [];
   queueRunning = false;
   templateCache = {};
+  didWarnAboutAppId = false;
   /**
    * @param {LunaryOptions} options
    */
@@ -220,10 +221,12 @@ var Lunary = class {
    * monitor.trackEvent("llm", "start", { name: "gpt-4", input: "Hello I'm a bot" });
    */
   trackEvent(type, event, data) {
-    if (!this.publicKey)
+    if (!this.publicKey && !this.didWarnAboutAppId) {
+      this.didWarnAboutAppId = true;
       return console.warn(
         "Lunary: Project ID not set. Not reporting anything. Get one on the dashboard: https://app.lunary.ai"
       );
+    }
     let timestamp = Date.now();
     const lastEvent = this.queue?.[this.queue.length - 1];
     if (lastEvent?.timestamp >= timestamp) {
