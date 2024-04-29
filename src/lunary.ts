@@ -207,8 +207,6 @@ class Lunary {
       return cacheEntry.data
     }
 
-    console.log(`${this.apiUrl}/v1/template_versions/latest?slug=${slug}`)
-
     const response = await fetch(
       `${this.apiUrl}/v1/template_versions/latest?slug=${slug}`,
       {
@@ -284,7 +282,7 @@ class Lunary {
     this.trackEvent(null, "feedback", {
       runId,
       overwrite,
-      extra: feedback,
+      feedback,
     })
   }
 

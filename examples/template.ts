@@ -8,7 +8,7 @@ lunary.init({
 
 const openai = monitorOpenAI(new OpenAI())
 
-const template = await lunary.renderTemplate("support-help", {
+const template = await lunary.renderTemplate("support-agent", {
   name: "Jane Doe",
   topic: "account",
   question: "I have forgotten my password.",

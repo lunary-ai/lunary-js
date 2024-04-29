@@ -16,40 +16,44 @@ const thread = lunary.openThread({
   userId: "user123",
 })
 
+const msgText = "Hello, this is a test message."
+
 const msgId = thread.trackMessage({
   role: "user",
-  content: "this is a user message",
+  content: msgText,
 })
 
 console.log("Message id:", msgId)
 
-const wrapped = lunary.wrapContext(async (query) => {
+const MyAgent = lunary.wrapAgent(async function MyAgent(text) {
   const res = await openai.chat.completions.create({
     model: "gpt-3.5-turbo",
     temperature: 1,
     messages: [
       {
         role: "user",
-        content: query,
+        content: text,
       },
     ],
   })
-  return res
+
+  return res.choices[0].message.content
 })
 
-await wrapped("Hello").setParent(msgId)
+const output = await MyAgent(msgText).setParent(msgId)
+console.log("Output:", output)
 
 const resId = thread.trackMessage({
   role: "assistant",
-  content: "Yes, sure.",
+  content: output,
 })
 
 lunary.trackFeedback(resId, {
-  thumbs: "up",
+  thumbs: "down",
 })
 
 lunary.trackFeedback(resId, {
-  comment: "Hello this is nice",
+  comment: "Bad response.",
 })
 
 await sleep(1000)
