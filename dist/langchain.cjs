@@ -1,15 +1,15 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; } var _class;
 
-var _chunk5IIMSWP4cjs = require('./chunk-5IIMSWP4.cjs');
-require('./chunk-GUNXXRA5.cjs');
+var _chunkSQPM4PHAcjs = require('./chunk-SQPM4PHA.cjs');
+require('./chunk-V34MMHYN.cjs');
 
 
-var _chunkDNKDRIMAcjs = require('./chunk-DNKDRIMA.cjs');
+var _chunkFOTR2RYBcjs = require('./chunk-FOTR2RYB.cjs');
 
 
 
 
-var _chunkRWHNCYGGcjs = require('./chunk-RWHNCYGG.cjs');
+var _chunkZUM2FNN6cjs = require('./chunk-ZUM2FNN6.cjs');
 
 
 var _chunkEC6JY3PVcjs = require('./chunk-EC6JY3PV.cjs');
@@ -116,7 +116,7 @@ var parseExtraAndName = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (l
   );
   return { name, params, cleanedMetadata, userId, userProps };
 }, "parseExtraAndName");
-var LunaryHandler = (_class = class extends _chunkRWHNCYGGcjs.BaseCallbackHandler {
+var LunaryHandler = (_class = class extends _chunkZUM2FNN6cjs.BaseCallbackHandler {
   static {
     _chunkEC6JY3PVcjs.__name.call(void 0, this, "LunaryHandler");
   }
@@ -124,13 +124,13 @@ var LunaryHandler = (_class = class extends _chunkRWHNCYGGcjs.BaseCallbackHandle
   
   constructor(fields = {}) {
     super(fields);_class.prototype.__init.call(this);;
-    this.lunary = _chunk5IIMSWP4cjs.src_default;
+    this.lunary = _chunkSQPM4PHAcjs.src_default;
     if (fields) {
       const { appId, apiUrl, verbose } = fields;
       this.lunary.init({
         verbose,
-        appId: _nullishCoalesce(_nullishCoalesce(_nullishCoalesce(appId, () => ( _chunkRWHNCYGGcjs.getEnvironmentVariable.call(void 0, "LUNARY_PUBLIC_KEY"))), () => ( _chunkRWHNCYGGcjs.getEnvironmentVariable.call(void 0, "LUNARY_APP_ID"))), () => ( _chunkRWHNCYGGcjs.getEnvironmentVariable.call(void 0, "LLMONITOR_APP_ID"))),
-        apiUrl: _nullishCoalesce(_nullishCoalesce(apiUrl, () => ( _chunkRWHNCYGGcjs.getEnvironmentVariable.call(void 0, "LUNARY_API_URL"))), () => ( _chunkRWHNCYGGcjs.getEnvironmentVariable.call(void 0, "LLMONITOR_API_URL")))
+        appId: _nullishCoalesce(_nullishCoalesce(_nullishCoalesce(appId, () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LUNARY_PUBLIC_KEY"))), () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LUNARY_APP_ID"))), () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LLMONITOR_APP_ID"))),
+        apiUrl: _nullishCoalesce(_nullishCoalesce(apiUrl, () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LUNARY_API_URL"))), () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LLMONITOR_API_URL")))
       });
     }
   }
@@ -265,10 +265,10 @@ var LunaryHandler = (_class = class extends _chunkRWHNCYGGcjs.BaseCallbackHandle
 }, _class);
 var replaceDoubleCurlyBraces = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (str) => str.replaceAll("{{", "{").replaceAll("}}", "}"), "replaceDoubleCurlyBraces");
 async function getLangChainTemplate(slug) {
-  const template = await _chunk5IIMSWP4cjs.src_default.renderTemplate(slug);
+  const template = await _chunkSQPM4PHAcjs.src_default.renderTemplate(slug);
   if (template.prompt) {
     const text = replaceDoubleCurlyBraces(template.prompt);
-    const prompt = _chunkRWHNCYGGcjs.PromptTemplate.fromTemplate(text);
+    const prompt = _chunkZUM2FNN6cjs.PromptTemplate.fromTemplate(text);
     return prompt;
   } else {
     const messages = template.messages.map((message) => {
@@ -278,7 +278,7 @@ async function getLangChainTemplate(slug) {
         text
       ];
     });
-    const prompt = _chunkDNKDRIMAcjs.ChatPromptTemplate.fromMessages(messages);
+    const prompt = _chunkFOTR2RYBcjs.ChatPromptTemplate.fromMessages(messages);
     return prompt;
   }
 }

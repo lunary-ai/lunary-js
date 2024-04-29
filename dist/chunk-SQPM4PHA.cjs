@@ -1,23 +1,23 @@
-import {
-  cleanError,
-  generateUUID,
-  getFunctionInput,
-  lunary_default
-} from "./chunk-QCHTJLFR.js";
-import {
-  __name
-} from "./chunk-AGSXOS4O.js";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+
+
+
+
+var _chunkV34MMHYNcjs = require('./chunk-V34MMHYN.cjs');
+
+
+var _chunkEC6JY3PVcjs = require('./chunk-EC6JY3PV.cjs');
 
 // src/context.ts
-import { createContext } from "unctx";
-import { AsyncLocalStorage } from "node:async_hooks";
-var runId = createContext({
+var _unctx = require('unctx');
+var _async_hooks = require('async_hooks');
+var runId = _unctx.createContext.call(void 0, {
   asyncContext: true,
-  AsyncLocalStorage
+  AsyncLocalStorage: _async_hooks.AsyncLocalStorage
 });
-var user = createContext({
+var user = _unctx.createContext.call(void 0, {
   asyncContext: true,
-  AsyncLocalStorage
+  AsyncLocalStorage: _async_hooks.AsyncLocalStorage
 });
 var context_default = {
   runId,
@@ -35,27 +35,27 @@ async function identify(userId, userProps) {
     return next(target);
   });
 }
-__name(identify, "identify");
+_chunkEC6JY3PVcjs.__name.call(void 0, identify, "identify");
 async function setParent(runId2) {
   const { target, next } = this;
   return context_default.runId.callAsync(runId2, async () => {
     return next(target);
   });
 }
-__name(setParent, "setParent");
+_chunkEC6JY3PVcjs.__name.call(void 0, setParent, "setParent");
 var chainable_default = {
   identify,
   setParent
 };
 
 // src/index.ts
-var BackendMonitor = class extends lunary_default {
+var BackendMonitor = class extends _chunkV34MMHYNcjs.lunary_default {
   static {
-    __name(this, "BackendMonitor");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "BackendMonitor");
   }
   wrap(type, func, params) {
     const lunary2 = this;
-    const wrappedFn = /* @__PURE__ */ __name((...args) => {
+    const wrappedFn = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (...args) => {
       const callInfo = {
         type,
         func,
@@ -95,8 +95,8 @@ var BackendMonitor = class extends lunary_default {
   // Extract the actual execution logic into a function
   async executeWrappedFunction(target) {
     const { type, args, func, params: properties } = target;
-    const runId2 = generateUUID();
-    const name = properties?.nameParser ? properties.nameParser(...args) : properties?.name ?? func.name;
+    const runId2 = _chunkV34MMHYNcjs.generateUUID.call(void 0, );
+    const name = _optionalChain([properties, 'optionalAccess', _ => _.nameParser]) ? properties.nameParser(...args) : _nullishCoalesce(_optionalChain([properties, 'optionalAccess', _2 => _2.name]), () => ( func.name));
     const {
       inputParser,
       outputParser,
@@ -112,13 +112,13 @@ var BackendMonitor = class extends lunary_default {
       userId,
       userProps
     } = properties || {};
-    const paramsData = properties?.paramsParser ? properties.paramsParser(...args) : params || extra;
-    const metadataData = properties?.metadataParser ? properties.metadataParser(...args) : metadata;
-    const tagsData = properties?.tagsParser ? properties.tagsParser(...args) : tags;
-    const userIdData = properties?.userIdParser ? properties.userIdParser(...args) : userId;
-    const userPropsData = properties?.userPropsParser ? properties.userPropsParser(...args) : userProps;
-    const templateId = properties?.templateParser ? properties.templateParser(...args) : templateParser;
-    const input = inputParser ? inputParser(...args) : getFunctionInput(func, args);
+    const paramsData = _optionalChain([properties, 'optionalAccess', _3 => _3.paramsParser]) ? properties.paramsParser(...args) : params || extra;
+    const metadataData = _optionalChain([properties, 'optionalAccess', _4 => _4.metadataParser]) ? properties.metadataParser(...args) : metadata;
+    const tagsData = _optionalChain([properties, 'optionalAccess', _5 => _5.tagsParser]) ? properties.tagsParser(...args) : tags;
+    const userIdData = _optionalChain([properties, 'optionalAccess', _6 => _6.userIdParser]) ? properties.userIdParser(...args) : userId;
+    const userPropsData = _optionalChain([properties, 'optionalAccess', _7 => _7.userPropsParser]) ? properties.userPropsParser(...args) : userProps;
+    const templateId = _optionalChain([properties, 'optionalAccess', _8 => _8.templateParser]) ? properties.templateParser(...args) : templateParser;
+    const input = inputParser ? inputParser(...args) : _chunkV34MMHYNcjs.getFunctionInput.call(void 0, func, args);
     if (track !== false) {
       this.trackEvent(type, "start", {
         runId: runId2,
@@ -133,7 +133,7 @@ var BackendMonitor = class extends lunary_default {
       });
     }
     const shouldWaitUntil = typeof enableWaitUntil === "function" ? enableWaitUntil(...args) : waitUntil;
-    const processOutput = /* @__PURE__ */ __name(async (output) => {
+    const processOutput = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, async (output) => {
       const tokensUsage = tokensUsageParser ? await tokensUsageParser(output) : void 0;
       this.trackEvent(type, "end", {
         runId: runId2,
@@ -164,7 +164,7 @@ var BackendMonitor = class extends lunary_default {
       if (track !== false) {
         this.trackEvent(type, "error", {
           runId: runId2,
-          error: cleanError(error)
+          error: _chunkV34MMHYNcjs.cleanError.call(void 0, error)
         });
         await this.processQueue();
       }
@@ -207,6 +207,6 @@ var BackendMonitor = class extends lunary_default {
 var lunary = new BackendMonitor(context_default);
 var src_default = lunary;
 
-export {
-  src_default
-};
+
+
+exports.src_default = src_default;
