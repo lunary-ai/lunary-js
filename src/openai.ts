@@ -104,7 +104,7 @@ const PARAMS_TO_CAPTURE = [
   "top_k",
   "stop",
   "presence_penalty",
-  "frequence_penalty",
+  "frequency_penalty",
   "seed",
   "function_call",
   "functions",
