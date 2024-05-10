@@ -1,5 +1,6 @@
 import fs from "fs/promises"
 import { Document, VectorStoreIndex } from "llamaindex"
+import "dotenv/config"
 
 import { monitorLlamaIndex } from "../src/llamaindex"
 
@@ -23,4 +24,4 @@ const response = await queryEngine.query({
   query: "What did the author do in college?",
 })
 
-console.log(response.response)
+// console.log(response.response)
