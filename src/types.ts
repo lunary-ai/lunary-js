@@ -13,6 +13,7 @@ export interface LunaryOptions {
   publicKey?: string
   apiUrl?: string
   verbose?: boolean
+  runtime?: string
 }
 
 export type RunType =

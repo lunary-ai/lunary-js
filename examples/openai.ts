@@ -11,10 +11,9 @@ const openai = monitorOpenAI(
 
 async function streaming(input) {
   const stream = await openai.chat.completions.create({
-    model: "gpt-4-turbo-preview",
+    model: "gpt-4o",
     temperature: 0,
     stream: true,
-    tags: ["translate"],
     user: "user123",
     seed: 123,
     userProps: {
@@ -28,7 +27,7 @@ async function streaming(input) {
     messages: [
       {
         role: "user",
-        content: `Hello, translate ${input} from french to english`,
+        content: input,
       },
     ],
   })
@@ -77,5 +76,5 @@ async function nonStreaming(input) {
   return res.choices[0].message.content
 }
 
-await streaming("bonjour")
+await streaming("Hello my name is Stuart and I live in New York City")
 // await nonStreaming("bonjour")

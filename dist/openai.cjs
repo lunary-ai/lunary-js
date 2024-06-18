@@ -1,9 +1,9 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
-var _chunkSQPM4PHAcjs = require('./chunk-SQPM4PHA.cjs');
+var _chunkOZDFMLXScjs = require('./chunk-OZDFMLXS.cjs');
 
 
-var _chunkV34MMHYNcjs = require('./chunk-V34MMHYN.cjs');
+var _chunkD35PBWYWcjs = require('./chunk-D35PBWYW.cjs');
 
 
 var _chunkEC6JY3PVcjs = require('./chunk-EC6JY3PV.cjs');
@@ -60,7 +60,7 @@ var PARAMS_TO_CAPTURE = [
   "top_k",
   "stop",
   "presence_penalty",
-  "frequence_penalty",
+  "frequency_penalty",
   "seed",
   "function_call",
   "functions",
@@ -132,7 +132,7 @@ function monitorOpenAI(openai, params = {}) {
     }
   }
   _chunkEC6JY3PVcjs.__name.call(void 0, handleStream, "handleStream");
-  const wrapped = _chunkSQPM4PHAcjs.src_default.wrapModel(wrappedCreateChatCompletion, {
+  const wrapped = _chunkOZDFMLXScjs.src_default.wrapModel(wrappedCreateChatCompletion, {
     nameParser: (request) => request.model,
     inputParser: (request) => request.messages.map(parseOpenaiMessage),
     paramsParser: (request) => {
@@ -141,7 +141,7 @@ function monitorOpenAI(openai, params = {}) {
         if (request[param])
           rawExtra[param] = request[param];
       }
-      return _chunkV34MMHYNcjs.cleanExtra.call(void 0, rawExtra);
+      return _chunkD35PBWYWcjs.cleanExtra.call(void 0, rawExtra);
     },
     metadataParser(request) {
       const metadata = request.metadata;

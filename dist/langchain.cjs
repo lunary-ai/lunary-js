@@ -1,7 +1,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; } var _class;
 
-var _chunkSQPM4PHAcjs = require('./chunk-SQPM4PHA.cjs');
-require('./chunk-V34MMHYN.cjs');
+var _chunkOZDFMLXScjs = require('./chunk-OZDFMLXS.cjs');
+require('./chunk-D35PBWYW.cjs');
 
 
 var _chunkFOTR2RYBcjs = require('./chunk-FOTR2RYB.cjs');
@@ -124,7 +124,7 @@ var LunaryHandler = (_class = class extends _chunkZUM2FNN6cjs.BaseCallbackHandle
   
   constructor(fields = {}) {
     super(fields);_class.prototype.__init.call(this);;
-    this.lunary = _chunkSQPM4PHAcjs.src_default;
+    this.lunary = _chunkOZDFMLXScjs.src_default;
     if (fields) {
       const { appId, apiUrl, verbose } = fields;
       this.lunary.init({
@@ -265,7 +265,7 @@ var LunaryHandler = (_class = class extends _chunkZUM2FNN6cjs.BaseCallbackHandle
 }, _class);
 var replaceDoubleCurlyBraces = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (str) => str.replaceAll("{{", "{").replaceAll("}}", "}"), "replaceDoubleCurlyBraces");
 async function getLangChainTemplate(slug) {
-  const template = await _chunkSQPM4PHAcjs.src_default.renderTemplate(slug);
+  const template = await _chunkOZDFMLXScjs.src_default.renderTemplate(slug);
   if (template.prompt) {
     const text = replaceDoubleCurlyBraces(template.prompt);
     const prompt = _chunkZUM2FNN6cjs.PromptTemplate.fromTemplate(text);

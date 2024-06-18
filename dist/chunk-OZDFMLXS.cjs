@@ -3,7 +3,7 @@
 
 
 
-var _chunkV34MMHYNcjs = require('./chunk-V34MMHYN.cjs');
+var _chunkD35PBWYWcjs = require('./chunk-D35PBWYW.cjs');
 
 
 var _chunkEC6JY3PVcjs = require('./chunk-EC6JY3PV.cjs');
@@ -49,7 +49,7 @@ var chainable_default = {
 };
 
 // src/index.ts
-var BackendMonitor = class extends _chunkV34MMHYNcjs.lunary_default {
+var BackendMonitor = class extends _chunkD35PBWYWcjs.lunary_default {
   static {
     _chunkEC6JY3PVcjs.__name.call(void 0, this, "BackendMonitor");
   }
@@ -95,7 +95,7 @@ var BackendMonitor = class extends _chunkV34MMHYNcjs.lunary_default {
   // Extract the actual execution logic into a function
   async executeWrappedFunction(target) {
     const { type, args, func, params: properties } = target;
-    const runId2 = _chunkV34MMHYNcjs.generateUUID.call(void 0, );
+    const runId2 = _chunkD35PBWYWcjs.generateUUID.call(void 0, );
     const name = _optionalChain([properties, 'optionalAccess', _ => _.nameParser]) ? properties.nameParser(...args) : _nullishCoalesce(_optionalChain([properties, 'optionalAccess', _2 => _2.name]), () => ( func.name));
     const {
       inputParser,
@@ -118,7 +118,7 @@ var BackendMonitor = class extends _chunkV34MMHYNcjs.lunary_default {
     const userIdData = _optionalChain([properties, 'optionalAccess', _6 => _6.userIdParser]) ? properties.userIdParser(...args) : userId;
     const userPropsData = _optionalChain([properties, 'optionalAccess', _7 => _7.userPropsParser]) ? properties.userPropsParser(...args) : userProps;
     const templateId = _optionalChain([properties, 'optionalAccess', _8 => _8.templateParser]) ? properties.templateParser(...args) : templateParser;
-    const input = inputParser ? inputParser(...args) : _chunkV34MMHYNcjs.getFunctionInput.call(void 0, func, args);
+    const input = inputParser ? inputParser(...args) : _chunkD35PBWYWcjs.getFunctionInput.call(void 0, func, args);
     if (track !== false) {
       this.trackEvent(type, "start", {
         runId: runId2,
@@ -164,7 +164,7 @@ var BackendMonitor = class extends _chunkV34MMHYNcjs.lunary_default {
       if (track !== false) {
         this.trackEvent(type, "error", {
           runId: runId2,
-          error: _chunkV34MMHYNcjs.cleanError.call(void 0, error)
+          error: _chunkD35PBWYWcjs.cleanError.call(void 0, error)
         });
         await this.processQueue();
       }

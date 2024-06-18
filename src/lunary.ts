@@ -28,6 +28,7 @@ class Lunary {
   verbose?: boolean
   apiUrl?: string
   ctx?: any
+  runtime?: string
 
   queue: any[] = []
   private queueRunning: boolean = false
@@ -48,17 +49,19 @@ class Lunary {
         checkEnv("LUNARY_API_URL") ||
         checkEnv("LLMONITOR_API_URL") ||
         "https://api.lunary.ai",
+      runtime: "lunary-js",
       verbose: false,
     })
 
     this.ctx = ctx
   }
 
-  init({ appId, publicKey, verbose, apiUrl }: LunaryOptions = {}) {
+  init({ appId, publicKey, verbose, apiUrl, runtime }: LunaryOptions = {}) {
     if (appId) this.publicKey = appId
     if (publicKey) this.publicKey = publicKey
     if (verbose) this.verbose = verbose
     if (apiUrl) this.apiUrl = apiUrl
+    if (runtime) this.runtime = runtime
   }
 
   /**
@@ -102,7 +105,7 @@ class Lunary {
       userProps = undefined
     }
 
-    const runtime = data.runtime ?? "lunary-js"
+    const runtime = data.runtime ?? this.runtime
 
     const eventData: Event = {
       event,

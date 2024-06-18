@@ -14,11 +14,6 @@ const template = await lunary.renderTemplate("support-agent", {
   question: "I have forgotten my password.",
 })
 
-const res = await openai.chat.completions
-  .create(template)
-  .identify("demo-user-2", {
-    name: "Jane Doe",
-    email: "john.doe@example.org",
-  })
+const res = await openai.chat.completions.create(template)
 
 console.log(res.choices[0].message.content)

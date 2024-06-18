@@ -6,6 +6,7 @@ interface LunaryOptions {
     publicKey?: string;
     apiUrl?: string;
     verbose?: boolean;
+    runtime?: string;
 }
 type RunType = "log" | "tool" | "agent" | "llm" | "chain" | "retriever" | "embed" | "thread" | "chat";
 type EventName = "start" | "end" | "error" | "info" | "warn" | "feedback" | "chat";

@@ -1,9 +1,9 @@
 import {
   src_default
-} from "./chunk-RMYRAACF.js";
+} from "./chunk-RZNJFQU2.js";
 import {
   cleanExtra
-} from "./chunk-S7JLKV3X.js";
+} from "./chunk-QHQ3L67R.js";
 import {
   __name
 } from "./chunk-AGSXOS4O.js";
@@ -60,7 +60,7 @@ var PARAMS_TO_CAPTURE = [
   "top_k",
   "stop",
   "presence_penalty",
-  "frequence_penalty",
+  "frequency_penalty",
   "seed",
   "function_call",
   "functions",

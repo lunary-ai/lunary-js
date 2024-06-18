@@ -1,4 +1,4 @@
-import { cJSON, LunaryOptions, RunType, EventName, RunEvent, LogEvent, Template } from './types.js';
+import { cJSON, LunaryOptions, RunType, EventName, RunEvent, LogEvent, Template } from './types.cjs';
 
 /**
  * Flow:
@@ -65,6 +65,7 @@ declare class Lunary {
     verbose?: boolean;
     apiUrl?: string;
     ctx?: any;
+    runtime?: string;
     queue: any[];
     private queueRunning;
     private templateCache;
@@ -73,7 +74,7 @@ declare class Lunary {
      * @param {LunaryOptions} options
      */
     constructor(ctx?: any);
-    init({ appId, publicKey, verbose, apiUrl }?: LunaryOptions): void;
+    init({ appId, publicKey, verbose, apiUrl, runtime }?: LunaryOptions): void;
     /**
      * Manually track a run event.
      * @param {RunType} type - The type of the run.
