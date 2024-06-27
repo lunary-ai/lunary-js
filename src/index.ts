@@ -240,6 +240,9 @@ class BackendMonitor extends Lunary {
   }
 }
 
+// Export the BackendMonitor class if user wants to initiate multiple instances
+export { BackendMonitor as Monitor }
+
 // Create a new instance of the monitor with the async context
 const lunary = new BackendMonitor(ctx)
 

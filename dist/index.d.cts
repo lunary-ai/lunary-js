@@ -29,6 +29,7 @@ declare class BackendMonitor extends Lunary {
      */
     wrapModel<T extends WrappableFn>(func: T, params?: WrapParams<T>): WrappedFn<T>;
 }
+
 declare const lunary: BackendMonitor;
 
-export = lunary;
+export { BackendMonitor as Monitor, lunary as default };
