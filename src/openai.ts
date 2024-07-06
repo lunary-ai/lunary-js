@@ -244,9 +244,19 @@ export function monitorOpenAI<T extends any>(
     enableWaitUntil: (request) => !!request.stream,
     waitUntil: (stream, onComplete, onError) => {
       // Fork the stream in two to be able to process it / multicast it
-      const [og, copy] = teeAsync(stream)
-      handleStream(copy, onComplete, onError)
-      return og
+
+      // If is instance of "OpenAPIStreaming.Stream" use builtin method
+      // Using `isinstanceof` dosen't work for some reason
+      if (stream.constructor.name === "Stream") {
+        const [og, copy] = stream.tee();
+        handleStream(copy, onComplete, onError)
+        return og
+      } else {
+        const [og, copy] = teeAsync(stream)
+        handleStream(copy, onComplete, onError)
+        return og
+      }
+ 
     },
     ...params,
   })
