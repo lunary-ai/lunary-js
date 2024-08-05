@@ -5,6 +5,7 @@ export default defineConfig({
   entry: [
     "src/index.ts",
     "src/openai.ts",
+    "src/anthropic.ts",
     "src/types.ts",
     "src/browser.ts",
     "src/react.ts",
@@ -20,5 +21,5 @@ export default defineConfig({
   keepNames: true,
   minifyIdentifiers: false,
   minify: false,
-  clean: true,
+  clean: true
 })

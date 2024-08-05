@@ -1,15 +1,15 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; } var _class;
 
+var _chunkPUORCSTYcjs = require('./chunk-PUORCSTY.cjs');
+
+
 var _chunk26SNBQOHcjs = require('./chunk-26SNBQOH.cjs');
 require('./chunk-D35PBWYW.cjs');
 
 
-var _chunkFOTR2RYBcjs = require('./chunk-FOTR2RYB.cjs');
 
 
-
-
-var _chunkZUM2FNN6cjs = require('./chunk-ZUM2FNN6.cjs');
+var _chunkXCBWNIJPcjs = require('./chunk-XCBWNIJP.cjs');
 
 
 var _chunkEC6JY3PVcjs = require('./chunk-EC6JY3PV.cjs');
@@ -116,7 +116,7 @@ var parseExtraAndName = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (l
   );
   return { name, params, cleanedMetadata, userId, userProps };
 }, "parseExtraAndName");
-var LunaryHandler = (_class = class extends _chunkZUM2FNN6cjs.BaseCallbackHandler {
+var LunaryHandler = (_class = class extends _chunkXCBWNIJPcjs.BaseCallbackHandler {
   static {
     _chunkEC6JY3PVcjs.__name.call(void 0, this, "LunaryHandler");
   }
@@ -129,8 +129,8 @@ var LunaryHandler = (_class = class extends _chunkZUM2FNN6cjs.BaseCallbackHandle
       const { appId, apiUrl, verbose } = fields;
       this.lunary.init({
         verbose,
-        appId: _nullishCoalesce(_nullishCoalesce(_nullishCoalesce(appId, () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LUNARY_PUBLIC_KEY"))), () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LUNARY_APP_ID"))), () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LLMONITOR_APP_ID"))),
-        apiUrl: _nullishCoalesce(_nullishCoalesce(apiUrl, () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LUNARY_API_URL"))), () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LLMONITOR_API_URL")))
+        appId: _nullishCoalesce(_nullishCoalesce(_nullishCoalesce(appId, () => ( _chunkXCBWNIJPcjs.getEnvironmentVariable.call(void 0, "LUNARY_PUBLIC_KEY"))), () => ( _chunkXCBWNIJPcjs.getEnvironmentVariable.call(void 0, "LUNARY_APP_ID"))), () => ( _chunkXCBWNIJPcjs.getEnvironmentVariable.call(void 0, "LLMONITOR_APP_ID"))),
+        apiUrl: _nullishCoalesce(_nullishCoalesce(apiUrl, () => ( _chunkXCBWNIJPcjs.getEnvironmentVariable.call(void 0, "LUNARY_API_URL"))), () => ( _chunkXCBWNIJPcjs.getEnvironmentVariable.call(void 0, "LLMONITOR_API_URL")))
       });
     }
   }
@@ -268,7 +268,7 @@ async function getLangChainTemplate(slug) {
   const template = await _chunk26SNBQOHcjs.src_default.renderTemplate(slug);
   if (template.prompt) {
     const text = replaceDoubleCurlyBraces(template.prompt);
-    const prompt = _chunkZUM2FNN6cjs.PromptTemplate.fromTemplate(text);
+    const prompt = _chunkXCBWNIJPcjs.PromptTemplate.fromTemplate(text);
     return prompt;
   } else {
     const messages = template.messages.map((message) => {
@@ -278,7 +278,7 @@ async function getLangChainTemplate(slug) {
         text
       ];
     });
-    const prompt = _chunkFOTR2RYBcjs.ChatPromptTemplate.fromMessages(messages);
+    const prompt = _chunkPUORCSTYcjs.ChatPromptTemplate.fromMessages(messages);
     return prompt;
   }
 }
