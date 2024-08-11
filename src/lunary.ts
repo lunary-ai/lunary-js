@@ -122,6 +122,8 @@ class Lunary {
       console.log(formatLog(eventData))
     }
 
+    console.log(formatLog(eventData))
+
     this.queue.push(eventData)
 
     if (this.queue.length > MAX_CHUNK_SIZE) {

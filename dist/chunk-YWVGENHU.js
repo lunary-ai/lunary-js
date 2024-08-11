@@ -15,7 +15,7 @@ import {
   isBaseMessage,
   parseFString,
   renderTemplate
-} from "./chunk-76J7IIS5.js";
+} from "./chunk-QY5FEDGL.js";
 import {
   __name
 } from "./chunk-AGSXOS4O.js";
@@ -161,63 +161,6 @@ var BaseMessagePromptTemplate = class extends Runnable {
     return this._callWithConfig((input2) => this.formatMessages(input2), input, { ...options, runType: "prompt" });
   }
 };
-var MessagesPlaceholder = class extends BaseMessagePromptTemplate {
-  static {
-    __name(this, "MessagesPlaceholder");
-  }
-  static lc_name() {
-    return "MessagesPlaceholder";
-  }
-  constructor(fields) {
-    if (typeof fields === "string") {
-      fields = { variableName: fields };
-    }
-    super(fields);
-    Object.defineProperty(this, "variableName", {
-      enumerable: true,
-      configurable: true,
-      writable: true,
-      value: void 0
-    });
-    Object.defineProperty(this, "optional", {
-      enumerable: true,
-      configurable: true,
-      writable: true,
-      value: void 0
-    });
-    this.variableName = fields.variableName;
-    this.optional = fields.optional ?? false;
-  }
-  get inputVariables() {
-    return [this.variableName];
-  }
-  validateInputOrThrow(input, variableName) {
-    if (this.optional && !input) {
-      return false;
-    } else if (!input) {
-      const error = new Error(`Error: Field "${variableName}" in prompt uses a MessagesPlaceholder, which expects an array of BaseMessages as an input value. Received: undefined`);
-      error.name = "InputFormatError";
-      throw error;
-    }
-    let isInputBaseMessage = false;
-    if (Array.isArray(input)) {
-      isInputBaseMessage = input.every((message) => isBaseMessage(message));
-    } else {
-      isInputBaseMessage = isBaseMessage(input);
-    }
-    if (!isInputBaseMessage) {
-      const readableInput = typeof input === "string" ? input : JSON.stringify(input, null, 2);
-      const error = new Error(`Error: Field "${variableName}" in prompt uses a MessagesPlaceholder, which expects an array of BaseMessages as an input value. Received: ${readableInput}`);
-      error.name = "InputFormatError";
-      throw error;
-    }
-    return true;
-  }
-  async formatMessages(values) {
-    this.validateInputOrThrow(values[this.variableName], this.variableName);
-    return values[this.variableName] ?? [];
-  }
-};
 var BaseMessageStringPromptTemplate = class extends BaseMessagePromptTemplate {
   static {
     __name(this, "BaseMessageStringPromptTemplate");
@@ -280,10 +223,8 @@ var ChatMessagePromptTemplate = class extends BaseMessageStringPromptTemplate {
   async format(values) {
     return new ChatMessage(await this.prompt.format(values), this.role);
   }
-  static fromTemplate(template, role, options) {
-    return new this(PromptTemplate.fromTemplate(template, {
-      templateFormat: options?.templateFormat
-    }), role);
+  static fromTemplate(template, role) {
+    return new this(PromptTemplate.fromTemplate(template), role);
   }
 };
 var _StringImageMessagePromptTemplate = class extends BaseMessagePromptTemplate {
@@ -385,7 +326,7 @@ var _StringImageMessagePromptTemplate = class extends BaseMessagePromptTemplate 
   }
   static fromTemplate(template, additionalOptions) {
     if (typeof template === "string") {
-      return new this(PromptTemplate.fromTemplate(template, additionalOptions));
+      return new this(PromptTemplate.fromTemplate(template));
     }
     const prompt = [];
     for (const item of template) {
@@ -507,41 +448,19 @@ function _isBaseMessagePromptTemplate(baseMessagePromptTemplateLike) {
   return typeof baseMessagePromptTemplateLike.formatMessages === "function";
 }
 __name(_isBaseMessagePromptTemplate, "_isBaseMessagePromptTemplate");
-function _coerceMessagePromptTemplateLike(messagePromptTemplateLike, extra) {
+function _coerceMessagePromptTemplateLike(messagePromptTemplateLike) {
   if (_isBaseMessagePromptTemplate(messagePromptTemplateLike) || isBaseMessage(messagePromptTemplateLike)) {
     return messagePromptTemplateLike;
   }
-  if (Array.isArray(messagePromptTemplateLike) && messagePromptTemplateLike[0] === "placeholder") {
-    const messageContent = messagePromptTemplateLike[1];
-    if (typeof messageContent !== "string" || messageContent[0] !== "{" || messageContent[messageContent.length - 1] !== "}") {
-      throw new Error(`Invalid placeholder template: "${messagePromptTemplateLike[1]}". Expected a variable name surrounded by curly braces.`);
-    }
-    const variableName = messageContent.slice(1, -1);
-    return new MessagesPlaceholder({ variableName, optional: true });
-  }
   const message = coerceMessageLikeToMessage(messagePromptTemplateLike);
-  let templateData;
-  if (typeof message.content === "string") {
-    templateData = message.content;
-  } else {
-    templateData = message.content.map((item) => {
-      if ("text" in item) {
-        return { text: item.text };
-      } else if ("image_url" in item) {
-        return { image_url: item.image_url };
-      } else {
-        return item;
-      }
-    });
-  }
   if (message._getType() === "human") {
-    return HumanMessagePromptTemplate.fromTemplate(templateData, extra);
+    return HumanMessagePromptTemplate.fromTemplate(message.content);
   } else if (message._getType() === "ai") {
-    return AIMessagePromptTemplate.fromTemplate(templateData, extra);
+    return AIMessagePromptTemplate.fromTemplate(message.content);
   } else if (message._getType() === "system") {
-    return SystemMessagePromptTemplate.fromTemplate(templateData, extra);
+    return SystemMessagePromptTemplate.fromTemplate(message.content);
   } else if (ChatMessage.isInstance(message)) {
-    return ChatMessagePromptTemplate.fromTemplate(message.content, message.role, extra);
+    return ChatMessagePromptTemplate.fromTemplate(message.content, message.role);
   } else {
     throw new Error(`Could not coerce message prompt template from input. Received message type: "${message._getType()}".`);
   }
@@ -577,15 +496,6 @@ var ChatPromptTemplate = class _ChatPromptTemplate extends BaseChatPromptTemplat
       writable: true,
       value: true
     });
-    Object.defineProperty(this, "templateFormat", {
-      enumerable: true,
-      configurable: true,
-      writable: true,
-      value: "f-string"
-    });
-    if (input.templateFormat === "mustache" && input.validateTemplate === void 0) {
-      this.validateTemplate = false;
-    }
     Object.assign(this, input);
     if (this.validateTemplate) {
       const inputVariablesMessages = /* @__PURE__ */ new Set();
@@ -674,8 +584,11 @@ var ChatPromptTemplate = class _ChatPromptTemplate extends BaseChatPromptTemplat
     };
     return new _ChatPromptTemplate(promptDict);
   }
-  static fromTemplate(template, options) {
-    const prompt = PromptTemplate.fromTemplate(template, options);
+  /**
+   * Load prompt template from a template f-string
+   */
+  static fromTemplate(template) {
+    const prompt = PromptTemplate.fromTemplate(template);
     const humanTemplate = new HumanMessagePromptTemplate({ prompt });
     return this.fromMessages([humanTemplate]);
   }
@@ -688,9 +601,7 @@ var ChatPromptTemplate = class _ChatPromptTemplate extends BaseChatPromptTemplat
   static fromMessages(promptMessages, extra) {
     const flattenedMessages = promptMessages.reduce((acc, promptMessage) => acc.concat(
       // eslint-disable-next-line no-instanceof/no-instanceof
-      promptMessage instanceof _ChatPromptTemplate ? promptMessage.promptMessages : [
-        _coerceMessagePromptTemplateLike(promptMessage, extra)
-      ]
+      promptMessage instanceof _ChatPromptTemplate ? promptMessage.promptMessages : [_coerceMessagePromptTemplateLike(promptMessage)]
     ), []);
     const flattenedPartialVariables = promptMessages.reduce((acc, promptMessage) => (
       // eslint-disable-next-line no-instanceof/no-instanceof
@@ -711,8 +622,7 @@ var ChatPromptTemplate = class _ChatPromptTemplate extends BaseChatPromptTemplat
       ...extra,
       inputVariables: [...inputVariables],
       promptMessages: flattenedMessages,
-      partialVariables: flattenedPartialVariables,
-      templateFormat: extra?.templateFormat
+      partialVariables: flattenedPartialVariables
     });
   }
   /** @deprecated Renamed to .fromMessages */

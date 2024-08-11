@@ -260,6 +260,7 @@ var Lunary = (_class2 = class {
     if (this.verbose) {
       console.log(formatLog(eventData));
     }
+    console.log(formatLog(eventData));
     this.queue.push(eventData);
     if (this.queue.length > MAX_CHUNK_SIZE) {
       this.processQueue();

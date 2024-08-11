@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk"
-import assert from "node:assert"
+// import assert from "node:assert"
 
 import monitorAnthrophic from "lunary/anthropic"
 
@@ -18,7 +18,7 @@ async function non_streaming() {
     model: "claude-3-opus-20240229",
     max_tokens: 1024,
   })
-  console.dir(result)
+  // console.dir(result)
 }
 
 async function streaming() {
@@ -27,23 +27,23 @@ async function streaming() {
       messages: [
         {
           role: "user",
-          content: `Hey Claude! How can I recursively list all files in a directory in Rust?`,
+          content: `Hey Claude!`,
         },
       ],
       model: "claude-3-opus-20240229",
       max_tokens: 1024,
     })
     // Once a content block is fully streamed, this event will fire
-    .on("contentBlock", (content) => console.log("contentBlock", content))
+    .on("contentBlock", (content) => {})
     // Once a message is fully streamed, this event will fire
-    .on("message", (message) => console.log("message", message))
+    .on("message", (message) => {})
 
   for await (const event of stream) {
-    console.log("event", event)
+    // console.log("event", event)
   }
 
   const message = await stream.finalMessage()
-  console.log("finalMessage", message)
+  // console.log("finalMessage", message)
 }
 
 async function raw_streaming() {
@@ -64,10 +64,10 @@ async function raw_streaming() {
       event.type === "content_block_delta" &&
       event.delta.type === "text_delta"
     ) {
-      process.stdout.write(event.delta.text)
+      // process.stdout.write(event.delta.text)
     }
   }
-  process.stdout.write("\n")
+  // process.stdout.write("\n")
 }
 
 async function tool_calls() {
@@ -92,15 +92,15 @@ async function tool_calls() {
     messages: [userMessage],
     tools,
   })
-  console.log("Initial response:")
-  console.dir(message, { depth: 4 })
+  // console.log("Initial response:")
+  // console.dir(message, { depth: 4 })
 
-  assert(message.stop_reason === "tool_use")
+  // assert(message.stop_reason === "tool_use")
 
   const tool = message.content.find(
     (content): content is Anthropic.ToolUseBlock => content.type === "tool_use"
   )
-  assert(tool)
+  // assert(tool)
 
   const result = await client.messages.create({
     model: "claude-3-opus-20240229",
@@ -113,7 +113,7 @@ async function tool_calls() {
         content: [
           {
             type: "tool_result",
-            tool_use_id: tool.id,
+            tool_use_id: (tool?.id || ""),
             content: [{ type: "text", text: "The weather is 73f" }],
           },
         ],
@@ -121,8 +121,8 @@ async function tool_calls() {
     ],
     tools,
   })
-  console.log("\nFinal response")
-  console.dir(result, { depth: 4 })
+  // console.log("\nFinal response")
+  // console.dir(result, { depth: 4 })
 }
 
 async function tool_streaming() {
@@ -158,16 +158,16 @@ async function tool_streaming() {
       // When a JSON content block delta is encountered this
       // event will be fired with the delta and the currently accumulated object
       .on('inputJson', (delta, snapshot) => {
-        console.log(`delta: ${delta}`);
-        console.log(`snapshot: ${inspect(snapshot)}`);
-        console.log();
+        // console.log(`delta: ${delta}`);
+        // console.log(`snapshot: ${(snapshot)}`);
+        // console.log();
       });
   
     await stream.done();
   }
-
-// non_streaming().then(console.log);
-// streaming().then(console.log)
-raw_streaming().then(console.log)
-// tool_calls().then(console.log)
-// tool_streaming().then(console.log)
+ 
+await non_streaming();
+await streaming()
+await raw_streaming()
+await tool_calls()
+await tool_streaming()
