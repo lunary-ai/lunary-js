@@ -85,7 +85,23 @@ const wrapOptions = {
   nameParser: (request) => request.model,
   inputParser: (request) => {
     const inputs: any[] = []
-    for (const message of request.messages) {
+
+    if (request.system) {
+      if (typeof request.system === "string") {
+        inputs.push({
+          role: "system",
+          content: request.system
+        })
+      } else if (Array.isArray(request.system)) {
+        for (const item of request.system) {
+          (item.type === "text") && inputs.push({
+            role: "system", content: item.text
+          })
+        }
+      }
+    }
+
+    for (const message of (request?.messages || [])) {
       for (const input of parseMessage(message)) {
         inputs.push(input)
       }
@@ -116,8 +132,11 @@ const wrapOptions = {
   metadataParser(request) {
     const metadata = request.metadata
 
-    // 'user_id' is the only supported key for anthropic `body.metadata` option
-    request.metadata = { user_id: metadata?.user_id }
+    // Throws TypeError when running typescript code
+    try {
+      // 'user_id' is the only supported key for anthropic `body.metadata` option
+      request.metadata = { user_id: metadata?.user_id }
+    } catch (err) {}
 
     delete metadata?.user_id
 
@@ -395,6 +414,20 @@ export function monitorAnthrophic<T extends Anthropic>(
   }
 
   return client
+}
+
+export function wrapAgent(fn, extras={}) {
+  return lunary.wrapAgent(fn, {
+    ...wrapOptions,
+    ...extras,
+  })
+}
+
+export function wrapTool(fn, extras={}) {
+  return lunary.wrapTool(fn, {
+    ...wrapOptions,
+    ...extras,
+  })
 }
 
 export default monitorAnthrophic

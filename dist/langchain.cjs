@@ -3,8 +3,8 @@
 var _chunkUTD4W7NVcjs = require('./chunk-UTD4W7NV.cjs');
 
 
-var _chunkCSZ7JMNHcjs = require('./chunk-CSZ7JMNH.cjs');
-require('./chunk-TUK3O2HZ.cjs');
+var _chunk26SNBQOHcjs = require('./chunk-26SNBQOH.cjs');
+require('./chunk-D35PBWYW.cjs');
 
 
 
@@ -124,7 +124,7 @@ var LunaryHandler = (_class = class extends _chunkCAQMITRKcjs.BaseCallbackHandle
   
   constructor(fields = {}) {
     super(fields);_class.prototype.__init.call(this);;
-    this.lunary = _chunkCSZ7JMNHcjs.src_default;
+    this.lunary = _chunk26SNBQOHcjs.src_default;
     if (fields) {
       const { appId, apiUrl, verbose } = fields;
       this.lunary.init({
@@ -265,7 +265,7 @@ var LunaryHandler = (_class = class extends _chunkCAQMITRKcjs.BaseCallbackHandle
 }, _class);
 var replaceDoubleCurlyBraces = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (str) => str.replaceAll("{{", "{").replaceAll("}}", "}"), "replaceDoubleCurlyBraces");
 async function getLangChainTemplate(slug) {
-  const template = await _chunkCSZ7JMNHcjs.src_default.renderTemplate(slug);
+  const template = await _chunk26SNBQOHcjs.src_default.renderTemplate(slug);
   if (template.prompt) {
     const text = replaceDoubleCurlyBraces(template.prompt);
     const prompt = _chunkCAQMITRKcjs.PromptTemplate.fromTemplate(text);

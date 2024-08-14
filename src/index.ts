@@ -208,7 +208,7 @@ class BackendMonitor extends Lunary {
    * @param {Promise} func - Agent function
    * @param {WrapParams} params - Wrap params
    */
-  wrapAgent<T extends WrappableFn>(
+   wrapAgent<T extends WrappableFn>(
     func: T,
     params?: WrapParams<T>
   ): WrappedFn<T> {
@@ -245,5 +245,5 @@ export { BackendMonitor as Monitor }
 
 // Create a new instance of the monitor with the async context
 const lunary = new BackendMonitor(ctx)
-
+ 
 export default lunary

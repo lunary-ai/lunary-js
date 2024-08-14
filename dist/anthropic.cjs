@@ -1,10 +1,10 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; } function _optionalChainDelete(ops) { const result = _optionalChain(ops); return result == null ? true : result; }
 
-var _chunkCSZ7JMNHcjs = require('./chunk-CSZ7JMNH.cjs');
+var _chunk26SNBQOHcjs = require('./chunk-26SNBQOH.cjs');
 
 
 
-var _chunkTUK3O2HZcjs = require('./chunk-TUK3O2HZ.cjs');
+var _chunkD35PBWYWcjs = require('./chunk-D35PBWYW.cjs');
 
 
 var _chunkEC6JY3PVcjs = require('./chunk-EC6JY3PV.cjs');
@@ -67,7 +67,22 @@ var wrapOptions = {
   nameParser: (request) => request.model,
   inputParser: (request) => {
     const inputs = [];
-    for (const message of request.messages) {
+    if (request.system) {
+      if (typeof request.system === "string") {
+        inputs.push({
+          role: "system",
+          content: request.system
+        });
+      } else if (Array.isArray(request.system)) {
+        for (const item of request.system) {
+          item.type === "text" && inputs.push({
+            role: "system",
+            content: item.text
+          });
+        }
+      }
+    }
+    for (const message of _optionalChain([request, 'optionalAccess', _ => _.messages]) || []) {
       for (const input of parseMessage(message)) {
         inputs.push(input);
       }
@@ -93,12 +108,15 @@ var wrapOptions = {
         rawExtra[param] = request[param];
       }
     }
-    return _chunkTUK3O2HZcjs.cleanExtra.call(void 0, rawExtra);
+    return _chunkD35PBWYWcjs.cleanExtra.call(void 0, rawExtra);
   },
   metadataParser(request) {
     const metadata = request.metadata;
-    request.metadata = { user_id: _optionalChain([metadata, 'optionalAccess', _ => _.user_id]) };
-     _optionalChainDelete([metadata, 'optionalAccess', _2 => delete _2.user_id]);
+    try {
+      request.metadata = { user_id: _optionalChain([metadata, 'optionalAccess', _2 => _2.user_id]) };
+    } catch (err) {
+    }
+     _optionalChainDelete([metadata, 'optionalAccess', _3 => delete _3.user_id]);
     return { ...metadata };
   },
   outputParser: (respose) => {
@@ -149,13 +167,13 @@ var wrapOptions = {
   tokensUsageParser: async (response) => {
     if (Array.isArray(response)) {
       return {
-        completion: sum(response.map((item) => _optionalChain([item, 'access', _3 => _3.usage, 'optionalAccess', _4 => _4.output]))),
-        prompt: sum(response.map((item) => _optionalChain([item, 'access', _5 => _5.usage, 'optionalAccess', _6 => _6.input])))
+        completion: sum(response.map((item) => _optionalChain([item, 'access', _4 => _4.usage, 'optionalAccess', _5 => _5.output]))),
+        prompt: sum(response.map((item) => _optionalChain([item, 'access', _6 => _6.usage, 'optionalAccess', _7 => _7.input])))
       };
     }
     return {
-      completion: _optionalChain([response, 'access', _7 => _7.usage, 'optionalAccess', _8 => _8.output_tokens]),
-      prompt: _optionalChain([response, 'access', _9 => _9.usage, 'optionalAccess', _10 => _10.input_tokens])
+      completion: _optionalChain([response, 'access', _8 => _8.usage, 'optionalAccess', _9 => _9.output_tokens]),
+      prompt: _optionalChain([response, 'access', _10 => _10.usage, 'optionalAccess', _11 => _11.input_tokens])
     };
   },
   tagsParser: (request) => {
@@ -239,18 +257,18 @@ async function handleStreamEvent(event, messages) {
     if (typeof event.content_block !== "undefined" && messages.length >= 1) {
       const message = messages.at(-1);
       const event_content = message.content[event.index];
-      if (_optionalChain([event, 'access', _11 => _11.content_block, 'optionalAccess', _12 => _12.type]) == "text") {
-        event_content.content = _optionalChain([event, 'access', _13 => _13.content_block, 'optionalAccess', _14 => _14.text]);
-      } else if (_optionalChain([event, 'access', _15 => _15.content_block, 'optionalAccess', _16 => _16.type]) == "tool_use") {
+      if (_optionalChain([event, 'access', _12 => _12.content_block, 'optionalAccess', _13 => _13.type]) == "text") {
+        event_content.content = _optionalChain([event, 'access', _14 => _14.content_block, 'optionalAccess', _15 => _15.text]);
+      } else if (_optionalChain([event, 'access', _16 => _16.content_block, 'optionalAccess', _17 => _17.type]) == "tool_use") {
         event_content.update({
           functionCall: {
             // @ts-ignore
-            name: _optionalChain([event, 'access', _17 => _17.content_block, 'optionalAccess', _18 => _18.name]),
+            name: _optionalChain([event, 'access', _18 => _18.content_block, 'optionalAccess', _19 => _19.name]),
             // @ts-ignore
-            arguments: _optionalChain([event, 'access', _19 => _19.content_block, 'optionalAccess', _20 => _20.input])
+            arguments: _optionalChain([event, 'access', _20 => _20.content_block, 'optionalAccess', _21 => _21.input])
           },
           // @ts-ignore
-          toolCallId: _optionalChain([event, 'access', _21 => _21.content_block, 'optionalAccess', _22 => _22.id])
+          toolCallId: _optionalChain([event, 'access', _22 => _22.content_block, 'optionalAccess', _23 => _23.id])
         });
       } else {
       }
@@ -271,7 +289,7 @@ async function handleStream(stream, onComplete, onError) {
 }
 _chunkEC6JY3PVcjs.__name.call(void 0, handleStream, "handleStream");
 function wrap(fn, extras) {
-  return _chunkCSZ7JMNHcjs.src_default.wrapModel(fn, {
+  return _chunk26SNBQOHcjs.src_default.wrapModel(fn, {
     ...wrapOptions,
     ...extras
   });
@@ -284,11 +302,11 @@ function monitorAnthrophic(client, extras) {
   );
   const originalStream = client.messages.stream.bind(client.messages);
   client.messages.stream = (body, options) => {
-    const runId = _chunkTUK3O2HZcjs.generateUUID.call(void 0, );
+    const runId = _chunkD35PBWYWcjs.generateUUID.call(void 0, );
     const outputs = [];
     const stream = originalStream(body, options);
     stream.once("connect", () => {
-      _chunkCSZ7JMNHcjs.src_default.trackEvent("llm", "start", {
+      _chunk26SNBQOHcjs.src_default.trackEvent("llm", "start", {
         runId,
         input: wrapOptions.inputParser(body),
         name: wrapOptions.nameParser(body),
@@ -322,7 +340,7 @@ function monitorAnthrophic(client, extras) {
           }
         }
       }
-      _chunkCSZ7JMNHcjs.src_default.trackEvent("llm", "end", {
+      _chunk26SNBQOHcjs.src_default.trackEvent("llm", "end", {
         runId,
         output: messages,
         name: wrapOptions.nameParser(body),
@@ -336,8 +354,24 @@ function monitorAnthrophic(client, extras) {
   return client;
 }
 _chunkEC6JY3PVcjs.__name.call(void 0, monitorAnthrophic, "monitorAnthrophic");
+function wrapAgent(fn, extras = {}) {
+  return _chunk26SNBQOHcjs.src_default.wrapAgent(fn, {
+    ...wrapOptions,
+    ...extras
+  });
+}
+_chunkEC6JY3PVcjs.__name.call(void 0, wrapAgent, "wrapAgent");
+function wrapTool(fn, extras = {}) {
+  return _chunk26SNBQOHcjs.src_default.wrapTool(fn, {
+    ...wrapOptions,
+    ...extras
+  });
+}
+_chunkEC6JY3PVcjs.__name.call(void 0, wrapTool, "wrapTool");
 var anthropic_default = monitorAnthrophic;
 
 
 
-exports.default = anthropic_default; exports.monitorAnthrophic = monitorAnthrophic;
+
+
+exports.default = anthropic_default; exports.monitorAnthrophic = monitorAnthrophic; exports.wrapAgent = wrapAgent; exports.wrapTool = wrapTool;

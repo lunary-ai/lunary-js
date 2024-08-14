@@ -1,11 +1,11 @@
 import Anthropic from "@anthropic-ai/sdk"
 // import assert from "node:assert"
 
-import monitorAnthrophic from "lunary/anthropic"
+import monitorAnthrophic, { wrapAgent } from "../src/anthropic"
 
-const client = new Anthropic();
+const client = new Anthropic()
 
-monitorAnthrophic(client);
+monitorAnthrophic(client)
 
 async function non_streaming() {
   const result = await client.messages.create({
@@ -113,7 +113,7 @@ async function tool_calls() {
         content: [
           {
             type: "tool_result",
-            tool_use_id: (tool?.id || ""),
+            tool_use_id: tool?.id || "",
             content: [{ type: "text", text: "The weather is 73f" }],
           },
         ],
@@ -126,48 +126,83 @@ async function tool_calls() {
 }
 
 async function tool_streaming() {
-    const stream = client.messages
-      .stream({
-        messages: [
-          {
-            role: 'user',
-            content: `What is the weather in SF?`,
-          },
-        ],
-        tools: [
-          {
-            name: 'get_weather',
-            description: 'Get the weather at a specific location',
-            input_schema: {
-              type: 'object',
-              properties: {
-                location: { type: 'string', description: 'The city and state, e.g. San Francisco, CA' },
-                unit: {
-                  type: 'string',
-                  enum: ['celsius', 'fahrenheit'],
-                  description: 'Unit for the output',
-                },
+  const stream = client.messages
+    .stream({
+      messages: [
+        {
+          role: "user",
+          content: `What is the weather in SF?`,
+        },
+      ],
+      tools: [
+        {
+          name: "get_weather",
+          description: "Get the weather at a specific location",
+          input_schema: {
+            type: "object",
+            properties: {
+              location: {
+                type: "string",
+                description: "The city and state, e.g. San Francisco, CA",
               },
-              required: ['location'],
+              unit: {
+                type: "string",
+                enum: ["celsius", "fahrenheit"],
+                description: "Unit for the output",
+              },
             },
+            required: ["location"],
           },
-        ],
-        model: 'claude-3-haiku-20240307',
-        max_tokens: 1024,
-      })
-      // When a JSON content block delta is encountered this
-      // event will be fired with the delta and the currently accumulated object
-      .on('inputJson', (delta, snapshot) => {
-        // console.log(`delta: ${delta}`);
-        // console.log(`snapshot: ${(snapshot)}`);
-        // console.log();
-      });
-  
-    await stream.done();
-  }
- 
-await non_streaming();
-await streaming()
-await raw_streaming()
-await tool_calls()
-await tool_streaming()
+        },
+      ],
+      model: "claude-3-haiku-20240307",
+      max_tokens: 1024,
+    })
+    // When a JSON content block delta is encountered this
+    // event will be fired with the delta and the currently accumulated object
+    .on("inputJson", (delta, snapshot) => {
+      // console.log(`delta: ${delta}`);
+      // console.log(`snapshot: ${(snapshot)}`);
+      // console.log();
+    })
+
+  await stream.done()
+}
+
+async function TranslatorAgent(
+  query: string
+): Promise<Anthropic.Messages.Message> {
+  const result = await client.messages.create({
+    system: "You are a translator agent that hides jokes in each translation.",
+    messages: [
+      {
+        role: "user",
+        content: `Translate this sentence from English to French: ${query}`,
+      },
+    ],
+    model: "claude-3-opus-20240229",
+    max_tokens: 1024,
+  })
+
+  return result
+}
+
+async function agent() {
+  // By wrapping the executor, we automatically track all input, outputs and errors
+  // And tools and logs will be tied to the correct agent
+  const translate = wrapAgent(TranslatorAgent)
+
+  const res = await translate("White house").identify("user123", {
+    email: "john@example.org",
+  })
+  // .label(["test-tag"])
+
+  console.log(res.content)
+}
+
+// await non_streaming();
+// await streaming()
+// await raw_streaming()
+// await tool_calls()
+// await tool_streaming()
+await agent()

@@ -1,10 +1,10 @@
 import {
   src_default
-} from "./chunk-CDNQTF3D.js";
+} from "./chunk-MCZY3SVW.js";
 import {
   cleanExtra,
   generateUUID
-} from "./chunk-VJHV7A2E.js";
+} from "./chunk-QHQ3L67R.js";
 import {
   __name
 } from "./chunk-AGSXOS4O.js";
@@ -67,7 +67,22 @@ var wrapOptions = {
   nameParser: (request) => request.model,
   inputParser: (request) => {
     const inputs = [];
-    for (const message of request.messages) {
+    if (request.system) {
+      if (typeof request.system === "string") {
+        inputs.push({
+          role: "system",
+          content: request.system
+        });
+      } else if (Array.isArray(request.system)) {
+        for (const item of request.system) {
+          item.type === "text" && inputs.push({
+            role: "system",
+            content: item.text
+          });
+        }
+      }
+    }
+    for (const message of request?.messages || []) {
       for (const input of parseMessage(message)) {
         inputs.push(input);
       }
@@ -97,7 +112,10 @@ var wrapOptions = {
   },
   metadataParser(request) {
     const metadata = request.metadata;
-    request.metadata = { user_id: metadata?.user_id };
+    try {
+      request.metadata = { user_id: metadata?.user_id };
+    } catch (err) {
+    }
     delete metadata?.user_id;
     return { ...metadata };
   },
@@ -336,8 +354,24 @@ function monitorAnthrophic(client, extras) {
   return client;
 }
 __name(monitorAnthrophic, "monitorAnthrophic");
+function wrapAgent(fn, extras = {}) {
+  return src_default.wrapAgent(fn, {
+    ...wrapOptions,
+    ...extras
+  });
+}
+__name(wrapAgent, "wrapAgent");
+function wrapTool(fn, extras = {}) {
+  return src_default.wrapTool(fn, {
+    ...wrapOptions,
+    ...extras
+  });
+}
+__name(wrapTool, "wrapTool");
 var anthropic_default = monitorAnthrophic;
 export {
   anthropic_default as default,
-  monitorAnthrophic
+  monitorAnthrophic,
+  wrapAgent,
+  wrapTool
 };
