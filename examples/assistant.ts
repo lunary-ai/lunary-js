@@ -2,11 +2,8 @@ import OpenAI from "openai"
 import monitor from "../src/index"
 import { monitorOpenAI } from "../src/openai"
 
-monitor.init({
-  verbose: true,
-})
+monitor.init({ verbose: true })
 
-// This extends the openai object with the monitor
 const openai = monitorOpenAI(
   new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -14,40 +11,80 @@ const openai = monitorOpenAI(
 )
 
 const assistant = await openai.beta.assistants.create({
+  model: "gpt-4-turbo",
   instructions:
-    "You are a personal math tutor. When asked a math question, write and run code to answer the question.",
-  model: "gpt-4-1106-preview",
-  tools: [{ type: "code_interpreter" }],
-})
-
-console.log(assistant)
-
-const thread = await openai.beta.threads.create({
-  messages: [
+    "You are a weather bot. Use the provided functions to answer questions.",
+  tools: [
     {
-      role: "user",
-      content: "Hello!",
+      type: "function",
+      function: {
+        name: "getCurrentTemperature",
+        description: "Get the current temperature for a specific location",
+        parameters: {
+          type: "object",
+          properties: {
+            location: {
+              type: "string",
+              description: "The city and state, e.g., San Francisco, CA",
+            },
+            unit: {
+              type: "string",
+              enum: ["Celsius", "Fahrenheit"],
+              description:
+                "The temperature unit to use. Infer this from the user's location.",
+            },
+          },
+          required: ["location", "unit"],
+        },
+      },
     },
     {
-      role: "user",
-      content: "How can I help?",
+      type: "function",
+      function: {
+        name: "getRainProbability",
+        description: "Get the probability of rain for a specific location",
+        parameters: {
+          type: "object",
+          properties: {
+            location: {
+              type: "string",
+              description: "The city and state, e.g., San Francisco, CA",
+            },
+          },
+          required: ["location"],
+        },
+      },
     },
   ],
-})
+});
 
-const message = await openai.beta.threads.messages.create(thread.id, {
-  role: "user",
-  content: "What is 2 + 2?",
-})
+const thread = await openai.beta.threads.create()
 
-console.log(thread)
+async function assistantsAPI(input) {
+  await openai.beta.threads.messages.create(thread.id, {
+    role: "user", content: input
+  })
 
-const run = await openai.beta.threads.runs.create(thread.id, {
-  assistant_id: assistant.id,
-})
+  // const run = openai.beta.threads.runs
+  //   .createAndStream(thread.id, {
+  //     assistant_id: assistant.id
+  //   })
+  //   .on("event", (ev) => console.log(ev.event, ev.data))
+  //   .on("end", async () => {
+  //     await openai.beta.threads.del(thread.id);
+  //     await openai.beta.assistants.del(assistant.id);
+  //   })
 
-console.log(run)
+  const stream = await openai.beta.threads.runs.create(
+    thread.id, { assistant_id: assistant.id, stream: true }
+  );
 
-const messages = await openai.beta.threads.messages.list(thread.id)
+  for await (const event of stream) {
+    console.log(event);
+  }
+}
 
-console.log(messages)
+await assistantsAPI("What's the weather in San Francisco today and the likelihood it'll rain?");
+
+console.log("* assistant:", assistant.id);
+console.log("* thread:", thread.id);
