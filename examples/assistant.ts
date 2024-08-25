@@ -55,7 +55,7 @@ const assistant = await openai.beta.assistants.create({
         },
       },
     },
-  ],
+  ]
 });
 
 const thread = await openai.beta.threads.create()
@@ -67,9 +67,10 @@ async function assistantsAPI(input) {
 
   // const run = openai.beta.threads.runs
   //   .createAndStream(thread.id, {
-  //     assistant_id: assistant.id
+  //     assistant_id: assistant.id,
+  //     tags: ["demo", "test"]
   //   })
-  //   .on("event", (ev) => console.log(ev.event, ev.data))
+  //   // .on("event", (ev) => console.log(ev.event, ev.data))
   //   .on("end", async () => {
   //     await openai.beta.threads.del(thread.id);
   //     await openai.beta.assistants.del(assistant.id);

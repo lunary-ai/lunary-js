@@ -1,21 +1,10 @@
-// Support for old OpenAI v3
-
-import {
-  ChatMessage,
-  Template,
-  WrapExtras,
-  WrappedFn,
-  WrappedReturn,
-  cJSON,
-} from "./types"
-
 import OpenAI from "openai"
-import { APIPromise } from "openai/core"
-import OpenAIStreaming from "openai/streaming"
-
-import { cleanExtra, generateUUID } from "./utils"
+import { Stream } from "openai/streaming"
 
 import monitor from "./index"
+import { cleanExtra, generateUUID } from "./utils"
+
+import type { ChatMessage, WrapExtras, WrappedOpenAI } from "./types"
 
 const parseOpenaiMessage = (message) => {
   if (!message) return undefined
@@ -64,42 +53,6 @@ const teeAsync = (iterable) => {
   return buffers.map(makeIterator)
 }
 
-type CreateFunction<T, U> = (body: T, options?: OpenAI.RequestOptions) => U
-
-/* Just forwarding the types doesn't work, as it's an overloaded function (tried many solutions, couldn't get it to work) */
-type NewParams = {
-  tags?: string[]
-  userProps?: cJSON
-  metadata?: cJSON
-}
-
-type WrapCreateFunction<T, U> = (
-  body: (T & NewParams) | Template,
-  options?: OpenAI.RequestOptions
-) => WrappedReturn<CreateFunction<T, U>>
-
-type WrapCreate<T> = {
-  chat: {
-    completions: {
-      create: WrapCreateFunction<
-        OpenAI.Chat.ChatCompletionCreateParamsNonStreaming,
-        APIPromise<OpenAI.ChatCompletion>
-      > &
-        WrapCreateFunction<
-          OpenAI.Chat.ChatCompletionCreateParamsStreaming,
-          APIPromise<OpenAIStreaming.Stream<OpenAI.ChatCompletionChunk>>
-        > &
-        WrapCreateFunction<
-          OpenAI.Chat.ChatCompletionCreateParams,
-          | APIPromise<OpenAI.ChatCompletion>
-          | APIPromise<OpenAIStreaming.Stream<OpenAI.ChatCompletionChunk>>
-        >
-    }
-  }
-}
-
-type WrappedOpenAi<T> = Omit<T, "chat"> & WrapCreate<T>
-
 const PARAMS_TO_CAPTURE = [
   "temperature",
   "top_p",
@@ -117,8 +70,8 @@ const PARAMS_TO_CAPTURE = [
   "logit_bias",
 ]
 
-const ASSISTANTS = new Map()
-const THREADS = new Map()
+// const ASSISTANTS = new Map()
+// const THREADS = new Map()
 
 const WRAP_OPTIONS = {
   nameParser: (request) => request.model,
@@ -247,21 +200,10 @@ async function handleStream(stream, onComplete, onError) {
   }
 }
 
-async function getAssistantInput(
-  assistantID: string,
-  openai?: any
-): Promise<OpenAI.Beta.Assistants.Assistant> {
-  let assistant = ASSISTANTS.get(assistantID)
-  if (assistant) return assistant.output
-
-  return await openai.beta.assistants.retrieve(assistant)
-}
-
-export function monitorOpenAI<T extends any>(
-  openai: T,
+export function monitorOpenAI(
+  openai: OpenAI,
   params: WrapExtras = {}
-): WrappedOpenAi<T> {
-  // @ts-ignore
+): WrappedOpenAI<OpenAI> {
   const createChatCompletion = openai.chat.completions.create
   const wrappedCreateChatCompletion = (...args) =>
     // @ts-ignore
@@ -275,96 +217,71 @@ export function monitorOpenAI<T extends any>(
   // @ts-ignore
   openai.chat.completions.create = wrapped
 
-  // OpenAI assistants api
+  // For when users need to be able to pass lunary options
+  // via the `assistants.create` function
 
-  function wrapAndStore(fn: (...args: any) => any, map: Map<string, any>) {
-    return async (...args) => {
-      const output = await fn(...args)
-      map.set(output.id, { args, output })
+  // function wrapAndStore(fn: (...args: any) => any, map: Map<string, any>) {
+  //   return async (...args) => {
+  //     const output = await fn(...args)
+  //     map.set(output.id, { args, output })
+  //     return output
+  //   }
+  // }
+
+  // // @ts-ignore
+  // openai.beta.assistants.create = wrapAndStore(
+  //   openai.beta.assistants.create.bind(
+  //     openai.beta.assistants
+  //   ),
+  //   ASSISTANTS
+  // )
+
+  // // @ts-ignore
+  // openai.beta.threads.create = wrapAndStore(
+  //   openai.beta.threads.create.bind(
+  //     openai.beta.threads
+  //   ),
+  //   THREADS
+  // )
+
+  const createStream = openai.beta.threads.runs.create.bind(
+    openai.beta.threads.runs
+  )
+
+  // @ts-ignore
+  openai.beta.threads.runs.create = async (threadID, options) => {
+    const messages = []
+    const runId = generateUUID()
+    const lunaryOptions = {
+      tags: WRAP_OPTIONS.tagsParser(options),
+      userId: WRAP_OPTIONS.userIdParser(options),
+      metadata: WRAP_OPTIONS.metadataParser(options),
+      userProps: WRAP_OPTIONS.userPropsParser(options),
+      templateId: WRAP_OPTIONS.templateParser(options),
+    }
+
+    const output = await createStream(threadID, options)
+
+    if (output instanceof Stream) {
+      const [ogStream, stream] = output.tee()
+
+      for await (const event of stream) {
+        await handleStreamEvent(event, {
+          runId,
+          openai,
+          messages,
+          lunaryOptions,
+        })
+      }
+
+      return ogStream
+    } else {
       return output
     }
   }
 
   // @ts-ignore
-  openai.beta.assistants.create = wrapAndStore(
-    // @ts-ignore
-    openai.beta.assistants.create.bind(
-      // @ts-ignore
-      openai.beta.assistants
-    ),
-    ASSISTANTS
-  )
-
-  // @ts-ignore
-  openai.beta.threads.create = wrapAndStore(
-    // @ts-ignore
-    openai.beta.threads.create.bind(
-      // @ts-ignore
-      openai.beta.threads
-    ),
-    THREADS
-  )
-
-  // @ts-ignore
-  const createStream = openai.beta.threads.runs.create.bind(
-    // @ts-ignore
-    openai.beta.threads.runs
-  )
-  // @ts-ignore
-  openai.beta.threads.runs.create = monitor.wrapModel(
-    createStream, {
-      ...WRAP_OPTIONS
-    }
-  )
-  async (threadID, options) => {
-    const messages = []
-    const runId = generateUUID()
-    const stream = await createStream(threadID, options)
-
-    stream.on("event", (event) =>
-      handleStreamEvent(event, {
-        runId, messages,
-        lunaryOptions: {
-          tags: WRAP_OPTIONS.tagsParser(options),
-          userId: WRAP_OPTIONS.userIdParser(options),
-          metadata: WRAP_OPTIONS.metadataParser(options),
-          userProps: WRAP_OPTIONS.userPropsParser(options),
-          templateId: WRAP_OPTIONS.templateParser(options),
-        }
-      })
-    )
-
-    return stream
-  }
-
-  // @ts-ignore
-  const createAndStream = openai.beta.threads.runs.createAndStream.bind(
-    // @ts-ignore
-    openai.beta.threads.runs
-  )
-  // @ts-ignore
-  openai.beta.threads.runs.createAndStream = (threadID, options) => {
-    const messages = []
-    const runId = generateUUID()
-    const stream = createAndStream(threadID, options)
-
-    stream.on("event", (event) =>
-      handleStreamEvent(event, {
-        runId, messages,
-        lunaryOptions: {
-          tags: WRAP_OPTIONS.tagsParser(options),
-          userId: WRAP_OPTIONS.userIdParser(options),
-          metadata: WRAP_OPTIONS.metadataParser(options),
-          userProps: WRAP_OPTIONS.userPropsParser(options),
-          templateId: WRAP_OPTIONS.templateParser(options),
-        }
-      })
-    )
-
-    return stream
-  }
-
-  return openai as WrappedOpenAi<T>
+  return openai
 }
 
 async function inputParser(data, openai: OpenAI) {
@@ -392,8 +309,9 @@ async function inputParser(data, openai: OpenAI) {
 
 async function handleStreamEvent(
   event: OpenAI.Beta.Assistants.AssistantStreamEvent,
-  { runId, lunaryOptions, messages }
+  { runId, lunaryOptions, messages, openai }
 ) {
+  console.log(event.event)
   switch (event.event) {
     case "thread.run.created":
       monitor.trackEvent("llm", "start", {
@@ -401,7 +319,6 @@ async function handleStreamEvent(
         name: event.data.model,
         ...lunaryOptions,
 
-        // @ts-ignore
         input: await inputParser(event.data, openai),
         params: WRAP_OPTIONS.paramsParser(event.data),
       })
