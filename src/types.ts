@@ -1,3 +1,13 @@
+import OpenAI from "openai"
+import { APIPromise } from "openai/core"
+import OpenAIStreaming, { Stream } from "openai/streaming"
+
+import type { AssistantStream, RunCreateParamsBaseStream } from "openai/lib/AssistantStream"
+import type {
+  Run, RunCreateParams, RunCreateParamsBase,
+  RunCreateParamsNonStreaming, RunCreateParamsStreaming
+} from "openai/resources/beta/threads/runs/runs"
+
 // using 'JSON' causes problems with esbuild (probably because a type JSON alrady exists)
 export type cJSON =
   | string
@@ -152,3 +162,78 @@ export interface Template {
   function?: any
   n?: number
 }
+
+
+type CreateFunction<T, U> = (body: T, options?: OpenAI.RequestOptions) => U
+type RunsFunction<T, U> = (threadId: string, body: T, options?: OpenAI.RequestOptions) => U
+
+type WrapCreateFunction<T, U> = (
+  body: T & WrapExtras,
+  options?: OpenAI.RequestOptions
+) => WrappedReturn<CreateFunction<T, U>>
+
+type WrapCreate<T> = {
+  chat: {
+    completions: {
+      create: WrapCreateFunction<
+        OpenAI.Chat.ChatCompletionCreateParamsNonStreaming,
+        APIPromise<OpenAI.ChatCompletion>
+      > &
+        WrapCreateFunction<
+          OpenAI.Chat.ChatCompletionCreateParamsStreaming,
+          APIPromise<OpenAIStreaming.Stream<OpenAI.ChatCompletionChunk>>
+        > &
+        WrapCreateFunction<
+          OpenAI.Chat.ChatCompletionCreateParams,
+          | APIPromise<OpenAI.ChatCompletion>
+          | APIPromise<OpenAIStreaming.Stream<OpenAI.ChatCompletionChunk>>
+        >
+    }
+  }
+}
+
+type WrapAssistantsFunction<T, U> = (
+  body: T & WrapExtras,
+  options?: OpenAI.RequestOptions
+) => WrappedReturn<CreateFunction<T, U>>
+
+
+type WrapRunsFunction<T, U> = (
+  threadId: string,
+  body: T & WrapExtras,
+  options?: OpenAI.RequestOptions
+) => WrappedReturn<RunsFunction<T, U>>
+
+type WrapBeta<T> = {
+  beta: {
+    assistants: {
+      create: WrapAssistantsFunction<
+        OpenAI.Beta.Assistants.AssistantCreateParams,
+        APIPromise<OpenAI.Beta.Assistants.Assistant>
+      >
+    },
+    threads: {
+      runs: {
+        create: WrapRunsFunction<
+          RunCreateParamsNonStreaming,
+          APIPromise<Run>
+        > & WrapRunsFunction<
+            RunCreateParamsStreaming,
+            APIPromise<Stream<OpenAI.Beta.Assistants.AssistantStreamEvent>>
+          > & WrapRunsFunction<
+              RunCreateParamsBase,
+              APIPromise<Stream<OpenAI.Beta.Assistants.AssistantStreamEvent> | Run>
+            >  & WrapRunsFunction<
+                RunCreateParams,
+                APIPromise<Run> | APIPromise<Stream<OpenAI.Beta.Assistants.AssistantStreamEvent>>
+              >,
+        createAndStream: WrapRunsFunction<
+          RunCreateParamsBaseStream,
+          AssistantStream
+        >
+      }
+    }
+  }
+}
+
+export type WrappedOpenAI<T> = Omit<T, "chat"> & Omit<T, "beta"> & WrapCreate<T> & WrapBeta<T>
