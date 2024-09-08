@@ -1,5 +1,3 @@
-import type OpenAI from "openai"
-
 // using 'JSON' causes problems with esbuild (probably because a type JSON alrady exists)
 export type cJSON =
   | string
@@ -140,4 +138,4 @@ export type WrappedFn<T extends WrappableFn> = (
 export type Template = {
   templateId: string
   prompt?: string
-} & OpenAI.Chat.ChatCompletionCreateParams
+}
