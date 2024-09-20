@@ -126,10 +126,10 @@ var LunaryHandler = class extends BaseCallbackHandler {
     super(fields);
     this.lunary = src_default;
     if (fields) {
-      const { appId, apiUrl, verbose } = fields;
+      const { appId, apiUrl, publicKey, verbose } = fields;
       this.lunary.init({
         verbose,
-        appId: appId ?? getEnvironmentVariable("LUNARY_PUBLIC_KEY") ?? getEnvironmentVariable("LUNARY_APP_ID") ?? getEnvironmentVariable("LLMONITOR_APP_ID"),
+        publicKey: publicKey ?? appId ?? getEnvironmentVariable("LUNARY_PUBLIC_KEY") ?? getEnvironmentVariable("LUNARY_APP_ID") ?? getEnvironmentVariable("LLMONITOR_APP_ID"),
         apiUrl: apiUrl ?? getEnvironmentVariable("LUNARY_API_URL") ?? getEnvironmentVariable("LLMONITOR_API_URL")
       });
     }

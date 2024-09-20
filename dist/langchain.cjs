@@ -126,10 +126,10 @@ var LunaryHandler = (_class = class extends _chunkZUM2FNN6cjs.BaseCallbackHandle
     super(fields);_class.prototype.__init.call(this);;
     this.lunary = _chunk26SNBQOHcjs.src_default;
     if (fields) {
-      const { appId, apiUrl, verbose } = fields;
+      const { appId, apiUrl, publicKey, verbose } = fields;
       this.lunary.init({
         verbose,
-        appId: _nullishCoalesce(_nullishCoalesce(_nullishCoalesce(appId, () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LUNARY_PUBLIC_KEY"))), () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LUNARY_APP_ID"))), () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LLMONITOR_APP_ID"))),
+        publicKey: _nullishCoalesce(_nullishCoalesce(_nullishCoalesce(_nullishCoalesce(publicKey, () => ( appId)), () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LUNARY_PUBLIC_KEY"))), () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LUNARY_APP_ID"))), () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LLMONITOR_APP_ID"))),
         apiUrl: _nullishCoalesce(_nullishCoalesce(apiUrl, () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LUNARY_API_URL"))), () => ( _chunkZUM2FNN6cjs.getEnvironmentVariable.call(void 0, "LLMONITOR_API_URL")))
       });
     }
