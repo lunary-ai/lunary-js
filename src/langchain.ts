@@ -180,11 +180,12 @@ export class LunaryHandler
     this.lunary = lunary
 
     if (fields) {
-      const { appId, apiUrl, verbose } = fields
+      const { appId, apiUrl, publicKey, verbose } = fields
 
       this.lunary.init({
         verbose,
-        appId:
+        publicKey:
+          publicKey ??
           appId ??
           getEnvironmentVariable("LUNARY_PUBLIC_KEY") ??
           getEnvironmentVariable("LUNARY_APP_ID") ??
