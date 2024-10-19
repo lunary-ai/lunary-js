@@ -138,4 +138,5 @@ export type WrappedFn<T extends WrappableFn> = (
 export type Template = {
   templateId: string
   prompt?: string
+  messages?: ChatMessage[]
 }

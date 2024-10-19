@@ -80,22 +80,10 @@ type WrappedReturn<T extends WrappableFn> = ReturnType<T> & {
     setParent: SetParent<T>;
 };
 type WrappedFn<T extends WrappableFn> = (...args: Parameters<T>) => WrappedReturn<T>;
-interface Template {
+type Template = {
     templateId: string;
     prompt?: string;
-    stream?: boolean;
     messages?: ChatMessage[];
-    model?: string;
-    temperature?: number;
-    top_p?: number;
-    max_tokens?: number;
-    presence_penalty?: number;
-    frequency_penalty?: number;
-    tools?: any[];
-    seed?: number;
-    stop?: string[];
-    function?: any;
-    n?: number;
-}
+};
 
 export type { ChatMessage, Event, EventName, Identify, LogEvent, LunaryOptions, RunEvent, RunType, SetParent, Template, TokenUsage, WrapExtras, WrapParams, WrappableFn, WrappedFn, WrappedReturn, cJSON };

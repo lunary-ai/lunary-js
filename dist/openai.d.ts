@@ -9,7 +9,7 @@ type NewParams = {
     userProps?: cJSON;
     metadata?: cJSON;
 };
-type WrapCreateFunction<T, U> = (body: (T & NewParams) | Template, options?: OpenAI.RequestOptions) => WrappedReturn<CreateFunction<T, U>>;
+type WrapCreateFunction<T, U> = (body: (T & NewParams) | Template | Template & T, options?: OpenAI.RequestOptions) => WrappedReturn<CreateFunction<T, U>>;
 type WrapCreate<T> = {
     chat: {
         completions: {
