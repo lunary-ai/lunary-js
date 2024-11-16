@@ -42,6 +42,7 @@ class Lunary {
   constructor(ctx?) {
     this.init({
       appId:
+        checkEnv("LUNARY_PRIVATE_KEY") ||
         checkEnv("LUNARY_PUBLIC_KEY") ||
         checkEnv("LUNARY_APP_ID") ||
         checkEnv("LLMONITOR_APP_ID"),
