@@ -1,12 +1,12 @@
-import {
-  __commonJS,
-  __export,
-  __name,
-  __toESM
-} from "./chunk-AGSXOS4O.js";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } } function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+
+
+
+
+var _chunkEC6JY3PVcjs = require('./chunk-EC6JY3PV.cjs');
 
 // node_modules/decamelize/index.js
-var require_decamelize = __commonJS({
+var require_decamelize = _chunkEC6JY3PVcjs.__commonJS.call(void 0, {
   "node_modules/decamelize/index.js"(exports, module) {
     "use strict";
     module.exports = function(str, sep) {
@@ -20,7 +20,7 @@ var require_decamelize = __commonJS({
 });
 
 // node_modules/camelcase/index.js
-var require_camelcase = __commonJS({
+var require_camelcase = _chunkEC6JY3PVcjs.__commonJS.call(void 0, {
   "node_modules/camelcase/index.js"(exports, module) {
     "use strict";
     var UPPERCASE = /[\p{Lu}]/u;
@@ -31,7 +31,7 @@ var require_camelcase = __commonJS({
     var LEADING_SEPARATORS = new RegExp("^" + SEPARATORS.source);
     var SEPARATORS_AND_IDENTIFIER = new RegExp(SEPARATORS.source + IDENTIFIER.source, "gu");
     var NUMBERS_AND_IDENTIFIER = new RegExp("\\d+" + IDENTIFIER.source, "gu");
-    var preserveCamelCase = /* @__PURE__ */ __name((string, toLowerCase, toUpperCase) => {
+    var preserveCamelCase = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (string, toLowerCase, toUpperCase) => {
       let isLastCharLower = false;
       let isLastCharUpper = false;
       let isLastLastCharUpper = false;
@@ -56,16 +56,16 @@ var require_camelcase = __commonJS({
       }
       return string;
     }, "preserveCamelCase");
-    var preserveConsecutiveUppercase = /* @__PURE__ */ __name((input, toLowerCase) => {
+    var preserveConsecutiveUppercase = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (input, toLowerCase) => {
       LEADING_CAPITAL.lastIndex = 0;
       return input.replace(LEADING_CAPITAL, (m1) => toLowerCase(m1));
     }, "preserveConsecutiveUppercase");
-    var postProcess = /* @__PURE__ */ __name((input, toUpperCase) => {
+    var postProcess = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (input, toUpperCase) => {
       SEPARATORS_AND_IDENTIFIER.lastIndex = 0;
       NUMBERS_AND_IDENTIFIER.lastIndex = 0;
       return input.replace(SEPARATORS_AND_IDENTIFIER, (_, identifier) => toUpperCase(identifier)).replace(NUMBERS_AND_IDENTIFIER, (m) => toUpperCase(m));
     }, "postProcess");
-    var camelCase2 = /* @__PURE__ */ __name((input, options) => {
+    var camelCase2 = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (input, options) => {
       if (!(typeof input === "string" || Array.isArray(input))) {
         throw new TypeError("Expected the input to be `string | string[]`");
       }
@@ -108,7 +108,7 @@ var require_camelcase = __commonJS({
 });
 
 // node_modules/retry/lib/retry_operation.js
-var require_retry_operation = __commonJS({
+var require_retry_operation = _chunkEC6JY3PVcjs.__commonJS.call(void 0, {
   "node_modules/retry/lib/retry_operation.js"(exports, module) {
     function RetryOperation(timeouts, options) {
       if (typeof options === "boolean") {
@@ -130,7 +130,7 @@ var require_retry_operation = __commonJS({
         this._cachedTimeouts = this._timeouts.slice(0);
       }
     }
-    __name(RetryOperation, "RetryOperation");
+    _chunkEC6JY3PVcjs.__name.call(void 0, RetryOperation, "RetryOperation");
     module.exports = RetryOperation;
     RetryOperation.prototype.reset = function() {
       this._attempts = 1;
@@ -244,7 +244,7 @@ var require_retry_operation = __commonJS({
 });
 
 // node_modules/retry/lib/retry.js
-var require_retry = __commonJS({
+var require_retry = _chunkEC6JY3PVcjs.__commonJS.call(void 0, {
   "node_modules/retry/lib/retry.js"(exports) {
     var RetryOperation = require_retry_operation();
     exports.operation = function(options) {
@@ -306,7 +306,7 @@ var require_retry = __commonJS({
       for (var i = 0; i < methods.length; i++) {
         var method = methods[i];
         var original = obj[method];
-        obj[method] = (/* @__PURE__ */ __name(function retryWrapper(original2) {
+        obj[method] = (/* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, function retryWrapper(original2) {
           var op = exports.operation(options);
           var args = Array.prototype.slice.call(arguments, 1);
           var callback = args.pop();
@@ -330,14 +330,14 @@ var require_retry = __commonJS({
 });
 
 // node_modules/retry/index.js
-var require_retry2 = __commonJS({
+var require_retry2 = _chunkEC6JY3PVcjs.__commonJS.call(void 0, {
   "node_modules/retry/index.js"(exports, module) {
     module.exports = require_retry();
   }
 });
 
 // node_modules/p-retry/index.js
-var require_p_retry = __commonJS({
+var require_p_retry = _chunkEC6JY3PVcjs.__commonJS.call(void 0, {
   "node_modules/p-retry/index.js"(exports, module) {
     "use strict";
     var retry = require_retry2();
@@ -353,7 +353,7 @@ var require_p_retry = __commonJS({
     ];
     var AbortError = class extends Error {
       static {
-        __name(this, "AbortError");
+        _chunkEC6JY3PVcjs.__name.call(void 0, this, "AbortError");
       }
       constructor(message) {
         super();
@@ -368,14 +368,14 @@ var require_p_retry = __commonJS({
         this.message = message;
       }
     };
-    var decorateErrorWithCounts = /* @__PURE__ */ __name((error, attemptNumber, options) => {
+    var decorateErrorWithCounts = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (error, attemptNumber, options) => {
       const retriesLeft = options.retries - (attemptNumber - 1);
       error.attemptNumber = attemptNumber;
       error.retriesLeft = retriesLeft;
       return error;
     }, "decorateErrorWithCounts");
-    var isNetworkError = /* @__PURE__ */ __name((errorMessage) => networkErrorMsgs.includes(errorMessage), "isNetworkError");
-    var pRetry4 = /* @__PURE__ */ __name((input, options) => new Promise((resolve, reject) => {
+    var isNetworkError = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (errorMessage) => networkErrorMsgs.includes(errorMessage), "isNetworkError");
+    var pRetry4 = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (input, options) => new Promise((resolve, reject) => {
       options = {
         onFailedAttempt: () => {
         },
@@ -419,12 +419,12 @@ var require_p_retry = __commonJS({
 });
 
 // node_modules/ansi-styles/index.js
-var require_ansi_styles = __commonJS({
+var require_ansi_styles = _chunkEC6JY3PVcjs.__commonJS.call(void 0, {
   "node_modules/ansi-styles/index.js"(exports, module) {
     "use strict";
     var ANSI_BACKGROUND_OFFSET = 10;
-    var wrapAnsi256 = /* @__PURE__ */ __name((offset = 0) => (code) => `\x1B[${38 + offset};5;${code}m`, "wrapAnsi256");
-    var wrapAnsi16m = /* @__PURE__ */ __name((offset = 0) => (red, green, blue) => `\x1B[${38 + offset};2;${red};${green};${blue}m`, "wrapAnsi16m");
+    var wrapAnsi256 = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (offset = 0) => (code) => `\x1B[${38 + offset};5;${code}m`, "wrapAnsi256");
+    var wrapAnsi16m = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (offset = 0) => (red, green, blue) => `\x1B[${38 + offset};2;${red};${green};${blue}m`, "wrapAnsi16m");
     function assembleStyles() {
       const codes = /* @__PURE__ */ new Map();
       const styles2 = {
@@ -549,7 +549,7 @@ var require_ansi_styles = __commonJS({
       });
       return styles2;
     }
-    __name(assembleStyles, "assembleStyles");
+    _chunkEC6JY3PVcjs.__name.call(void 0, assembleStyles, "assembleStyles");
     Object.defineProperty(module, "exports", {
       enumerable: true,
       get: assembleStyles
@@ -558,14 +558,14 @@ var require_ansi_styles = __commonJS({
 });
 
 // node_modules/eventemitter3/index.js
-var require_eventemitter3 = __commonJS({
+var require_eventemitter3 = _chunkEC6JY3PVcjs.__commonJS.call(void 0, {
   "node_modules/eventemitter3/index.js"(exports, module) {
     "use strict";
     var has = Object.prototype.hasOwnProperty;
     var prefix = "~";
     function Events() {
     }
-    __name(Events, "Events");
+    _chunkEC6JY3PVcjs.__name.call(void 0, Events, "Events");
     if (Object.create) {
       Events.prototype = /* @__PURE__ */ Object.create(null);
       if (!new Events().__proto__)
@@ -576,7 +576,7 @@ var require_eventemitter3 = __commonJS({
       this.context = context;
       this.once = once || false;
     }
-    __name(EE, "EE");
+    _chunkEC6JY3PVcjs.__name.call(void 0, EE, "EE");
     function addListener(emitter, event, fn, context, once) {
       if (typeof fn !== "function") {
         throw new TypeError("The listener must be a function");
@@ -590,20 +590,20 @@ var require_eventemitter3 = __commonJS({
         emitter._events[evt] = [emitter._events[evt], listener];
       return emitter;
     }
-    __name(addListener, "addListener");
+    _chunkEC6JY3PVcjs.__name.call(void 0, addListener, "addListener");
     function clearEvent(emitter, evt) {
       if (--emitter._eventsCount === 0)
         emitter._events = new Events();
       else
         delete emitter._events[evt];
     }
-    __name(clearEvent, "clearEvent");
+    _chunkEC6JY3PVcjs.__name.call(void 0, clearEvent, "clearEvent");
     function EventEmitter() {
       this._events = new Events();
       this._eventsCount = 0;
     }
-    __name(EventEmitter, "EventEmitter");
-    EventEmitter.prototype.eventNames = /* @__PURE__ */ __name(function eventNames() {
+    _chunkEC6JY3PVcjs.__name.call(void 0, EventEmitter, "EventEmitter");
+    EventEmitter.prototype.eventNames = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, function eventNames() {
       var names = [], events, name;
       if (this._eventsCount === 0)
         return names;
@@ -616,7 +616,7 @@ var require_eventemitter3 = __commonJS({
       }
       return names;
     }, "eventNames");
-    EventEmitter.prototype.listeners = /* @__PURE__ */ __name(function listeners(event) {
+    EventEmitter.prototype.listeners = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, function listeners(event) {
       var evt = prefix ? prefix + event : event, handlers = this._events[evt];
       if (!handlers)
         return [];
@@ -627,7 +627,7 @@ var require_eventemitter3 = __commonJS({
       }
       return ee;
     }, "listeners");
-    EventEmitter.prototype.listenerCount = /* @__PURE__ */ __name(function listenerCount(event) {
+    EventEmitter.prototype.listenerCount = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, function listenerCount(event) {
       var evt = prefix ? prefix + event : event, listeners = this._events[evt];
       if (!listeners)
         return 0;
@@ -635,7 +635,7 @@ var require_eventemitter3 = __commonJS({
         return 1;
       return listeners.length;
     }, "listenerCount");
-    EventEmitter.prototype.emit = /* @__PURE__ */ __name(function emit(event, a1, a2, a3, a4, a5) {
+    EventEmitter.prototype.emit = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, function emit(event, a1, a2, a3, a4, a5) {
       var evt = prefix ? prefix + event : event;
       if (!this._events[evt])
         return false;
@@ -690,13 +690,13 @@ var require_eventemitter3 = __commonJS({
       }
       return true;
     }, "emit");
-    EventEmitter.prototype.on = /* @__PURE__ */ __name(function on(event, fn, context) {
+    EventEmitter.prototype.on = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, function on(event, fn, context) {
       return addListener(this, event, fn, context, false);
     }, "on");
-    EventEmitter.prototype.once = /* @__PURE__ */ __name(function once(event, fn, context) {
+    EventEmitter.prototype.once = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, function once(event, fn, context) {
       return addListener(this, event, fn, context, true);
     }, "once");
-    EventEmitter.prototype.removeListener = /* @__PURE__ */ __name(function removeListener(event, fn, context, once) {
+    EventEmitter.prototype.removeListener = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, function removeListener(event, fn, context, once) {
       var evt = prefix ? prefix + event : event;
       if (!this._events[evt])
         return this;
@@ -722,7 +722,7 @@ var require_eventemitter3 = __commonJS({
       }
       return this;
     }, "removeListener");
-    EventEmitter.prototype.removeAllListeners = /* @__PURE__ */ __name(function removeAllListeners(event) {
+    EventEmitter.prototype.removeAllListeners = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, function removeAllListeners(event) {
       var evt;
       if (event) {
         evt = prefix ? prefix + event : event;
@@ -745,7 +745,7 @@ var require_eventemitter3 = __commonJS({
 });
 
 // node_modules/p-finally/index.js
-var require_p_finally = __commonJS({
+var require_p_finally = _chunkEC6JY3PVcjs.__commonJS.call(void 0, {
   "node_modules/p-finally/index.js"(exports, module) {
     "use strict";
     module.exports = (promise, onFinally) => {
@@ -766,20 +766,20 @@ var require_p_finally = __commonJS({
 });
 
 // node_modules/p-timeout/index.js
-var require_p_timeout = __commonJS({
+var require_p_timeout = _chunkEC6JY3PVcjs.__commonJS.call(void 0, {
   "node_modules/p-timeout/index.js"(exports, module) {
     "use strict";
     var pFinally = require_p_finally();
     var TimeoutError = class extends Error {
       static {
-        __name(this, "TimeoutError");
+        _chunkEC6JY3PVcjs.__name.call(void 0, this, "TimeoutError");
       }
       constructor(message) {
         super(message);
         this.name = "TimeoutError";
       }
     };
-    var pTimeout = /* @__PURE__ */ __name((promise, milliseconds, fallback) => new Promise((resolve, reject) => {
+    var pTimeout = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (promise, milliseconds, fallback) => new Promise((resolve, reject) => {
       if (typeof milliseconds !== "number" || milliseconds < 0) {
         throw new TypeError("Expected `milliseconds` to be a positive number");
       }
@@ -818,7 +818,7 @@ var require_p_timeout = __commonJS({
 });
 
 // node_modules/p-queue/dist/lower-bound.js
-var require_lower_bound = __commonJS({
+var require_lower_bound = _chunkEC6JY3PVcjs.__commonJS.call(void 0, {
   "node_modules/p-queue/dist/lower-bound.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -837,20 +837,20 @@ var require_lower_bound = __commonJS({
       }
       return first;
     }
-    __name(lowerBound, "lowerBound");
+    _chunkEC6JY3PVcjs.__name.call(void 0, lowerBound, "lowerBound");
     exports.default = lowerBound;
   }
 });
 
 // node_modules/p-queue/dist/priority-queue.js
-var require_priority_queue = __commonJS({
+var require_priority_queue = _chunkEC6JY3PVcjs.__commonJS.call(void 0, {
   "node_modules/p-queue/dist/priority-queue.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var lower_bound_1 = require_lower_bound();
     var PriorityQueue = class {
       static {
-        __name(this, "PriorityQueue");
+        _chunkEC6JY3PVcjs.__name.call(void 0, this, "PriorityQueue");
       }
       constructor() {
         this._queue = [];
@@ -884,19 +884,19 @@ var require_priority_queue = __commonJS({
 });
 
 // node_modules/p-queue/dist/index.js
-var require_dist = __commonJS({
+var require_dist = _chunkEC6JY3PVcjs.__commonJS.call(void 0, {
   "node_modules/p-queue/dist/index.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var EventEmitter = require_eventemitter3();
     var p_timeout_1 = require_p_timeout();
     var priority_queue_1 = require_priority_queue();
-    var empty = /* @__PURE__ */ __name(() => {
+    var empty = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => {
     }, "empty");
     var timeoutError = new p_timeout_1.TimeoutError();
     var PQueue = class extends EventEmitter {
       static {
-        __name(this, "PQueue");
+        _chunkEC6JY3PVcjs.__name.call(void 0, this, "PQueue");
       }
       constructor(options) {
         var _a, _b, _c, _d;
@@ -1031,7 +1031,7 @@ var require_dist = __commonJS({
       */
       async add(fn, options = {}) {
         return new Promise((resolve, reject) => {
-          const run = /* @__PURE__ */ __name(async () => {
+          const run = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, async () => {
             this._pendingCount++;
             this._intervalCount++;
             try {
@@ -1158,12 +1158,12 @@ var require_dist = __commonJS({
 });
 
 // node_modules/@langchain/core/dist/load/map_keys.js
-var import_decamelize = __toESM(require_decamelize(), 1);
-var import_camelcase = __toESM(require_camelcase(), 1);
+var import_decamelize = _chunkEC6JY3PVcjs.__toESM.call(void 0, require_decamelize(), 1);
+var import_camelcase = _chunkEC6JY3PVcjs.__toESM.call(void 0, require_camelcase(), 1);
 function keyToJson(key, map) {
-  return map?.[key] || (0, import_decamelize.default)(key);
+  return _optionalChain([map, 'optionalAccess', _2 => _2[key]]) || (0, import_decamelize.default)(key);
 }
-__name(keyToJson, "keyToJson");
+_chunkEC6JY3PVcjs.__name.call(void 0, keyToJson, "keyToJson");
 function mapKeys(fields, mapper, map) {
   const mapped = {};
   for (const key in fields) {
@@ -1173,13 +1173,13 @@ function mapKeys(fields, mapper, map) {
   }
   return mapped;
 }
-__name(mapKeys, "mapKeys");
+_chunkEC6JY3PVcjs.__name.call(void 0, mapKeys, "mapKeys");
 
 // node_modules/@langchain/core/dist/load/serializable.js
 function shallowCopy(obj) {
   return Array.isArray(obj) ? [...obj] : { ...obj };
 }
-__name(shallowCopy, "shallowCopy");
+_chunkEC6JY3PVcjs.__name.call(void 0, shallowCopy, "shallowCopy");
 function replaceSecrets(root, secretsMap) {
   const result = shallowCopy(root);
   for (const [path, secretId] of Object.entries(secretsMap)) {
@@ -1202,7 +1202,7 @@ function replaceSecrets(root, secretsMap) {
   }
   return result;
 }
-__name(replaceSecrets, "replaceSecrets");
+_chunkEC6JY3PVcjs.__name.call(void 0, replaceSecrets, "replaceSecrets");
 function get_lc_unique_name(serializableClass) {
   const parentClass = Object.getPrototypeOf(serializableClass);
   const lcNameIsSubclassed = typeof serializableClass.lc_name === "function" && (typeof parentClass.lc_name !== "function" || serializableClass.lc_name() !== parentClass.lc_name());
@@ -1212,10 +1212,10 @@ function get_lc_unique_name(serializableClass) {
     return serializableClass.name;
   }
 }
-__name(get_lc_unique_name, "get_lc_unique_name");
+_chunkEC6JY3PVcjs.__name.call(void 0, get_lc_unique_name, "get_lc_unique_name");
 var Serializable = class _Serializable {
   static {
-    __name(this, "Serializable");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "Serializable");
   }
   /**
    * The name of the serializable. Override to provide an alias or
@@ -1348,10 +1348,10 @@ function mergeContent(firstContent, secondContent) {
     return [...firstContent, { type: "text", text: secondContent }];
   }
 }
-__name(mergeContent, "mergeContent");
+_chunkEC6JY3PVcjs.__name.call(void 0, mergeContent, "mergeContent");
 var BaseMessage = class extends Serializable {
   static {
-    __name(this, "BaseMessage");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "BaseMessage");
   }
   get lc_aliases() {
     return {
@@ -1448,7 +1448,7 @@ var BaseMessage = class extends Serializable {
 function isOpenAIToolCallArray(value) {
   return Array.isArray(value) && value.every((v) => typeof v.index === "number");
 }
-__name(isOpenAIToolCallArray, "isOpenAIToolCallArray");
+_chunkEC6JY3PVcjs.__name.call(void 0, isOpenAIToolCallArray, "isOpenAIToolCallArray");
 function _mergeDicts(left, right) {
   const merged = { ...left };
   for (const [key, value] of Object.entries(right)) {
@@ -1464,8 +1464,8 @@ function _mergeDicts(left, right) {
       merged[key] = _mergeDicts(merged[key], value);
     } else if (key === "tool_calls" && isOpenAIToolCallArray(merged[key]) && isOpenAIToolCallArray(value)) {
       for (const toolCall of value) {
-        if (merged[key]?.[toolCall.index] !== void 0) {
-          merged[key] = merged[key]?.map((value2, i) => {
+        if (_optionalChain([merged, 'access', _3 => _3[key], 'optionalAccess', _4 => _4[toolCall.index]]) !== void 0) {
+          merged[key] = _optionalChain([merged, 'access', _5 => _5[key], 'optionalAccess', _6 => _6.map, 'call', _7 => _7((value2, i) => {
             if (i !== toolCall.index) {
               return value2;
             }
@@ -1473,11 +1473,11 @@ function _mergeDicts(left, right) {
               ...value2,
               ...toolCall,
               function: {
-                name: toolCall.function.name ?? value2.function.name,
-                arguments: (value2.function.arguments ?? "") + (toolCall.function.arguments ?? "")
+                name: _nullishCoalesce(toolCall.function.name, () => ( value2.function.name)),
+                arguments: (_nullishCoalesce(value2.function.arguments, () => ( ""))) + (_nullishCoalesce(toolCall.function.arguments, () => ( "")))
               }
             };
-          });
+          })]);
         } else {
           merged[key][toolCall.index] = toolCall;
         }
@@ -1492,15 +1492,15 @@ function _mergeDicts(left, right) {
   }
   return merged;
 }
-__name(_mergeDicts, "_mergeDicts");
+_chunkEC6JY3PVcjs.__name.call(void 0, _mergeDicts, "_mergeDicts");
 var BaseMessageChunk = class extends BaseMessage {
   static {
-    __name(this, "BaseMessageChunk");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "BaseMessageChunk");
   }
 };
 var HumanMessage = class extends BaseMessage {
   static {
-    __name(this, "HumanMessage");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "HumanMessage");
   }
   static lc_name() {
     return "HumanMessage";
@@ -1511,7 +1511,7 @@ var HumanMessage = class extends BaseMessage {
 };
 var HumanMessageChunk = class _HumanMessageChunk extends BaseMessageChunk {
   static {
-    __name(this, "HumanMessageChunk");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "HumanMessageChunk");
   }
   static lc_name() {
     return "HumanMessageChunk";
@@ -1529,7 +1529,7 @@ var HumanMessageChunk = class _HumanMessageChunk extends BaseMessageChunk {
 };
 var AIMessage = class extends BaseMessage {
   static {
-    __name(this, "AIMessage");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "AIMessage");
   }
   static lc_name() {
     return "AIMessage";
@@ -1540,7 +1540,7 @@ var AIMessage = class extends BaseMessage {
 };
 var AIMessageChunk = class _AIMessageChunk extends BaseMessageChunk {
   static {
-    __name(this, "AIMessageChunk");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "AIMessageChunk");
   }
   static lc_name() {
     return "AIMessageChunk";
@@ -1558,7 +1558,7 @@ var AIMessageChunk = class _AIMessageChunk extends BaseMessageChunk {
 };
 var SystemMessage = class extends BaseMessage {
   static {
-    __name(this, "SystemMessage");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "SystemMessage");
   }
   static lc_name() {
     return "SystemMessage";
@@ -1569,7 +1569,7 @@ var SystemMessage = class extends BaseMessage {
 };
 var SystemMessageChunk = class _SystemMessageChunk extends BaseMessageChunk {
   static {
-    __name(this, "SystemMessageChunk");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "SystemMessageChunk");
   }
   static lc_name() {
     return "SystemMessageChunk";
@@ -1587,7 +1587,7 @@ var SystemMessageChunk = class _SystemMessageChunk extends BaseMessageChunk {
 };
 var FunctionMessageChunk = class _FunctionMessageChunk extends BaseMessageChunk {
   static {
-    __name(this, "FunctionMessageChunk");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "FunctionMessageChunk");
   }
   static lc_name() {
     return "FunctionMessageChunk";
@@ -1600,13 +1600,13 @@ var FunctionMessageChunk = class _FunctionMessageChunk extends BaseMessageChunk 
       content: mergeContent(this.content, chunk.content),
       additional_kwargs: _mergeDicts(this.additional_kwargs, chunk.additional_kwargs),
       response_metadata: _mergeDicts(this.response_metadata, chunk.response_metadata),
-      name: this.name ?? ""
+      name: _nullishCoalesce(this.name, () => ( ""))
     });
   }
 };
 var ChatMessage = class _ChatMessage extends BaseMessage {
   static {
-    __name(this, "ChatMessage");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ChatMessage");
   }
   static lc_name() {
     return "ChatMessage";
@@ -1635,9 +1635,9 @@ var ChatMessage = class _ChatMessage extends BaseMessage {
   }
 };
 function isBaseMessage(messageLike) {
-  return typeof messageLike?._getType === "function";
+  return typeof _optionalChain([messageLike, 'optionalAccess', _8 => _8._getType]) === "function";
 }
-__name(isBaseMessage, "isBaseMessage");
+_chunkEC6JY3PVcjs.__name.call(void 0, isBaseMessage, "isBaseMessage");
 function coerceMessageLikeToMessage(messageLike) {
   if (typeof messageLike === "string") {
     return new HumanMessage(messageLike);
@@ -1655,10 +1655,10 @@ function coerceMessageLikeToMessage(messageLike) {
     throw new Error(`Unable to coerce message from array: only human, AI, or system message coercion is currently supported.`);
   }
 }
-__name(coerceMessageLikeToMessage, "coerceMessageLikeToMessage");
+_chunkEC6JY3PVcjs.__name.call(void 0, coerceMessageLikeToMessage, "coerceMessageLikeToMessage");
 var ChatMessageChunk = class _ChatMessageChunk extends BaseMessageChunk {
   static {
-    __name(this, "ChatMessageChunk");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ChatMessageChunk");
   }
   static lc_name() {
     return "ChatMessageChunk";
@@ -1712,17 +1712,17 @@ function getBufferString(messages, humanPrefix = "Human", aiPrefix = "AI") {
   }
   return string_messages.join("\n");
 }
-__name(getBufferString, "getBufferString");
+_chunkEC6JY3PVcjs.__name.call(void 0, getBufferString, "getBufferString");
 
 // node_modules/@langchain/core/dist/prompt_values.js
 var BasePromptValue = class extends Serializable {
   static {
-    __name(this, "BasePromptValue");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "BasePromptValue");
   }
 };
 var StringPromptValue = class extends BasePromptValue {
   static {
-    __name(this, "StringPromptValue");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "StringPromptValue");
   }
   static lc_name() {
     return "StringPromptValue";
@@ -1758,7 +1758,7 @@ var StringPromptValue = class extends BasePromptValue {
 };
 var ChatPromptValue = class extends BasePromptValue {
   static {
-    __name(this, "ChatPromptValue");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ChatPromptValue");
   }
   static lc_name() {
     return "ChatPromptValue";
@@ -1797,7 +1797,7 @@ var ChatPromptValue = class extends BasePromptValue {
 };
 var ImagePromptValue = class extends BasePromptValue {
   static {
-    __name(this, "ImagePromptValue");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ImagePromptValue");
   }
   static lc_name() {
     return "ImagePromptValue";
@@ -1859,12 +1859,12 @@ var util;
   util2.assertEqual = (val) => val;
   function assertIs(_arg) {
   }
-  __name(assertIs, "assertIs");
+  _chunkEC6JY3PVcjs.__name.call(void 0, assertIs, "assertIs");
   util2.assertIs = assertIs;
   function assertNever(_x) {
     throw new Error();
   }
-  __name(assertNever, "assertNever");
+  _chunkEC6JY3PVcjs.__name.call(void 0, assertNever, "assertNever");
   util2.assertNever = assertNever;
   util2.arrayToEnum = (items) => {
     const obj = {};
@@ -1906,7 +1906,7 @@ var util;
   function joinValues(array, separator = " | ") {
     return array.map((val) => typeof val === "string" ? `'${val}'` : val).join(separator);
   }
-  __name(joinValues, "joinValues");
+  _chunkEC6JY3PVcjs.__name.call(void 0, joinValues, "joinValues");
   util2.joinValues = joinValues;
   util2.jsonStringifyReplacer = (_, value) => {
     if (typeof value === "bigint") {
@@ -1947,7 +1947,7 @@ var ZodParsedType = util.arrayToEnum([
   "map",
   "set"
 ]);
-var getParsedType = /* @__PURE__ */ __name((data) => {
+var getParsedType = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (data) => {
   const t = typeof data;
   switch (t) {
     case "undefined":
@@ -2006,13 +2006,13 @@ var ZodIssueCode = util.arrayToEnum([
   "not_multiple_of",
   "not_finite"
 ]);
-var quotelessJson = /* @__PURE__ */ __name((obj) => {
+var quotelessJson = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (obj) => {
   const json = JSON.stringify(obj, null, 2);
   return json.replace(/"([^"]+)":/g, "$1:");
 }, "quotelessJson");
-var ZodError = class extends Error {
+var ZodError = class _ZodError extends Error {
   static {
-    __name(this, "ZodError");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodError");
   }
   constructor(issues) {
     super();
@@ -2040,7 +2040,7 @@ var ZodError = class extends Error {
       return issue.message;
     };
     const fieldErrors = { _errors: [] };
-    const processError = /* @__PURE__ */ __name((error) => {
+    const processError = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (error) => {
       for (const issue of error.issues) {
         if (issue.code === "invalid_union") {
           issue.unionErrors.map(processError);
@@ -2070,6 +2070,11 @@ var ZodError = class extends Error {
     }, "processError");
     processError(this);
     return fieldErrors;
+  }
+  static assert(value) {
+    if (!(value instanceof _ZodError)) {
+      throw new Error(`Not a ZodError: ${value}`);
+    }
   }
   toString() {
     return this.message;
@@ -2101,7 +2106,7 @@ ZodError.create = (issues) => {
   const error = new ZodError(issues);
   return error;
 };
-var errorMap = /* @__PURE__ */ __name((issue, _ctx) => {
+var errorMap = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (issue, _ctx) => {
   let message;
   switch (issue.code) {
     case ZodIssueCode.invalid_type:
@@ -2203,18 +2208,25 @@ var overrideErrorMap = errorMap;
 function setErrorMap(map) {
   overrideErrorMap = map;
 }
-__name(setErrorMap, "setErrorMap");
+_chunkEC6JY3PVcjs.__name.call(void 0, setErrorMap, "setErrorMap");
 function getErrorMap() {
   return overrideErrorMap;
 }
-__name(getErrorMap, "getErrorMap");
-var makeIssue = /* @__PURE__ */ __name((params) => {
+_chunkEC6JY3PVcjs.__name.call(void 0, getErrorMap, "getErrorMap");
+var makeIssue = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (params) => {
   const { data, path, errorMaps, issueData } = params;
   const fullPath = [...path, ...issueData.path || []];
   const fullIssue = {
     ...issueData,
     path: fullPath
   };
+  if (issueData.message !== void 0) {
+    return {
+      ...issueData,
+      path: fullPath,
+      message: issueData.message
+    };
+  }
   let errorMessage = "";
   const maps = errorMaps.filter((m) => !!m).slice().reverse();
   for (const map of maps) {
@@ -2223,11 +2235,12 @@ var makeIssue = /* @__PURE__ */ __name((params) => {
   return {
     ...issueData,
     path: fullPath,
-    message: issueData.message || errorMessage
+    message: errorMessage
   };
 }, "makeIssue");
 var EMPTY_PATH = [];
 function addIssueToContext(ctx, issueData) {
+  const overrideMap = getErrorMap();
   const issue = makeIssue({
     issueData,
     data: ctx.data,
@@ -2235,17 +2248,17 @@ function addIssueToContext(ctx, issueData) {
     errorMaps: [
       ctx.common.contextualErrorMap,
       ctx.schemaErrorMap,
-      getErrorMap(),
-      errorMap
+      overrideMap,
+      overrideMap === errorMap ? void 0 : errorMap
       // then global default map
     ].filter((x) => !!x)
   });
   ctx.common.issues.push(issue);
 }
-__name(addIssueToContext, "addIssueToContext");
+_chunkEC6JY3PVcjs.__name.call(void 0, addIssueToContext, "addIssueToContext");
 var ParseStatus = class _ParseStatus {
   static {
-    __name(this, "ParseStatus");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ParseStatus");
   }
   constructor() {
     this.value = "valid";
@@ -2272,9 +2285,11 @@ var ParseStatus = class _ParseStatus {
   static async mergeObjectAsync(status, pairs) {
     const syncPairs = [];
     for (const pair of pairs) {
+      const key = await pair.key;
+      const value = await pair.value;
       syncPairs.push({
-        key: await pair.key,
-        value: await pair.value
+        key,
+        value
       });
     }
     return _ParseStatus.mergeObjectSync(status, syncPairs);
@@ -2301,20 +2316,40 @@ var ParseStatus = class _ParseStatus {
 var INVALID = Object.freeze({
   status: "aborted"
 });
-var DIRTY = /* @__PURE__ */ __name((value) => ({ status: "dirty", value }), "DIRTY");
-var OK = /* @__PURE__ */ __name((value) => ({ status: "valid", value }), "OK");
-var isAborted = /* @__PURE__ */ __name((x) => x.status === "aborted", "isAborted");
-var isDirty = /* @__PURE__ */ __name((x) => x.status === "dirty", "isDirty");
-var isValid = /* @__PURE__ */ __name((x) => x.status === "valid", "isValid");
-var isAsync = /* @__PURE__ */ __name((x) => typeof Promise !== "undefined" && x instanceof Promise, "isAsync");
+var DIRTY = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (value) => ({ status: "dirty", value }), "DIRTY");
+var OK = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (value) => ({ status: "valid", value }), "OK");
+var isAborted = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (x) => x.status === "aborted", "isAborted");
+var isDirty = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (x) => x.status === "dirty", "isDirty");
+var isValid = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (x) => x.status === "valid", "isValid");
+var isAsync = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (x) => typeof Promise !== "undefined" && x instanceof Promise, "isAsync");
+function __classPrivateFieldGet(receiver, state, kind, f) {
+  if (kind === "a" && !f)
+    throw new TypeError("Private accessor was defined without a getter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver))
+    throw new TypeError("Cannot read private member from an object whose class did not declare it");
+  return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+}
+_chunkEC6JY3PVcjs.__name.call(void 0, __classPrivateFieldGet, "__classPrivateFieldGet");
+function __classPrivateFieldSet(receiver, state, value, kind, f) {
+  if (kind === "m")
+    throw new TypeError("Private method is not writable");
+  if (kind === "a" && !f)
+    throw new TypeError("Private accessor was defined without a setter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver))
+    throw new TypeError("Cannot write private member to an object whose class did not declare it");
+  return kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value), value;
+}
+_chunkEC6JY3PVcjs.__name.call(void 0, __classPrivateFieldSet, "__classPrivateFieldSet");
 var errorUtil;
 (function(errorUtil2) {
   errorUtil2.errToObj = (message) => typeof message === "string" ? { message } : message || {};
   errorUtil2.toString = (message) => typeof message === "string" ? message : message === null || message === void 0 ? void 0 : message.message;
 })(errorUtil || (errorUtil = {}));
+var _ZodEnum_cache;
+var _ZodNativeEnum_cache;
 var ParseInputLazyPath = class {
   static {
-    __name(this, "ParseInputLazyPath");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ParseInputLazyPath");
   }
   constructor(parent, value, path, key) {
     this._cachedPath = [];
@@ -2334,7 +2369,7 @@ var ParseInputLazyPath = class {
     return this._cachedPath;
   }
 };
-var handleResult = /* @__PURE__ */ __name((ctx, result) => {
+var handleResult = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (ctx, result) => {
   if (isValid(result)) {
     return { success: true, data: result.value };
   } else {
@@ -2362,20 +2397,25 @@ function processCreateParams(params) {
   }
   if (errorMap2)
     return { errorMap: errorMap2, description };
-  const customMap = /* @__PURE__ */ __name((iss, ctx) => {
+  const customMap = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (iss, ctx) => {
+    var _a, _b;
+    const { message } = params;
+    if (iss.code === "invalid_enum_value") {
+      return { message: message !== null && message !== void 0 ? message : ctx.defaultError };
+    }
+    if (typeof ctx.data === "undefined") {
+      return { message: (_a = message !== null && message !== void 0 ? message : required_error) !== null && _a !== void 0 ? _a : ctx.defaultError };
+    }
     if (iss.code !== "invalid_type")
       return { message: ctx.defaultError };
-    if (typeof ctx.data === "undefined") {
-      return { message: required_error !== null && required_error !== void 0 ? required_error : ctx.defaultError };
-    }
-    return { message: invalid_type_error !== null && invalid_type_error !== void 0 ? invalid_type_error : ctx.defaultError };
+    return { message: (_b = message !== null && message !== void 0 ? message : invalid_type_error) !== null && _b !== void 0 ? _b : ctx.defaultError };
   }, "customMap");
   return { errorMap: customMap, description };
 }
-__name(processCreateParams, "processCreateParams");
+_chunkEC6JY3PVcjs.__name.call(void 0, processCreateParams, "processCreateParams");
 var ZodType = class {
   static {
-    __name(this, "ZodType");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodType");
   }
   constructor(def) {
     this.spa = this.safeParseAsync;
@@ -2492,7 +2532,7 @@ var ZodType = class {
     return handleResult(ctx, result);
   }
   refine(check, message) {
-    const getIssueProperties = /* @__PURE__ */ __name((val) => {
+    const getIssueProperties = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (val) => {
       if (typeof message === "string" || typeof message === "undefined") {
         return { message };
       } else if (typeof message === "function") {
@@ -2503,7 +2543,7 @@ var ZodType = class {
     }, "getIssueProperties");
     return this._refinement((val, ctx) => {
       const result = check(val);
-      const setError = /* @__PURE__ */ __name(() => ctx.addIssue({
+      const setError = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => ctx.addIssue({
         code: ZodIssueCode.custom,
         ...getIssueProperties(val)
       }), "setError");
@@ -2620,35 +2660,43 @@ var ZodType = class {
   }
 };
 var cuidRegex = /^c[^\s-]{8,}$/i;
-var cuid2Regex = /^[a-z][a-z0-9]*$/;
+var cuid2Regex = /^[0-9a-z]+$/;
 var ulidRegex = /^[0-9A-HJKMNP-TV-Z]{26}$/;
 var uuidRegex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/i;
-var emailRegex = /^(?!\.)(?!.*\.\.)([A-Z0-9_+-\.]*)[A-Z0-9_+-]@([A-Z0-9][A-Z0-9\-]*\.)+[A-Z]{2,}$/i;
+var nanoidRegex = /^[a-z0-9_-]{21}$/i;
+var durationRegex = /^[-+]?P(?!$)(?:(?:[-+]?\d+Y)|(?:[-+]?\d+[.,]\d+Y$))?(?:(?:[-+]?\d+M)|(?:[-+]?\d+[.,]\d+M$))?(?:(?:[-+]?\d+W)|(?:[-+]?\d+[.,]\d+W$))?(?:(?:[-+]?\d+D)|(?:[-+]?\d+[.,]\d+D$))?(?:T(?=[\d+-])(?:(?:[-+]?\d+H)|(?:[-+]?\d+[.,]\d+H$))?(?:(?:[-+]?\d+M)|(?:[-+]?\d+[.,]\d+M$))?(?:[-+]?\d+(?:[.,]\d+)?S)?)??$/;
+var emailRegex = /^(?!\.)(?!.*\.\.)([A-Z0-9_'+\-\.]*)[A-Z0-9_+-]@([A-Z0-9][A-Z0-9\-]*\.)+[A-Z]{2,}$/i;
 var _emojiRegex = `^(\\p{Extended_Pictographic}|\\p{Emoji_Component})+$`;
 var emojiRegex;
-var ipv4Regex = /^(((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\.){3}((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))$/;
+var ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$/;
 var ipv6Regex = /^(([a-f0-9]{1,4}:){7}|::([a-f0-9]{1,4}:){0,6}|([a-f0-9]{1,4}:){1}:([a-f0-9]{1,4}:){0,5}|([a-f0-9]{1,4}:){2}:([a-f0-9]{1,4}:){0,4}|([a-f0-9]{1,4}:){3}:([a-f0-9]{1,4}:){0,3}|([a-f0-9]{1,4}:){4}:([a-f0-9]{1,4}:){0,2}|([a-f0-9]{1,4}:){5}:([a-f0-9]{1,4}:){0,1})([a-f0-9]{1,4}|(((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\.){3}((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2})))$/;
-var datetimeRegex = /* @__PURE__ */ __name((args) => {
+var base64Regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+var dateRegexSource = `((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))`;
+var dateRegex = new RegExp(`^${dateRegexSource}$`);
+function timeRegexSource(args) {
+  let regex = `([01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d`;
   if (args.precision) {
-    if (args.offset) {
-      return new RegExp(`^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{${args.precision}}(([+-]\\d{2}(:?\\d{2})?)|Z)$`);
-    } else {
-      return new RegExp(`^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{${args.precision}}Z$`);
-    }
-  } else if (args.precision === 0) {
-    if (args.offset) {
-      return new RegExp(`^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(([+-]\\d{2}(:?\\d{2})?)|Z)$`);
-    } else {
-      return new RegExp(`^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$`);
-    }
-  } else {
-    if (args.offset) {
-      return new RegExp(`^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(([+-]\\d{2}(:?\\d{2})?)|Z)$`);
-    } else {
-      return new RegExp(`^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?Z$`);
-    }
+    regex = `${regex}\\.\\d{${args.precision}}`;
+  } else if (args.precision == null) {
+    regex = `${regex}(\\.\\d+)?`;
   }
-}, "datetimeRegex");
+  return regex;
+}
+_chunkEC6JY3PVcjs.__name.call(void 0, timeRegexSource, "timeRegexSource");
+function timeRegex(args) {
+  return new RegExp(`^${timeRegexSource(args)}$`);
+}
+_chunkEC6JY3PVcjs.__name.call(void 0, timeRegex, "timeRegex");
+function datetimeRegex(args) {
+  let regex = `${dateRegexSource}T${timeRegexSource(args)}`;
+  const opts = [];
+  opts.push(args.local ? `Z?` : `Z`);
+  if (args.offset)
+    opts.push(`([+-]\\d{2}:?\\d{2})`);
+  regex = `${regex}(${opts.join("|")})`;
+  return new RegExp(`^${regex}$`);
+}
+_chunkEC6JY3PVcjs.__name.call(void 0, datetimeRegex, "datetimeRegex");
 function isValidIP(ip, version) {
   if ((version === "v4" || !version) && ipv4Regex.test(ip)) {
     return true;
@@ -2658,10 +2706,10 @@ function isValidIP(ip, version) {
   }
   return false;
 }
-__name(isValidIP, "isValidIP");
+_chunkEC6JY3PVcjs.__name.call(void 0, isValidIP, "isValidIP");
 var ZodString = class _ZodString extends ZodType {
   static {
-    __name(this, "ZodString");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodString");
   }
   _parse(input) {
     if (this._def.coerce) {
@@ -2670,15 +2718,11 @@ var ZodString = class _ZodString extends ZodType {
     const parsedType = this._getType(input);
     if (parsedType !== ZodParsedType.string) {
       const ctx2 = this._getOrReturnCtx(input);
-      addIssueToContext(
-        ctx2,
-        {
-          code: ZodIssueCode.invalid_type,
-          expected: ZodParsedType.string,
-          received: ctx2.parsedType
-        }
-        //
-      );
+      addIssueToContext(ctx2, {
+        code: ZodIssueCode.invalid_type,
+        expected: ZodParsedType.string,
+        received: ctx2.parsedType
+      });
       return INVALID;
     }
     const status = new ParseStatus();
@@ -2764,6 +2808,16 @@ var ZodString = class _ZodString extends ZodType {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             validation: "uuid",
+            code: ZodIssueCode.invalid_string,
+            message: check.message
+          });
+          status.dirty();
+        }
+      } else if (check.kind === "nanoid") {
+        if (!nanoidRegex.test(input.data)) {
+          ctx = this._getOrReturnCtx(input, ctx);
+          addIssueToContext(ctx, {
+            validation: "nanoid",
             code: ZodIssueCode.invalid_string,
             message: check.message
           });
@@ -2870,11 +2924,53 @@ var ZodString = class _ZodString extends ZodType {
           });
           status.dirty();
         }
+      } else if (check.kind === "date") {
+        const regex = dateRegex;
+        if (!regex.test(input.data)) {
+          ctx = this._getOrReturnCtx(input, ctx);
+          addIssueToContext(ctx, {
+            code: ZodIssueCode.invalid_string,
+            validation: "date",
+            message: check.message
+          });
+          status.dirty();
+        }
+      } else if (check.kind === "time") {
+        const regex = timeRegex(check);
+        if (!regex.test(input.data)) {
+          ctx = this._getOrReturnCtx(input, ctx);
+          addIssueToContext(ctx, {
+            code: ZodIssueCode.invalid_string,
+            validation: "time",
+            message: check.message
+          });
+          status.dirty();
+        }
+      } else if (check.kind === "duration") {
+        if (!durationRegex.test(input.data)) {
+          ctx = this._getOrReturnCtx(input, ctx);
+          addIssueToContext(ctx, {
+            validation: "duration",
+            code: ZodIssueCode.invalid_string,
+            message: check.message
+          });
+          status.dirty();
+        }
       } else if (check.kind === "ip") {
         if (!isValidIP(input.data, check.version)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             validation: "ip",
+            code: ZodIssueCode.invalid_string,
+            message: check.message
+          });
+          status.dirty();
+        }
+      } else if (check.kind === "base64") {
+        if (!base64Regex.test(input.data)) {
+          ctx = this._getOrReturnCtx(input, ctx);
+          addIssueToContext(ctx, {
+            validation: "base64",
             code: ZodIssueCode.invalid_string,
             message: check.message
           });
@@ -2911,6 +3007,9 @@ var ZodString = class _ZodString extends ZodType {
   uuid(message) {
     return this._addCheck({ kind: "uuid", ...errorUtil.errToObj(message) });
   }
+  nanoid(message) {
+    return this._addCheck({ kind: "nanoid", ...errorUtil.errToObj(message) });
+  }
   cuid(message) {
     return this._addCheck({ kind: "cuid", ...errorUtil.errToObj(message) });
   }
@@ -2920,16 +3019,20 @@ var ZodString = class _ZodString extends ZodType {
   ulid(message) {
     return this._addCheck({ kind: "ulid", ...errorUtil.errToObj(message) });
   }
+  base64(message) {
+    return this._addCheck({ kind: "base64", ...errorUtil.errToObj(message) });
+  }
   ip(options) {
     return this._addCheck({ kind: "ip", ...errorUtil.errToObj(options) });
   }
   datetime(options) {
-    var _a;
+    var _a, _b;
     if (typeof options === "string") {
       return this._addCheck({
         kind: "datetime",
         precision: null,
         offset: false,
+        local: false,
         message: options
       });
     }
@@ -2937,8 +3040,29 @@ var ZodString = class _ZodString extends ZodType {
       kind: "datetime",
       precision: typeof (options === null || options === void 0 ? void 0 : options.precision) === "undefined" ? null : options === null || options === void 0 ? void 0 : options.precision,
       offset: (_a = options === null || options === void 0 ? void 0 : options.offset) !== null && _a !== void 0 ? _a : false,
+      local: (_b = options === null || options === void 0 ? void 0 : options.local) !== null && _b !== void 0 ? _b : false,
       ...errorUtil.errToObj(options === null || options === void 0 ? void 0 : options.message)
     });
+  }
+  date(message) {
+    return this._addCheck({ kind: "date", message });
+  }
+  time(options) {
+    if (typeof options === "string") {
+      return this._addCheck({
+        kind: "time",
+        precision: null,
+        message: options
+      });
+    }
+    return this._addCheck({
+      kind: "time",
+      precision: typeof (options === null || options === void 0 ? void 0 : options.precision) === "undefined" ? null : options === null || options === void 0 ? void 0 : options.precision,
+      ...errorUtil.errToObj(options === null || options === void 0 ? void 0 : options.message)
+    });
+  }
+  duration(message) {
+    return this._addCheck({ kind: "duration", ...errorUtil.errToObj(message) });
   }
   regex(regex, message) {
     return this._addCheck({
@@ -3018,6 +3142,15 @@ var ZodString = class _ZodString extends ZodType {
   get isDatetime() {
     return !!this._def.checks.find((ch) => ch.kind === "datetime");
   }
+  get isDate() {
+    return !!this._def.checks.find((ch) => ch.kind === "date");
+  }
+  get isTime() {
+    return !!this._def.checks.find((ch) => ch.kind === "time");
+  }
+  get isDuration() {
+    return !!this._def.checks.find((ch) => ch.kind === "duration");
+  }
   get isEmail() {
     return !!this._def.checks.find((ch) => ch.kind === "email");
   }
@@ -3030,6 +3163,9 @@ var ZodString = class _ZodString extends ZodType {
   get isUUID() {
     return !!this._def.checks.find((ch) => ch.kind === "uuid");
   }
+  get isNANOID() {
+    return !!this._def.checks.find((ch) => ch.kind === "nanoid");
+  }
   get isCUID() {
     return !!this._def.checks.find((ch) => ch.kind === "cuid");
   }
@@ -3041,6 +3177,9 @@ var ZodString = class _ZodString extends ZodType {
   }
   get isIP() {
     return !!this._def.checks.find((ch) => ch.kind === "ip");
+  }
+  get isBase64() {
+    return !!this._def.checks.find((ch) => ch.kind === "base64");
   }
   get minLength() {
     let min = null;
@@ -3080,10 +3219,10 @@ function floatSafeRemainder(val, step) {
   const stepInt = parseInt(step.toFixed(decCount).replace(".", ""));
   return valInt % stepInt / Math.pow(10, decCount);
 }
-__name(floatSafeRemainder, "floatSafeRemainder");
+_chunkEC6JY3PVcjs.__name.call(void 0, floatSafeRemainder, "floatSafeRemainder");
 var ZodNumber = class _ZodNumber extends ZodType {
   static {
-    __name(this, "ZodNumber");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodNumber");
   }
   constructor() {
     super(...arguments);
@@ -3317,7 +3456,7 @@ ZodNumber.create = (params) => {
 };
 var ZodBigInt = class _ZodBigInt extends ZodType {
   static {
-    __name(this, "ZodBigInt");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodBigInt");
   }
   constructor() {
     super(...arguments);
@@ -3486,7 +3625,7 @@ ZodBigInt.create = (params) => {
 };
 var ZodBoolean = class extends ZodType {
   static {
-    __name(this, "ZodBoolean");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodBoolean");
   }
   _parse(input) {
     if (this._def.coerce) {
@@ -3514,7 +3653,7 @@ ZodBoolean.create = (params) => {
 };
 var ZodDate = class _ZodDate extends ZodType {
   static {
-    __name(this, "ZodDate");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodDate");
   }
   _parse(input) {
     if (this._def.coerce) {
@@ -3626,7 +3765,7 @@ ZodDate.create = (params) => {
 };
 var ZodSymbol = class extends ZodType {
   static {
-    __name(this, "ZodSymbol");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodSymbol");
   }
   _parse(input) {
     const parsedType = this._getType(input);
@@ -3650,7 +3789,7 @@ ZodSymbol.create = (params) => {
 };
 var ZodUndefined = class extends ZodType {
   static {
-    __name(this, "ZodUndefined");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodUndefined");
   }
   _parse(input) {
     const parsedType = this._getType(input);
@@ -3674,7 +3813,7 @@ ZodUndefined.create = (params) => {
 };
 var ZodNull = class extends ZodType {
   static {
-    __name(this, "ZodNull");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodNull");
   }
   _parse(input) {
     const parsedType = this._getType(input);
@@ -3698,7 +3837,7 @@ ZodNull.create = (params) => {
 };
 var ZodAny = class extends ZodType {
   static {
-    __name(this, "ZodAny");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodAny");
   }
   constructor() {
     super(...arguments);
@@ -3716,7 +3855,7 @@ ZodAny.create = (params) => {
 };
 var ZodUnknown = class extends ZodType {
   static {
-    __name(this, "ZodUnknown");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodUnknown");
   }
   constructor() {
     super(...arguments);
@@ -3734,7 +3873,7 @@ ZodUnknown.create = (params) => {
 };
 var ZodNever = class extends ZodType {
   static {
-    __name(this, "ZodNever");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodNever");
   }
   _parse(input) {
     const ctx = this._getOrReturnCtx(input);
@@ -3754,7 +3893,7 @@ ZodNever.create = (params) => {
 };
 var ZodVoid = class extends ZodType {
   static {
-    __name(this, "ZodVoid");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodVoid");
   }
   _parse(input) {
     const parsedType = this._getType(input);
@@ -3778,7 +3917,7 @@ ZodVoid.create = (params) => {
 };
 var ZodArray = class _ZodArray extends ZodType {
   static {
-    __name(this, "ZodArray");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodArray");
   }
   _parse(input) {
     const { ctx, status } = this._processInputParams(input);
@@ -3906,10 +4045,10 @@ function deepPartialify(schema) {
     return schema;
   }
 }
-__name(deepPartialify, "deepPartialify");
+_chunkEC6JY3PVcjs.__name.call(void 0, deepPartialify, "deepPartialify");
 var ZodObject = class _ZodObject extends ZodType {
   static {
-    __name(this, "ZodObject");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodObject");
   }
   constructor() {
     super(...arguments);
@@ -3996,9 +4135,10 @@ var ZodObject = class _ZodObject extends ZodType {
         const syncPairs = [];
         for (const pair of pairs) {
           const key = await pair.key;
+          const value = await pair.value;
           syncPairs.push({
             key,
-            value: await pair.value,
+            value,
             alwaysSet: pair.alwaysSet
           });
         }
@@ -4250,7 +4390,7 @@ ZodObject.lazycreate = (shape, params) => {
 };
 var ZodUnion = class extends ZodType {
   static {
-    __name(this, "ZodUnion");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodUnion");
   }
   _parse(input) {
     const { ctx } = this._processInputParams(input);
@@ -4274,7 +4414,7 @@ var ZodUnion = class extends ZodType {
       });
       return INVALID;
     }
-    __name(handleResults, "handleResults");
+    _chunkEC6JY3PVcjs.__name.call(void 0, handleResults, "handleResults");
     if (ctx.common.async) {
       return Promise.all(options.map(async (option) => {
         const childCtx = {
@@ -4343,7 +4483,7 @@ ZodUnion.create = (types, params) => {
     ...processCreateParams(params)
   });
 };
-var getDiscriminator = /* @__PURE__ */ __name((type) => {
+var getDiscriminator = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (type) => {
   if (type instanceof ZodLazy) {
     return getDiscriminator(type.schema);
   } else if (type instanceof ZodEffects) {
@@ -4353,20 +4493,30 @@ var getDiscriminator = /* @__PURE__ */ __name((type) => {
   } else if (type instanceof ZodEnum) {
     return type.options;
   } else if (type instanceof ZodNativeEnum) {
-    return Object.keys(type.enum);
+    return util.objectValues(type.enum);
   } else if (type instanceof ZodDefault) {
     return getDiscriminator(type._def.innerType);
   } else if (type instanceof ZodUndefined) {
     return [void 0];
   } else if (type instanceof ZodNull) {
     return [null];
+  } else if (type instanceof ZodOptional) {
+    return [void 0, ...getDiscriminator(type.unwrap())];
+  } else if (type instanceof ZodNullable) {
+    return [null, ...getDiscriminator(type.unwrap())];
+  } else if (type instanceof ZodBranded) {
+    return getDiscriminator(type.unwrap());
+  } else if (type instanceof ZodReadonly) {
+    return getDiscriminator(type.unwrap());
+  } else if (type instanceof ZodCatch) {
+    return getDiscriminator(type._def.innerType);
   } else {
-    return null;
+    return [];
   }
 }, "getDiscriminator");
 var ZodDiscriminatedUnion = class _ZodDiscriminatedUnion extends ZodType {
   static {
-    __name(this, "ZodDiscriminatedUnion");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodDiscriminatedUnion");
   }
   _parse(input) {
     const { ctx } = this._processInputParams(input);
@@ -4424,7 +4574,7 @@ var ZodDiscriminatedUnion = class _ZodDiscriminatedUnion extends ZodType {
     const optionsMap = /* @__PURE__ */ new Map();
     for (const type of options) {
       const discriminatorValues = getDiscriminator(type.shape[discriminator]);
-      if (!discriminatorValues) {
+      if (!discriminatorValues.length) {
         throw new Error(`A discriminator value for key \`${discriminator}\` could not be extracted from all schema options`);
       }
       for (const value of discriminatorValues) {
@@ -4481,14 +4631,14 @@ function mergeValues(a, b) {
     return { valid: false };
   }
 }
-__name(mergeValues, "mergeValues");
+_chunkEC6JY3PVcjs.__name.call(void 0, mergeValues, "mergeValues");
 var ZodIntersection = class extends ZodType {
   static {
-    __name(this, "ZodIntersection");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodIntersection");
   }
   _parse(input) {
     const { status, ctx } = this._processInputParams(input);
-    const handleParsed = /* @__PURE__ */ __name((parsedLeft, parsedRight) => {
+    const handleParsed = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (parsedLeft, parsedRight) => {
       if (isAborted(parsedLeft) || isAborted(parsedRight)) {
         return INVALID;
       }
@@ -4540,7 +4690,7 @@ ZodIntersection.create = (left, right, params) => {
 };
 var ZodTuple = class _ZodTuple extends ZodType {
   static {
-    __name(this, "ZodTuple");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodTuple");
   }
   _parse(input) {
     const { status, ctx } = this._processInputParams(input);
@@ -4610,7 +4760,7 @@ ZodTuple.create = (schemas, params) => {
 };
 var ZodRecord = class _ZodRecord extends ZodType {
   static {
-    __name(this, "ZodRecord");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodRecord");
   }
   get keySchema() {
     return this._def.keyType;
@@ -4634,7 +4784,8 @@ var ZodRecord = class _ZodRecord extends ZodType {
     for (const key in ctx.data) {
       pairs.push({
         key: keyType._parse(new ParseInputLazyPath(ctx, key, ctx.path, key)),
-        value: valueType._parse(new ParseInputLazyPath(ctx, ctx.data[key], ctx.path, key))
+        value: valueType._parse(new ParseInputLazyPath(ctx, ctx.data[key], ctx.path, key)),
+        alwaysSet: key in ctx.data
       });
     }
     if (ctx.common.async) {
@@ -4665,7 +4816,7 @@ var ZodRecord = class _ZodRecord extends ZodType {
 };
 var ZodMap = class extends ZodType {
   static {
-    __name(this, "ZodMap");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodMap");
   }
   get keySchema() {
     return this._def.keyType;
@@ -4734,7 +4885,7 @@ ZodMap.create = (keyType, valueType, params) => {
 };
 var ZodSet = class _ZodSet extends ZodType {
   static {
-    __name(this, "ZodSet");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodSet");
   }
   _parse(input) {
     const { status, ctx } = this._processInputParams(input);
@@ -4785,7 +4936,7 @@ var ZodSet = class _ZodSet extends ZodType {
       }
       return { status: status.value, value: parsedSet };
     }
-    __name(finalizeSet, "finalizeSet");
+    _chunkEC6JY3PVcjs.__name.call(void 0, finalizeSet, "finalizeSet");
     const elements = [...ctx.data.values()].map((item, i) => valueType._parse(new ParseInputLazyPath(ctx, item, ctx.path, i)));
     if (ctx.common.async) {
       return Promise.all(elements).then((elements2) => finalizeSet(elements2));
@@ -4823,7 +4974,7 @@ ZodSet.create = (valueType, params) => {
 };
 var ZodFunction = class _ZodFunction extends ZodType {
   static {
-    __name(this, "ZodFunction");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodFunction");
   }
   constructor() {
     super(...arguments);
@@ -4855,7 +5006,7 @@ var ZodFunction = class _ZodFunction extends ZodType {
         }
       });
     }
-    __name(makeArgsIssue, "makeArgsIssue");
+    _chunkEC6JY3PVcjs.__name.call(void 0, makeArgsIssue, "makeArgsIssue");
     function makeReturnsIssue(returns, error) {
       return makeIssue({
         data: returns,
@@ -4872,7 +5023,7 @@ var ZodFunction = class _ZodFunction extends ZodType {
         }
       });
     }
-    __name(makeReturnsIssue, "makeReturnsIssue");
+    _chunkEC6JY3PVcjs.__name.call(void 0, makeReturnsIssue, "makeReturnsIssue");
     const params = { errorMap: ctx.common.contextualErrorMap };
     const fn = ctx.data;
     if (this._def.returns instanceof ZodPromise) {
@@ -4943,7 +5094,7 @@ var ZodFunction = class _ZodFunction extends ZodType {
 };
 var ZodLazy = class extends ZodType {
   static {
-    __name(this, "ZodLazy");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodLazy");
   }
   get schema() {
     return this._def.getter();
@@ -4963,7 +5114,7 @@ ZodLazy.create = (getter, params) => {
 };
 var ZodLiteral = class extends ZodType {
   static {
-    __name(this, "ZodLiteral");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodLiteral");
   }
   _parse(input) {
     if (input.data !== this._def.value) {
@@ -4995,10 +5146,14 @@ function createZodEnum(values, params) {
     ...processCreateParams(params)
   });
 }
-__name(createZodEnum, "createZodEnum");
+_chunkEC6JY3PVcjs.__name.call(void 0, createZodEnum, "createZodEnum");
 var ZodEnum = class _ZodEnum extends ZodType {
   static {
-    __name(this, "ZodEnum");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodEnum");
+  }
+  constructor() {
+    super(...arguments);
+    _ZodEnum_cache.set(this, void 0);
   }
   _parse(input) {
     if (typeof input.data !== "string") {
@@ -5011,7 +5166,10 @@ var ZodEnum = class _ZodEnum extends ZodType {
       });
       return INVALID;
     }
-    if (this._def.values.indexOf(input.data) === -1) {
+    if (!__classPrivateFieldGet(this, _ZodEnum_cache, "f")) {
+      __classPrivateFieldSet(this, _ZodEnum_cache, new Set(this._def.values), "f");
+    }
+    if (!__classPrivateFieldGet(this, _ZodEnum_cache, "f").has(input.data)) {
       const ctx = this._getOrReturnCtx(input);
       const expectedValues = this._def.values;
       addIssueToContext(ctx, {
@@ -5047,17 +5205,28 @@ var ZodEnum = class _ZodEnum extends ZodType {
     }
     return enumValues;
   }
-  extract(values) {
-    return _ZodEnum.create(values);
+  extract(values, newDef = this._def) {
+    return _ZodEnum.create(values, {
+      ...this._def,
+      ...newDef
+    });
   }
-  exclude(values) {
-    return _ZodEnum.create(this.options.filter((opt) => !values.includes(opt)));
+  exclude(values, newDef = this._def) {
+    return _ZodEnum.create(this.options.filter((opt) => !values.includes(opt)), {
+      ...this._def,
+      ...newDef
+    });
   }
 };
+_ZodEnum_cache = /* @__PURE__ */ new WeakMap();
 ZodEnum.create = createZodEnum;
 var ZodNativeEnum = class extends ZodType {
   static {
-    __name(this, "ZodNativeEnum");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodNativeEnum");
+  }
+  constructor() {
+    super(...arguments);
+    _ZodNativeEnum_cache.set(this, void 0);
   }
   _parse(input) {
     const nativeEnumValues = util.getValidEnumValues(this._def.values);
@@ -5071,7 +5240,10 @@ var ZodNativeEnum = class extends ZodType {
       });
       return INVALID;
     }
-    if (nativeEnumValues.indexOf(input.data) === -1) {
+    if (!__classPrivateFieldGet(this, _ZodNativeEnum_cache, "f")) {
+      __classPrivateFieldSet(this, _ZodNativeEnum_cache, new Set(util.getValidEnumValues(this._def.values)), "f");
+    }
+    if (!__classPrivateFieldGet(this, _ZodNativeEnum_cache, "f").has(input.data)) {
       const expectedValues = util.objectValues(nativeEnumValues);
       addIssueToContext(ctx, {
         received: ctx.data,
@@ -5086,6 +5258,7 @@ var ZodNativeEnum = class extends ZodType {
     return this._def.values;
   }
 };
+_ZodNativeEnum_cache = /* @__PURE__ */ new WeakMap();
 ZodNativeEnum.create = (values, params) => {
   return new ZodNativeEnum({
     values,
@@ -5095,7 +5268,7 @@ ZodNativeEnum.create = (values, params) => {
 };
 var ZodPromise = class extends ZodType {
   static {
-    __name(this, "ZodPromise");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodPromise");
   }
   unwrap() {
     return this._def.type;
@@ -5128,7 +5301,7 @@ ZodPromise.create = (schema, params) => {
 };
 var ZodEffects = class extends ZodType {
   static {
-    __name(this, "ZodEffects");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodEffects");
   }
   innerType() {
     return this._def.schema;
@@ -5155,30 +5328,42 @@ var ZodEffects = class extends ZodType {
     checkCtx.addIssue = checkCtx.addIssue.bind(checkCtx);
     if (effect.type === "preprocess") {
       const processed = effect.transform(ctx.data, checkCtx);
-      if (ctx.common.issues.length) {
-        return {
-          status: "dirty",
-          value: ctx.data
-        };
-      }
       if (ctx.common.async) {
-        return Promise.resolve(processed).then((processed2) => {
-          return this._def.schema._parseAsync({
+        return Promise.resolve(processed).then(async (processed2) => {
+          if (status.value === "aborted")
+            return INVALID;
+          const result = await this._def.schema._parseAsync({
             data: processed2,
             path: ctx.path,
             parent: ctx
           });
+          if (result.status === "aborted")
+            return INVALID;
+          if (result.status === "dirty")
+            return DIRTY(result.value);
+          if (status.value === "dirty")
+            return DIRTY(result.value);
+          return result;
         });
       } else {
-        return this._def.schema._parseSync({
+        if (status.value === "aborted")
+          return INVALID;
+        const result = this._def.schema._parseSync({
           data: processed,
           path: ctx.path,
           parent: ctx
         });
+        if (result.status === "aborted")
+          return INVALID;
+        if (result.status === "dirty")
+          return DIRTY(result.value);
+        if (status.value === "dirty")
+          return DIRTY(result.value);
+        return result;
       }
     }
     if (effect.type === "refinement") {
-      const executeRefinement = /* @__PURE__ */ __name((acc) => {
+      const executeRefinement = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (acc) => {
         const result = effect.refinement(acc, checkCtx);
         if (ctx.common.async) {
           return Promise.resolve(result);
@@ -5255,7 +5440,7 @@ ZodEffects.createWithPreprocess = (preprocess, schema, params) => {
 };
 var ZodOptional = class extends ZodType {
   static {
-    __name(this, "ZodOptional");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodOptional");
   }
   _parse(input) {
     const parsedType = this._getType(input);
@@ -5277,7 +5462,7 @@ ZodOptional.create = (type, params) => {
 };
 var ZodNullable = class extends ZodType {
   static {
-    __name(this, "ZodNullable");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodNullable");
   }
   _parse(input) {
     const parsedType = this._getType(input);
@@ -5299,7 +5484,7 @@ ZodNullable.create = (type, params) => {
 };
 var ZodDefault = class extends ZodType {
   static {
-    __name(this, "ZodDefault");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodDefault");
   }
   _parse(input) {
     const { ctx } = this._processInputParams(input);
@@ -5327,7 +5512,7 @@ ZodDefault.create = (type, params) => {
 };
 var ZodCatch = class extends ZodType {
   static {
-    __name(this, "ZodCatch");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodCatch");
   }
   _parse(input) {
     const { ctx } = this._processInputParams(input);
@@ -5383,7 +5568,7 @@ ZodCatch.create = (type, params) => {
 };
 var ZodNaN = class extends ZodType {
   static {
-    __name(this, "ZodNaN");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodNaN");
   }
   _parse(input) {
     const parsedType = this._getType(input);
@@ -5408,7 +5593,7 @@ ZodNaN.create = (params) => {
 var BRAND = Symbol("zod_brand");
 var ZodBranded = class extends ZodType {
   static {
-    __name(this, "ZodBranded");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodBranded");
   }
   _parse(input) {
     const { ctx } = this._processInputParams(input);
@@ -5425,12 +5610,12 @@ var ZodBranded = class extends ZodType {
 };
 var ZodPipeline = class _ZodPipeline extends ZodType {
   static {
-    __name(this, "ZodPipeline");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodPipeline");
   }
   _parse(input) {
     const { status, ctx } = this._processInputParams(input);
     if (ctx.common.async) {
-      const handleAsync = /* @__PURE__ */ __name(async () => {
+      const handleAsync = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, async () => {
         const inResult = await this._def.in._parseAsync({
           data: ctx.data,
           path: ctx.path,
@@ -5483,14 +5668,20 @@ var ZodPipeline = class _ZodPipeline extends ZodType {
 };
 var ZodReadonly = class extends ZodType {
   static {
-    __name(this, "ZodReadonly");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ZodReadonly");
   }
   _parse(input) {
     const result = this._def.innerType._parse(input);
-    if (isValid(result)) {
-      result.value = Object.freeze(result.value);
-    }
-    return result;
+    const freeze = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (data) => {
+      if (isValid(data)) {
+        data.value = Object.freeze(data.value);
+      }
+      return data;
+    }, "freeze");
+    return isAsync(result) ? result.then((data) => freeze(data)) : freeze(result);
+  }
+  unwrap() {
+    return this._def.innerType;
   }
 };
 ZodReadonly.create = (type, params) => {
@@ -5500,7 +5691,7 @@ ZodReadonly.create = (type, params) => {
     ...processCreateParams(params)
   });
 };
-var custom = /* @__PURE__ */ __name((check, params = {}, fatal) => {
+function custom(check, params = {}, fatal) {
   if (check)
     return ZodAny.create().superRefine((data, ctx) => {
       var _a, _b;
@@ -5512,7 +5703,8 @@ var custom = /* @__PURE__ */ __name((check, params = {}, fatal) => {
       }
     });
   return ZodAny.create();
-}, "custom");
+}
+_chunkEC6JY3PVcjs.__name.call(void 0, custom, "custom");
 var late = {
   object: ZodObject.lazycreate
 };
@@ -5555,7 +5747,7 @@ var ZodFirstPartyTypeKind;
   ZodFirstPartyTypeKind2["ZodPipeline"] = "ZodPipeline";
   ZodFirstPartyTypeKind2["ZodReadonly"] = "ZodReadonly";
 })(ZodFirstPartyTypeKind || (ZodFirstPartyTypeKind = {}));
-var instanceOfType = /* @__PURE__ */ __name((cls, params = {
+var instanceOfType = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (cls, params = {
   message: `Input not instance of ${cls.name}`
 }) => custom((data) => data instanceof cls, params), "instanceOfType");
 var stringType = ZodString.create;
@@ -5592,9 +5784,9 @@ var optionalType = ZodOptional.create;
 var nullableType = ZodNullable.create;
 var preprocessType = ZodEffects.createWithPreprocess;
 var pipelineType = ZodPipeline.create;
-var ostring = /* @__PURE__ */ __name(() => stringType().optional(), "ostring");
-var onumber = /* @__PURE__ */ __name(() => numberType().optional(), "onumber");
-var oboolean = /* @__PURE__ */ __name(() => booleanType().optional(), "oboolean");
+var ostring = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => stringType().optional(), "ostring");
+var onumber = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => numberType().optional(), "onumber");
+var oboolean = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => booleanType().optional(), "oboolean");
 var coerce = {
   string: (arg) => ZodString.create({ ...arg, coerce: true }),
   number: (arg) => ZodNumber.create({ ...arg, coerce: true }),
@@ -5631,6 +5823,7 @@ var z = /* @__PURE__ */ Object.freeze({
   ZodParsedType,
   getParsedType,
   ZodType,
+  datetimeRegex,
   ZodString,
   ZodNumber,
   ZodBigInt,
@@ -5723,20 +5916,20 @@ var z = /* @__PURE__ */ Object.freeze({
 });
 
 // node_modules/@langchain/core/dist/runnables/base.js
-var import_p_retry3 = __toESM(require_p_retry(), 1);
+var import_p_retry3 = _chunkEC6JY3PVcjs.__toESM.call(void 0, require_p_retry(), 1);
 
 // node_modules/uuid/dist/esm-node/rng.js
-import crypto from "crypto";
+var _crypto = require('crypto'); var _crypto2 = _interopRequireDefault(_crypto);
 var rnds8Pool = new Uint8Array(256);
 var poolPtr = rnds8Pool.length;
 function rng() {
   if (poolPtr > rnds8Pool.length - 16) {
-    crypto.randomFillSync(rnds8Pool);
+    _crypto2.default.randomFillSync(rnds8Pool);
     poolPtr = 0;
   }
   return rnds8Pool.slice(poolPtr, poolPtr += 16);
 }
-__name(rng, "rng");
+_chunkEC6JY3PVcjs.__name.call(void 0, rng, "rng");
 
 // node_modules/uuid/dist/esm-node/regex.js
 var regex_default = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i;
@@ -5745,7 +5938,7 @@ var regex_default = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]
 function validate(uuid) {
   return typeof uuid === "string" && regex_default.test(uuid);
 }
-__name(validate, "validate");
+_chunkEC6JY3PVcjs.__name.call(void 0, validate, "validate");
 var validate_default = validate;
 
 // node_modules/uuid/dist/esm-node/stringify.js
@@ -5756,12 +5949,12 @@ for (let i = 0; i < 256; ++i) {
 function unsafeStringify(arr, offset = 0) {
   return byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + "-" + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + "-" + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + "-" + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + "-" + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]];
 }
-__name(unsafeStringify, "unsafeStringify");
+_chunkEC6JY3PVcjs.__name.call(void 0, unsafeStringify, "unsafeStringify");
 
 // node_modules/uuid/dist/esm-node/native.js
-import crypto2 from "crypto";
+
 var native_default = {
-  randomUUID: crypto2.randomUUID
+  randomUUID: _crypto2.default.randomUUID
 };
 
 // node_modules/uuid/dist/esm-node/v4.js
@@ -5782,16 +5975,16 @@ function v4(options, buf, offset) {
   }
   return unsafeStringify(rnds);
 }
-__name(v4, "v4");
+_chunkEC6JY3PVcjs.__name.call(void 0, v4, "v4");
 var v4_default = v4;
 
 // node_modules/@langchain/core/dist/utils/env.js
-var isBrowser = /* @__PURE__ */ __name(() => typeof window !== "undefined" && typeof window.document !== "undefined", "isBrowser");
-var isWebWorker = /* @__PURE__ */ __name(() => typeof globalThis === "object" && globalThis.constructor && globalThis.constructor.name === "DedicatedWorkerGlobalScope", "isWebWorker");
-var isJsDom = /* @__PURE__ */ __name(() => typeof window !== "undefined" && window.name === "nodejs" || typeof navigator !== "undefined" && (navigator.userAgent.includes("Node.js") || navigator.userAgent.includes("jsdom")), "isJsDom");
-var isDeno = /* @__PURE__ */ __name(() => typeof Deno !== "undefined", "isDeno");
-var isNode = /* @__PURE__ */ __name(() => typeof process !== "undefined" && typeof process.versions !== "undefined" && typeof process.versions.node !== "undefined" && !isDeno(), "isNode");
-var getEnv = /* @__PURE__ */ __name(() => {
+var isBrowser = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => typeof window !== "undefined" && typeof window.document !== "undefined", "isBrowser");
+var isWebWorker = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => typeof globalThis === "object" && globalThis.constructor && globalThis.constructor.name === "DedicatedWorkerGlobalScope", "isWebWorker");
+var isJsDom = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => typeof window !== "undefined" && window.name === "nodejs" || typeof navigator !== "undefined" && (navigator.userAgent.includes("Node.js") || navigator.userAgent.includes("jsdom")), "isJsDom");
+var isDeno = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => typeof Deno !== "undefined", "isDeno");
+var isNode = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => typeof process !== "undefined" && typeof process.versions !== "undefined" && typeof process.versions.node !== "undefined" && !isDeno(), "isNode");
+var getEnv = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => {
   let env;
   if (isBrowser()) {
     env = "browser";
@@ -5819,28 +6012,28 @@ async function getRuntimeEnvironment() {
   }
   return runtimeEnvironment;
 }
-__name(getRuntimeEnvironment, "getRuntimeEnvironment");
+_chunkEC6JY3PVcjs.__name.call(void 0, getRuntimeEnvironment, "getRuntimeEnvironment");
 function getEnvironmentVariable(name) {
   try {
     return typeof process !== "undefined" ? (
       // eslint-disable-next-line no-process-env
-      process.env?.[name]
+      _optionalChain([process, 'access', _9 => _9.env, 'optionalAccess', _10 => _10[name]])
     ) : void 0;
   } catch (e) {
     return void 0;
   }
 }
-__name(getEnvironmentVariable, "getEnvironmentVariable");
+_chunkEC6JY3PVcjs.__name.call(void 0, getEnvironmentVariable, "getEnvironmentVariable");
 
 // node_modules/@langchain/core/dist/callbacks/base.js
 var BaseCallbackHandlerMethodsClass = class {
   static {
-    __name(this, "BaseCallbackHandlerMethodsClass");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "BaseCallbackHandlerMethodsClass");
   }
 };
 var BaseCallbackHandler = class _BaseCallbackHandler extends BaseCallbackHandlerMethodsClass {
   static {
-    __name(this, "BaseCallbackHandler");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "BaseCallbackHandler");
   }
   get lc_namespace() {
     return ["langchain_core", "callbacks", this.name];
@@ -5918,11 +6111,11 @@ var BaseCallbackHandler = class _BaseCallbackHandler extends BaseCallbackHandler
     });
     this.lc_kwargs = input || {};
     if (input) {
-      this.ignoreLLM = input.ignoreLLM ?? this.ignoreLLM;
-      this.ignoreChain = input.ignoreChain ?? this.ignoreChain;
-      this.ignoreAgent = input.ignoreAgent ?? this.ignoreAgent;
-      this.ignoreRetriever = input.ignoreRetriever ?? this.ignoreRetriever;
-      this.awaitHandlers = input._awaitHandler ?? this.awaitHandlers;
+      this.ignoreLLM = _nullishCoalesce(input.ignoreLLM, () => ( this.ignoreLLM));
+      this.ignoreChain = _nullishCoalesce(input.ignoreChain, () => ( this.ignoreChain));
+      this.ignoreAgent = _nullishCoalesce(input.ignoreAgent, () => ( this.ignoreAgent));
+      this.ignoreRetriever = _nullishCoalesce(input.ignoreRetriever, () => ( this.ignoreRetriever));
+      this.awaitHandlers = _nullishCoalesce(input._awaitHandler, () => ( this.awaitHandlers));
     }
   }
   copy() {
@@ -5937,7 +6130,7 @@ var BaseCallbackHandler = class _BaseCallbackHandler extends BaseCallbackHandler
   static fromMethods(methods) {
     class Handler extends _BaseCallbackHandler {
       static {
-        __name(this, "Handler");
+        _chunkEC6JY3PVcjs.__name.call(void 0, this, "Handler");
       }
       constructor() {
         super();
@@ -5955,24 +6148,24 @@ var BaseCallbackHandler = class _BaseCallbackHandler extends BaseCallbackHandler
 };
 
 // node_modules/@langchain/core/dist/tracers/console.js
-var import_ansi_styles = __toESM(require_ansi_styles(), 1);
+var import_ansi_styles = _chunkEC6JY3PVcjs.__toESM.call(void 0, require_ansi_styles(), 1);
 
 // node_modules/@langchain/core/dist/tracers/base.js
 function _coerceToDict(value, defaultKey) {
   return value && !Array.isArray(value) && typeof value === "object" ? value : { [defaultKey]: value };
 }
-__name(_coerceToDict, "_coerceToDict");
+_chunkEC6JY3PVcjs.__name.call(void 0, _coerceToDict, "_coerceToDict");
 function stripNonAlphanumeric(input) {
   return input.replace(/[-:.]/g, "");
 }
-__name(stripNonAlphanumeric, "stripNonAlphanumeric");
+_chunkEC6JY3PVcjs.__name.call(void 0, stripNonAlphanumeric, "stripNonAlphanumeric");
 function convertToDottedOrderFormat(epoch, runId) {
   return stripNonAlphanumeric(`${new Date(epoch).toISOString().slice(0, -1)}000Z`) + runId;
 }
-__name(convertToDottedOrderFormat, "convertToDottedOrderFormat");
+_chunkEC6JY3PVcjs.__name.call(void 0, convertToDottedOrderFormat, "convertToDottedOrderFormat");
 var BaseTracer = class extends BaseCallbackHandler {
   static {
-    __name(this, "BaseTracer");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "BaseTracer");
   }
   constructor(_fields) {
     super(...arguments);
@@ -5988,7 +6181,7 @@ var BaseTracer = class extends BaseCallbackHandler {
   }
   stringifyError(error) {
     if (error instanceof Error) {
-      return error.message + (error?.stack ? `
+      return error.message + (_optionalChain([error, 'optionalAccess', _11 => _11.stack]) ? `
 
 ${error.stack}` : "");
     }
@@ -6023,7 +6216,7 @@ ${error.stack}` : "");
       storedRun.dotted_order = currentDottedOrder;
     }
     this.runMap.set(storedRun.id, storedRun);
-    await this.onRunCreate?.(storedRun);
+    await _optionalChain([this, 'access', _12 => _12.onRunCreate, 'optionalCall', _13 => _13(storedRun)]);
   }
   async _endTrace(run) {
     const parentRun = run.parent_run_id !== void 0 && this.runMap.get(run.parent_run_id);
@@ -6033,7 +6226,7 @@ ${error.stack}` : "");
       await this.persistRun(run);
     }
     this.runMap.delete(run.id);
-    await this.onRunUpdate?.(run);
+    await _optionalChain([this, 'access', _14 => _14.onRunUpdate, 'optionalCall', _15 => _15(run)]);
   }
   _getExecutionOrder(parentRunId) {
     const parentRun = parentRunId !== void 0 && this.runMap.get(parentRunId);
@@ -6048,7 +6241,7 @@ ${error.stack}` : "");
     const finalExtraParams = metadata ? { ...extraParams, metadata } : extraParams;
     const run = {
       id: runId,
-      name: name ?? llm.id[llm.id.length - 1],
+      name: _nullishCoalesce(name, () => ( llm.id[llm.id.length - 1])),
       parent_run_id: parentRunId,
       start_time,
       serialized: llm,
@@ -6063,11 +6256,11 @@ ${error.stack}` : "");
       child_runs: [],
       child_execution_order: execution_order,
       run_type: "llm",
-      extra: finalExtraParams ?? {},
+      extra: _nullishCoalesce(finalExtraParams, () => ( {})),
       tags: tags || []
     };
     await this._startTrace(run);
-    await this.onLLMStart?.(run);
+    await _optionalChain([this, 'access', _16 => _16.onLLMStart, 'optionalCall', _17 => _17(run)]);
     return run;
   }
   async handleChatModelStart(llm, messages, runId, parentRunId, extraParams, tags, metadata, name) {
@@ -6076,7 +6269,7 @@ ${error.stack}` : "");
     const finalExtraParams = metadata ? { ...extraParams, metadata } : extraParams;
     const run = {
       id: runId,
-      name: name ?? llm.id[llm.id.length - 1],
+      name: _nullishCoalesce(name, () => ( llm.id[llm.id.length - 1])),
       parent_run_id: parentRunId,
       start_time,
       serialized: llm,
@@ -6091,16 +6284,16 @@ ${error.stack}` : "");
       child_runs: [],
       child_execution_order: execution_order,
       run_type: "llm",
-      extra: finalExtraParams ?? {},
+      extra: _nullishCoalesce(finalExtraParams, () => ( {})),
       tags: tags || []
     };
     await this._startTrace(run);
-    await this.onLLMStart?.(run);
+    await _optionalChain([this, 'access', _18 => _18.onLLMStart, 'optionalCall', _19 => _19(run)]);
     return run;
   }
   async handleLLMEnd(output, runId) {
     const run = this.runMap.get(runId);
-    if (!run || run?.run_type !== "llm") {
+    if (!run || _optionalChain([run, 'optionalAccess', _20 => _20.run_type]) !== "llm") {
       throw new Error("No LLM run to end.");
     }
     run.end_time = Date.now();
@@ -6109,13 +6302,13 @@ ${error.stack}` : "");
       name: "end",
       time: new Date(run.end_time).toISOString()
     });
-    await this.onLLMEnd?.(run);
+    await _optionalChain([this, 'access', _21 => _21.onLLMEnd, 'optionalCall', _22 => _22(run)]);
     await this._endTrace(run);
     return run;
   }
   async handleLLMError(error, runId) {
     const run = this.runMap.get(runId);
-    if (!run || run?.run_type !== "llm") {
+    if (!run || _optionalChain([run, 'optionalAccess', _23 => _23.run_type]) !== "llm") {
       throw new Error("No LLM run to end.");
     }
     run.end_time = Date.now();
@@ -6124,7 +6317,7 @@ ${error.stack}` : "");
       name: "error",
       time: new Date(run.end_time).toISOString()
     });
-    await this.onLLMError?.(run);
+    await _optionalChain([this, 'access', _24 => _24.onLLMError, 'optionalCall', _25 => _25(run)]);
     await this._endTrace(run);
     return run;
   }
@@ -6133,7 +6326,7 @@ ${error.stack}` : "");
     const start_time = Date.now();
     const run = {
       id: runId,
-      name: name ?? chain.id[chain.id.length - 1],
+      name: _nullishCoalesce(name, () => ( chain.id[chain.id.length - 1])),
       parent_run_id: parentRunId,
       start_time,
       serialized: chain,
@@ -6146,13 +6339,13 @@ ${error.stack}` : "");
       inputs,
       execution_order,
       child_execution_order: execution_order,
-      run_type: runType ?? "chain",
+      run_type: _nullishCoalesce(runType, () => ( "chain")),
       child_runs: [],
       extra: metadata ? { metadata } : {},
       tags: tags || []
     };
     await this._startTrace(run);
-    await this.onChainStart?.(run);
+    await _optionalChain([this, 'access', _26 => _26.onChainStart, 'optionalCall', _27 => _27(run)]);
     return run;
   }
   async handleChainEnd(outputs, runId, _parentRunId, _tags, kwargs) {
@@ -6166,10 +6359,10 @@ ${error.stack}` : "");
       name: "end",
       time: new Date(run.end_time).toISOString()
     });
-    if (kwargs?.inputs !== void 0) {
+    if (_optionalChain([kwargs, 'optionalAccess', _28 => _28.inputs]) !== void 0) {
       run.inputs = _coerceToDict(kwargs.inputs, "input");
     }
-    await this.onChainEnd?.(run);
+    await _optionalChain([this, 'access', _29 => _29.onChainEnd, 'optionalCall', _30 => _30(run)]);
     await this._endTrace(run);
     return run;
   }
@@ -6184,10 +6377,10 @@ ${error.stack}` : "");
       name: "error",
       time: new Date(run.end_time).toISOString()
     });
-    if (kwargs?.inputs !== void 0) {
+    if (_optionalChain([kwargs, 'optionalAccess', _31 => _31.inputs]) !== void 0) {
       run.inputs = _coerceToDict(kwargs.inputs, "input");
     }
-    await this.onChainError?.(run);
+    await _optionalChain([this, 'access', _32 => _32.onChainError, 'optionalCall', _33 => _33(run)]);
     await this._endTrace(run);
     return run;
   }
@@ -6196,7 +6389,7 @@ ${error.stack}` : "");
     const start_time = Date.now();
     const run = {
       id: runId,
-      name: name ?? tool.id[tool.id.length - 1],
+      name: _nullishCoalesce(name, () => ( tool.id[tool.id.length - 1])),
       parent_run_id: parentRunId,
       start_time,
       serialized: tool,
@@ -6215,12 +6408,12 @@ ${error.stack}` : "");
       tags: tags || []
     };
     await this._startTrace(run);
-    await this.onToolStart?.(run);
+    await _optionalChain([this, 'access', _34 => _34.onToolStart, 'optionalCall', _35 => _35(run)]);
     return run;
   }
   async handleToolEnd(output, runId) {
     const run = this.runMap.get(runId);
-    if (!run || run?.run_type !== "tool") {
+    if (!run || _optionalChain([run, 'optionalAccess', _36 => _36.run_type]) !== "tool") {
       throw new Error("No tool run to end");
     }
     run.end_time = Date.now();
@@ -6229,13 +6422,13 @@ ${error.stack}` : "");
       name: "end",
       time: new Date(run.end_time).toISOString()
     });
-    await this.onToolEnd?.(run);
+    await _optionalChain([this, 'access', _37 => _37.onToolEnd, 'optionalCall', _38 => _38(run)]);
     await this._endTrace(run);
     return run;
   }
   async handleToolError(error, runId) {
     const run = this.runMap.get(runId);
-    if (!run || run?.run_type !== "tool") {
+    if (!run || _optionalChain([run, 'optionalAccess', _39 => _39.run_type]) !== "tool") {
       throw new Error("No tool run to end");
     }
     run.end_time = Date.now();
@@ -6244,13 +6437,13 @@ ${error.stack}` : "");
       name: "error",
       time: new Date(run.end_time).toISOString()
     });
-    await this.onToolError?.(run);
+    await _optionalChain([this, 'access', _40 => _40.onToolError, 'optionalCall', _41 => _41(run)]);
     await this._endTrace(run);
     return run;
   }
   async handleAgentAction(action, runId) {
     const run = this.runMap.get(runId);
-    if (!run || run?.run_type !== "chain") {
+    if (!run || _optionalChain([run, 'optionalAccess', _42 => _42.run_type]) !== "chain") {
       return;
     }
     const agentRun = run;
@@ -6261,11 +6454,11 @@ ${error.stack}` : "");
       time: (/* @__PURE__ */ new Date()).toISOString(),
       kwargs: { action }
     });
-    await this.onAgentAction?.(run);
+    await _optionalChain([this, 'access', _43 => _43.onAgentAction, 'optionalCall', _44 => _44(run)]);
   }
   async handleAgentEnd(action, runId) {
     const run = this.runMap.get(runId);
-    if (!run || run?.run_type !== "chain") {
+    if (!run || _optionalChain([run, 'optionalAccess', _45 => _45.run_type]) !== "chain") {
       return;
     }
     run.events.push({
@@ -6273,14 +6466,14 @@ ${error.stack}` : "");
       time: (/* @__PURE__ */ new Date()).toISOString(),
       kwargs: { action }
     });
-    await this.onAgentEnd?.(run);
+    await _optionalChain([this, 'access', _46 => _46.onAgentEnd, 'optionalCall', _47 => _47(run)]);
   }
   async handleRetrieverStart(retriever, query, runId, parentRunId, tags, metadata, name) {
     const execution_order = this._getExecutionOrder(parentRunId);
     const start_time = Date.now();
     const run = {
       id: runId,
-      name: name ?? retriever.id[retriever.id.length - 1],
+      name: _nullishCoalesce(name, () => ( retriever.id[retriever.id.length - 1])),
       parent_run_id: parentRunId,
       start_time,
       serialized: retriever,
@@ -6299,12 +6492,12 @@ ${error.stack}` : "");
       tags: tags || []
     };
     await this._startTrace(run);
-    await this.onRetrieverStart?.(run);
+    await _optionalChain([this, 'access', _48 => _48.onRetrieverStart, 'optionalCall', _49 => _49(run)]);
     return run;
   }
   async handleRetrieverEnd(documents, runId) {
     const run = this.runMap.get(runId);
-    if (!run || run?.run_type !== "retriever") {
+    if (!run || _optionalChain([run, 'optionalAccess', _50 => _50.run_type]) !== "retriever") {
       throw new Error("No retriever run to end");
     }
     run.end_time = Date.now();
@@ -6313,13 +6506,13 @@ ${error.stack}` : "");
       name: "end",
       time: new Date(run.end_time).toISOString()
     });
-    await this.onRetrieverEnd?.(run);
+    await _optionalChain([this, 'access', _51 => _51.onRetrieverEnd, 'optionalCall', _52 => _52(run)]);
     await this._endTrace(run);
     return run;
   }
   async handleRetrieverError(error, runId) {
     const run = this.runMap.get(runId);
-    if (!run || run?.run_type !== "retriever") {
+    if (!run || _optionalChain([run, 'optionalAccess', _53 => _53.run_type]) !== "retriever") {
       throw new Error("No retriever run to end");
     }
     run.end_time = Date.now();
@@ -6328,13 +6521,13 @@ ${error.stack}` : "");
       name: "error",
       time: new Date(run.end_time).toISOString()
     });
-    await this.onRetrieverError?.(run);
+    await _optionalChain([this, 'access', _54 => _54.onRetrieverError, 'optionalCall', _55 => _55(run)]);
     await this._endTrace(run);
     return run;
   }
   async handleText(text, runId) {
     const run = this.runMap.get(runId);
-    if (!run || run?.run_type !== "chain") {
+    if (!run || _optionalChain([run, 'optionalAccess', _56 => _56.run_type]) !== "chain") {
       return;
     }
     run.events.push({
@@ -6342,19 +6535,19 @@ ${error.stack}` : "");
       time: (/* @__PURE__ */ new Date()).toISOString(),
       kwargs: { text }
     });
-    await this.onText?.(run);
+    await _optionalChain([this, 'access', _57 => _57.onText, 'optionalCall', _58 => _58(run)]);
   }
   async handleLLMNewToken(token, idx, runId, _parentRunId, _tags, fields) {
     const run = this.runMap.get(runId);
-    if (!run || run?.run_type !== "llm") {
+    if (!run || _optionalChain([run, 'optionalAccess', _59 => _59.run_type]) !== "llm") {
       throw new Error(`Invalid "runId" provided to "handleLLMNewToken" callback.`);
     }
     run.events.push({
       name: "new_token",
       time: (/* @__PURE__ */ new Date()).toISOString(),
-      kwargs: { token, idx, chunk: fields?.chunk }
+      kwargs: { token, idx, chunk: _optionalChain([fields, 'optionalAccess', _60 => _60.chunk]) }
     });
-    await this.onLLMNewToken?.(run, token, { chunk: fields?.chunk });
+    await _optionalChain([this, 'access', _61 => _61.onLLMNewToken, 'optionalCall', _62 => _62(run, token, { chunk: _optionalChain([fields, 'optionalAccess', _63 => _63.chunk]) })]);
     return run;
   }
 };
@@ -6363,7 +6556,7 @@ ${error.stack}` : "");
 function wrap(style, text) {
   return `${style.open}${text}${style.close}`;
 }
-__name(wrap, "wrap");
+_chunkEC6JY3PVcjs.__name.call(void 0, wrap, "wrap");
 function tryJsonStringify(obj, fallback) {
   try {
     return JSON.stringify(obj, null, 2);
@@ -6371,7 +6564,7 @@ function tryJsonStringify(obj, fallback) {
     return fallback;
   }
 }
-__name(tryJsonStringify, "tryJsonStringify");
+_chunkEC6JY3PVcjs.__name.call(void 0, tryJsonStringify, "tryJsonStringify");
 function elapsed(run) {
   if (!run.end_time)
     return "";
@@ -6381,11 +6574,11 @@ function elapsed(run) {
   }
   return `${(elapsed2 / 1e3).toFixed(2)}s`;
 }
-__name(elapsed, "elapsed");
+_chunkEC6JY3PVcjs.__name.call(void 0, elapsed, "elapsed");
 var { color } = import_ansi_styles.default;
 var ConsoleCallbackHandler = class extends BaseTracer {
   static {
-    __name(this, "ConsoleCallbackHandler");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "ConsoleCallbackHandler");
   }
   constructor() {
     super(...arguments);
@@ -6502,7 +6695,7 @@ var ConsoleCallbackHandler = class extends BaseTracer {
    */
   onToolStart(run) {
     const crumbs = this.getBreadcrumbs(run);
-    console.log(`${wrap(color.green, "[tool/start]")} [${crumbs}] Entering Tool run with input: "${run.inputs.input?.trim()}"`);
+    console.log(`${wrap(color.green, "[tool/start]")} [${crumbs}] Entering Tool run with input: "${_optionalChain([run, 'access', _64 => _64.inputs, 'access', _65 => _65.input, 'optionalAccess', _66 => _66.trim, 'call', _67 => _67()])}"`);
   }
   /**
    * Method used to log the end of a tool run.
@@ -6511,7 +6704,7 @@ var ConsoleCallbackHandler = class extends BaseTracer {
    */
   onToolEnd(run) {
     const crumbs = this.getBreadcrumbs(run);
-    console.log(`${wrap(color.cyan, "[tool/end]")} [${crumbs}] [${elapsed(run)}] Exiting Tool run with output: "${run.outputs?.output?.trim()}"`);
+    console.log(`${wrap(color.cyan, "[tool/end]")} [${crumbs}] [${elapsed(run)}] Exiting Tool run with output: "${_optionalChain([run, 'access', _68 => _68.outputs, 'optionalAccess', _69 => _69.output, 'optionalAccess', _70 => _70.trim, 'call', _71 => _71()])}"`);
   }
   /**
    * Method used to log any errors of a tool run.
@@ -6562,8 +6755,8 @@ var ConsoleCallbackHandler = class extends BaseTracer {
 };
 
 // node_modules/langsmith/dist/utils/async_caller.js
-var import_p_retry = __toESM(require_p_retry(), 1);
-var import_p_queue = __toESM(require_dist(), 1);
+var import_p_retry = _chunkEC6JY3PVcjs.__toESM.call(void 0, require_p_retry(), 1);
+var import_p_queue = _chunkEC6JY3PVcjs.__toESM.call(void 0, require_dist(), 1);
 var STATUS_NO_RETRY = [
   400,
   401,
@@ -6581,7 +6774,7 @@ var STATUS_IGNORE = [
 ];
 var AsyncCaller = class {
   static {
-    __name(this, "AsyncCaller");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "AsyncCaller");
   }
   constructor(params) {
     Object.defineProperty(this, "maxConcurrency", {
@@ -6608,11 +6801,11 @@ var AsyncCaller = class {
       writable: true,
       value: void 0
     });
-    this.maxConcurrency = params.maxConcurrency ?? Infinity;
-    this.maxRetries = params.maxRetries ?? 6;
+    this.maxConcurrency = _nullishCoalesce(params.maxConcurrency, () => ( Infinity));
+    this.maxRetries = _nullishCoalesce(params.maxRetries, () => ( 6));
     const PQueue = "default" in import_p_queue.default ? import_p_queue.default.default : import_p_queue.default;
     this.queue = new PQueue({ concurrency: this.maxConcurrency });
-    this.onFailedResponseHook = params?.onFailedResponseHook;
+    this.onFailedResponseHook = _optionalChain([params, 'optionalAccess', _72 => _72.onFailedResponseHook]);
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   call(callable, ...args) {
@@ -6628,11 +6821,11 @@ var AsyncCaller = class {
         if (error.message.startsWith("Cancel") || error.message.startsWith("TimeoutError") || error.message.startsWith("AbortError")) {
           throw error;
         }
-        if (error?.code === "ECONNABORTED") {
+        if (_optionalChain([error, 'optionalAccess', _73 => _73.code]) === "ECONNABORTED") {
           throw error;
         }
-        const response = error?.response;
-        const status = response?.status;
+        const response = _optionalChain([error, 'optionalAccess', _74 => _74.response]);
+        const status = _optionalChain([response, 'optionalAccess', _75 => _75.status]);
         if (status) {
           if (STATUS_NO_RETRY.includes(+status)) {
             throw error;
@@ -6656,9 +6849,9 @@ var AsyncCaller = class {
       return Promise.race([
         this.call(callable, ...args),
         new Promise((_, reject) => {
-          options.signal?.addEventListener("abort", () => {
+          _optionalChain([options, 'access', _76 => _76.signal, 'optionalAccess', _77 => _77.addEventListener, 'call', _78 => _78("abort", () => {
             reject(new Error("AbortError"));
-          });
+          })]);
         })
       ]);
     }
@@ -6671,29 +6864,29 @@ var AsyncCaller = class {
 
 // node_modules/langsmith/dist/utils/messages.js
 function isLangChainMessage(message) {
-  return typeof message?._getType === "function";
+  return typeof _optionalChain([message, 'optionalAccess', _79 => _79._getType]) === "function";
 }
-__name(isLangChainMessage, "isLangChainMessage");
+_chunkEC6JY3PVcjs.__name.call(void 0, isLangChainMessage, "isLangChainMessage");
 function convertLangChainMessageToExample(message) {
   const converted = {
     type: message._getType(),
     data: { content: message.content }
   };
-  if (message?.additional_kwargs && Object.keys(message.additional_kwargs).length > 0) {
+  if (_optionalChain([message, 'optionalAccess', _80 => _80.additional_kwargs]) && Object.keys(message.additional_kwargs).length > 0) {
     converted.data.additional_kwargs = { ...message.additional_kwargs };
   }
   return converted;
 }
-__name(convertLangChainMessageToExample, "convertLangChainMessageToExample");
+_chunkEC6JY3PVcjs.__name.call(void 0, convertLangChainMessageToExample, "convertLangChainMessageToExample");
 
 // node_modules/langsmith/dist/utils/env.js
 var globalEnv;
-var isBrowser2 = /* @__PURE__ */ __name(() => typeof window !== "undefined" && typeof window.document !== "undefined", "isBrowser");
-var isWebWorker2 = /* @__PURE__ */ __name(() => typeof globalThis === "object" && globalThis.constructor && globalThis.constructor.name === "DedicatedWorkerGlobalScope", "isWebWorker");
-var isJsDom2 = /* @__PURE__ */ __name(() => typeof window !== "undefined" && window.name === "nodejs" || typeof navigator !== "undefined" && (navigator.userAgent.includes("Node.js") || navigator.userAgent.includes("jsdom")), "isJsDom");
-var isDeno2 = /* @__PURE__ */ __name(() => typeof Deno !== "undefined", "isDeno");
-var isNode2 = /* @__PURE__ */ __name(() => typeof process !== "undefined" && typeof process.versions !== "undefined" && typeof process.versions.node !== "undefined" && !isDeno2(), "isNode");
-var getEnv2 = /* @__PURE__ */ __name(() => {
+var isBrowser2 = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => typeof window !== "undefined" && typeof window.document !== "undefined", "isBrowser");
+var isWebWorker2 = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => typeof globalThis === "object" && globalThis.constructor && globalThis.constructor.name === "DedicatedWorkerGlobalScope", "isWebWorker");
+var isJsDom2 = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => typeof window !== "undefined" && window.name === "nodejs" || typeof navigator !== "undefined" && (navigator.userAgent.includes("Node.js") || navigator.userAgent.includes("jsdom")), "isJsDom");
+var isDeno2 = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => typeof Deno !== "undefined", "isDeno");
+var isNode2 = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => typeof process !== "undefined" && typeof process.versions !== "undefined" && typeof process.versions.node !== "undefined" && !isDeno2(), "isNode");
+var getEnv2 = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => {
   if (globalEnv) {
     return globalEnv;
   }
@@ -6727,7 +6920,7 @@ async function getRuntimeEnvironment2() {
   }
   return runtimeEnvironment2;
 }
-__name(getRuntimeEnvironment2, "getRuntimeEnvironment");
+_chunkEC6JY3PVcjs.__name.call(void 0, getRuntimeEnvironment2, "getRuntimeEnvironment");
 function getLangChainEnvVarsMetadata() {
   const allEnvVars = getEnvironmentVariables() || {};
   const envVars = {};
@@ -6749,7 +6942,7 @@ function getLangChainEnvVarsMetadata() {
   }
   return envVars;
 }
-__name(getLangChainEnvVarsMetadata, "getLangChainEnvVarsMetadata");
+_chunkEC6JY3PVcjs.__name.call(void 0, getLangChainEnvVarsMetadata, "getLangChainEnvVarsMetadata");
 function getEnvironmentVariables() {
   try {
     if (typeof process !== "undefined" && process.env) {
@@ -6763,18 +6956,18 @@ function getEnvironmentVariables() {
     return void 0;
   }
 }
-__name(getEnvironmentVariables, "getEnvironmentVariables");
+_chunkEC6JY3PVcjs.__name.call(void 0, getEnvironmentVariables, "getEnvironmentVariables");
 function getEnvironmentVariable2(name) {
   try {
     return typeof process !== "undefined" ? (
       // eslint-disable-next-line no-process-env
-      process.env?.[name]
+      _optionalChain([process, 'access', _81 => _81.env, 'optionalAccess', _82 => _82[name]])
     ) : void 0;
   } catch (e) {
     return void 0;
   }
 }
-__name(getEnvironmentVariable2, "getEnvironmentVariable");
+_chunkEC6JY3PVcjs.__name.call(void 0, getEnvironmentVariable2, "getEnvironmentVariable");
 var cachedCommitSHAs;
 function getShas() {
   if (cachedCommitSHAs !== void 0) {
@@ -6811,32 +7004,32 @@ function getShas() {
   cachedCommitSHAs = shas;
   return shas;
 }
-__name(getShas, "getShas");
+_chunkEC6JY3PVcjs.__name.call(void 0, getShas, "getShas");
 
 // node_modules/langsmith/dist/client.js
 async function mergeRuntimeEnvIntoRunCreates(runs) {
   const runtimeEnv = await getRuntimeEnvironment2();
   const envVars = getLangChainEnvVarsMetadata();
   return runs.map((run) => {
-    const extra = run.extra ?? {};
+    const extra = _nullishCoalesce(run.extra, () => ( {}));
     const metadata = extra.metadata;
     run.extra = {
       ...extra,
       runtime: {
         ...runtimeEnv,
-        ...extra?.runtime
+        ..._optionalChain([extra, 'optionalAccess', _83 => _83.runtime])
       },
       metadata: {
         ...envVars,
-        ...envVars.revision_id || run.revision_id ? { revision_id: run.revision_id ?? envVars.revision_id } : {},
+        ...envVars.revision_id || run.revision_id ? { revision_id: _nullishCoalesce(run.revision_id, () => ( envVars.revision_id)) } : {},
         ...metadata
       }
     };
     return run;
   });
 }
-__name(mergeRuntimeEnvIntoRunCreates, "mergeRuntimeEnvIntoRunCreates");
-var getTracingSamplingRate = /* @__PURE__ */ __name(() => {
+_chunkEC6JY3PVcjs.__name.call(void 0, mergeRuntimeEnvIntoRunCreates, "mergeRuntimeEnvIntoRunCreates");
+var getTracingSamplingRate = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, () => {
   const samplingRateStr = getEnvironmentVariable2("LANGCHAIN_TRACING_SAMPLING_RATE");
   if (samplingRateStr === void 0) {
     return void 0;
@@ -6847,12 +7040,12 @@ var getTracingSamplingRate = /* @__PURE__ */ __name(() => {
   }
   return samplingRate;
 }, "getTracingSamplingRate");
-var isLocalhost = /* @__PURE__ */ __name((url) => {
+var isLocalhost = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (url) => {
   const strippedUrl = url.replace("http://", "").replace("https://", "");
   const hostname = strippedUrl.split("/")[0].split(":")[0];
   return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
 }, "isLocalhost");
-var raiseForStatus = /* @__PURE__ */ __name(async (response, operation) => {
+var raiseForStatus = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, async (response, operation) => {
   const body = await response.text();
   if (!response.ok) {
     throw new Error(`Failed to ${operation}: ${response.status} ${response.statusText} ${body}`);
@@ -6865,23 +7058,23 @@ async function toArray(iterable) {
   }
   return result;
 }
-__name(toArray, "toArray");
+_chunkEC6JY3PVcjs.__name.call(void 0, toArray, "toArray");
 function trimQuotes(str) {
   if (str === void 0) {
     return void 0;
   }
   return str.trim().replace(/^"(.*)"$/, "$1").replace(/^'(.*)'$/, "$1");
 }
-__name(trimQuotes, "trimQuotes");
+_chunkEC6JY3PVcjs.__name.call(void 0, trimQuotes, "trimQuotes");
 function assertUuid(str) {
   if (!validate_default(str)) {
     throw new Error(`Invalid UUID: ${str}`);
   }
 }
-__name(assertUuid, "assertUuid");
-var handle429 = /* @__PURE__ */ __name(async (response) => {
-  if (response?.status === 429) {
-    const retryAfter = parseInt(response.headers.get("retry-after") ?? "30", 10) * 1e3;
+_chunkEC6JY3PVcjs.__name.call(void 0, assertUuid, "assertUuid");
+var handle429 = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, async (response) => {
+  if (_optionalChain([response, 'optionalAccess', _84 => _84.status]) === 429) {
+    const retryAfter = parseInt(_nullishCoalesce(response.headers.get("retry-after"), () => ( "30")), 10) * 1e3;
     if (retryAfter > 0) {
       await new Promise((resolve) => setTimeout(resolve, retryAfter));
       return true;
@@ -6891,7 +7084,7 @@ var handle429 = /* @__PURE__ */ __name(async (response) => {
 }, "handle429");
 var Queue = class {
   static {
-    __name(this, "Queue");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "Queue");
   }
   constructor() {
     Object.defineProperty(this, "items", {
@@ -6928,7 +7121,7 @@ var Queue = class {
 var DEFAULT_BATCH_SIZE_LIMIT_BYTES = 20971520;
 var Client = class _Client {
   static {
-    __name(this, "Client");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "Client");
   }
   constructor(config = {}) {
     Object.defineProperty(this, "apiKey", {
@@ -7047,23 +7240,23 @@ var Client = class _Client {
     });
     const defaultConfig = _Client.getDefaultClientConfig();
     this.tracingSampleRate = getTracingSamplingRate();
-    this.apiUrl = trimQuotes(config.apiUrl ?? defaultConfig.apiUrl) ?? "";
-    this.apiKey = trimQuotes(config.apiKey ?? defaultConfig.apiKey);
-    this.webUrl = trimQuotes(config.webUrl ?? defaultConfig.webUrl);
-    this.timeout_ms = config.timeout_ms ?? 12e3;
-    this.caller = new AsyncCaller(config.callerOptions ?? {});
+    this.apiUrl = _nullishCoalesce(trimQuotes(_nullishCoalesce(config.apiUrl, () => ( defaultConfig.apiUrl))), () => ( ""));
+    this.apiKey = trimQuotes(_nullishCoalesce(config.apiKey, () => ( defaultConfig.apiKey)));
+    this.webUrl = trimQuotes(_nullishCoalesce(config.webUrl, () => ( defaultConfig.webUrl)));
+    this.timeout_ms = _nullishCoalesce(config.timeout_ms, () => ( 12e3));
+    this.caller = new AsyncCaller(_nullishCoalesce(config.callerOptions, () => ( {})));
     this.batchIngestCaller = new AsyncCaller({
-      ...config.callerOptions ?? {},
+      ..._nullishCoalesce(config.callerOptions, () => ( {})),
       onFailedResponseHook: handle429
     });
-    this.hideInputs = config.hideInputs ?? defaultConfig.hideInputs;
-    this.hideOutputs = config.hideOutputs ?? defaultConfig.hideOutputs;
-    this.autoBatchTracing = config.autoBatchTracing ?? this.autoBatchTracing;
-    this.pendingAutoBatchedRunLimit = config.pendingAutoBatchedRunLimit ?? this.pendingAutoBatchedRunLimit;
+    this.hideInputs = _nullishCoalesce(config.hideInputs, () => ( defaultConfig.hideInputs));
+    this.hideOutputs = _nullishCoalesce(config.hideOutputs, () => ( defaultConfig.hideOutputs));
+    this.autoBatchTracing = _nullishCoalesce(config.autoBatchTracing, () => ( this.autoBatchTracing));
+    this.pendingAutoBatchedRunLimit = _nullishCoalesce(config.pendingAutoBatchedRunLimit, () => ( this.pendingAutoBatchedRunLimit));
   }
   static getDefaultClientConfig() {
     const apiKey = getEnvironmentVariable2("LANGCHAIN_API_KEY");
-    const apiUrl = getEnvironmentVariable2("LANGCHAIN_ENDPOINT") ?? "https://api.smith.langchain.com";
+    const apiUrl = _nullishCoalesce(getEnvironmentVariable2("LANGCHAIN_ENDPOINT"), () => ( "https://api.smith.langchain.com"));
     const hideInputs = getEnvironmentVariable2("LANGCHAIN_HIDE_INPUTS") === "true";
     const hideOutputs = getEnvironmentVariable2("LANGCHAIN_HIDE_OUTPUTS") === "true";
     return {
@@ -7123,7 +7316,7 @@ var Client = class _Client {
     return runParams;
   }
   async _getResponse(path, queryParams) {
-    const paramsString = queryParams?.toString() ?? "";
+    const paramsString = _nullishCoalesce(_optionalChain([queryParams, 'optionalAccess', _85 => _85.toString, 'call', _86 => _86()]), () => ( ""));
     const url = `${this.apiUrl}${path}?${paramsString}`;
     const response = await this.caller.call(fetch, url, {
       method: "GET",
@@ -7279,7 +7472,7 @@ var Client = class _Client {
     const runCreate = this.prepareRunCreateOrUpdateInputs({
       session_name,
       ...run,
-      start_time: run.start_time ?? Date.now()
+      start_time: _nullishCoalesce(run.start_time, () => ( Date.now()))
     });
     if (this.autoBatchTracing && runCreate.trace_id !== void 0 && runCreate.dotted_order !== void 0) {
       void this.processRunOperation({
@@ -7307,8 +7500,8 @@ var Client = class _Client {
     if (runCreates === void 0 && runUpdates === void 0) {
       return;
     }
-    let preparedCreateParams = runCreates?.map((create) => this.prepareRunCreateOrUpdateInputs(create)) ?? [];
-    let preparedUpdateParams = runUpdates?.map((update) => this.prepareRunCreateOrUpdateInputs(update)) ?? [];
+    let preparedCreateParams = _nullishCoalesce(_optionalChain([runCreates, 'optionalAccess', _87 => _87.map, 'call', _88 => _88((create) => this.prepareRunCreateOrUpdateInputs(create))]), () => ( []));
+    let preparedUpdateParams = _nullishCoalesce(_optionalChain([runUpdates, 'optionalAccess', _89 => _89.map, 'call', _90 => _90((update) => this.prepareRunCreateOrUpdateInputs(update))]), () => ( []));
     if (preparedCreateParams.length > 0 && preparedUpdateParams.length > 0) {
       const createById = preparedCreateParams.reduce((params, run) => {
         if (!run.id) {
@@ -7354,7 +7547,7 @@ var Client = class _Client {
       }
       return;
     }
-    const sizeLimitBytes = this.serverInfo?.batch_ingest_config?.size_limit_bytes ?? DEFAULT_BATCH_SIZE_LIMIT_BYTES;
+    const sizeLimitBytes = _nullishCoalesce(_optionalChain([this, 'access', _91 => _91.serverInfo, 'optionalAccess', _92 => _92.batch_ingest_config, 'optionalAccess', _93 => _93.size_limit_bytes]), () => ( DEFAULT_BATCH_SIZE_LIMIT_BYTES));
     const batchChunks = {
       post: [],
       patch: []
@@ -7438,10 +7631,10 @@ var Client = class _Client {
       let sessionId;
       if (run.session_id) {
         sessionId = run.session_id;
-      } else if (projectOpts?.projectName) {
-        sessionId = (await this.readProject({ projectName: projectOpts?.projectName })).id;
-      } else if (projectOpts?.projectId) {
-        sessionId = projectOpts?.projectId;
+      } else if (_optionalChain([projectOpts, 'optionalAccess', _94 => _94.projectName])) {
+        sessionId = (await this.readProject({ projectName: _optionalChain([projectOpts, 'optionalAccess', _95 => _95.projectName]) })).id;
+      } else if (_optionalChain([projectOpts, 'optionalAccess', _96 => _96.projectId])) {
+        sessionId = _optionalChain([projectOpts, 'optionalAccess', _97 => _97.projectId]);
       } else {
         const project = await this.readProject({
           projectName: getEnvironmentVariable2("LANGCHAIN_PROJECT") || "default"
@@ -7465,7 +7658,7 @@ var Client = class _Client {
     const childRuns = await toArray(this.listRuns({ id: run.child_run_ids }));
     const treemap = {};
     const runs = {};
-    childRuns.sort((a, b) => (a?.dotted_order ?? "").localeCompare(b?.dotted_order ?? ""));
+    childRuns.sort((a, b) => (_nullishCoalesce(_optionalChain([a, 'optionalAccess', _98 => _98.dotted_order]), () => ( ""))).localeCompare(_nullishCoalesce(_optionalChain([b, 'optionalAccess', _99 => _99.dotted_order]), () => ( ""))));
     for (const childRun of childRuns) {
       if (childRun.parent_run_id === null || childRun.parent_run_id === void 0) {
         throw new Error(`Child run ${childRun.id} has no parent`);
@@ -8038,7 +8231,7 @@ var Client = class _Client {
       dataset_id: datasetId_,
       inputs,
       outputs,
-      created_at: createdAt_?.toISOString(),
+      created_at: _optionalChain([createdAt_, 'optionalAccess', _100 => _100.toISOString, 'call', _101 => _101()]),
       id: exampleId
     };
     const response = await this.caller.call(fetch, `${this.apiUrl}/examples`, {
@@ -8165,34 +8358,34 @@ var Client = class _Client {
       referenceExample = await this.readExample(run_.reference_example_id);
     }
     const feedbackResult = await evaluator.evaluateRun(run_, referenceExample);
-    let sourceInfo_ = sourceInfo ?? {};
+    let sourceInfo_ = _nullishCoalesce(sourceInfo, () => ( {}));
     if (feedbackResult.evaluatorInfo) {
       sourceInfo_ = { ...sourceInfo_, ...feedbackResult.evaluatorInfo };
     }
-    const runId = feedbackResult.targetRunId ?? run_.id;
+    const runId = _nullishCoalesce(feedbackResult.targetRunId, () => ( run_.id));
     return await this.createFeedback(runId, feedbackResult.key, {
-      score: feedbackResult?.score,
-      value: feedbackResult?.value,
-      comment: feedbackResult?.comment,
-      correction: feedbackResult?.correction,
+      score: _optionalChain([feedbackResult, 'optionalAccess', _102 => _102.score]),
+      value: _optionalChain([feedbackResult, 'optionalAccess', _103 => _103.value]),
+      comment: _optionalChain([feedbackResult, 'optionalAccess', _104 => _104.comment]),
+      correction: _optionalChain([feedbackResult, 'optionalAccess', _105 => _105.correction]),
       sourceInfo: sourceInfo_,
       feedbackSourceType: "model",
-      sourceRunId: feedbackResult?.sourceRunId
+      sourceRunId: _optionalChain([feedbackResult, 'optionalAccess', _106 => _106.sourceRunId])
     });
   }
   async createFeedback(runId, key, { score, value, correction, comment, sourceInfo, feedbackSourceType = "api", sourceRunId, feedbackId, eager = false }) {
     const feedback_source = {
-      type: feedbackSourceType ?? "api",
-      metadata: sourceInfo ?? {}
+      type: _nullishCoalesce(feedbackSourceType, () => ( "api")),
+      metadata: _nullishCoalesce(sourceInfo, () => ( {}))
     };
-    if (sourceRunId !== void 0 && feedback_source?.metadata !== void 0 && !feedback_source.metadata["__run"]) {
+    if (sourceRunId !== void 0 && _optionalChain([feedback_source, 'optionalAccess', _107 => _107.metadata]) !== void 0 && !feedback_source.metadata["__run"]) {
       feedback_source.metadata["__run"] = { run_id: sourceRunId };
     }
-    if (feedback_source?.metadata !== void 0 && feedback_source.metadata["__run"]?.run_id !== void 0) {
+    if (_optionalChain([feedback_source, 'optionalAccess', _108 => _108.metadata]) !== void 0 && _optionalChain([feedback_source, 'access', _109 => _109.metadata, 'access', _110 => _110["__run"], 'optionalAccess', _111 => _111.run_id]) !== void 0) {
       assertUuid(feedback_source.metadata["__run"].run_id);
     }
     const feedback = {
-      id: feedbackId ?? v4_default(),
+      id: _nullishCoalesce(feedbackId, () => ( v4_default())),
       run_id: runId,
       key,
       score,
@@ -8280,7 +8473,7 @@ var __version__ = "0.1.8";
 // node_modules/@langchain/core/dist/tracers/tracer_langchain.js
 var LangChainTracer = class extends BaseTracer {
   static {
-    __name(this, "LangChainTracer");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "LangChainTracer");
   }
   constructor(fields = {}) {
     super(fields);
@@ -8309,9 +8502,9 @@ var LangChainTracer = class extends BaseTracer {
       value: void 0
     });
     const { exampleId, projectName, client } = fields;
-    this.projectName = projectName ?? getEnvironmentVariable("LANGCHAIN_PROJECT") ?? getEnvironmentVariable("LANGCHAIN_SESSION");
+    this.projectName = _nullishCoalesce(_nullishCoalesce(projectName, () => ( getEnvironmentVariable("LANGCHAIN_PROJECT"))), () => ( getEnvironmentVariable("LANGCHAIN_SESSION")));
     this.exampleId = exampleId;
-    this.client = client ?? new Client({});
+    this.client = _nullishCoalesce(client, () => ( new Client({})));
   }
   async _convertToCreate(run, example_id = void 0) {
     return {
@@ -8353,10 +8546,10 @@ var LangChainTracer = class extends BaseTracer {
 async function getTracingV2CallbackHandler() {
   return new LangChainTracer();
 }
-__name(getTracingV2CallbackHandler, "getTracingV2CallbackHandler");
+_chunkEC6JY3PVcjs.__name.call(void 0, getTracingV2CallbackHandler, "getTracingV2CallbackHandler");
 
 // node_modules/@langchain/core/dist/callbacks/promises.js
-var import_p_queue2 = __toESM(require_dist(), 1);
+var import_p_queue2 = _chunkEC6JY3PVcjs.__toESM.call(void 0, require_dist(), 1);
 var queue;
 function createQueue() {
   const PQueue = "default" in import_p_queue2.default ? import_p_queue2.default.default : import_p_queue2.default;
@@ -8365,7 +8558,7 @@ function createQueue() {
     concurrency: 1
   });
 }
-__name(createQueue, "createQueue");
+_chunkEC6JY3PVcjs.__name.call(void 0, createQueue, "createQueue");
 async function consumeCallback(promiseFn, wait) {
   if (wait === true) {
     await promiseFn();
@@ -8376,7 +8569,7 @@ async function consumeCallback(promiseFn, wait) {
     void queue.add(promiseFn);
   }
 }
-__name(consumeCallback, "consumeCallback");
+_chunkEC6JY3PVcjs.__name.call(void 0, consumeCallback, "consumeCallback");
 
 // node_modules/@langchain/core/dist/callbacks/manager.js
 if (/* @__PURE__ */ getEnvironmentVariable("LANGCHAIN_TRACING_V2") === "true" && /* @__PURE__ */ getEnvironmentVariable("LANGCHAIN_CALLBACKS_BACKGROUND") !== "true") {
@@ -8388,7 +8581,7 @@ if (/* @__PURE__ */ getEnvironmentVariable("LANGCHAIN_TRACING_V2") === "true" &&
 }
 var BaseCallbackManager = class {
   static {
-    __name(this, "BaseCallbackManager");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "BaseCallbackManager");
   }
   setHandler(handler) {
     return this.setHandlers([handler]);
@@ -8396,7 +8589,7 @@ var BaseCallbackManager = class {
 };
 var BaseRunManager = class {
   static {
-    __name(this, "BaseRunManager");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "BaseRunManager");
   }
   constructor(runId, handlers, inheritableHandlers, tags, inheritableTags, metadata, inheritableMetadata, _parentRunId) {
     Object.defineProperty(this, "runId", {
@@ -8451,7 +8644,7 @@ var BaseRunManager = class {
   async handleText(text) {
     await Promise.all(this.handlers.map((handler) => consumeCallback(async () => {
       try {
-        await handler.handleText?.(text, this.runId, this._parentRunId, this.tags);
+        await _optionalChain([handler, 'access', _112 => _112.handleText, 'optionalCall', _113 => _113(text, this.runId, this._parentRunId, this.tags)]);
       } catch (err) {
         console.error(`Error in handler ${handler.constructor.name}, handleText: ${err}`);
       }
@@ -8460,7 +8653,7 @@ var BaseRunManager = class {
 };
 var CallbackManagerForRetrieverRun = class extends BaseRunManager {
   static {
-    __name(this, "CallbackManagerForRetrieverRun");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "CallbackManagerForRetrieverRun");
   }
   getChild(tag) {
     const manager = new CallbackManager(this.runId);
@@ -8476,7 +8669,7 @@ var CallbackManagerForRetrieverRun = class extends BaseRunManager {
     await Promise.all(this.handlers.map((handler) => consumeCallback(async () => {
       if (!handler.ignoreRetriever) {
         try {
-          await handler.handleRetrieverEnd?.(documents, this.runId, this._parentRunId, this.tags);
+          await _optionalChain([handler, 'access', _114 => _114.handleRetrieverEnd, 'optionalCall', _115 => _115(documents, this.runId, this._parentRunId, this.tags)]);
         } catch (err) {
           console.error(`Error in handler ${handler.constructor.name}, handleRetriever`);
         }
@@ -8487,7 +8680,7 @@ var CallbackManagerForRetrieverRun = class extends BaseRunManager {
     await Promise.all(this.handlers.map((handler) => consumeCallback(async () => {
       if (!handler.ignoreRetriever) {
         try {
-          await handler.handleRetrieverError?.(err, this.runId, this._parentRunId, this.tags);
+          await _optionalChain([handler, 'access', _116 => _116.handleRetrieverError, 'optionalCall', _117 => _117(err, this.runId, this._parentRunId, this.tags)]);
         } catch (error) {
           console.error(`Error in handler ${handler.constructor.name}, handleRetrieverError: ${error}`);
         }
@@ -8497,13 +8690,13 @@ var CallbackManagerForRetrieverRun = class extends BaseRunManager {
 };
 var CallbackManagerForLLMRun = class extends BaseRunManager {
   static {
-    __name(this, "CallbackManagerForLLMRun");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "CallbackManagerForLLMRun");
   }
   async handleLLMNewToken(token, idx, _runId, _parentRunId, _tags, fields) {
     await Promise.all(this.handlers.map((handler) => consumeCallback(async () => {
       if (!handler.ignoreLLM) {
         try {
-          await handler.handleLLMNewToken?.(token, idx ?? { prompt: 0, completion: 0 }, this.runId, this._parentRunId, this.tags, fields);
+          await _optionalChain([handler, 'access', _118 => _118.handleLLMNewToken, 'optionalCall', _119 => _119(token, _nullishCoalesce(idx, () => ( { prompt: 0, completion: 0 })), this.runId, this._parentRunId, this.tags, fields)]);
         } catch (err) {
           console.error(`Error in handler ${handler.constructor.name}, handleLLMNewToken: ${err}`);
         }
@@ -8514,7 +8707,7 @@ var CallbackManagerForLLMRun = class extends BaseRunManager {
     await Promise.all(this.handlers.map((handler) => consumeCallback(async () => {
       if (!handler.ignoreLLM) {
         try {
-          await handler.handleLLMError?.(err, this.runId, this._parentRunId, this.tags);
+          await _optionalChain([handler, 'access', _120 => _120.handleLLMError, 'optionalCall', _121 => _121(err, this.runId, this._parentRunId, this.tags)]);
         } catch (err2) {
           console.error(`Error in handler ${handler.constructor.name}, handleLLMError: ${err2}`);
         }
@@ -8525,7 +8718,7 @@ var CallbackManagerForLLMRun = class extends BaseRunManager {
     await Promise.all(this.handlers.map((handler) => consumeCallback(async () => {
       if (!handler.ignoreLLM) {
         try {
-          await handler.handleLLMEnd?.(output, this.runId, this._parentRunId, this.tags);
+          await _optionalChain([handler, 'access', _122 => _122.handleLLMEnd, 'optionalCall', _123 => _123(output, this.runId, this._parentRunId, this.tags)]);
         } catch (err) {
           console.error(`Error in handler ${handler.constructor.name}, handleLLMEnd: ${err}`);
         }
@@ -8535,7 +8728,7 @@ var CallbackManagerForLLMRun = class extends BaseRunManager {
 };
 var CallbackManagerForChainRun = class extends BaseRunManager {
   static {
-    __name(this, "CallbackManagerForChainRun");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "CallbackManagerForChainRun");
   }
   getChild(tag) {
     const manager = new CallbackManager(this.runId);
@@ -8551,7 +8744,7 @@ var CallbackManagerForChainRun = class extends BaseRunManager {
     await Promise.all(this.handlers.map((handler) => consumeCallback(async () => {
       if (!handler.ignoreChain) {
         try {
-          await handler.handleChainError?.(err, this.runId, this._parentRunId, this.tags, kwargs);
+          await _optionalChain([handler, 'access', _124 => _124.handleChainError, 'optionalCall', _125 => _125(err, this.runId, this._parentRunId, this.tags, kwargs)]);
         } catch (err2) {
           console.error(`Error in handler ${handler.constructor.name}, handleChainError: ${err2}`);
         }
@@ -8562,7 +8755,7 @@ var CallbackManagerForChainRun = class extends BaseRunManager {
     await Promise.all(this.handlers.map((handler) => consumeCallback(async () => {
       if (!handler.ignoreChain) {
         try {
-          await handler.handleChainEnd?.(output, this.runId, this._parentRunId, this.tags, kwargs);
+          await _optionalChain([handler, 'access', _126 => _126.handleChainEnd, 'optionalCall', _127 => _127(output, this.runId, this._parentRunId, this.tags, kwargs)]);
         } catch (err) {
           console.error(`Error in handler ${handler.constructor.name}, handleChainEnd: ${err}`);
         }
@@ -8573,7 +8766,7 @@ var CallbackManagerForChainRun = class extends BaseRunManager {
     await Promise.all(this.handlers.map((handler) => consumeCallback(async () => {
       if (!handler.ignoreAgent) {
         try {
-          await handler.handleAgentAction?.(action, this.runId, this._parentRunId, this.tags);
+          await _optionalChain([handler, 'access', _128 => _128.handleAgentAction, 'optionalCall', _129 => _129(action, this.runId, this._parentRunId, this.tags)]);
         } catch (err) {
           console.error(`Error in handler ${handler.constructor.name}, handleAgentAction: ${err}`);
         }
@@ -8584,7 +8777,7 @@ var CallbackManagerForChainRun = class extends BaseRunManager {
     await Promise.all(this.handlers.map((handler) => consumeCallback(async () => {
       if (!handler.ignoreAgent) {
         try {
-          await handler.handleAgentEnd?.(action, this.runId, this._parentRunId, this.tags);
+          await _optionalChain([handler, 'access', _130 => _130.handleAgentEnd, 'optionalCall', _131 => _131(action, this.runId, this._parentRunId, this.tags)]);
         } catch (err) {
           console.error(`Error in handler ${handler.constructor.name}, handleAgentEnd: ${err}`);
         }
@@ -8594,7 +8787,7 @@ var CallbackManagerForChainRun = class extends BaseRunManager {
 };
 var CallbackManagerForToolRun = class extends BaseRunManager {
   static {
-    __name(this, "CallbackManagerForToolRun");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "CallbackManagerForToolRun");
   }
   getChild(tag) {
     const manager = new CallbackManager(this.runId);
@@ -8610,7 +8803,7 @@ var CallbackManagerForToolRun = class extends BaseRunManager {
     await Promise.all(this.handlers.map((handler) => consumeCallback(async () => {
       if (!handler.ignoreAgent) {
         try {
-          await handler.handleToolError?.(err, this.runId, this._parentRunId, this.tags);
+          await _optionalChain([handler, 'access', _132 => _132.handleToolError, 'optionalCall', _133 => _133(err, this.runId, this._parentRunId, this.tags)]);
         } catch (err2) {
           console.error(`Error in handler ${handler.constructor.name}, handleToolError: ${err2}`);
         }
@@ -8621,7 +8814,7 @@ var CallbackManagerForToolRun = class extends BaseRunManager {
     await Promise.all(this.handlers.map((handler) => consumeCallback(async () => {
       if (!handler.ignoreAgent) {
         try {
-          await handler.handleToolEnd?.(output, this.runId, this._parentRunId, this.tags);
+          await _optionalChain([handler, 'access', _134 => _134.handleToolEnd, 'optionalCall', _135 => _135(output, this.runId, this._parentRunId, this.tags)]);
         } catch (err) {
           console.error(`Error in handler ${handler.constructor.name}, handleToolEnd: ${err}`);
         }
@@ -8631,7 +8824,7 @@ var CallbackManagerForToolRun = class extends BaseRunManager {
 };
 var CallbackManager = class _CallbackManager extends BaseCallbackManager {
   static {
-    __name(this, "CallbackManager");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "CallbackManager");
   }
   constructor(parentRunId, options) {
     super();
@@ -8683,12 +8876,12 @@ var CallbackManager = class _CallbackManager extends BaseCallbackManager {
       writable: true,
       value: void 0
     });
-    this.handlers = options?.handlers ?? this.handlers;
-    this.inheritableHandlers = options?.inheritableHandlers ?? this.inheritableHandlers;
-    this.tags = options?.tags ?? this.tags;
-    this.inheritableTags = options?.inheritableTags ?? this.inheritableTags;
-    this.metadata = options?.metadata ?? this.metadata;
-    this.inheritableMetadata = options?.inheritableMetadata ?? this.inheritableMetadata;
+    this.handlers = _nullishCoalesce(_optionalChain([options, 'optionalAccess', _136 => _136.handlers]), () => ( this.handlers));
+    this.inheritableHandlers = _nullishCoalesce(_optionalChain([options, 'optionalAccess', _137 => _137.inheritableHandlers]), () => ( this.inheritableHandlers));
+    this.tags = _nullishCoalesce(_optionalChain([options, 'optionalAccess', _138 => _138.tags]), () => ( this.tags));
+    this.inheritableTags = _nullishCoalesce(_optionalChain([options, 'optionalAccess', _139 => _139.inheritableTags]), () => ( this.inheritableTags));
+    this.metadata = _nullishCoalesce(_optionalChain([options, 'optionalAccess', _140 => _140.metadata]), () => ( this.metadata));
+    this.inheritableMetadata = _nullishCoalesce(_optionalChain([options, 'optionalAccess', _141 => _141.inheritableMetadata]), () => ( this.inheritableMetadata));
     this._parentRunId = parentRunId;
   }
   /**
@@ -8705,7 +8898,7 @@ var CallbackManager = class _CallbackManager extends BaseCallbackManager {
       await Promise.all(this.handlers.map((handler) => consumeCallback(async () => {
         if (!handler.ignoreLLM) {
           try {
-            await handler.handleLLMStart?.(llm, [prompt], runId, this._parentRunId, extraParams, this.tags, this.metadata, runName);
+            await _optionalChain([handler, 'access', _142 => _142.handleLLMStart, 'optionalCall', _143 => _143(llm, [prompt], runId, this._parentRunId, extraParams, this.tags, this.metadata, runName)]);
           } catch (err) {
             console.error(`Error in handler ${handler.constructor.name}, handleLLMStart: ${err}`);
           }
@@ -8721,10 +8914,10 @@ var CallbackManager = class _CallbackManager extends BaseCallbackManager {
         if (!handler.ignoreLLM) {
           try {
             if (handler.handleChatModelStart) {
-              await handler.handleChatModelStart?.(llm, [messageGroup], runId, this._parentRunId, extraParams, this.tags, this.metadata, runName);
+              await _optionalChain([handler, 'access', _144 => _144.handleChatModelStart, 'optionalCall', _145 => _145(llm, [messageGroup], runId, this._parentRunId, extraParams, this.tags, this.metadata, runName)]);
             } else if (handler.handleLLMStart) {
               const messageString = getBufferString(messageGroup);
-              await handler.handleLLMStart?.(llm, [messageString], runId, this._parentRunId, extraParams, this.tags, this.metadata, runName);
+              await _optionalChain([handler, 'access', _146 => _146.handleLLMStart, 'optionalCall', _147 => _147(llm, [messageString], runId, this._parentRunId, extraParams, this.tags, this.metadata, runName)]);
             }
           } catch (err) {
             console.error(`Error in handler ${handler.constructor.name}, handleLLMStart: ${err}`);
@@ -8738,7 +8931,7 @@ var CallbackManager = class _CallbackManager extends BaseCallbackManager {
     await Promise.all(this.handlers.map((handler) => consumeCallback(async () => {
       if (!handler.ignoreChain) {
         try {
-          await handler.handleChainStart?.(chain, inputs, runId, this._parentRunId, this.tags, this.metadata, runType, runName);
+          await _optionalChain([handler, 'access', _148 => _148.handleChainStart, 'optionalCall', _149 => _149(chain, inputs, runId, this._parentRunId, this.tags, this.metadata, runType, runName)]);
         } catch (err) {
           console.error(`Error in handler ${handler.constructor.name}, handleChainStart: ${err}`);
         }
@@ -8750,7 +8943,7 @@ var CallbackManager = class _CallbackManager extends BaseCallbackManager {
     await Promise.all(this.handlers.map((handler) => consumeCallback(async () => {
       if (!handler.ignoreAgent) {
         try {
-          await handler.handleToolStart?.(tool, input, runId, this._parentRunId, this.tags, this.metadata, runName);
+          await _optionalChain([handler, 'access', _150 => _150.handleToolStart, 'optionalCall', _151 => _151(tool, input, runId, this._parentRunId, this.tags, this.metadata, runName)]);
         } catch (err) {
           console.error(`Error in handler ${handler.constructor.name}, handleToolStart: ${err}`);
         }
@@ -8762,7 +8955,7 @@ var CallbackManager = class _CallbackManager extends BaseCallbackManager {
     await Promise.all(this.handlers.map((handler) => consumeCallback(async () => {
       if (!handler.ignoreRetriever) {
         try {
-          await handler.handleRetrieverStart?.(retriever, query, runId, this._parentRunId, this.tags, this.metadata, runName);
+          await _optionalChain([handler, 'access', _152 => _152.handleRetrieverStart, 'optionalCall', _153 => _153(retriever, query, runId, this._parentRunId, this.tags, this.metadata, runName)]);
         } catch (err) {
           console.error(`Error in handler ${handler.constructor.name}, handleRetrieverStart: ${err}`);
         }
@@ -8838,7 +9031,7 @@ var CallbackManager = class _CallbackManager extends BaseCallbackManager {
   static fromHandlers(handlers) {
     class Handler extends BaseCallbackHandler {
       static {
-        __name(this, "Handler");
+        _chunkEC6JY3PVcjs.__name.call(void 0, this, "Handler");
       }
       constructor() {
         super();
@@ -8860,15 +9053,15 @@ var CallbackManager = class _CallbackManager extends BaseCallbackManager {
     if (inheritableHandlers || localHandlers) {
       if (Array.isArray(inheritableHandlers) || !inheritableHandlers) {
         callbackManager = new _CallbackManager();
-        callbackManager.setHandlers(inheritableHandlers?.map(ensureHandler) ?? [], true);
+        callbackManager.setHandlers(_nullishCoalesce(_optionalChain([inheritableHandlers, 'optionalAccess', _154 => _154.map, 'call', _155 => _155(ensureHandler)]), () => ( [])), true);
       } else {
         callbackManager = inheritableHandlers;
       }
-      callbackManager = callbackManager.copy(Array.isArray(localHandlers) ? localHandlers.map(ensureHandler) : localHandlers?.handlers, false);
+      callbackManager = callbackManager.copy(Array.isArray(localHandlers) ? localHandlers.map(ensureHandler) : _optionalChain([localHandlers, 'optionalAccess', _156 => _156.handlers]), false);
     }
-    const verboseEnabled = getEnvironmentVariable("LANGCHAIN_VERBOSE") === "true" || options?.verbose;
+    const verboseEnabled = getEnvironmentVariable("LANGCHAIN_VERBOSE") === "true" || _optionalChain([options, 'optionalAccess', _157 => _157.verbose]);
     const tracingV2Enabled = getEnvironmentVariable("LANGCHAIN_TRACING_V2") === "true";
-    const tracingEnabled = tracingV2Enabled || (getEnvironmentVariable("LANGCHAIN_TRACING") ?? false);
+    const tracingEnabled = tracingV2Enabled || (_nullishCoalesce(getEnvironmentVariable("LANGCHAIN_TRACING"), () => ( false)));
     if (verboseEnabled || tracingEnabled) {
       if (!callbackManager) {
         callbackManager = new _CallbackManager();
@@ -8885,14 +9078,14 @@ var CallbackManager = class _CallbackManager extends BaseCallbackManager {
     }
     if (inheritableTags || localTags) {
       if (callbackManager) {
-        callbackManager.addTags(inheritableTags ?? []);
-        callbackManager.addTags(localTags ?? [], false);
+        callbackManager.addTags(_nullishCoalesce(inheritableTags, () => ( [])));
+        callbackManager.addTags(_nullishCoalesce(localTags, () => ( [])), false);
       }
     }
     if (inheritableMetadata || localMetadata) {
       if (callbackManager) {
-        callbackManager.addMetadata(inheritableMetadata ?? {});
-        callbackManager.addMetadata(localMetadata ?? {}, false);
+        callbackManager.addMetadata(_nullishCoalesce(inheritableMetadata, () => ( {})));
+        callbackManager.addMetadata(_nullishCoalesce(localMetadata, () => ( {})), false);
       }
     }
     return callbackManager;
@@ -8904,11 +9097,11 @@ function ensureHandler(handler) {
   }
   return BaseCallbackHandler.fromMethods(handler);
 }
-__name(ensureHandler, "ensureHandler");
+_chunkEC6JY3PVcjs.__name.call(void 0, ensureHandler, "ensureHandler");
 
 // node_modules/@langchain/core/dist/utils/fast-json-patch/src/core.js
 var core_exports = {};
-__export(core_exports, {
+_chunkEC6JY3PVcjs.__export.call(void 0, core_exports, {
   JsonPatchError: () => JsonPatchError,
   _areEquals: () => _areEquals,
   applyOperation: () => applyOperation,
@@ -8925,7 +9118,7 @@ var _hasOwnProperty = Object.prototype.hasOwnProperty;
 function hasOwnProperty(obj, key) {
   return _hasOwnProperty.call(obj, key);
 }
-__name(hasOwnProperty, "hasOwnProperty");
+_chunkEC6JY3PVcjs.__name.call(void 0, hasOwnProperty, "hasOwnProperty");
 function _objectKeys(obj) {
   if (Array.isArray(obj)) {
     const keys2 = new Array(obj.length);
@@ -8945,7 +9138,7 @@ function _objectKeys(obj) {
   }
   return keys;
 }
-__name(_objectKeys, "_objectKeys");
+_chunkEC6JY3PVcjs.__name.call(void 0, _objectKeys, "_objectKeys");
 function _deepClone(obj) {
   switch (typeof obj) {
     case "object":
@@ -8956,7 +9149,7 @@ function _deepClone(obj) {
       return obj;
   }
 }
-__name(_deepClone, "_deepClone");
+_chunkEC6JY3PVcjs.__name.call(void 0, _deepClone, "_deepClone");
 function isInteger(str) {
   let i = 0;
   const len = str.length;
@@ -8971,17 +9164,17 @@ function isInteger(str) {
   }
   return true;
 }
-__name(isInteger, "isInteger");
+_chunkEC6JY3PVcjs.__name.call(void 0, isInteger, "isInteger");
 function escapePathComponent(path) {
   if (path.indexOf("/") === -1 && path.indexOf("~") === -1)
     return path;
   return path.replace(/~/g, "~0").replace(/\//g, "~1");
 }
-__name(escapePathComponent, "escapePathComponent");
+_chunkEC6JY3PVcjs.__name.call(void 0, escapePathComponent, "escapePathComponent");
 function unescapePathComponent(path) {
   return path.replace(/~1/g, "/").replace(/~0/g, "~");
 }
-__name(unescapePathComponent, "unescapePathComponent");
+_chunkEC6JY3PVcjs.__name.call(void 0, unescapePathComponent, "unescapePathComponent");
 function hasUndefined(obj) {
   if (obj === void 0) {
     return true;
@@ -9005,7 +9198,7 @@ function hasUndefined(obj) {
   }
   return false;
 }
-__name(hasUndefined, "hasUndefined");
+_chunkEC6JY3PVcjs.__name.call(void 0, hasUndefined, "hasUndefined");
 function patchErrorMessageFormatter(message, args) {
   const messageParts = [message];
   for (const key in args) {
@@ -9016,10 +9209,10 @@ function patchErrorMessageFormatter(message, args) {
   }
   return messageParts.join("\n");
 }
-__name(patchErrorMessageFormatter, "patchErrorMessageFormatter");
+_chunkEC6JY3PVcjs.__name.call(void 0, patchErrorMessageFormatter, "patchErrorMessageFormatter");
 var PatchError = class extends Error {
   static {
-    __name(this, "PatchError");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "PatchError");
   }
   constructor(message, name, index, operation, tree) {
     super(patchErrorMessageFormatter(message, { name, index, operation, tree }));
@@ -9139,7 +9332,7 @@ function getValueByPointer(document, pointer) {
   applyOperation(document, getOriginalDestination);
   return getOriginalDestination.value;
 }
-__name(getValueByPointer, "getValueByPointer");
+_chunkEC6JY3PVcjs.__name.call(void 0, getValueByPointer, "getValueByPointer");
 function applyOperation(document, operation, validateOperation = false, mutateDocument = true, banPrototypeModifications = true, index = 0) {
   if (validateOperation) {
     if (typeof validateOperation == "function") {
@@ -9258,7 +9451,7 @@ function applyOperation(document, operation, validateOperation = false, mutateDo
     }
   }
 }
-__name(applyOperation, "applyOperation");
+_chunkEC6JY3PVcjs.__name.call(void 0, applyOperation, "applyOperation");
 function applyPatch(document, patch, validateOperation, mutateDocument = true, banPrototypeModifications = true) {
   if (validateOperation) {
     if (!Array.isArray(patch)) {
@@ -9276,7 +9469,7 @@ function applyPatch(document, patch, validateOperation, mutateDocument = true, b
   results.newDocument = document;
   return results;
 }
-__name(applyPatch, "applyPatch");
+_chunkEC6JY3PVcjs.__name.call(void 0, applyPatch, "applyPatch");
 function applyReducer(document, operation, index) {
   const operationResult = applyOperation(document, operation);
   if (operationResult.test === false) {
@@ -9284,7 +9477,7 @@ function applyReducer(document, operation, index) {
   }
   return operationResult.newDocument;
 }
-__name(applyReducer, "applyReducer");
+_chunkEC6JY3PVcjs.__name.call(void 0, applyReducer, "applyReducer");
 function validator(operation, index, document, existingPathFragment) {
   if (typeof operation !== "object" || operation === null || Array.isArray(operation)) {
     throw new JsonPatchError("Operation is not an object", "OPERATION_NOT_AN_OBJECT", index, operation, document);
@@ -9324,7 +9517,7 @@ function validator(operation, index, document, existingPathFragment) {
     }
   }
 }
-__name(validator, "validator");
+_chunkEC6JY3PVcjs.__name.call(void 0, validator, "validator");
 function validate2(sequence, document, externalValidator) {
   try {
     if (!Array.isArray(sequence)) {
@@ -9346,7 +9539,7 @@ function validate2(sequence, document, externalValidator) {
     }
   }
 }
-__name(validate2, "validate");
+_chunkEC6JY3PVcjs.__name.call(void 0, validate2, "validate");
 function _areEquals(a, b) {
   if (a === b)
     return true;
@@ -9379,7 +9572,7 @@ function _areEquals(a, b) {
   }
   return a !== a && b !== b;
 }
-__name(_areEquals, "_areEquals");
+_chunkEC6JY3PVcjs.__name.call(void 0, _areEquals, "_areEquals");
 
 // node_modules/@langchain/core/dist/utils/fast-json-patch/index.js
 var fast_json_patch_default = {
@@ -9394,7 +9587,7 @@ var fast_json_patch_default = {
 // node_modules/@langchain/core/dist/utils/stream.js
 var IterableReadableStream = class _IterableReadableStream extends ReadableStream {
   static {
-    __name(this, "IterableReadableStream");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "IterableReadableStream");
   }
   constructor() {
     super(...arguments);
@@ -9468,7 +9661,7 @@ var IterableReadableStream = class _IterableReadableStream extends ReadableStrea
             return pump();
           });
         }
-        __name(pump, "pump");
+        _chunkEC6JY3PVcjs.__name.call(void 0, pump, "pump");
       },
       cancel() {
         reader.releaseLock();
@@ -9492,7 +9685,7 @@ var IterableReadableStream = class _IterableReadableStream extends ReadableStrea
 };
 function atee(iter, length = 2) {
   const buffers = Array.from({ length }, () => []);
-  return buffers.map(/* @__PURE__ */ __name(async function* makeIter(buffer) {
+  return buffers.map(/* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, async function* makeIter(buffer) {
     while (true) {
       if (buffer.length === 0) {
         const result = await iter.next();
@@ -9507,7 +9700,7 @@ function atee(iter, length = 2) {
     }
   }, "makeIter"));
 }
-__name(atee, "atee");
+_chunkEC6JY3PVcjs.__name.call(void 0, atee, "atee");
 function concat(first, second) {
   if (Array.isArray(first) && Array.isArray(second)) {
     return first.concat(second);
@@ -9535,10 +9728,10 @@ function concat(first, second) {
     throw new Error(`Cannot concat ${typeof first} and ${typeof second}`);
   }
 }
-__name(concat, "concat");
+_chunkEC6JY3PVcjs.__name.call(void 0, concat, "concat");
 var AsyncGeneratorWithSetup = class {
   static {
-    __name(this, "AsyncGeneratorWithSetup");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "AsyncGeneratorWithSetup");
   }
   constructor(generator, startSetup) {
     Object.defineProperty(this, "generator", {
@@ -9597,12 +9790,12 @@ async function pipeGeneratorWithSetup(to, generator, startSetup, ...args) {
   const setup = await gen.setup;
   return { output: to(gen, setup, ...args), setup };
 }
-__name(pipeGeneratorWithSetup, "pipeGeneratorWithSetup");
+_chunkEC6JY3PVcjs.__name.call(void 0, pipeGeneratorWithSetup, "pipeGeneratorWithSetup");
 
 // node_modules/@langchain/core/dist/tracers/log_stream.js
 var RunLogPatch = class {
   static {
-    __name(this, "RunLogPatch");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "RunLogPatch");
   }
   constructor(fields) {
     Object.defineProperty(this, "ops", {
@@ -9611,7 +9804,7 @@ var RunLogPatch = class {
       writable: true,
       value: void 0
     });
-    this.ops = fields.ops ?? [];
+    this.ops = _nullishCoalesce(fields.ops, () => ( []));
   }
   concat(other) {
     const ops = this.ops.concat(other.ops);
@@ -9624,7 +9817,7 @@ var RunLogPatch = class {
 };
 var RunLog = class _RunLog extends RunLogPatch {
   static {
-    __name(this, "RunLog");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "RunLog");
   }
   constructor(fields) {
     super(fields);
@@ -9657,12 +9850,12 @@ async function _getStandardizedInputs(run, schemaFormat) {
   if (["retriever", "llm", "prompt"].includes(run.run_type)) {
     return inputs;
   }
-  if (Object.keys(inputs).length === 1 && inputs?.input === "") {
+  if (Object.keys(inputs).length === 1 && _optionalChain([inputs, 'optionalAccess', _158 => _158.input]) === "") {
     return void 0;
   }
   return inputs.input;
 }
-__name(_getStandardizedInputs, "_getStandardizedInputs");
+_chunkEC6JY3PVcjs.__name.call(void 0, _getStandardizedInputs, "_getStandardizedInputs");
 async function _getStandardizedOutputs(run, schemaFormat) {
   const { outputs } = run;
   if (schemaFormat === "original") {
@@ -9671,19 +9864,19 @@ async function _getStandardizedOutputs(run, schemaFormat) {
   if (["retriever", "llm", "prompt"].includes(run.run_type)) {
     return outputs;
   }
-  if (outputs !== void 0 && Object.keys(outputs).length === 1 && outputs?.output !== void 0) {
+  if (outputs !== void 0 && Object.keys(outputs).length === 1 && _optionalChain([outputs, 'optionalAccess', _159 => _159.output]) !== void 0) {
     return outputs.output;
   }
   return outputs;
 }
-__name(_getStandardizedOutputs, "_getStandardizedOutputs");
+_chunkEC6JY3PVcjs.__name.call(void 0, _getStandardizedOutputs, "_getStandardizedOutputs");
 function isChatGenerationChunk(x) {
   return x !== void 0 && x.message !== void 0;
 }
-__name(isChatGenerationChunk, "isChatGenerationChunk");
+_chunkEC6JY3PVcjs.__name.call(void 0, isChatGenerationChunk, "isChatGenerationChunk");
 var LogStreamCallbackHandler = class extends BaseTracer {
   static {
-    __name(this, "LogStreamCallbackHandler");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "LogStreamCallbackHandler");
   }
   constructor(fields) {
     super({ _awaitHandler: true, ...fields });
@@ -9777,14 +9970,14 @@ var LogStreamCallbackHandler = class extends BaseTracer {
       writable: true,
       value: "log_stream_tracer"
     });
-    this.autoClose = fields?.autoClose ?? true;
-    this.includeNames = fields?.includeNames;
-    this.includeTypes = fields?.includeTypes;
-    this.includeTags = fields?.includeTags;
-    this.excludeNames = fields?.excludeNames;
-    this.excludeTypes = fields?.excludeTypes;
-    this.excludeTags = fields?.excludeTags;
-    this._schemaFormat = fields?._schemaFormat ?? this._schemaFormat;
+    this.autoClose = _nullishCoalesce(_optionalChain([fields, 'optionalAccess', _160 => _160.autoClose]), () => ( true));
+    this.includeNames = _optionalChain([fields, 'optionalAccess', _161 => _161.includeNames]);
+    this.includeTypes = _optionalChain([fields, 'optionalAccess', _162 => _162.includeTypes]);
+    this.includeTags = _optionalChain([fields, 'optionalAccess', _163 => _163.includeTags]);
+    this.excludeNames = _optionalChain([fields, 'optionalAccess', _164 => _164.excludeNames]);
+    this.excludeTypes = _optionalChain([fields, 'optionalAccess', _165 => _165.excludeTypes]);
+    this.excludeTags = _optionalChain([fields, 'optionalAccess', _166 => _166.excludeTags]);
+    this._schemaFormat = _nullishCoalesce(_optionalChain([fields, 'optionalAccess', _167 => _167._schemaFormat]), () => ( this._schemaFormat));
     this.transformStream = new TransformStream();
     this.writer = this.transformStream.writable.getWriter();
     this.receiveStream = IterableReadableStream.fromReadableStream(this.transformStream.readable);
@@ -9798,7 +9991,7 @@ var LogStreamCallbackHandler = class extends BaseTracer {
     if (run.id === this.rootId) {
       return false;
     }
-    const runTags = run.tags ?? [];
+    const runTags = _nullishCoalesce(run.tags, () => ( []));
     let include = this.includeNames === void 0 && this.includeTags === void 0 && this.includeTypes === void 0;
     if (this.includeNames !== void 0) {
       include = include || this.includeNames.includes(run.name);
@@ -9807,7 +10000,7 @@ var LogStreamCallbackHandler = class extends BaseTracer {
       include = include || this.includeTypes.includes(run.run_type);
     }
     if (this.includeTags !== void 0) {
-      include = include || runTags.find((tag) => this.includeTags?.includes(tag)) !== void 0;
+      include = include || runTags.find((tag) => _optionalChain([this, 'access', _168 => _168.includeTags, 'optionalAccess', _169 => _169.includes, 'call', _170 => _170(tag)])) !== void 0;
     }
     if (this.excludeNames !== void 0) {
       include = include && !this.excludeNames.includes(run.name);
@@ -9816,7 +10009,7 @@ var LogStreamCallbackHandler = class extends BaseTracer {
       include = include && !this.excludeTypes.includes(run.run_type);
     }
     if (this.excludeTags !== void 0) {
-      include = include && runTags.every((tag) => !this.excludeTags?.includes(tag));
+      include = include && runTags.every((tag) => !_optionalChain([this, 'access', _171 => _171.excludeTags, 'optionalAccess', _172 => _172.includes, 'call', _173 => _173(tag)]));
     }
     return include;
   }
@@ -9872,8 +10065,8 @@ var LogStreamCallbackHandler = class extends BaseTracer {
       id: run.id,
       name: run.name,
       type: run.run_type,
-      tags: run.tags ?? [],
-      metadata: run.extra?.metadata ?? {},
+      tags: _nullishCoalesce(run.tags, () => ( [])),
+      metadata: _nullishCoalesce(_optionalChain([run, 'access', _174 => _174.extra, 'optionalAccess', _175 => _175.metadata]), () => ( {})),
       start_time: new Date(run.start_time).toISOString(),
       streamed_output: [],
       streamed_output_str: [],
@@ -9947,8 +10140,8 @@ var LogStreamCallbackHandler = class extends BaseTracer {
     const isChatModel = run.inputs.messages !== void 0;
     let streamedOutputValue;
     if (isChatModel) {
-      if (isChatGenerationChunk(kwargs?.chunk)) {
-        streamedOutputValue = kwargs?.chunk;
+      if (isChatGenerationChunk(_optionalChain([kwargs, 'optionalAccess', _176 => _176.chunk]))) {
+        streamedOutputValue = _optionalChain([kwargs, 'optionalAccess', _177 => _177.chunk]);
       } else {
         streamedOutputValue = new AIMessageChunk(token);
       }
@@ -9976,7 +10169,7 @@ var LogStreamCallbackHandler = class extends BaseTracer {
 // node_modules/@langchain/core/dist/singletons/index.js
 var MockAsyncLocalStorage = class {
   static {
-    __name(this, "MockAsyncLocalStorage");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "MockAsyncLocalStorage");
   }
   getStore() {
     return void 0;
@@ -9987,7 +10180,7 @@ var MockAsyncLocalStorage = class {
 };
 var AsyncLocalStorageProvider = class {
   static {
-    __name(this, "AsyncLocalStorageProvider");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "AsyncLocalStorageProvider");
   }
   constructor() {
     Object.defineProperty(this, "asyncLocalStorage", {
@@ -10018,9 +10211,9 @@ var AsyncLocalStorageProviderSingleton = new AsyncLocalStorageProvider();
 // node_modules/@langchain/core/dist/runnables/config.js
 var DEFAULT_RECURSION_LIMIT = 25;
 async function getCallbackManagerForConfig(config) {
-  return CallbackManager.configure(config?.callbacks, void 0, config?.tags, void 0, config?.metadata);
+  return CallbackManager.configure(_optionalChain([config, 'optionalAccess', _178 => _178.callbacks]), void 0, _optionalChain([config, 'optionalAccess', _179 => _179.tags]), void 0, _optionalChain([config, 'optionalAccess', _180 => _180.metadata]));
 }
-__name(getCallbackManagerForConfig, "getCallbackManagerForConfig");
+_chunkEC6JY3PVcjs.__name.call(void 0, getCallbackManagerForConfig, "getCallbackManagerForConfig");
 function mergeConfigs(...configs) {
   const copy = {};
   for (const options of configs.filter((c) => !!c)) {
@@ -10028,8 +10221,8 @@ function mergeConfigs(...configs) {
       if (key === "metadata") {
         copy[key] = { ...copy[key], ...options[key] };
       } else if (key === "tags") {
-        const baseKeys = copy[key] ?? [];
-        copy[key] = [...new Set(baseKeys.concat(options[key] ?? []))];
+        const baseKeys = _nullishCoalesce(copy[key], () => ( []));
+        copy[key] = [...new Set(baseKeys.concat(_nullishCoalesce(options[key], () => ( []))))];
       } else if (key === "configurable") {
         copy[key] = { ...copy[key], ...options[key] };
       } else if (key === "callbacks") {
@@ -10071,16 +10264,16 @@ function mergeConfigs(...configs) {
         }
       } else {
         const typedKey = key;
-        copy[typedKey] = options[typedKey] ?? copy[typedKey];
+        copy[typedKey] = _nullishCoalesce(options[typedKey], () => ( copy[typedKey]));
       }
     }
   }
   return copy;
 }
-__name(mergeConfigs, "mergeConfigs");
+_chunkEC6JY3PVcjs.__name.call(void 0, mergeConfigs, "mergeConfigs");
 var PRIMITIVES = /* @__PURE__ */ new Set(["string", "number", "boolean"]);
 function ensureConfig(config) {
-  const loadedConfig = config ?? AsyncLocalStorageProviderSingleton.getInstance().getStore();
+  const loadedConfig = _nullishCoalesce(config, () => ( AsyncLocalStorageProviderSingleton.getInstance().getStore()));
   let empty = {
     tags: [],
     metadata: {},
@@ -10090,9 +10283,9 @@ function ensureConfig(config) {
   if (loadedConfig) {
     empty = { ...empty, ...loadedConfig };
   }
-  if (loadedConfig?.configurable) {
+  if (_optionalChain([loadedConfig, 'optionalAccess', _181 => _181.configurable])) {
     for (const key of Object.keys(loadedConfig.configurable)) {
-      if (PRIMITIVES.has(typeof loadedConfig.configurable[key]) && !empty.metadata?.[key]) {
+      if (PRIMITIVES.has(typeof loadedConfig.configurable[key]) && !_optionalChain([empty, 'access', _182 => _182.metadata, 'optionalAccess', _183 => _183[key]])) {
         if (!empty.metadata) {
           empty.metadata = {};
         }
@@ -10102,7 +10295,7 @@ function ensureConfig(config) {
   }
   return empty;
 }
-__name(ensureConfig, "ensureConfig");
+_chunkEC6JY3PVcjs.__name.call(void 0, ensureConfig, "ensureConfig");
 function patchConfig(config = {}, { callbacks, maxConcurrency, recursionLimit, runName, configurable } = {}) {
   const newConfig = ensureConfig(config);
   if (callbacks !== void 0) {
@@ -10123,11 +10316,11 @@ function patchConfig(config = {}, { callbacks, maxConcurrency, recursionLimit, r
   }
   return newConfig;
 }
-__name(patchConfig, "patchConfig");
+_chunkEC6JY3PVcjs.__name.call(void 0, patchConfig, "patchConfig");
 
 // node_modules/@langchain/core/dist/utils/async_caller.js
-var import_p_retry2 = __toESM(require_p_retry(), 1);
-var import_p_queue3 = __toESM(require_dist(), 1);
+var import_p_retry2 = _chunkEC6JY3PVcjs.__toESM.call(void 0, require_p_retry(), 1);
+var import_p_queue3 = _chunkEC6JY3PVcjs.__toESM.call(void 0, require_dist(), 1);
 var STATUS_NO_RETRY2 = [
   400,
   401,
@@ -10140,29 +10333,29 @@ var STATUS_NO_RETRY2 = [
   409
   // Conflict
 ];
-var defaultFailedAttemptHandler = /* @__PURE__ */ __name((error) => {
+var defaultFailedAttemptHandler = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (error) => {
   if (error.message.startsWith("Cancel") || error.message.startsWith("AbortError") || error.name === "AbortError") {
     throw error;
   }
-  if (error?.code === "ECONNABORTED") {
+  if (_optionalChain([error, 'optionalAccess', _184 => _184.code]) === "ECONNABORTED") {
     throw error;
   }
   const status = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    error?.response?.status ?? error?.status
+    _nullishCoalesce(_optionalChain([error, 'optionalAccess', _185 => _185.response, 'optionalAccess', _186 => _186.status]), () => ( _optionalChain([error, 'optionalAccess', _187 => _187.status])))
   );
   if (status && STATUS_NO_RETRY2.includes(+status)) {
     throw error;
   }
-  if (error?.error?.code === "insufficient_quota") {
-    const err = new Error(error?.message);
+  if (_optionalChain([error, 'optionalAccess', _188 => _188.error, 'optionalAccess', _189 => _189.code]) === "insufficient_quota") {
+    const err = new Error(_optionalChain([error, 'optionalAccess', _190 => _190.message]));
     err.name = "InsufficientQuotaError";
     throw err;
   }
 }, "defaultFailedAttemptHandler");
 var AsyncCaller2 = class {
   static {
-    __name(this, "AsyncCaller");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "AsyncCaller");
   }
   constructor(params) {
     Object.defineProperty(this, "maxConcurrency", {
@@ -10189,9 +10382,9 @@ var AsyncCaller2 = class {
       writable: true,
       value: void 0
     });
-    this.maxConcurrency = params.maxConcurrency ?? Infinity;
-    this.maxRetries = params.maxRetries ?? 6;
-    this.onFailedAttempt = params.onFailedAttempt ?? defaultFailedAttemptHandler;
+    this.maxConcurrency = _nullishCoalesce(params.maxConcurrency, () => ( Infinity));
+    this.maxRetries = _nullishCoalesce(params.maxRetries, () => ( 6));
+    this.onFailedAttempt = _nullishCoalesce(params.onFailedAttempt, () => ( defaultFailedAttemptHandler));
     const PQueue = "default" in import_p_queue3.default ? import_p_queue3.default.default : import_p_queue3.default;
     this.queue = new PQueue({ concurrency: this.maxConcurrency });
   }
@@ -10217,9 +10410,9 @@ var AsyncCaller2 = class {
       return Promise.race([
         this.call(callable, ...args),
         new Promise((_, reject) => {
-          options.signal?.addEventListener("abort", () => {
+          _optionalChain([options, 'access', _191 => _191.signal, 'optionalAccess', _192 => _192.addEventListener, 'call', _193 => _193("abort", () => {
             reject(new Error("AbortError"));
-          });
+          })]);
         })
       ]);
     }
@@ -10233,7 +10426,7 @@ var AsyncCaller2 = class {
 // node_modules/@langchain/core/dist/tracers/root_listener.js
 var RootListenersTracer = class extends BaseTracer {
   static {
-    __name(this, "RootListenersTracer");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "RootListenersTracer");
   }
   constructor({ config, onStart, onEnd, onError }) {
     super({ _awaitHandler: true });
@@ -10325,10 +10518,10 @@ var RootListenersTracer = class extends BaseTracer {
 function isRunnableInterface(thing) {
   return thing ? thing.lc_runnable : false;
 }
-__name(isRunnableInterface, "isRunnableInterface");
+_chunkEC6JY3PVcjs.__name.call(void 0, isRunnableInterface, "isRunnableInterface");
 var _RootEventFilter = class {
   static {
-    __name(this, "_RootEventFilter");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "_RootEventFilter");
   }
   constructor(fields) {
     Object.defineProperty(this, "includeNames", {
@@ -10376,7 +10569,7 @@ var _RootEventFilter = class {
   }
   includeEvent(event, rootType) {
     let include = this.includeNames === void 0 && this.includeTypes === void 0 && this.includeTags === void 0;
-    const eventTags = event.tags ?? [];
+    const eventTags = _nullishCoalesce(event.tags, () => ( []));
     if (this.includeNames !== void 0) {
       include = include || this.includeNames.includes(event.name);
     }
@@ -10384,7 +10577,7 @@ var _RootEventFilter = class {
       include = include || this.includeTypes.includes(rootType);
     }
     if (this.includeTags !== void 0) {
-      include = include || eventTags.some((tag) => this.includeTags?.includes(tag));
+      include = include || eventTags.some((tag) => _optionalChain([this, 'access', _194 => _194.includeTags, 'optionalAccess', _195 => _195.includes, 'call', _196 => _196(tag)]));
     }
     if (this.excludeNames !== void 0) {
       include = include && !this.excludeNames.includes(event.name);
@@ -10393,7 +10586,7 @@ var _RootEventFilter = class {
       include = include && !this.excludeTypes.includes(rootType);
     }
     if (this.excludeTags !== void 0) {
-      include = include && eventTags.every((tag) => !this.excludeTags?.includes(tag));
+      include = include && eventTags.every((tag) => !_optionalChain([this, 'access', _197 => _197.excludeTags, 'optionalAccess', _198 => _198.includes, 'call', _199 => _199(tag)]));
     }
     return include;
   }
@@ -10401,7 +10594,7 @@ var _RootEventFilter = class {
 
 // node_modules/zod-to-json-schema/dist/esm/errorMessages.js
 function addErrorMessage(res, key, errorMessage, refs) {
-  if (!refs?.errorMessages)
+  if (!_optionalChain([refs, 'optionalAccess', _200 => _200.errorMessages]))
     return;
   if (errorMessage) {
     res.errorMessage = {
@@ -10410,12 +10603,12 @@ function addErrorMessage(res, key, errorMessage, refs) {
     };
   }
 }
-__name(addErrorMessage, "addErrorMessage");
+_chunkEC6JY3PVcjs.__name.call(void 0, addErrorMessage, "addErrorMessage");
 function setResponseValueAndErrors(res, key, value, errorMessage, refs) {
   res[key] = value;
   addErrorMessage(res, key, errorMessage, refs);
 }
-__name(setResponseValueAndErrors, "setResponseValueAndErrors");
+_chunkEC6JY3PVcjs.__name.call(void 0, setResponseValueAndErrors, "setResponseValueAndErrors");
 
 // node_modules/zod-to-json-schema/dist/esm/Options.js
 var defaultOptions = {
@@ -10435,7 +10628,7 @@ var defaultOptions = {
   patternStrategy: "escape",
   emailStrategy: "format:email"
 };
-var getDefaultOptions = /* @__PURE__ */ __name((options) => typeof options === "string" ? {
+var getDefaultOptions = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (options) => typeof options === "string" ? {
   ...defaultOptions,
   name: options
 } : {
@@ -10447,14 +10640,14 @@ var getDefaultOptions = /* @__PURE__ */ __name((options) => typeof options === "
 function parseAnyDef() {
   return {};
 }
-__name(parseAnyDef, "parseAnyDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseAnyDef, "parseAnyDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/array.js
 function parseArrayDef(def, refs) {
   const res = {
     type: "array"
   };
-  if (def.type?._def?.typeName !== ZodFirstPartyTypeKind.ZodAny) {
+  if (_optionalChain([def, 'access', _201 => _201.type, 'optionalAccess', _202 => _202._def, 'optionalAccess', _203 => _203.typeName]) !== ZodFirstPartyTypeKind.ZodAny) {
     res.items = parseDef(def.type._def, {
       ...refs,
       currentPath: [...refs.currentPath, "items"]
@@ -10472,7 +10665,7 @@ function parseArrayDef(def, refs) {
   }
   return res;
 }
-__name(parseArrayDef, "parseArrayDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseArrayDef, "parseArrayDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/bigint.js
 function parseBigintDef(def, refs) {
@@ -10519,7 +10712,7 @@ function parseBigintDef(def, refs) {
   }
   return res;
 }
-__name(parseBigintDef, "parseBigintDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseBigintDef, "parseBigintDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/boolean.js
 function parseBooleanDef() {
@@ -10527,16 +10720,16 @@ function parseBooleanDef() {
     type: "boolean"
   };
 }
-__name(parseBooleanDef, "parseBooleanDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseBooleanDef, "parseBooleanDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/branded.js
 function parseBrandedDef(_def, refs) {
   return parseDef(_def.type._def, refs);
 }
-__name(parseBrandedDef, "parseBrandedDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseBrandedDef, "parseBrandedDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/catch.js
-var parseCatchDef = /* @__PURE__ */ __name((def, refs) => {
+var parseCatchDef = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (def, refs) => {
   return parseDef(def.innerType._def, refs);
 }, "parseCatchDef");
 
@@ -10551,8 +10744,8 @@ function parseDateDef(def, refs) {
     };
   }
 }
-__name(parseDateDef, "parseDateDef");
-var integerDateParser = /* @__PURE__ */ __name((def, refs) => {
+_chunkEC6JY3PVcjs.__name.call(void 0, parseDateDef, "parseDateDef");
+var integerDateParser = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (def, refs) => {
   const res = {
     type: "integer",
     format: "unix-time"
@@ -10595,13 +10788,13 @@ function parseDefaultDef(_def, refs) {
     default: _def.defaultValue()
   };
 }
-__name(parseDefaultDef, "parseDefaultDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseDefaultDef, "parseDefaultDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/effects.js
 function parseEffectsDef(_def, refs) {
   return refs.effectStrategy === "input" ? parseDef(_def.schema._def, refs) : {};
 }
-__name(parseEffectsDef, "parseEffectsDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseEffectsDef, "parseEffectsDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/enum.js
 function parseEnumDef(def) {
@@ -10610,10 +10803,10 @@ function parseEnumDef(def) {
     enum: def.values
   };
 }
-__name(parseEnumDef, "parseEnumDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseEnumDef, "parseEnumDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/intersection.js
-var isJsonSchema7AllOfType = /* @__PURE__ */ __name((type) => {
+var isJsonSchema7AllOfType = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (type) => {
   if ("type" in type && type.type === "string")
     return false;
   return "allOf" in type;
@@ -10653,7 +10846,7 @@ function parseIntersectionDef(def, refs) {
     ...unevaluatedProperties
   } : void 0;
 }
-__name(parseIntersectionDef, "parseIntersectionDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseIntersectionDef, "parseIntersectionDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/literal.js
 function parseLiteralDef(def, refs) {
@@ -10674,7 +10867,7 @@ function parseLiteralDef(def, refs) {
     const: def.value
   };
 }
-__name(parseLiteralDef, "parseLiteralDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseLiteralDef, "parseLiteralDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/string.js
 var zodPatterns = {
@@ -10709,7 +10902,7 @@ function parseStringDef(def, refs) {
   function processPattern(value) {
     return refs.patternStrategy === "escape" ? escapeNonAlphaNumeric(value) : value;
   }
-  __name(processPattern, "processPattern");
+  _chunkEC6JY3PVcjs.__name.call(void 0, processPattern, "processPattern");
   if (def.checks) {
     for (const check of def.checks) {
       switch (check.kind) {
@@ -10792,10 +10985,10 @@ function parseStringDef(def, refs) {
   }
   return res;
 }
-__name(parseStringDef, "parseStringDef");
-var escapeNonAlphaNumeric = /* @__PURE__ */ __name((value) => Array.from(value).map((c) => /[a-zA-Z0-9]/.test(c) ? c : `\\${c}`).join(""), "escapeNonAlphaNumeric");
-var addFormat = /* @__PURE__ */ __name((schema, value, message, refs) => {
-  if (schema.format || schema.anyOf?.some((x) => x.format)) {
+_chunkEC6JY3PVcjs.__name.call(void 0, parseStringDef, "parseStringDef");
+var escapeNonAlphaNumeric = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (value) => Array.from(value).map((c) => /[a-zA-Z0-9]/.test(c) ? c : `\\${c}`).join(""), "escapeNonAlphaNumeric");
+var addFormat = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (schema, value, message, refs) => {
+  if (schema.format || _optionalChain([schema, 'access', _204 => _204.anyOf, 'optionalAccess', _205 => _205.some, 'call', _206 => _206((x) => x.format)])) {
     if (!schema.anyOf) {
       schema.anyOf = [];
     }
@@ -10822,8 +11015,8 @@ var addFormat = /* @__PURE__ */ __name((schema, value, message, refs) => {
     setResponseValueAndErrors(schema, "format", value, message, refs);
   }
 }, "addFormat");
-var addPattern = /* @__PURE__ */ __name((schema, value, message, refs) => {
-  if (schema.pattern || schema.allOf?.some((x) => x.pattern)) {
+var addPattern = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (schema, value, message, refs) => {
+  if (schema.pattern || _optionalChain([schema, 'access', _207 => _207.allOf, 'optionalAccess', _208 => _208.some, 'call', _209 => _209((x) => x.pattern)])) {
     if (!schema.allOf) {
       schema.allOf = [];
     }
@@ -10853,37 +11046,37 @@ var addPattern = /* @__PURE__ */ __name((schema, value, message, refs) => {
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/record.js
 function parseRecordDef(def, refs) {
-  if (refs.target === "openApi3" && def.keyType?._def.typeName === ZodFirstPartyTypeKind.ZodEnum) {
+  if (refs.target === "openApi3" && _optionalChain([def, 'access', _210 => _210.keyType, 'optionalAccess', _211 => _211._def, 'access', _212 => _212.typeName]) === ZodFirstPartyTypeKind.ZodEnum) {
     return {
       type: "object",
       required: def.keyType._def.values,
       properties: def.keyType._def.values.reduce((acc, key) => ({
         ...acc,
-        [key]: parseDef(def.valueType._def, {
+        [key]: _nullishCoalesce(parseDef(def.valueType._def, {
           ...refs,
           currentPath: [...refs.currentPath, "properties", key]
-        }) ?? {}
+        }), () => ( {}))
       }), {}),
       additionalProperties: false
     };
   }
   const schema = {
     type: "object",
-    additionalProperties: parseDef(def.valueType._def, {
+    additionalProperties: _nullishCoalesce(parseDef(def.valueType._def, {
       ...refs,
       currentPath: [...refs.currentPath, "additionalProperties"]
-    }) ?? {}
+    }), () => ( {}))
   };
   if (refs.target === "openApi3") {
     return schema;
   }
-  if (def.keyType?._def.typeName === ZodFirstPartyTypeKind.ZodString && def.keyType._def.checks?.length) {
+  if (_optionalChain([def, 'access', _213 => _213.keyType, 'optionalAccess', _214 => _214._def, 'access', _215 => _215.typeName]) === ZodFirstPartyTypeKind.ZodString && _optionalChain([def, 'access', _216 => _216.keyType, 'access', _217 => _217._def, 'access', _218 => _218.checks, 'optionalAccess', _219 => _219.length])) {
     const keyType = Object.entries(parseStringDef(def.keyType._def, refs)).reduce((acc, [key, value]) => key === "type" ? acc : { ...acc, [key]: value }, {});
     return {
       ...schema,
       propertyNames: keyType
     };
-  } else if (def.keyType?._def.typeName === ZodFirstPartyTypeKind.ZodEnum) {
+  } else if (_optionalChain([def, 'access', _220 => _220.keyType, 'optionalAccess', _221 => _221._def, 'access', _222 => _222.typeName]) === ZodFirstPartyTypeKind.ZodEnum) {
     return {
       ...schema,
       propertyNames: {
@@ -10893,7 +11086,7 @@ function parseRecordDef(def, refs) {
   }
   return schema;
 }
-__name(parseRecordDef, "parseRecordDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseRecordDef, "parseRecordDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/map.js
 function parseMapDef(def, refs) {
@@ -10919,7 +11112,7 @@ function parseMapDef(def, refs) {
     }
   };
 }
-__name(parseMapDef, "parseMapDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseMapDef, "parseMapDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/nativeEnum.js
 function parseNativeEnumDef(def) {
@@ -10934,7 +11127,7 @@ function parseNativeEnumDef(def) {
     enum: actualValues
   };
 }
-__name(parseNativeEnumDef, "parseNativeEnumDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseNativeEnumDef, "parseNativeEnumDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/never.js
 function parseNeverDef() {
@@ -10942,7 +11135,7 @@ function parseNeverDef() {
     not: {}
   };
 }
-__name(parseNeverDef, "parseNeverDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseNeverDef, "parseNeverDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/null.js
 function parseNullDef(refs) {
@@ -10953,7 +11146,7 @@ function parseNullDef(refs) {
     type: "null"
   };
 }
-__name(parseNullDef, "parseNullDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseNullDef, "parseNullDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/union.js
 var primitiveMappings = {
@@ -11015,8 +11208,8 @@ function parseUnionDef(def, refs) {
   }
   return asAnyOf(def, refs);
 }
-__name(parseUnionDef, "parseUnionDef");
-var asAnyOf = /* @__PURE__ */ __name((def, refs) => {
+_chunkEC6JY3PVcjs.__name.call(void 0, parseUnionDef, "parseUnionDef");
+var asAnyOf = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (def, refs) => {
   const anyOf = (def.options instanceof Map ? Array.from(def.options.values()) : def.options).map((x, i) => parseDef(x._def, {
     ...refs,
     currentPath: [...refs.currentPath, "anyOf", `${i}`]
@@ -11055,7 +11248,7 @@ function parseNullableDef(def, refs) {
   });
   return base && { anyOf: [base, { type: "null" }] };
 }
-__name(parseNullableDef, "parseNullableDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseNullableDef, "parseNullableDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/number.js
 function parseNumberDef(def, refs) {
@@ -11105,7 +11298,7 @@ function parseNumberDef(def, refs) {
   }
   return res;
 }
-__name(parseNumberDef, "parseNumberDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseNumberDef, "parseNumberDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/object.js
 function parseObjectDef(def, refs) {
@@ -11126,20 +11319,20 @@ function parseObjectDef(def, refs) {
         required: propDef.isOptional() ? acc.required : [...acc.required, propName]
       };
     }, { properties: {}, required: [] }),
-    additionalProperties: def.catchall._def.typeName === "ZodNever" ? def.unknownKeys === "passthrough" : parseDef(def.catchall._def, {
+    additionalProperties: def.catchall._def.typeName === "ZodNever" ? def.unknownKeys === "passthrough" : _nullishCoalesce(parseDef(def.catchall._def, {
       ...refs,
       currentPath: [...refs.currentPath, "additionalProperties"]
-    }) ?? true
+    }), () => ( true))
   };
   if (!result.required.length)
     delete result.required;
   return result;
 }
-__name(parseObjectDef, "parseObjectDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseObjectDef, "parseObjectDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/optional.js
-var parseOptionalDef = /* @__PURE__ */ __name((def, refs) => {
-  if (refs.currentPath.toString() === refs.propertyPath?.toString()) {
+var parseOptionalDef = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (def, refs) => {
+  if (refs.currentPath.toString() === _optionalChain([refs, 'access', _223 => _223.propertyPath, 'optionalAccess', _224 => _224.toString, 'call', _225 => _225()])) {
     return parseDef(def.innerType._def, refs);
   }
   const innerSchema = parseDef(def.innerType._def, {
@@ -11157,7 +11350,7 @@ var parseOptionalDef = /* @__PURE__ */ __name((def, refs) => {
 }, "parseOptionalDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/pipeline.js
-var parsePipelineDef = /* @__PURE__ */ __name((def, refs) => {
+var parsePipelineDef = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (def, refs) => {
   if (refs.pipeStrategy === "input") {
     return parseDef(def.in._def, refs);
   } else if (refs.pipeStrategy === "output") {
@@ -11180,7 +11373,7 @@ var parsePipelineDef = /* @__PURE__ */ __name((def, refs) => {
 function parsePromiseDef(def, refs) {
   return parseDef(def.type._def, refs);
 }
-__name(parsePromiseDef, "parsePromiseDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parsePromiseDef, "parsePromiseDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/set.js
 function parseSetDef(def, refs) {
@@ -11201,7 +11394,7 @@ function parseSetDef(def, refs) {
   }
   return schema;
 }
-__name(parseSetDef, "parseSetDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseSetDef, "parseSetDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/tuple.js
 function parseTupleDef(def, refs) {
@@ -11230,7 +11423,7 @@ function parseTupleDef(def, refs) {
     };
   }
 }
-__name(parseTupleDef, "parseTupleDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseTupleDef, "parseTupleDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/undefined.js
 function parseUndefinedDef() {
@@ -11238,16 +11431,16 @@ function parseUndefinedDef() {
     not: {}
   };
 }
-__name(parseUndefinedDef, "parseUndefinedDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseUndefinedDef, "parseUndefinedDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/unknown.js
 function parseUnknownDef() {
   return {};
 }
-__name(parseUnknownDef, "parseUnknownDef");
+_chunkEC6JY3PVcjs.__name.call(void 0, parseUnknownDef, "parseUnknownDef");
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/readonly.js
-var parseReadonlyDef = /* @__PURE__ */ __name((def, refs) => {
+var parseReadonlyDef = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (def, refs) => {
   return parseDef(def.innerType._def, refs);
 }, "parseReadonlyDef");
 
@@ -11269,8 +11462,8 @@ function parseDef(def, refs, forceResolution = false) {
   newItem.jsonSchema = jsonSchema;
   return jsonSchema;
 }
-__name(parseDef, "parseDef");
-var get$ref = /* @__PURE__ */ __name((item, refs) => {
+_chunkEC6JY3PVcjs.__name.call(void 0, parseDef, "parseDef");
+var get$ref = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (item, refs) => {
   switch (refs.$refStrategy) {
     case "root":
       return { $ref: item.path.join("/") };
@@ -11286,7 +11479,7 @@ var get$ref = /* @__PURE__ */ __name((item, refs) => {
     }
   }
 }, "get$ref");
-var getRelativePath = /* @__PURE__ */ __name((pathA, pathB) => {
+var getRelativePath = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (pathA, pathB) => {
   let i = 0;
   for (; i < pathA.length && i < pathB.length; i++) {
     if (pathA[i] !== pathB[i])
@@ -11294,7 +11487,7 @@ var getRelativePath = /* @__PURE__ */ __name((pathA, pathB) => {
   }
   return [(pathA.length - i).toString(), ...pathB.slice(i)].join("/");
 }, "getRelativePath");
-var selectParser = /* @__PURE__ */ __name((def, typeName, refs) => {
+var selectParser = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (def, typeName, refs) => {
   switch (typeName) {
     case ZodFirstPartyTypeKind.ZodString:
       return parseStringDef(def, refs);
@@ -11368,7 +11561,7 @@ var selectParser = /* @__PURE__ */ __name((def, typeName, refs) => {
       return /* @__PURE__ */ ((_) => void 0)(typeName);
   }
 }, "selectParser");
-var addMeta = /* @__PURE__ */ __name((def, refs, jsonSchema) => {
+var addMeta = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (def, refs, jsonSchema) => {
   if (def.description) {
     jsonSchema.description = def.description;
     if (refs.markdownDescription) {
@@ -11379,7 +11572,7 @@ var addMeta = /* @__PURE__ */ __name((def, refs, jsonSchema) => {
 }, "addMeta");
 
 // node_modules/zod-to-json-schema/dist/esm/Refs.js
-var getRefs = /* @__PURE__ */ __name((options) => {
+var getRefs = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (options) => {
   const _options = getDefaultOptions(options);
   const currentPath = _options.name !== void 0 ? [..._options.basePath, _options.definitionPath, _options.name] : _options.basePath;
   return {
@@ -11399,20 +11592,20 @@ var getRefs = /* @__PURE__ */ __name((options) => {
 }, "getRefs");
 
 // node_modules/zod-to-json-schema/dist/esm/zodToJsonSchema.js
-var zodToJsonSchema = /* @__PURE__ */ __name((schema, options) => {
+var zodToJsonSchema = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (schema, options) => {
   const refs = getRefs(options);
   const definitions = typeof options === "object" && options.definitions ? Object.entries(options.definitions).reduce((acc, [name2, schema2]) => ({
     ...acc,
-    [name2]: parseDef(schema2._def, {
+    [name2]: _nullishCoalesce(parseDef(schema2._def, {
       ...refs,
       currentPath: [...refs.basePath, refs.definitionPath, name2]
-    }, true) ?? {}
+    }, true), () => ( {}))
   }), {}) : void 0;
-  const name = typeof options === "string" ? options : options?.name;
-  const main = parseDef(schema._def, name === void 0 ? refs : {
+  const name = typeof options === "string" ? options : _optionalChain([options, 'optionalAccess', _226 => _226.name]);
+  const main = _nullishCoalesce(parseDef(schema._def, name === void 0 ? refs : {
     ...refs,
     currentPath: [...refs.basePath, refs.definitionPath, name]
-  }, false) ?? {};
+  }, false), () => ( {}));
   const combined = name === void 0 ? definitions ? {
     ...main,
     [refs.definitionPath]: definitions
@@ -11452,10 +11645,10 @@ function nodeDataJson(node) {
     };
   }
 }
-__name(nodeDataJson, "nodeDataJson");
+_chunkEC6JY3PVcjs.__name.call(void 0, nodeDataJson, "nodeDataJson");
 var Graph = class {
   static {
-    __name(this, "Graph");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "Graph");
   }
   constructor() {
     Object.defineProperty(this, "nodes", {
@@ -11568,10 +11761,10 @@ function _coerceToDict2(value, defaultKey) {
   return value && !Array.isArray(value) && // eslint-disable-next-line no-instanceof/no-instanceof
   !(value instanceof Date) && typeof value === "object" ? value : { [defaultKey]: value };
 }
-__name(_coerceToDict2, "_coerceToDict");
+_chunkEC6JY3PVcjs.__name.call(void 0, _coerceToDict2, "_coerceToDict");
 var Runnable = class extends Serializable {
   static {
-    __name(this, "Runnable");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "Runnable");
   }
   constructor() {
     super(...arguments);
@@ -11591,7 +11784,7 @@ var Runnable = class extends Serializable {
   getName(suffix) {
     const name = (
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      this.name ?? this.constructor.lc_name() ?? this.constructor.name
+      _nullishCoalesce(_nullishCoalesce(this.name, () => ( this.constructor.lc_name())), () => ( this.constructor.name))
     );
     return suffix ? `${name}${suffix}` : name;
   }
@@ -11620,7 +11813,7 @@ var Runnable = class extends Serializable {
       bound: this,
       kwargs: {},
       config: {},
-      maxAttemptNumber: fields?.stopAfterAttempt,
+      maxAttemptNumber: _optionalChain([fields, 'optionalAccess', _227 => _227.stopAfterAttempt]),
       ...fields
     });
   }
@@ -11658,8 +11851,8 @@ var Runnable = class extends Serializable {
     return Array.from({ length }, () => ensureConfig(options));
   }
   async batch(inputs, options, batchOptions) {
-    const configList = this._getOptionsList(options ?? {}, inputs.length);
-    const maxConcurrency = configList[0]?.maxConcurrency ?? batchOptions?.maxConcurrency;
+    const configList = this._getOptionsList(_nullishCoalesce(options, () => ( {})), inputs.length);
+    const maxConcurrency = _nullishCoalesce(_optionalChain([configList, 'access', _228 => _228[0], 'optionalAccess', _229 => _229.maxConcurrency]), () => ( _optionalChain([batchOptions, 'optionalAccess', _230 => _230.maxConcurrency])));
     const caller = new AsyncCaller2({
       maxConcurrency,
       onFailedAttempt: (e) => {
@@ -11671,7 +11864,7 @@ var Runnable = class extends Serializable {
         const result = await this.invoke(input, configList[i]);
         return result;
       } catch (e) {
-        if (batchOptions?.returnExceptions) {
+        if (_optionalChain([batchOptions, 'optionalAccess', _231 => _231.returnExceptions])) {
           return e;
         }
         throw e;
@@ -11727,15 +11920,15 @@ var Runnable = class extends Serializable {
   async _callWithConfig(func, input, options) {
     const config = ensureConfig(options);
     const callbackManager_ = await getCallbackManagerForConfig(config);
-    const runManager = await callbackManager_?.handleChainStart(this.toJSON(), _coerceToDict2(input, "input"), void 0, config?.runType, void 0, void 0, config?.runName ?? this.getName());
+    const runManager = await _optionalChain([callbackManager_, 'optionalAccess', _232 => _232.handleChainStart, 'call', _233 => _233(this.toJSON(), _coerceToDict2(input, "input"), void 0, _optionalChain([config, 'optionalAccess', _234 => _234.runType]), void 0, void 0, _nullishCoalesce(_optionalChain([config, 'optionalAccess', _235 => _235.runName]), () => ( this.getName())))]);
     let output;
     try {
       output = await func.call(this, input, config, runManager);
     } catch (e) {
-      await runManager?.handleChainError(e);
+      await _optionalChain([runManager, 'optionalAccess', _236 => _236.handleChainError, 'call', _237 => _237(e)]);
       throw e;
     }
-    await runManager?.handleChainEnd(_coerceToDict2(output, "output"));
+    await _optionalChain([runManager, 'optionalAccess', _238 => _238.handleChainEnd, 'call', _239 => _239(_coerceToDict2(output, "output"))]);
     return output;
   }
   /**
@@ -11748,17 +11941,17 @@ var Runnable = class extends Serializable {
    * @returns A promise that resolves to the output values.
    */
   async _batchWithConfig(func, inputs, options, batchOptions) {
-    const optionsList = this._getOptionsList(options ?? {}, inputs.length);
+    const optionsList = this._getOptionsList(_nullishCoalesce(options, () => ( {})), inputs.length);
     const callbackManagers = await Promise.all(optionsList.map(getCallbackManagerForConfig));
-    const runManagers = await Promise.all(callbackManagers.map((callbackManager, i) => callbackManager?.handleChainStart(this.toJSON(), _coerceToDict2(inputs[i], "input"), void 0, optionsList[i].runType, void 0, void 0, optionsList[i].runName ?? this.getName())));
+    const runManagers = await Promise.all(callbackManagers.map((callbackManager, i) => _optionalChain([callbackManager, 'optionalAccess', _240 => _240.handleChainStart, 'call', _241 => _241(this.toJSON(), _coerceToDict2(inputs[i], "input"), void 0, optionsList[i].runType, void 0, void 0, _nullishCoalesce(optionsList[i].runName, () => ( this.getName())))])));
     let outputs;
     try {
       outputs = await func.call(this, inputs, optionsList, runManagers, batchOptions);
     } catch (e) {
-      await Promise.all(runManagers.map((runManager) => runManager?.handleChainError(e)));
+      await Promise.all(runManagers.map((runManager) => _optionalChain([runManager, 'optionalAccess', _242 => _242.handleChainError, 'call', _243 => _243(e)])));
       throw e;
     }
-    await Promise.all(runManagers.map((runManager) => runManager?.handleChainEnd(_coerceToDict2(outputs, "output"))));
+    await Promise.all(runManagers.map((runManager) => _optionalChain([runManager, 'optionalAccess', _244 => _244.handleChainEnd, 'call', _245 => _245(_coerceToDict2(outputs, "output"))])));
     return outputs;
   }
   /**
@@ -11781,7 +11974,7 @@ var Runnable = class extends Serializable {
           } else {
             try {
               finalInput = concat(finalInput, chunk);
-            } catch {
+            } catch (e2) {
               finalInput = void 0;
               finalInputSupported = false;
             }
@@ -11790,13 +11983,13 @@ var Runnable = class extends Serializable {
         yield chunk;
       }
     }
-    __name(wrapInputForTracing, "wrapInputForTracing");
+    _chunkEC6JY3PVcjs.__name.call(void 0, wrapInputForTracing, "wrapInputForTracing");
     let runManager;
     try {
-      const pipe = await pipeGeneratorWithSetup(transformer.bind(this), wrapInputForTracing(), async () => callbackManager_?.handleChainStart(this.toJSON(), { input: "" }, void 0, config?.runType, void 0, void 0, config?.runName ?? this.getName()), config);
+      const pipe = await pipeGeneratorWithSetup(transformer.bind(this), wrapInputForTracing(), async () => _optionalChain([callbackManager_, 'optionalAccess', _246 => _246.handleChainStart, 'call', _247 => _247(this.toJSON(), { input: "" }, void 0, _optionalChain([config, 'optionalAccess', _248 => _248.runType]), void 0, void 0, _nullishCoalesce(_optionalChain([config, 'optionalAccess', _249 => _249.runName]), () => ( this.getName())))]), config);
       runManager = pipe.setup;
-      const isLogStreamHandler = /* @__PURE__ */ __name((handler) => handler.name === "log_stream_tracer", "isLogStreamHandler");
-      const streamLogHandler = runManager?.handlers.find(isLogStreamHandler);
+      const isLogStreamHandler = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (handler) => handler.name === "log_stream_tracer", "isLogStreamHandler");
+      const streamLogHandler = _optionalChain([runManager, 'optionalAccess', _250 => _250.handlers, 'access', _251 => _251.find, 'call', _252 => _252(isLogStreamHandler)]);
       let iterator = pipe.output;
       if (streamLogHandler !== void 0 && runManager !== void 0) {
         iterator = await streamLogHandler.tapOutputIterable(runManager.runId, pipe.output);
@@ -11809,7 +12002,7 @@ var Runnable = class extends Serializable {
           } else {
             try {
               finalOutput = concat(finalOutput, chunk);
-            } catch {
+            } catch (e3) {
               finalOutput = void 0;
               finalOutputSupported = false;
             }
@@ -11817,12 +12010,12 @@ var Runnable = class extends Serializable {
         }
       }
     } catch (e) {
-      await runManager?.handleChainError(e, void 0, void 0, void 0, {
+      await _optionalChain([runManager, 'optionalAccess', _253 => _253.handleChainError, 'call', _254 => _254(e, void 0, void 0, void 0, {
         inputs: _coerceToDict2(finalInput, "input")
-      });
+      })]);
       throw e;
     }
-    await runManager?.handleChainEnd(finalOutput ?? {}, void 0, void 0, void 0, { inputs: _coerceToDict2(finalInput, "input") });
+    await _optionalChain([runManager, 'optionalAccess', _255 => _255.handleChainEnd, 'call', _256 => _256(_nullishCoalesce(finalOutput, () => ( {})), void 0, void 0, void 0, { inputs: _coerceToDict2(finalInput, "input") })]);
   }
   getGraph(_) {
     const graph = new Graph();
@@ -11938,7 +12131,7 @@ var Runnable = class extends Serializable {
         await logStreamCallbackHandler.writer.close();
       }
     }
-    __name(consumeRunnableStream, "consumeRunnableStream");
+    _chunkEC6JY3PVcjs.__name.call(void 0, consumeRunnableStream, "consumeRunnableStream");
     const runnableStreamConsumePromise = consumeRunnableStream();
     try {
       for await (const log of logStreamCallbackHandler) {
@@ -11994,9 +12187,9 @@ var Runnable = class extends Serializable {
     let runLog;
     let hasEncounteredStartEvent = false;
     const config = ensureConfig(options);
-    const rootTags = config.tags ?? [];
-    const rootMetadata = config.metadata ?? {};
-    const rootName = config.runName ?? this.getName();
+    const rootTags = _nullishCoalesce(config.tags, () => ( []));
+    const rootMetadata = _nullishCoalesce(config.metadata, () => ( {}));
+    const rootName = _nullishCoalesce(config.runName, () => ( this.getName()));
     const logStreamCallbackHandler = new LogStreamCallbackHandler({
       ...streamOptions,
       autoClose: false,
@@ -12094,7 +12287,7 @@ var Runnable = class extends Serializable {
         }
       }
     }
-    const state = runLog?.state;
+    const state = _optionalChain([runLog, 'optionalAccess', _257 => _257.state]);
     if (state !== void 0) {
       const event = {
         event: `on_${state.type}_end`,
@@ -12146,7 +12339,7 @@ var Runnable = class extends Serializable {
 };
 var RunnableBinding = class _RunnableBinding extends Runnable {
   static {
-    __name(this, "RunnableBinding");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "RunnableBinding");
   }
   static lc_name() {
     return "RunnableBinding";
@@ -12280,7 +12473,7 @@ var RunnableBinding = class _RunnableBinding extends Runnable {
 };
 var RunnableEach = class _RunnableEach extends Runnable {
   static {
-    __name(this, "RunnableEach");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "RunnableEach");
   }
   static lc_name() {
     return "RunnableEach";
@@ -12333,7 +12526,7 @@ var RunnableEach = class _RunnableEach extends Runnable {
    * @returns A promise that resolves to the output of the runnable.
    */
   async _invoke(inputs, config, runManager) {
-    return this.bound.batch(inputs, patchConfig(config, { callbacks: runManager?.getChild() }));
+    return this.bound.batch(inputs, patchConfig(config, { callbacks: _optionalChain([runManager, 'optionalAccess', _258 => _258.getChild, 'call', _259 => _259()]) }));
   }
   /**
    * Bind lifecycle listeners to a Runnable, returning a new Runnable.
@@ -12354,7 +12547,7 @@ var RunnableEach = class _RunnableEach extends Runnable {
 };
 var RunnableRetry = class extends RunnableBinding {
   static {
-    __name(this, "RunnableRetry");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "RunnableRetry");
   }
   static lc_name() {
     return "RunnableRetry";
@@ -12380,12 +12573,12 @@ var RunnableRetry = class extends RunnableBinding {
       value: () => {
       }
     });
-    this.maxAttemptNumber = fields.maxAttemptNumber ?? this.maxAttemptNumber;
-    this.onFailedAttempt = fields.onFailedAttempt ?? this.onFailedAttempt;
+    this.maxAttemptNumber = _nullishCoalesce(fields.maxAttemptNumber, () => ( this.maxAttemptNumber));
+    this.onFailedAttempt = _nullishCoalesce(fields.onFailedAttempt, () => ( this.onFailedAttempt));
   }
   _patchConfigForRetry(attempt, config, runManager) {
     const tag = attempt > 1 ? `retry:attempt:${attempt}` : void 0;
-    return patchConfig(config, { callbacks: runManager?.getChild(tag) });
+    return patchConfig(config, { callbacks: _optionalChain([runManager, 'optionalAccess', _260 => _260.getChild, 'call', _261 => _261(tag)]) });
   }
   async _invoke(input, config, runManager) {
     return (0, import_p_retry3.default)((attemptNumber) => super.invoke(input, this._patchConfigForRetry(attemptNumber, config, runManager)), {
@@ -12414,7 +12607,7 @@ var RunnableRetry = class extends RunnableBinding {
         const remainingIndexes = inputs.map((_, i) => i).filter((i) => resultsMap[i.toString()] === void 0 || // eslint-disable-next-line no-instanceof/no-instanceof
         resultsMap[i.toString()] instanceof Error);
         const remainingInputs = remainingIndexes.map((i) => inputs[i]);
-        const patchedConfigs = remainingIndexes.map((i) => this._patchConfigForRetry(attemptNumber, configs?.[i], runManagers?.[i]));
+        const patchedConfigs = remainingIndexes.map((i) => this._patchConfigForRetry(attemptNumber, _optionalChain([configs, 'optionalAccess', _262 => _262[i]]), _optionalChain([runManagers, 'optionalAccess', _263 => _263[i]])));
         const results = await super.batch(remainingInputs, patchedConfigs, {
           ...batchOptions,
           returnExceptions: true
@@ -12440,7 +12633,7 @@ var RunnableRetry = class extends RunnableBinding {
         randomize: true
       });
     } catch (e) {
-      if (batchOptions?.returnExceptions !== true) {
+      if (_optionalChain([batchOptions, 'optionalAccess', _264 => _264.returnExceptions]) !== true) {
         throw e;
       }
     }
@@ -12452,7 +12645,7 @@ var RunnableRetry = class extends RunnableBinding {
 };
 var RunnableSequence = class _RunnableSequence extends Runnable {
   static {
-    __name(this, "RunnableSequence");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "RunnableSequence");
   }
   static lc_name() {
     return "RunnableSequence";
@@ -12490,7 +12683,7 @@ var RunnableSequence = class _RunnableSequence extends Runnable {
       value: ["langchain_core", "runnables"]
     });
     this.first = fields.first;
-    this.middle = fields.middle ?? this.middle;
+    this.middle = _nullishCoalesce(fields.middle, () => ( this.middle));
     this.last = fields.last;
     this.name = fields.name;
   }
@@ -12500,7 +12693,7 @@ var RunnableSequence = class _RunnableSequence extends Runnable {
   async invoke(input, options) {
     const config = ensureConfig(options);
     const callbackManager_ = await getCallbackManagerForConfig(config);
-    const runManager = await callbackManager_?.handleChainStart(this.toJSON(), _coerceToDict2(input, "input"), void 0, void 0, void 0, void 0, config?.runName);
+    const runManager = await _optionalChain([callbackManager_, 'optionalAccess', _265 => _265.handleChainStart, 'call', _266 => _266(this.toJSON(), _coerceToDict2(input, "input"), void 0, void 0, void 0, void 0, _optionalChain([config, 'optionalAccess', _267 => _267.runName]))]);
     let nextStepInput = input;
     let finalOutput;
     try {
@@ -12508,57 +12701,57 @@ var RunnableSequence = class _RunnableSequence extends Runnable {
       for (let i = 0; i < initialSteps.length; i += 1) {
         const step = initialSteps[i];
         nextStepInput = await step.invoke(nextStepInput, patchConfig(config, {
-          callbacks: runManager?.getChild(`seq:step:${i + 1}`)
+          callbacks: _optionalChain([runManager, 'optionalAccess', _268 => _268.getChild, 'call', _269 => _269(`seq:step:${i + 1}`)])
         }));
       }
       finalOutput = await this.last.invoke(nextStepInput, patchConfig(config, {
-        callbacks: runManager?.getChild(`seq:step:${this.steps.length}`)
+        callbacks: _optionalChain([runManager, 'optionalAccess', _270 => _270.getChild, 'call', _271 => _271(`seq:step:${this.steps.length}`)])
       }));
     } catch (e) {
-      await runManager?.handleChainError(e);
+      await _optionalChain([runManager, 'optionalAccess', _272 => _272.handleChainError, 'call', _273 => _273(e)]);
       throw e;
     }
-    await runManager?.handleChainEnd(_coerceToDict2(finalOutput, "output"));
+    await _optionalChain([runManager, 'optionalAccess', _274 => _274.handleChainEnd, 'call', _275 => _275(_coerceToDict2(finalOutput, "output"))]);
     return finalOutput;
   }
   async batch(inputs, options, batchOptions) {
-    const configList = this._getOptionsList(options ?? {}, inputs.length);
+    const configList = this._getOptionsList(_nullishCoalesce(options, () => ( {})), inputs.length);
     const callbackManagers = await Promise.all(configList.map(getCallbackManagerForConfig));
-    const runManagers = await Promise.all(callbackManagers.map((callbackManager, i) => callbackManager?.handleChainStart(this.toJSON(), _coerceToDict2(inputs[i], "input"), void 0, void 0, void 0, void 0, configList[i].runName)));
+    const runManagers = await Promise.all(callbackManagers.map((callbackManager, i) => _optionalChain([callbackManager, 'optionalAccess', _276 => _276.handleChainStart, 'call', _277 => _277(this.toJSON(), _coerceToDict2(inputs[i], "input"), void 0, void 0, void 0, void 0, configList[i].runName)])));
     let nextStepInputs = inputs;
     try {
       for (let i = 0; i < this.steps.length; i += 1) {
         const step = this.steps[i];
         nextStepInputs = await step.batch(nextStepInputs, runManagers.map((runManager, j) => {
-          const childRunManager = runManager?.getChild(`seq:step:${i + 1}`);
+          const childRunManager = _optionalChain([runManager, 'optionalAccess', _278 => _278.getChild, 'call', _279 => _279(`seq:step:${i + 1}`)]);
           return patchConfig(configList[j], { callbacks: childRunManager });
         }), batchOptions);
       }
     } catch (e) {
-      await Promise.all(runManagers.map((runManager) => runManager?.handleChainError(e)));
+      await Promise.all(runManagers.map((runManager) => _optionalChain([runManager, 'optionalAccess', _280 => _280.handleChainError, 'call', _281 => _281(e)])));
       throw e;
     }
-    await Promise.all(runManagers.map((runManager) => runManager?.handleChainEnd(_coerceToDict2(nextStepInputs, "output"))));
+    await Promise.all(runManagers.map((runManager) => _optionalChain([runManager, 'optionalAccess', _282 => _282.handleChainEnd, 'call', _283 => _283(_coerceToDict2(nextStepInputs, "output"))])));
     return nextStepInputs;
   }
   async *_streamIterator(input, options) {
     const callbackManager_ = await getCallbackManagerForConfig(options);
-    const runManager = await callbackManager_?.handleChainStart(this.toJSON(), _coerceToDict2(input, "input"), void 0, void 0, void 0, void 0, options?.runName);
+    const runManager = await _optionalChain([callbackManager_, 'optionalAccess', _284 => _284.handleChainStart, 'call', _285 => _285(this.toJSON(), _coerceToDict2(input, "input"), void 0, void 0, void 0, void 0, _optionalChain([options, 'optionalAccess', _286 => _286.runName]))]);
     const steps = [this.first, ...this.middle, this.last];
     let concatSupported = true;
     let finalOutput;
     async function* inputGenerator() {
       yield input;
     }
-    __name(inputGenerator, "inputGenerator");
+    _chunkEC6JY3PVcjs.__name.call(void 0, inputGenerator, "inputGenerator");
     try {
       let finalGenerator = steps[0].transform(inputGenerator(), patchConfig(options, {
-        callbacks: runManager?.getChild(`seq:step:1`)
+        callbacks: _optionalChain([runManager, 'optionalAccess', _287 => _287.getChild, 'call', _288 => _288(`seq:step:1`)])
       }));
       for (let i = 1; i < steps.length; i += 1) {
         const step = steps[i];
         finalGenerator = await step.transform(finalGenerator, patchConfig(options, {
-          callbacks: runManager?.getChild(`seq:step:${i + 1}`)
+          callbacks: _optionalChain([runManager, 'optionalAccess', _289 => _289.getChild, 'call', _290 => _290(`seq:step:${i + 1}`)])
         }));
       }
       for await (const chunk of finalGenerator) {
@@ -12577,10 +12770,10 @@ var RunnableSequence = class _RunnableSequence extends Runnable {
         }
       }
     } catch (e) {
-      await runManager?.handleChainError(e);
+      await _optionalChain([runManager, 'optionalAccess', _291 => _291.handleChainError, 'call', _292 => _292(e)]);
       throw e;
     }
-    await runManager?.handleChainEnd(_coerceToDict2(finalOutput, "output"));
+    await _optionalChain([runManager, 'optionalAccess', _293 => _293.handleChainEnd, 'call', _294 => _294(_coerceToDict2(finalOutput, "output"))]);
   }
   getGraph(config) {
     const graph = new Graph();
@@ -12615,7 +12808,7 @@ var RunnableSequence = class _RunnableSequence extends Runnable {
           ...coerceable.middle
         ]),
         last: coerceable.last,
-        name: this.name ?? coerceable.name
+        name: _nullishCoalesce(this.name, () => ( coerceable.name))
       });
     } else {
       return new _RunnableSequence({
@@ -12642,7 +12835,7 @@ var RunnableSequence = class _RunnableSequence extends Runnable {
 };
 var RunnableMap = class _RunnableMap extends Runnable {
   static {
-    __name(this, "RunnableMap");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "RunnableMap");
   }
   static lc_name() {
     return "RunnableMap";
@@ -12681,21 +12874,21 @@ var RunnableMap = class _RunnableMap extends Runnable {
   async invoke(input, options) {
     const config = ensureConfig(options);
     const callbackManager_ = await getCallbackManagerForConfig(config);
-    const runManager = await callbackManager_?.handleChainStart(this.toJSON(), {
+    const runManager = await _optionalChain([callbackManager_, 'optionalAccess', _295 => _295.handleChainStart, 'call', _296 => _296(this.toJSON(), {
       input
-    }, void 0, void 0, void 0, void 0, config?.runName);
+    }, void 0, void 0, void 0, void 0, _optionalChain([config, 'optionalAccess', _297 => _297.runName]))]);
     const output = {};
     try {
       await Promise.all(Object.entries(this.steps).map(async ([key, runnable]) => {
         output[key] = await runnable.invoke(input, patchConfig(config, {
-          callbacks: runManager?.getChild(`map:key:${key}`)
+          callbacks: _optionalChain([runManager, 'optionalAccess', _298 => _298.getChild, 'call', _299 => _299(`map:key:${key}`)])
         }));
       }));
     } catch (e) {
-      await runManager?.handleChainError(e);
+      await _optionalChain([runManager, 'optionalAccess', _300 => _300.handleChainError, 'call', _301 => _301(e)]);
       throw e;
     }
-    await runManager?.handleChainEnd(output);
+    await _optionalChain([runManager, 'optionalAccess', _302 => _302.handleChainEnd, 'call', _303 => _303(output)]);
     return output;
   }
   async *_transform(generator, runManager, options) {
@@ -12703,7 +12896,7 @@ var RunnableMap = class _RunnableMap extends Runnable {
     const inputCopies = atee(generator, Object.keys(steps).length);
     const tasks = new Map(Object.entries(steps).map(([key, runnable], i) => {
       const gen = runnable.transform(inputCopies[i], patchConfig(options, {
-        callbacks: runManager?.getChild(`map:key:${key}`)
+        callbacks: _optionalChain([runManager, 'optionalAccess', _304 => _304.getChild, 'call', _305 => _305(`map:key:${key}`)])
       }));
       return [key, gen.next().then((result) => ({ key, gen, result }))];
     }));
@@ -12723,7 +12916,7 @@ var RunnableMap = class _RunnableMap extends Runnable {
     async function* generator() {
       yield input;
     }
-    __name(generator, "generator");
+    _chunkEC6JY3PVcjs.__name.call(void 0, generator, "generator");
     const wrappedGenerator = new AsyncGeneratorWithSetup(this.transform(generator(), options));
     await wrappedGenerator.setup;
     return IterableReadableStream.fromAsyncGenerator(wrappedGenerator);
@@ -12731,7 +12924,7 @@ var RunnableMap = class _RunnableMap extends Runnable {
 };
 var RunnableLambda = class _RunnableLambda extends Runnable {
   static {
-    __name(this, "RunnableLambda");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "RunnableLambda");
   }
   static lc_name() {
     return "RunnableLambda";
@@ -12760,8 +12953,8 @@ var RunnableLambda = class _RunnableLambda extends Runnable {
   async _invoke(input, config, runManager) {
     return new Promise((resolve, reject) => {
       const childConfig = patchConfig(config, {
-        callbacks: runManager?.getChild(),
-        recursionLimit: (config?.recursionLimit ?? DEFAULT_RECURSION_LIMIT) - 1
+        callbacks: _optionalChain([runManager, 'optionalAccess', _306 => _306.getChild, 'call', _307 => _307()]),
+        recursionLimit: (_nullishCoalesce(_optionalChain([config, 'optionalAccess', _308 => _308.recursionLimit]), () => ( DEFAULT_RECURSION_LIMIT))) - 1
       });
       void AsyncLocalStorageProviderSingleton.getInstance().run(childConfig, async () => {
         try {
@@ -12770,12 +12963,12 @@ var RunnableLambda = class _RunnableLambda extends Runnable {
             config: childConfig
           });
           if (output && Runnable.isRunnable(output)) {
-            if (config?.recursionLimit === 0) {
+            if (_optionalChain([config, 'optionalAccess', _309 => _309.recursionLimit]) === 0) {
               throw new Error("Recursion limit reached.");
             }
             output = await output.invoke(input, {
               ...childConfig,
-              recursionLimit: (childConfig.recursionLimit ?? DEFAULT_RECURSION_LIMIT) - 1
+              recursionLimit: (_nullishCoalesce(childConfig.recursionLimit, () => ( DEFAULT_RECURSION_LIMIT))) - 1
             });
           }
           resolve(output);
@@ -12815,12 +13008,12 @@ var RunnableLambda = class _RunnableLambda extends Runnable {
       });
     });
     if (output && Runnable.isRunnable(output)) {
-      if (config?.recursionLimit === 0) {
+      if (_optionalChain([config, 'optionalAccess', _310 => _310.recursionLimit]) === 0) {
         throw new Error("Recursion limit reached.");
       }
       const stream = await output.stream(finalChunk, patchConfig(config, {
-        callbacks: runManager?.getChild(),
-        recursionLimit: (config?.recursionLimit ?? DEFAULT_RECURSION_LIMIT) - 1
+        callbacks: _optionalChain([runManager, 'optionalAccess', _311 => _311.getChild, 'call', _312 => _312()]),
+        recursionLimit: (_nullishCoalesce(_optionalChain([config, 'optionalAccess', _313 => _313.recursionLimit]), () => ( DEFAULT_RECURSION_LIMIT))) - 1
       }));
       for await (const chunk of stream) {
         yield chunk;
@@ -12836,7 +13029,7 @@ var RunnableLambda = class _RunnableLambda extends Runnable {
     async function* generator() {
       yield input;
     }
-    __name(generator, "generator");
+    _chunkEC6JY3PVcjs.__name.call(void 0, generator, "generator");
     const wrappedGenerator = new AsyncGeneratorWithSetup(this.transform(generator(), options));
     await wrappedGenerator.setup;
     return IterableReadableStream.fromAsyncGenerator(wrappedGenerator);
@@ -12844,7 +13037,7 @@ var RunnableLambda = class _RunnableLambda extends Runnable {
 };
 var RunnableWithFallbacks = class extends Runnable {
   static {
-    __name(this, "RunnableWithFallbacks");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "RunnableWithFallbacks");
   }
   static lc_name() {
     return "RunnableWithFallbacks";
@@ -12885,13 +13078,13 @@ var RunnableWithFallbacks = class extends Runnable {
     }
   }
   async invoke(input, options) {
-    const callbackManager_ = await CallbackManager.configure(options?.callbacks, void 0, options?.tags, void 0, options?.metadata);
-    const runManager = await callbackManager_?.handleChainStart(this.toJSON(), _coerceToDict2(input, "input"), void 0, void 0, void 0, void 0, options?.runName);
+    const callbackManager_ = await CallbackManager.configure(_optionalChain([options, 'optionalAccess', _314 => _314.callbacks]), void 0, _optionalChain([options, 'optionalAccess', _315 => _315.tags]), void 0, _optionalChain([options, 'optionalAccess', _316 => _316.metadata]));
+    const runManager = await _optionalChain([callbackManager_, 'optionalAccess', _317 => _317.handleChainStart, 'call', _318 => _318(this.toJSON(), _coerceToDict2(input, "input"), void 0, void 0, void 0, void 0, _optionalChain([options, 'optionalAccess', _319 => _319.runName]))]);
     let firstError;
     for (const runnable of this.runnables()) {
       try {
-        const output = await runnable.invoke(input, patchConfig(options, { callbacks: runManager?.getChild() }));
-        await runManager?.handleChainEnd(_coerceToDict2(output, "output"));
+        const output = await runnable.invoke(input, patchConfig(options, { callbacks: _optionalChain([runManager, 'optionalAccess', _320 => _320.getChild, 'call', _321 => _321()]) }));
+        await _optionalChain([runManager, 'optionalAccess', _322 => _322.handleChainEnd, 'call', _323 => _323(_coerceToDict2(output, "output"))]);
         return output;
       } catch (e) {
         if (firstError === void 0) {
@@ -12902,23 +13095,23 @@ var RunnableWithFallbacks = class extends Runnable {
     if (firstError === void 0) {
       throw new Error("No error stored at end of fallback.");
     }
-    await runManager?.handleChainError(firstError);
+    await _optionalChain([runManager, 'optionalAccess', _324 => _324.handleChainError, 'call', _325 => _325(firstError)]);
     throw firstError;
   }
   async batch(inputs, options, batchOptions) {
-    if (batchOptions?.returnExceptions) {
+    if (_optionalChain([batchOptions, 'optionalAccess', _326 => _326.returnExceptions])) {
       throw new Error("Not implemented.");
     }
-    const configList = this._getOptionsList(options ?? {}, inputs.length);
-    const callbackManagers = await Promise.all(configList.map((config) => CallbackManager.configure(config?.callbacks, void 0, config?.tags, void 0, config?.metadata)));
-    const runManagers = await Promise.all(callbackManagers.map((callbackManager, i) => callbackManager?.handleChainStart(this.toJSON(), _coerceToDict2(inputs[i], "input"), void 0, void 0, void 0, void 0, configList[i].runName)));
+    const configList = this._getOptionsList(_nullishCoalesce(options, () => ( {})), inputs.length);
+    const callbackManagers = await Promise.all(configList.map((config) => CallbackManager.configure(_optionalChain([config, 'optionalAccess', _327 => _327.callbacks]), void 0, _optionalChain([config, 'optionalAccess', _328 => _328.tags]), void 0, _optionalChain([config, 'optionalAccess', _329 => _329.metadata]))));
+    const runManagers = await Promise.all(callbackManagers.map((callbackManager, i) => _optionalChain([callbackManager, 'optionalAccess', _330 => _330.handleChainStart, 'call', _331 => _331(this.toJSON(), _coerceToDict2(inputs[i], "input"), void 0, void 0, void 0, void 0, configList[i].runName)])));
     let firstError;
     for (const runnable of this.runnables()) {
       try {
         const outputs = await runnable.batch(inputs, runManagers.map((runManager, j) => patchConfig(configList[j], {
-          callbacks: runManager?.getChild()
+          callbacks: _optionalChain([runManager, 'optionalAccess', _332 => _332.getChild, 'call', _333 => _333()])
         })), batchOptions);
-        await Promise.all(runManagers.map((runManager, i) => runManager?.handleChainEnd(_coerceToDict2(outputs[i], "output"))));
+        await Promise.all(runManagers.map((runManager, i) => _optionalChain([runManager, 'optionalAccess', _334 => _334.handleChainEnd, 'call', _335 => _335(_coerceToDict2(outputs[i], "output"))])));
         return outputs;
       } catch (e) {
         if (firstError === void 0) {
@@ -12929,7 +13122,7 @@ var RunnableWithFallbacks = class extends Runnable {
     if (!firstError) {
       throw new Error("No error stored at end of fallbacks.");
     }
-    await Promise.all(runManagers.map((runManager) => runManager?.handleChainError(firstError)));
+    await Promise.all(runManagers.map((runManager) => _optionalChain([runManager, 'optionalAccess', _336 => _336.handleChainError, 'call', _337 => _337(firstError)])));
     throw firstError;
   }
 };
@@ -12951,10 +13144,10 @@ function _coerceToRunnable(coerceable) {
 Instead got an unsupported type.`);
   }
 }
-__name(_coerceToRunnable, "_coerceToRunnable");
+_chunkEC6JY3PVcjs.__name.call(void 0, _coerceToRunnable, "_coerceToRunnable");
 var RunnableAssign = class extends Runnable {
   static {
-    __name(this, "RunnableAssign");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "RunnableAssign");
   }
   static lc_name() {
     return "RunnableAssign";
@@ -12994,7 +13187,7 @@ var RunnableAssign = class extends Runnable {
   async *_transform(generator, runManager, options) {
     const mapperKeys = this.mapper.getStepsKeys();
     const [forPassthrough, forMapper] = atee(generator);
-    const mapperOutput = this.mapper.transform(forMapper, patchConfig(options, { callbacks: runManager?.getChild() }));
+    const mapperOutput = this.mapper.transform(forMapper, patchConfig(options, { callbacks: _optionalChain([runManager, 'optionalAccess', _338 => _338.getChild, 'call', _339 => _339()]) }));
     const firstMapperChunkPromise = mapperOutput.next();
     for await (const chunk of forPassthrough) {
       if (typeof chunk !== "object" || Array.isArray(chunk)) {
@@ -13017,7 +13210,7 @@ var RunnableAssign = class extends Runnable {
     async function* generator() {
       yield input;
     }
-    __name(generator, "generator");
+    _chunkEC6JY3PVcjs.__name.call(void 0, generator, "generator");
     const wrappedGenerator = new AsyncGeneratorWithSetup(this.transform(generator(), options));
     await wrappedGenerator.setup;
     return IterableReadableStream.fromAsyncGenerator(wrappedGenerator);
@@ -13025,7 +13218,7 @@ var RunnableAssign = class extends Runnable {
 };
 var RunnablePick = class extends Runnable {
   static {
-    __name(this, "RunnablePick");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "RunnablePick");
   }
   static lc_name() {
     return "RunnablePick";
@@ -13081,7 +13274,7 @@ var RunnablePick = class extends Runnable {
     async function* generator() {
       yield input;
     }
-    __name(generator, "generator");
+    _chunkEC6JY3PVcjs.__name.call(void 0, generator, "generator");
     const wrappedGenerator = new AsyncGeneratorWithSetup(this.transform(generator(), options));
     await wrappedGenerator.setup;
     return IterableReadableStream.fromAsyncGenerator(wrappedGenerator);
@@ -13091,7 +13284,7 @@ var RunnablePick = class extends Runnable {
 // node_modules/@langchain/core/dist/prompts/base.js
 var BasePromptTemplate = class extends Runnable {
   static {
-    __name(this, "BasePromptTemplate");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "BasePromptTemplate");
   }
   get lc_attributes() {
     return {
@@ -13143,7 +13336,7 @@ var BasePromptTemplate = class extends Runnable {
    * @returns A Promise that resolves to an object containing the merged variables.
    */
   async mergePartialAndUserVariables(userVariables) {
-    const partialVariables = this.partialVariables ?? {};
+    const partialVariables = _nullishCoalesce(this.partialVariables, () => ( {}));
     const partialValues = {};
     for (const [key, value] of Object.entries(partialVariables)) {
       if (typeof value === "string") {
@@ -13186,15 +13379,15 @@ var BasePromptTemplate = class extends Runnable {
   static async deserialize(data) {
     switch (data._type) {
       case "prompt": {
-        const { PromptTemplate: PromptTemplate2 } = await import("./prompt-RILZLWRC.js");
+        const { PromptTemplate: PromptTemplate2 } = await Promise.resolve().then(() => _interopRequireWildcard(require("./prompt-C64LATPJ.cjs")));
         return PromptTemplate2.deserialize(data);
       }
       case void 0: {
-        const { PromptTemplate: PromptTemplate2 } = await import("./prompt-RILZLWRC.js");
+        const { PromptTemplate: PromptTemplate2 } = await Promise.resolve().then(() => _interopRequireWildcard(require("./prompt-C64LATPJ.cjs")));
         return PromptTemplate2.deserialize({ ...data, _type: "prompt" });
       }
       case "few_shot": {
-        const { FewShotPromptTemplate } = await import("./few_shot-VSBRAEAD.js");
+        const { FewShotPromptTemplate } = await Promise.resolve().then(() => _interopRequireWildcard(require("./few_shot-AD4TO6PN.cjs")));
         return FewShotPromptTemplate.deserialize(data);
       }
       default:
@@ -13206,7 +13399,7 @@ var BasePromptTemplate = class extends Runnable {
 // node_modules/@langchain/core/dist/prompts/string.js
 var BaseStringPromptTemplate = class extends BasePromptTemplate {
   static {
-    __name(this, "BaseStringPromptTemplate");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "BaseStringPromptTemplate");
   }
   /**
    * Formats the prompt given the input values and returns a formatted
@@ -13221,10 +13414,10 @@ var BaseStringPromptTemplate = class extends BasePromptTemplate {
 };
 
 // node_modules/@langchain/core/dist/prompts/template.js
-var parseFString = /* @__PURE__ */ __name((template) => {
+var parseFString = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (template) => {
   const chars = template.split("");
   const nodes = [];
-  const nextBracket = /* @__PURE__ */ __name((bracket, start) => {
+  const nextBracket = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (bracket, start) => {
     for (let i2 = start; i2 < chars.length; i2 += 1) {
       if (bracket.includes(chars[i2])) {
         return i2;
@@ -13261,7 +13454,7 @@ var parseFString = /* @__PURE__ */ __name((template) => {
   }
   return nodes;
 }, "parseFString");
-var interpolateFString = /* @__PURE__ */ __name((template, values) => parseFString(template).reduce((res, node) => {
+var interpolateFString = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (template, values) => parseFString(template).reduce((res, node) => {
   if (node.type === "variable") {
     if (node.name in values) {
       return res + values[node.name];
@@ -13276,9 +13469,9 @@ var DEFAULT_FORMATTER_MAPPING = {
 var DEFAULT_PARSER_MAPPING = {
   "f-string": parseFString
 };
-var renderTemplate = /* @__PURE__ */ __name((template, templateFormat, inputValues) => DEFAULT_FORMATTER_MAPPING[templateFormat](template, inputValues), "renderTemplate");
-var parseTemplate = /* @__PURE__ */ __name((template, templateFormat) => DEFAULT_PARSER_MAPPING[templateFormat](template), "parseTemplate");
-var checkValidTemplate = /* @__PURE__ */ __name((template, templateFormat, inputVariables) => {
+var renderTemplate = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (template, templateFormat, inputValues) => DEFAULT_FORMATTER_MAPPING[templateFormat](template, inputValues), "renderTemplate");
+var parseTemplate = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (template, templateFormat) => DEFAULT_PARSER_MAPPING[templateFormat](template), "parseTemplate");
+var checkValidTemplate = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (template, templateFormat, inputVariables) => {
   if (!(templateFormat in DEFAULT_FORMATTER_MAPPING)) {
     const validFormats = Object.keys(DEFAULT_FORMATTER_MAPPING);
     throw new Error(`Invalid template format. Got \`${templateFormat}\`;
@@ -13315,7 +13508,7 @@ var checkValidTemplate = /* @__PURE__ */ __name((template, templateFormat, input
 // node_modules/@langchain/core/dist/prompts/prompt.js
 var PromptTemplate = class _PromptTemplate extends BaseStringPromptTemplate {
   static {
-    __name(this, "PromptTemplate");
+    _chunkEC6JY3PVcjs.__name.call(void 0, this, "PromptTemplate");
   }
   static lc_name() {
     return "PromptTemplate";
@@ -13408,7 +13601,7 @@ var PromptTemplate = class _PromptTemplate extends BaseStringPromptTemplate {
   async partial(values) {
     const newInputVariables = this.inputVariables.filter((iv) => !(iv in values));
     const newPartialVariables = {
-      ...this.partialVariables ?? {},
+      ..._nullishCoalesce(this.partialVariables, () => ( {})),
       ...values
     };
     const promptDict = {
@@ -13442,26 +13635,26 @@ var PromptTemplate = class _PromptTemplate extends BaseStringPromptTemplate {
   }
 };
 
-export {
-  getEnvironmentVariable,
-  BaseCallbackHandler,
-  BaseMessage,
-  HumanMessage,
-  AIMessage,
-  SystemMessage,
-  ChatMessage,
-  isBaseMessage,
-  coerceMessageLikeToMessage,
-  Runnable,
-  ChatPromptValue,
-  ImagePromptValue,
-  BaseStringPromptTemplate,
-  parseFString,
-  renderTemplate,
-  checkValidTemplate,
-  PromptTemplate,
-  BasePromptTemplate
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+exports.getEnvironmentVariable = getEnvironmentVariable; exports.BaseCallbackHandler = BaseCallbackHandler; exports.BaseMessage = BaseMessage; exports.HumanMessage = HumanMessage; exports.AIMessage = AIMessage; exports.SystemMessage = SystemMessage; exports.ChatMessage = ChatMessage; exports.isBaseMessage = isBaseMessage; exports.coerceMessageLikeToMessage = coerceMessageLikeToMessage; exports.Runnable = Runnable; exports.ChatPromptValue = ChatPromptValue; exports.ImagePromptValue = ImagePromptValue; exports.BaseStringPromptTemplate = BaseStringPromptTemplate; exports.parseFString = parseFString; exports.renderTemplate = renderTemplate; exports.checkValidTemplate = checkValidTemplate; exports.PromptTemplate = PromptTemplate; exports.BasePromptTemplate = BasePromptTemplate;
 /*! Bundled license information:
 
 @langchain/core/dist/utils/fast-json-patch/src/helpers.js:

@@ -15,13 +15,13 @@
 
 
 
-var _chunkZUM2FNN6cjs = require('./chunk-ZUM2FNN6.cjs');
+var _chunkPKLSPEMDcjs = require('./chunk-PKLSPEMD.cjs');
 
 
 var _chunkEC6JY3PVcjs = require('./chunk-EC6JY3PV.cjs');
 
 // node_modules/@langchain/core/dist/prompts/image.js
-var ImagePromptTemplate = class _ImagePromptTemplate extends _chunkZUM2FNN6cjs.BasePromptTemplate {
+var ImagePromptTemplate = class _ImagePromptTemplate extends _chunkPKLSPEMDcjs.BasePromptTemplate {
   static {
     _chunkEC6JY3PVcjs.__name.call(void 0, this, "ImagePromptTemplate");
   }
@@ -62,7 +62,7 @@ var ImagePromptTemplate = class _ImagePromptTemplate extends _chunkZUM2FNN6cjs.B
       if (this.partialVariables) {
         totalInputVariables = totalInputVariables.concat(Object.keys(this.partialVariables));
       }
-      _chunkZUM2FNN6cjs.checkValidTemplate.call(void 0, [
+      _chunkPKLSPEMDcjs.checkValidTemplate.call(void 0, [
         { type: "image_url", image_url: this.template }
       ], this.templateFormat, totalInputVariables);
     }
@@ -127,12 +127,12 @@ var ImagePromptTemplate = class _ImagePromptTemplate extends _chunkZUM2FNN6cjs.B
    */
   async formatPromptValue(values) {
     const formattedPrompt = await this.format(values);
-    return new (0, _chunkZUM2FNN6cjs.ImagePromptValue)(formattedPrompt);
+    return new (0, _chunkPKLSPEMDcjs.ImagePromptValue)(formattedPrompt);
   }
 };
 
 // node_modules/@langchain/core/dist/prompts/chat.js
-var BaseMessagePromptTemplate = class extends _chunkZUM2FNN6cjs.Runnable {
+var BaseMessagePromptTemplate = class extends _chunkPKLSPEMDcjs.Runnable {
   static {
     _chunkEC6JY3PVcjs.__name.call(void 0, this, "BaseMessagePromptTemplate");
   }
@@ -185,7 +185,7 @@ var BaseMessageStringPromptTemplate = class extends BaseMessagePromptTemplate {
     return [await this.format(values)];
   }
 };
-var BaseChatPromptTemplate = class extends _chunkZUM2FNN6cjs.BasePromptTemplate {
+var BaseChatPromptTemplate = class extends _chunkPKLSPEMDcjs.BasePromptTemplate {
   static {
     _chunkEC6JY3PVcjs.__name.call(void 0, this, "BaseChatPromptTemplate");
   }
@@ -197,7 +197,7 @@ var BaseChatPromptTemplate = class extends _chunkZUM2FNN6cjs.BasePromptTemplate 
   }
   async formatPromptValue(values) {
     const resultMessages = await this.formatMessages(values);
-    return new (0, _chunkZUM2FNN6cjs.ChatPromptValue)(resultMessages);
+    return new (0, _chunkPKLSPEMDcjs.ChatPromptValue)(resultMessages);
   }
 };
 var ChatMessagePromptTemplate = class extends BaseMessageStringPromptTemplate {
@@ -221,10 +221,10 @@ var ChatMessagePromptTemplate = class extends BaseMessageStringPromptTemplate {
     this.role = fields.role;
   }
   async format(values) {
-    return new (0, _chunkZUM2FNN6cjs.ChatMessage)(await this.prompt.format(values), this.role);
+    return new (0, _chunkPKLSPEMDcjs.ChatMessage)(await this.prompt.format(values), this.role);
   }
   static fromTemplate(template, role) {
-    return new this(_chunkZUM2FNN6cjs.PromptTemplate.fromTemplate(template), role);
+    return new this(_chunkPKLSPEMDcjs.PromptTemplate.fromTemplate(template), role);
   }
 };
 var _StringImageMessagePromptTemplate = class extends BaseMessagePromptTemplate {
@@ -326,7 +326,7 @@ var _StringImageMessagePromptTemplate = class extends BaseMessagePromptTemplate 
   }
   static fromTemplate(template, additionalOptions) {
     if (typeof template === "string") {
-      return new this(_chunkZUM2FNN6cjs.PromptTemplate.fromTemplate(template));
+      return new this(_chunkPKLSPEMDcjs.PromptTemplate.fromTemplate(template));
     }
     const prompt = [];
     for (const item of template) {
@@ -337,13 +337,13 @@ var _StringImageMessagePromptTemplate = class extends BaseMessagePromptTemplate 
         } else if (typeof item.text === "string") {
           text = _nullishCoalesce(item.text, () => ( ""));
         }
-        prompt.push(_chunkZUM2FNN6cjs.PromptTemplate.fromTemplate(text));
+        prompt.push(_chunkPKLSPEMDcjs.PromptTemplate.fromTemplate(text));
       } else if (typeof item === "object" && "image_url" in item) {
         let imgTemplate = _nullishCoalesce(item.image_url, () => ( ""));
         let imgTemplateObject;
         let inputVariables = [];
         if (typeof imgTemplate === "string") {
-          const parsedTemplate = _chunkZUM2FNN6cjs.parseFString.call(void 0, imgTemplate);
+          const parsedTemplate = _chunkPKLSPEMDcjs.parseFString.call(void 0, imgTemplate);
           const variables = parsedTemplate.flatMap((item2) => item2.type === "variable" ? [item2.name] : []);
           if ((_nullishCoalesce(_optionalChain([variables, 'optionalAccess', _ => _.length]), () => ( 0))) > 0) {
             if (variables.length > 1) {
@@ -362,7 +362,7 @@ From: ${imgTemplate}`);
           });
         } else if (typeof imgTemplate === "object") {
           if ("url" in imgTemplate) {
-            const parsedTemplate = _chunkZUM2FNN6cjs.parseFString.call(void 0, imgTemplate.url);
+            const parsedTemplate = _chunkPKLSPEMDcjs.parseFString.call(void 0, imgTemplate.url);
             inputVariables = parsedTemplate.flatMap((item2) => item2.type === "variable" ? [item2.name] : []);
           } else {
             inputVariables = [];
@@ -380,7 +380,7 @@ From: ${imgTemplate}`);
     return new this({ prompt, additionalOptions });
   }
   async format(input) {
-    if (this.prompt instanceof _chunkZUM2FNN6cjs.BaseStringPromptTemplate) {
+    if (this.prompt instanceof _chunkPKLSPEMDcjs.BaseStringPromptTemplate) {
       const text = await this.prompt.format(input);
       return this.createMessage(text);
     } else {
@@ -396,7 +396,7 @@ From: ${imgTemplate}`);
           }
           inputs = { ...inputs, [item]: input[item] };
         }
-        if (prompt instanceof _chunkZUM2FNN6cjs.BaseStringPromptTemplate) {
+        if (prompt instanceof _chunkPKLSPEMDcjs.BaseStringPromptTemplate) {
           const formatted = await prompt.format(inputs);
           content.push({ type: "text", text: formatted });
         } else if (prompt instanceof ImagePromptTemplate) {
@@ -416,7 +416,7 @@ var HumanMessagePromptTemplate = class extends _StringImageMessagePromptTemplate
     _chunkEC6JY3PVcjs.__name.call(void 0, this, "HumanMessagePromptTemplate");
   }
   static _messageClass() {
-    return _chunkZUM2FNN6cjs.HumanMessage;
+    return _chunkPKLSPEMDcjs.HumanMessage;
   }
   static lc_name() {
     return "HumanMessagePromptTemplate";
@@ -427,7 +427,7 @@ var AIMessagePromptTemplate = class extends _StringImageMessagePromptTemplate {
     _chunkEC6JY3PVcjs.__name.call(void 0, this, "AIMessagePromptTemplate");
   }
   static _messageClass() {
-    return _chunkZUM2FNN6cjs.AIMessage;
+    return _chunkPKLSPEMDcjs.AIMessage;
   }
   static lc_name() {
     return "AIMessagePromptTemplate";
@@ -438,7 +438,7 @@ var SystemMessagePromptTemplate = class extends _StringImageMessagePromptTemplat
     _chunkEC6JY3PVcjs.__name.call(void 0, this, "SystemMessagePromptTemplate");
   }
   static _messageClass() {
-    return _chunkZUM2FNN6cjs.SystemMessage;
+    return _chunkPKLSPEMDcjs.SystemMessage;
   }
   static lc_name() {
     return "SystemMessagePromptTemplate";
@@ -449,17 +449,17 @@ function _isBaseMessagePromptTemplate(baseMessagePromptTemplateLike) {
 }
 _chunkEC6JY3PVcjs.__name.call(void 0, _isBaseMessagePromptTemplate, "_isBaseMessagePromptTemplate");
 function _coerceMessagePromptTemplateLike(messagePromptTemplateLike) {
-  if (_isBaseMessagePromptTemplate(messagePromptTemplateLike) || _chunkZUM2FNN6cjs.isBaseMessage.call(void 0, messagePromptTemplateLike)) {
+  if (_isBaseMessagePromptTemplate(messagePromptTemplateLike) || _chunkPKLSPEMDcjs.isBaseMessage.call(void 0, messagePromptTemplateLike)) {
     return messagePromptTemplateLike;
   }
-  const message = _chunkZUM2FNN6cjs.coerceMessageLikeToMessage.call(void 0, messagePromptTemplateLike);
+  const message = _chunkPKLSPEMDcjs.coerceMessageLikeToMessage.call(void 0, messagePromptTemplateLike);
   if (message._getType() === "human") {
     return HumanMessagePromptTemplate.fromTemplate(message.content);
   } else if (message._getType() === "ai") {
     return AIMessagePromptTemplate.fromTemplate(message.content);
   } else if (message._getType() === "system") {
     return SystemMessagePromptTemplate.fromTemplate(message.content);
-  } else if (_chunkZUM2FNN6cjs.ChatMessage.isInstance(message)) {
+  } else if (_chunkPKLSPEMDcjs.ChatMessage.isInstance(message)) {
     return ChatMessagePromptTemplate.fromTemplate(message.content, message.role);
   } else {
     throw new Error(`Could not coerce message prompt template from input. Received message type: "${message._getType()}".`);
@@ -500,7 +500,7 @@ var ChatPromptTemplate = class _ChatPromptTemplate extends BaseChatPromptTemplat
     if (this.validateTemplate) {
       const inputVariablesMessages = /* @__PURE__ */ new Set();
       for (const promptMessage of this.promptMessages) {
-        if (promptMessage instanceof _chunkZUM2FNN6cjs.BaseMessage)
+        if (promptMessage instanceof _chunkPKLSPEMDcjs.BaseMessage)
           continue;
         for (const inputVariable of promptMessage.inputVariables) {
           inputVariablesMessages.add(inputVariable);
@@ -539,7 +539,7 @@ var ChatPromptTemplate = class _ChatPromptTemplate extends BaseChatPromptTemplat
       } else {
         imageUrl = item.image_url.url;
       }
-      const promptTemplatePlaceholder = _chunkZUM2FNN6cjs.PromptTemplate.fromTemplate(imageUrl);
+      const promptTemplatePlaceholder = _chunkPKLSPEMDcjs.PromptTemplate.fromTemplate(imageUrl);
       const formattedUrl = await promptTemplatePlaceholder.format(inputValues);
       if (typeof item.image_url !== "string" && "url" in item.image_url) {
         item.image_url.url = formattedUrl;
@@ -555,7 +555,7 @@ var ChatPromptTemplate = class _ChatPromptTemplate extends BaseChatPromptTemplat
     const allValues = await this.mergePartialAndUserVariables(values);
     let resultMessages = [];
     for (const promptMessage of this.promptMessages) {
-      if (promptMessage instanceof _chunkZUM2FNN6cjs.BaseMessage) {
+      if (promptMessage instanceof _chunkPKLSPEMDcjs.BaseMessage) {
         resultMessages.push(await this._parseImagePrompts(promptMessage, allValues));
       } else {
         const inputValues = promptMessage.inputVariables.reduce((acc, inputVariable) => {
@@ -588,7 +588,7 @@ var ChatPromptTemplate = class _ChatPromptTemplate extends BaseChatPromptTemplat
    * Load prompt template from a template f-string
    */
   static fromTemplate(template) {
-    const prompt = _chunkZUM2FNN6cjs.PromptTemplate.fromTemplate(template);
+    const prompt = _chunkPKLSPEMDcjs.PromptTemplate.fromTemplate(template);
     const humanTemplate = new HumanMessagePromptTemplate({ prompt });
     return this.fromMessages([humanTemplate]);
   }
@@ -609,7 +609,7 @@ var ChatPromptTemplate = class _ChatPromptTemplate extends BaseChatPromptTemplat
     ), /* @__PURE__ */ Object.create(null));
     const inputVariables = /* @__PURE__ */ new Set();
     for (const promptMessage of flattenedMessages) {
-      if (promptMessage instanceof _chunkZUM2FNN6cjs.BaseMessage)
+      if (promptMessage instanceof _chunkPKLSPEMDcjs.BaseMessage)
         continue;
       for (const inputVariable of promptMessage.inputVariables) {
         if (inputVariable in flattenedPartialVariables) {
@@ -633,7 +633,7 @@ var ChatPromptTemplate = class _ChatPromptTemplate extends BaseChatPromptTemplat
 };
 
 // node_modules/@langchain/core/dist/prompts/few_shot.js
-var FewShotPromptTemplate = class _FewShotPromptTemplate extends _chunkZUM2FNN6cjs.BaseStringPromptTemplate {
+var FewShotPromptTemplate = class _FewShotPromptTemplate extends _chunkPKLSPEMDcjs.BaseStringPromptTemplate {
   static {
     _chunkEC6JY3PVcjs.__name.call(void 0, this, "FewShotPromptTemplate");
   }
@@ -705,7 +705,7 @@ var FewShotPromptTemplate = class _FewShotPromptTemplate extends _chunkZUM2FNN6c
       if (this.partialVariables) {
         totalInputVariables = totalInputVariables.concat(Object.keys(this.partialVariables));
       }
-      _chunkZUM2FNN6cjs.checkValidTemplate.call(void 0, this.prefix + this.suffix, this.templateFormat, totalInputVariables);
+      _chunkPKLSPEMDcjs.checkValidTemplate.call(void 0, this.prefix + this.suffix, this.templateFormat, totalInputVariables);
     }
   }
   _getPromptType() {
@@ -746,7 +746,7 @@ var FewShotPromptTemplate = class _FewShotPromptTemplate extends _chunkZUM2FNN6c
     const examples = await this.getExamples(allValues);
     const exampleStrings = await Promise.all(examples.map((example) => this.examplePrompt.format(example)));
     const template = [this.prefix, ...exampleStrings, this.suffix].join(this.exampleSeparator);
-    return _chunkZUM2FNN6cjs.renderTemplate.call(void 0, template, this.templateFormat, allValues);
+    return _chunkPKLSPEMDcjs.renderTemplate.call(void 0, template, this.templateFormat, allValues);
   }
   serialize() {
     if (this.exampleSelector || !this.examples) {
@@ -771,7 +771,7 @@ var FewShotPromptTemplate = class _FewShotPromptTemplate extends _chunkZUM2FNN6c
     if (!example_prompt) {
       throw new Error("Missing example prompt");
     }
-    const examplePrompt = await _chunkZUM2FNN6cjs.PromptTemplate.deserialize(example_prompt);
+    const examplePrompt = await _chunkPKLSPEMDcjs.PromptTemplate.deserialize(example_prompt);
     let examples;
     if (Array.isArray(data.examples)) {
       examples = data.examples;
@@ -874,7 +874,7 @@ var FewShotChatMessagePromptTemplate = class _FewShotChatMessagePromptTemplate e
       if (this.partialVariables) {
         totalInputVariables = totalInputVariables.concat(Object.keys(this.partialVariables));
       }
-      _chunkZUM2FNN6cjs.checkValidTemplate.call(void 0, this.prefix + this.suffix, this.templateFormat, totalInputVariables);
+      _chunkPKLSPEMDcjs.checkValidTemplate.call(void 0, this.prefix + this.suffix, this.templateFormat, totalInputVariables);
     }
   }
   async getExamples(inputVariables) {
@@ -919,7 +919,7 @@ var FewShotChatMessagePromptTemplate = class _FewShotChatMessagePromptTemplate e
     const exampleMessages = await Promise.all(examples.map((example) => this.examplePrompt.formatMessages(example)));
     const exampleStrings = exampleMessages.flat().map((message) => message.content);
     const template = [this.prefix, ...exampleStrings, this.suffix].join(this.exampleSeparator);
-    return _chunkZUM2FNN6cjs.renderTemplate.call(void 0, template, this.templateFormat, allValues);
+    return _chunkPKLSPEMDcjs.renderTemplate.call(void 0, template, this.templateFormat, allValues);
   }
   /**
    * Partially formats the prompt with the given values.
