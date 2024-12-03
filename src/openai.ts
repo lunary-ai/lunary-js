@@ -23,6 +23,7 @@ const parseOpenaiMessage = (message) => {
   const {
     role,
     content,
+    audio,
     refusal,
     name,
     function_call,
@@ -33,6 +34,7 @@ const parseOpenaiMessage = (message) => {
   return {
     role,
     content,
+    audio,
     refusal,
     function_call,
     tool_calls,

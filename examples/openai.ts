@@ -76,5 +76,54 @@ async function nonStreaming(input) {
   return res.choices[0].message.content
 }
 
-await streaming("Hello my name is Stuart and I live in New York City")
+async function audioInput() {
+  // Fetch an audio file and convert it to a base64 string
+  const url =
+    "https://openaiassets.blob.core.windows.net/$web/API/docs/audio/alloy.wav"
+  const audioResponse = await fetch(url)
+  const buffer = await audioResponse.arrayBuffer()
+  const base64str = Buffer.from(buffer).toString("base64")
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o-audio-preview",
+    modalities: ["text", "audio"],
+    audio: { voice: "alloy", format: "wav" },
+    messages: [
+      {
+        role: "user",
+        content: [
+          { type: "text", text: "What is in this recording?" },
+          {
+            type: "input_audio",
+            input_audio: { data: base64str, format: "wav" },
+          },
+        ],
+      },
+    ],
+  })
+
+  console.log(response.choices[0])
+}
+
+async function audioOutput() {
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o-audio-preview",
+    modalities: ["text", "audio"],
+    audio: { voice: "alloy", format: "wav" },
+    messages: [
+      {
+        role: "user",
+        content: "Is a golden retriever a good family dog?",
+      },
+    ],
+  })
+
+  // Inspect returned data
+  console.log(response.choices[0])
+}
+
+await audioInput()
+// await audioOutput()
+
+// await streaming("Hello my name is Stuart and I live in New York City")
 // await nonStreaming("bonjour")

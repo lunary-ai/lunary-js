@@ -16,6 +16,7 @@ var parseOpenaiMessage = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (
   const {
     role,
     content,
+    audio,
     refusal,
     name,
     function_call,
@@ -25,6 +26,7 @@ var parseOpenaiMessage = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (
   return {
     role,
     content,
+    audio,
     refusal,
     function_call,
     tool_calls,

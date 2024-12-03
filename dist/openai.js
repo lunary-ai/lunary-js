@@ -16,6 +16,7 @@ var parseOpenaiMessage = /* @__PURE__ */ __name((message) => {
   const {
     role,
     content,
+    audio,
     refusal,
     name,
     function_call,
@@ -25,6 +26,7 @@ var parseOpenaiMessage = /* @__PURE__ */ __name((message) => {
   return {
     role,
     content,
+    audio,
     refusal,
     function_call,
     tool_calls,

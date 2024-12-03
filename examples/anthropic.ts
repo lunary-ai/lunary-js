@@ -9,7 +9,6 @@ async function basic() {
     max_tokens: 1024,
     system: "Speak like a pirate",
     userId: "123",
-    // stream: true,
     // userProps: {
     //   name: "John Doe",
     // },
