@@ -1,5 +1,5 @@
 import { WrappableFn, WrappedFn, WrapParams } from './types.cjs';
-import { L as Lunary } from './lunary-K_X9schk.js';
+import { L as Lunary } from './lunary-CYBosqcB.js';
 
 declare class BackendMonitor extends Lunary {
     private wrap;

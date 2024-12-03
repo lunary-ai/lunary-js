@@ -51,7 +51,7 @@ class Lunary {
         checkEnv("LLMONITOR_API_URL") ||
         "https://api.lunary.ai",
       runtime: "lunary-js",
-      verbose: false,
+      verbose: checkEnv("LUNARY_VERBOSE") === "true" || false,
     })
 
     this.ctx = ctx

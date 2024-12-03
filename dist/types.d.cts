@@ -42,9 +42,24 @@ interface RunEvent extends Event {
 interface LogEvent extends Event {
     message: string;
 }
+type ChatMessageBlock = {
+    type: "text";
+    text: string;
+} | {
+    type: "image_url";
+    image_url: {
+        url: string;
+    };
+} | {
+    type: "input_audio";
+    input_audio: {
+        data: string;
+        format: "wav" | "mp3";
+    };
+};
 interface ChatMessage {
     role: "user" | "assistant" | "system" | "function" | "tool";
-    content?: string;
+    content?: string | Array<ChatMessageBlock>;
     [key: string]: cJSON;
 }
 type WrapExtras = {
@@ -86,4 +101,4 @@ type Template = {
     messages?: ChatMessage[];
 };
 
-export type { ChatMessage, Event, EventName, Identify, LogEvent, LunaryOptions, RunEvent, RunType, SetParent, Template, TokenUsage, WrapExtras, WrapParams, WrappableFn, WrappedFn, WrappedReturn, cJSON };
+export type { ChatMessage, ChatMessageBlock, Event, EventName, Identify, LogEvent, LunaryOptions, RunEvent, RunType, SetParent, Template, TokenUsage, WrapExtras, WrapParams, WrappableFn, WrappedFn, WrappedReturn, cJSON };

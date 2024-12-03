@@ -416,7 +416,7 @@ export async function getLangChainTemplate(
     return prompt
   } else {
     const messages: [string, string][] = template.messages.map((message) => {
-      const text = replaceDoubleCurlyBraces(message.content)
+      const text = replaceDoubleCurlyBraces(message.content as string)
       return [
         message.role.replace("user", "human").replace("assistant", "ai"),
         text,

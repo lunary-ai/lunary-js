@@ -9,6 +9,7 @@ export default defineConfig({
     "src/browser.ts",
     "src/react.ts",
     "src/langchain.ts",
+    "src/anthropic.ts",
   ],
   format: ["cjs", "esm"],
   bundle: true,

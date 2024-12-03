@@ -1,4 +1,4 @@
-import { WrapExtras, Template, WrappedReturn, cJSON } from './types.js';
+import { WrapExtras, cJSON, Template, WrappedReturn } from './types.js';
 import OpenAI from 'openai';
 import { APIPromise } from 'openai/core';
 import OpenAIStreaming from 'openai/streaming';
@@ -9,7 +9,7 @@ type NewParams = {
     userProps?: cJSON;
     metadata?: cJSON;
 };
-type WrapCreateFunction<T, U> = (body: (T & NewParams) | Template | Template & T, options?: OpenAI.RequestOptions) => WrappedReturn<CreateFunction<T, U>>;
+type WrapCreateFunction<T, U> = (body: (T & NewParams) | Template | (Template & T), options?: OpenAI.RequestOptions) => WrappedReturn<CreateFunction<T, U>>;
 type WrapCreate<T> = {
     chat: {
         completions: {

@@ -90,6 +90,45 @@ async function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 _chunkEC6JY3PVcjs.__name.call(void 0, sleep, "sleep");
+var teeAsync = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (iterable) => {
+  const AsyncIteratorProto = Object.getPrototypeOf(
+    Object.getPrototypeOf(async function* () {
+    }.prototype)
+  );
+  const iterator = iterable[Symbol.asyncIterator]();
+  const buffers = [[], []];
+  function makeIterator(buffer, i) {
+    const iter = Object.assign(Object.create(AsyncIteratorProto), {
+      next() {
+        if (!buffer)
+          return Promise.resolve({ done: true, value: void 0 });
+        if (buffer.length)
+          return buffer.shift();
+        const res = iterator.next();
+        if (buffers[i ^ 1])
+          buffers[i ^ 1].push(res);
+        return res;
+      },
+      async return() {
+        if (buffer) {
+          buffer = buffers[i] = null;
+          if (!buffers[i ^ 1])
+            await iterator.return();
+        }
+        return { done: true, value: void 0 };
+      },
+      [Symbol.asyncIterator]() {
+        return this;
+      }
+    });
+    return Object.assign(iter, {
+      controller: iterable.controller
+      // Copy any other important properties you need to preserve
+    });
+  }
+  _chunkEC6JY3PVcjs.__name.call(void 0, makeIterator, "makeIterator");
+  return buffers.map(makeIterator);
+}, "teeAsync");
 
 // src/thread.ts
 var Thread = (_class = class {
@@ -200,7 +239,7 @@ var Lunary = (_class2 = class {
       appId: checkEnv("LUNARY_PRIVATE_KEY") || checkEnv("LUNARY_PUBLIC_KEY") || checkEnv("LUNARY_APP_ID") || checkEnv("LLMONITOR_APP_ID"),
       apiUrl: checkEnv("LUNARY_API_URL") || checkEnv("LLMONITOR_API_URL") || "https://api.lunary.ai",
       runtime: "lunary-js",
-      verbose: false
+      verbose: checkEnv("LUNARY_VERBOSE") === "true" || false
     });
     this.ctx = ctx;
   }
@@ -519,4 +558,5 @@ var lunary_default = Lunary;
 
 
 
-exports.cleanError = cleanError; exports.cleanExtra = cleanExtra; exports.getFunctionInput = getFunctionInput; exports.generateUUID = generateUUID; exports.lunary_default = lunary_default;
+
+exports.cleanError = cleanError; exports.cleanExtra = cleanExtra; exports.getFunctionInput = getFunctionInput; exports.generateUUID = generateUUID; exports.teeAsync = teeAsync; exports.lunary_default = lunary_default;

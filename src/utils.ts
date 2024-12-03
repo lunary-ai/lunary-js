@@ -144,3 +144,45 @@ export const generateUUID = () => {
 export async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
+
+// Forks a stream in two
+// https://stackoverflow.com/questions/63543455/how-to-multicast-an-async-iterable
+
+export const teeAsync = (iterable) => {
+  const AsyncIteratorProto = Object.getPrototypeOf(
+    Object.getPrototypeOf(async function* () {}.prototype)
+  )
+
+  const iterator = iterable[Symbol.asyncIterator]()
+  const buffers = [[], []]
+
+  function makeIterator(buffer, i) {
+    const iter = Object.assign(Object.create(AsyncIteratorProto), {
+      next() {
+        if (!buffer) return Promise.resolve({ done: true, value: undefined })
+        if (buffer.length) return buffer.shift()
+        const res = iterator.next()
+        if (buffers[i ^ 1]) buffers[i ^ 1].push(res)
+        return res
+      },
+      async return() {
+        if (buffer) {
+          buffer = buffers[i] = null
+          if (!buffers[i ^ 1]) await iterator.return()
+        }
+        return { done: true, value: undefined }
+      },
+      [Symbol.asyncIterator]() {
+        return this
+      },
+    })
+
+    // Copy over any additional properties from the original iterable
+    return Object.assign(iter, {
+      controller: iterable.controller,
+      // Copy any other important properties you need to preserve
+    })
+  }
+
+  return buffers.map(makeIterator)
+}

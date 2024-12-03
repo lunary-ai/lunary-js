@@ -1,15 +1,15 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; } var _class;
 
-var _chunkDRLS2Q2Scjs = require('./chunk-DRLS2Q2S.cjs');
-require('./chunk-KQ3QIV55.cjs');
+var _chunkFDQWQVEPcjs = require('./chunk-FDQWQVEP.cjs');
 
 
-var _chunk7QTF3A3Qcjs = require('./chunk-7QTF3A3Q.cjs');
+var _chunkS6HCHLFEcjs = require('./chunk-S6HCHLFE.cjs');
+require('./chunk-23WRDMP5.cjs');
 
 
 
 
-var _chunkPKLSPEMDcjs = require('./chunk-PKLSPEMD.cjs');
+var _chunkNLT4IVE6cjs = require('./chunk-NLT4IVE6.cjs');
 
 
 var _chunkEC6JY3PVcjs = require('./chunk-EC6JY3PV.cjs');
@@ -116,7 +116,7 @@ var parseExtraAndName = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (l
   );
   return { name, params, cleanedMetadata, userId, userProps };
 }, "parseExtraAndName");
-var LunaryHandler = (_class = class extends _chunkPKLSPEMDcjs.BaseCallbackHandler {
+var LunaryHandler = (_class = class extends _chunkNLT4IVE6cjs.BaseCallbackHandler {
   static {
     _chunkEC6JY3PVcjs.__name.call(void 0, this, "LunaryHandler");
   }
@@ -124,13 +124,13 @@ var LunaryHandler = (_class = class extends _chunkPKLSPEMDcjs.BaseCallbackHandle
   
   constructor(fields = {}) {
     super(fields);_class.prototype.__init.call(this);;
-    this.lunary = _chunkDRLS2Q2Scjs.src_default;
+    this.lunary = _chunkS6HCHLFEcjs.src_default;
     if (fields) {
       const { appId, apiUrl, publicKey, verbose } = fields;
       this.lunary.init({
         verbose,
-        publicKey: _nullishCoalesce(_nullishCoalesce(_nullishCoalesce(_nullishCoalesce(publicKey, () => ( appId)), () => ( _chunkPKLSPEMDcjs.getEnvironmentVariable.call(void 0, "LUNARY_PUBLIC_KEY"))), () => ( _chunkPKLSPEMDcjs.getEnvironmentVariable.call(void 0, "LUNARY_APP_ID"))), () => ( _chunkPKLSPEMDcjs.getEnvironmentVariable.call(void 0, "LLMONITOR_APP_ID"))),
-        apiUrl: _nullishCoalesce(_nullishCoalesce(apiUrl, () => ( _chunkPKLSPEMDcjs.getEnvironmentVariable.call(void 0, "LUNARY_API_URL"))), () => ( _chunkPKLSPEMDcjs.getEnvironmentVariable.call(void 0, "LLMONITOR_API_URL")))
+        publicKey: _nullishCoalesce(_nullishCoalesce(_nullishCoalesce(_nullishCoalesce(publicKey, () => ( appId)), () => ( _chunkNLT4IVE6cjs.getEnvironmentVariable.call(void 0, "LUNARY_PUBLIC_KEY"))), () => ( _chunkNLT4IVE6cjs.getEnvironmentVariable.call(void 0, "LUNARY_APP_ID"))), () => ( _chunkNLT4IVE6cjs.getEnvironmentVariable.call(void 0, "LLMONITOR_APP_ID"))),
+        apiUrl: _nullishCoalesce(_nullishCoalesce(apiUrl, () => ( _chunkNLT4IVE6cjs.getEnvironmentVariable.call(void 0, "LUNARY_API_URL"))), () => ( _chunkNLT4IVE6cjs.getEnvironmentVariable.call(void 0, "LLMONITOR_API_URL")))
       });
     }
   }
@@ -265,10 +265,10 @@ var LunaryHandler = (_class = class extends _chunkPKLSPEMDcjs.BaseCallbackHandle
 }, _class);
 var replaceDoubleCurlyBraces = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (str) => str.replaceAll("{{", "{").replaceAll("}}", "}"), "replaceDoubleCurlyBraces");
 async function getLangChainTemplate(slug) {
-  const template = await _chunkDRLS2Q2Scjs.src_default.renderTemplate(slug);
+  const template = await _chunkS6HCHLFEcjs.src_default.renderTemplate(slug);
   if (template.prompt) {
     const text = replaceDoubleCurlyBraces(template.prompt);
-    const prompt = _chunkPKLSPEMDcjs.PromptTemplate.fromTemplate(text);
+    const prompt = _chunkNLT4IVE6cjs.PromptTemplate.fromTemplate(text);
     return prompt;
   } else {
     const messages = template.messages.map((message) => {
@@ -278,7 +278,7 @@ async function getLangChainTemplate(slug) {
         text
       ];
     });
-    const prompt = _chunk7QTF3A3Qcjs.ChatPromptTemplate.fromMessages(messages);
+    const prompt = _chunkFDQWQVEPcjs.ChatPromptTemplate.fromMessages(messages);
     return prompt;
   }
 }

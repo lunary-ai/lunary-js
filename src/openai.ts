@@ -13,55 +13,32 @@ import OpenAI from "openai"
 import { APIPromise } from "openai/core"
 import OpenAIStreaming from "openai/streaming"
 
-import { cleanExtra } from "./utils"
+import { cleanExtra, teeAsync } from "./utils"
 
 import monitor from "./index"
 
 const parseOpenaiMessage = (message) => {
   if (!message) return undefined
 
-  // Is name (of the function gpt wanted to call) actually useful to report?
-  const { role, content, name, function_call, tool_calls, tool_call_id } =
-    message
+  const {
+    role,
+    content,
+    refusal,
+    name,
+    function_call,
+    tool_calls,
+    tool_call_id,
+  } = message
 
   return {
     role,
     content,
+    refusal,
     function_call,
     tool_calls,
     tool_call_id,
     name,
   } as ChatMessage
-}
-
-// Forks a stream in two
-// https://stackoverflow.com/questions/63543455/how-to-multicast-an-async-iterable
-const teeAsync = (iterable) => {
-  const AsyncIteratorProto = Object.getPrototypeOf(
-    Object.getPrototypeOf(async function* () {}.prototype)
-  )
-
-  const iterator = iterable[Symbol.asyncIterator]()
-  const buffers = [[], []]
-  function makeIterator(buffer, i) {
-    return Object.assign(Object.create(AsyncIteratorProto), {
-      next() {
-        if (!buffer) return Promise.resolve({ done: true, value: undefined })
-        if (buffer.length) return buffer.shift()
-        const res = iterator.next()
-        if (buffers[i ^ 1]) buffers[i ^ 1].push(res)
-        return res
-      },
-      async return() {
-        if (buffer) {
-          buffer = buffers[i] = null
-          if (!buffers[i ^ 1]) await iterator.return()
-        }
-        return { done: true, value: undefined }
-      },
-    })
-  }
-  return buffers.map(makeIterator)
 }
 
 type CreateFunction<T, U> = (body: T, options?: OpenAI.RequestOptions) => U
@@ -74,7 +51,7 @@ type NewParams = {
 }
 
 type WrapCreateFunction<T, U> = (
-  body: (T & NewParams) | Template | Template & T,
+  body: (T & NewParams) | Template | (Template & T),
   options?: OpenAI.RequestOptions
 ) => WrappedReturn<CreateFunction<T, U>>
 
@@ -103,15 +80,23 @@ const PARAMS_TO_CAPTURE = [
   "top_p",
   "top_k",
   "stop",
+  "audio",
+  "prediction",
+  "modalities",
   "presence_penalty",
   "frequency_penalty",
   "seed",
   "function_call",
+  "service_tier",
+  "parallel_tool_calls",
   "functions",
   "tools",
   "tool_choice",
+  "top_logprobs",
+  "logprobs",
   "response_format",
   "max_tokens",
+  "max_completion_tokens",
   "logit_bias",
 ]
 
@@ -213,9 +198,7 @@ export function monitorOpenAI<T extends any>(
       return cleanExtra(rawExtra)
     },
     metadataParser(request) {
-      const metadata = request.metadata
-      delete request.metadata // delete key otherwise openai will throw error
-      return metadata
+      return request.metadata
     },
     outputParser: (res) => parseOpenaiMessage(res.choices[0].message || ""),
     tokensUsageParser: async (res) => {

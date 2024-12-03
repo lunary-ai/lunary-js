@@ -1,9 +1,10 @@
 import {
   src_default
-} from "./chunk-SD2JLWNB.js";
+} from "./chunk-VBSUZ4OG.js";
 import {
-  cleanExtra
-} from "./chunk-ETZUTZRH.js";
+  cleanExtra,
+  teeAsync
+} from "./chunk-SSVE3HL6.js";
 import {
   __name
 } from "./chunk-AGSXOS4O.js";
@@ -12,62 +13,47 @@ import {
 var parseOpenaiMessage = /* @__PURE__ */ __name((message) => {
   if (!message)
     return void 0;
-  const { role, content, name, function_call, tool_calls, tool_call_id } = message;
+  const {
+    role,
+    content,
+    refusal,
+    name,
+    function_call,
+    tool_calls,
+    tool_call_id
+  } = message;
   return {
     role,
     content,
+    refusal,
     function_call,
     tool_calls,
     tool_call_id,
     name
   };
 }, "parseOpenaiMessage");
-var teeAsync = /* @__PURE__ */ __name((iterable) => {
-  const AsyncIteratorProto = Object.getPrototypeOf(
-    Object.getPrototypeOf(async function* () {
-    }.prototype)
-  );
-  const iterator = iterable[Symbol.asyncIterator]();
-  const buffers = [[], []];
-  function makeIterator(buffer, i) {
-    return Object.assign(Object.create(AsyncIteratorProto), {
-      next() {
-        if (!buffer)
-          return Promise.resolve({ done: true, value: void 0 });
-        if (buffer.length)
-          return buffer.shift();
-        const res = iterator.next();
-        if (buffers[i ^ 1])
-          buffers[i ^ 1].push(res);
-        return res;
-      },
-      async return() {
-        if (buffer) {
-          buffer = buffers[i] = null;
-          if (!buffers[i ^ 1])
-            await iterator.return();
-        }
-        return { done: true, value: void 0 };
-      }
-    });
-  }
-  __name(makeIterator, "makeIterator");
-  return buffers.map(makeIterator);
-}, "teeAsync");
 var PARAMS_TO_CAPTURE = [
   "temperature",
   "top_p",
   "top_k",
   "stop",
+  "audio",
+  "prediction",
+  "modalities",
   "presence_penalty",
   "frequency_penalty",
   "seed",
   "function_call",
+  "service_tier",
+  "parallel_tool_calls",
   "functions",
   "tools",
   "tool_choice",
+  "top_logprobs",
+  "logprobs",
   "response_format",
   "max_tokens",
+  "max_completion_tokens",
   "logit_bias"
 ];
 function monitorOpenAI(openai, params = {}) {
@@ -144,9 +130,7 @@ function monitorOpenAI(openai, params = {}) {
       return cleanExtra(rawExtra);
     },
     metadataParser(request) {
-      const metadata = request.metadata;
-      delete request.metadata;
-      return metadata;
+      return request.metadata;
     },
     outputParser: (res) => parseOpenaiMessage(res.choices[0].message || ""),
     tokensUsageParser: async (res) => {

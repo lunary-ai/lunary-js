@@ -1,9 +1,10 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
-var _chunkDRLS2Q2Scjs = require('./chunk-DRLS2Q2S.cjs');
+var _chunkS6HCHLFEcjs = require('./chunk-S6HCHLFE.cjs');
 
 
-var _chunkKQ3QIV55cjs = require('./chunk-KQ3QIV55.cjs');
+
+var _chunk23WRDMP5cjs = require('./chunk-23WRDMP5.cjs');
 
 
 var _chunkEC6JY3PVcjs = require('./chunk-EC6JY3PV.cjs');
@@ -12,62 +13,47 @@ var _chunkEC6JY3PVcjs = require('./chunk-EC6JY3PV.cjs');
 var parseOpenaiMessage = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (message) => {
   if (!message)
     return void 0;
-  const { role, content, name, function_call, tool_calls, tool_call_id } = message;
+  const {
+    role,
+    content,
+    refusal,
+    name,
+    function_call,
+    tool_calls,
+    tool_call_id
+  } = message;
   return {
     role,
     content,
+    refusal,
     function_call,
     tool_calls,
     tool_call_id,
     name
   };
 }, "parseOpenaiMessage");
-var teeAsync = /* @__PURE__ */ _chunkEC6JY3PVcjs.__name.call(void 0, (iterable) => {
-  const AsyncIteratorProto = Object.getPrototypeOf(
-    Object.getPrototypeOf(async function* () {
-    }.prototype)
-  );
-  const iterator = iterable[Symbol.asyncIterator]();
-  const buffers = [[], []];
-  function makeIterator(buffer, i) {
-    return Object.assign(Object.create(AsyncIteratorProto), {
-      next() {
-        if (!buffer)
-          return Promise.resolve({ done: true, value: void 0 });
-        if (buffer.length)
-          return buffer.shift();
-        const res = iterator.next();
-        if (buffers[i ^ 1])
-          buffers[i ^ 1].push(res);
-        return res;
-      },
-      async return() {
-        if (buffer) {
-          buffer = buffers[i] = null;
-          if (!buffers[i ^ 1])
-            await iterator.return();
-        }
-        return { done: true, value: void 0 };
-      }
-    });
-  }
-  _chunkEC6JY3PVcjs.__name.call(void 0, makeIterator, "makeIterator");
-  return buffers.map(makeIterator);
-}, "teeAsync");
 var PARAMS_TO_CAPTURE = [
   "temperature",
   "top_p",
   "top_k",
   "stop",
+  "audio",
+  "prediction",
+  "modalities",
   "presence_penalty",
   "frequency_penalty",
   "seed",
   "function_call",
+  "service_tier",
+  "parallel_tool_calls",
   "functions",
   "tools",
   "tool_choice",
+  "top_logprobs",
+  "logprobs",
   "response_format",
   "max_tokens",
+  "max_completion_tokens",
   "logit_bias"
 ];
 function monitorOpenAI(openai, params = {}) {
@@ -132,7 +118,7 @@ function monitorOpenAI(openai, params = {}) {
     }
   }
   _chunkEC6JY3PVcjs.__name.call(void 0, handleStream, "handleStream");
-  const wrapped = _chunkDRLS2Q2Scjs.src_default.wrapModel(wrappedCreateChatCompletion, {
+  const wrapped = _chunkS6HCHLFEcjs.src_default.wrapModel(wrappedCreateChatCompletion, {
     nameParser: (request) => request.model,
     inputParser: (request) => request.messages.map(parseOpenaiMessage),
     paramsParser: (request) => {
@@ -141,12 +127,10 @@ function monitorOpenAI(openai, params = {}) {
         if (request[param])
           rawExtra[param] = request[param];
       }
-      return _chunkKQ3QIV55cjs.cleanExtra.call(void 0, rawExtra);
+      return _chunk23WRDMP5cjs.cleanExtra.call(void 0, rawExtra);
     },
     metadataParser(request) {
-      const metadata = request.metadata;
-      delete request.metadata;
-      return metadata;
+      return request.metadata;
     },
     outputParser: (res) => parseOpenaiMessage(res.choices[0].message || ""),
     tokensUsageParser: async (res) => {
@@ -174,7 +158,7 @@ function monitorOpenAI(openai, params = {}) {
     },
     enableWaitUntil: (request) => !!request.stream,
     waitUntil: (stream, onComplete, onError) => {
-      const [og, copy] = teeAsync(stream);
+      const [og, copy] = _chunk23WRDMP5cjs.teeAsync.call(void 0, stream);
       handleStream(copy, onComplete, onError);
       return og;
     },
