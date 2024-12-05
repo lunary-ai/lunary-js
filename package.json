@@ -1,6 +1,6 @@
 {
   "name": "lunary",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "Lunary is an open-source platform for AI developers.",
   "type": "module",
   "types": "./dist/index.d.ts",
@@ -97,7 +97,7 @@
   "peerDependencies": {
     "openai": "^4.0.0",
     "react": ">=17.0.0",
-    "anthropic": "^0.20.0"
+    "@anthropic-ai/sdk": "^0.20.0"
   },
   "peerDependenciesMeta": {
     "openai": {
