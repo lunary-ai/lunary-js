@@ -35,6 +35,7 @@ export type EventName =
   | "warn"
   | "feedback"
   | "chat"
+  | "custom-event"
 
 export interface Event {
   type: RunType

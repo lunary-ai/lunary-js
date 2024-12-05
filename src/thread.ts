@@ -123,4 +123,21 @@ export class Thread {
       extra: props,
     })
   }
+
+  /**
+   * Track a custom event in the thread
+   *
+   * @param {string} eventName - The name of the event
+   * @param {cJSON} [metadata] - Optional metadata associated with the event
+   */
+  trackEvent = (eventName: string, metadata?: cJSON) => {
+    this.monitor.trackEvent("thread", "custom-event", {
+      name: eventName,
+      runId: generateUUID(),
+      userId: this.userId,
+      userProps: this.userProps,
+      parentRunId: this.id,
+      metadata,
+    })
+  }
 }

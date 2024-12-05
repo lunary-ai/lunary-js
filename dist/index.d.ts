@@ -1,5 +1,5 @@
 import { WrappableFn, WrappedFn, WrapParams } from './types.js';
-import { L as Lunary } from './lunary-CruiwLvN.js';
+import { L as Lunary } from './lunary-CD33QUFB.js';
 
 declare class BackendMonitor extends Lunary {
     private wrap;
@@ -28,6 +28,15 @@ declare class BackendMonitor extends Lunary {
      * @param {WrapParams} params - Wrap params
      */
     wrapModel<T extends WrappableFn>(func: T, params?: WrapParams<T>): WrappedFn<T>;
+    /**
+     * Scores a run based on the provided label, value, and optional comment
+     *
+     * @param {string} runId - Unique run identifier
+     * @param {string} label - Evaluation label
+     * @param {number | string | boolean} value - Evaluation value
+     * @param {string} [comment] - Optional evaluation comment
+     */
+    score(runId: string, label: string, value: number | string | boolean, comment?: string): Promise<void>;
 }
 
 declare const lunary: BackendMonitor;

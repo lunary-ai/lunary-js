@@ -238,6 +238,48 @@ class BackendMonitor extends Lunary {
   ): WrappedFn<T> {
     return this.wrap("llm", func, params) as WrappedFn<T>
   }
+
+  /**
+   * Scores a run based on the provided label, value, and optional comment
+   *
+   * @param {string} runId - Unique run identifier
+   * @param {string} label - Evaluation label
+   * @param {number | string | boolean} value - Evaluation value
+   * @param {string} [comment] - Optional evaluation comment
+   */
+  async score(
+    runId: string,
+    label: string,
+    value: number | string | boolean,
+    comment?: string
+  ) {
+    try {
+      const url = `${this.apiUrl}/v1/runs/${runId}/score`
+      const headers = {
+        Authorization: `Bearer ${this.publicKey}`,
+        "Content-Type": "application/json",
+      }
+
+      const data = {
+        label,
+        value,
+        ...(comment && { comment }),
+      }
+
+      const response = await fetch(url, {
+        method: "PATCH",
+        headers,
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        const text = await response.text()
+        throw new Error(`Error scoring run: ${response.status} - ${text}`)
+      }
+    } catch (error) {
+      throw new Error(`Error scoring run: ${error.message}`)
+    }
+  }
 }
 
 // Export the BackendMonitor class if user wants to initiate multiple instances

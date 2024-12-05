@@ -1,4 +1,4 @@
-import { cJSON, LunaryOptions, RunType, EventName, RunEvent, LogEvent, Template } from './types.cjs';
+import { cJSON, LunaryOptions, RunType, EventName, RunEvent, LogEvent, Template } from './types.js';
 
 /**
  * Flow:
@@ -58,6 +58,13 @@ declare class Thread {
      * @param {cJSON} props - Extra properties to send with the message
      * */
     trackBotMessage: (replyToId: string, text: string, props?: cJSON) => void;
+    /**
+     * Track a custom event in the thread
+     *
+     * @param {string} eventName - The name of the event
+     * @param {cJSON} [metadata] - Optional metadata associated with the event
+     */
+    trackEvent: (eventName: string, metadata?: cJSON) => void;
 }
 
 declare class Lunary {

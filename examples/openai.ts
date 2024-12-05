@@ -41,7 +41,7 @@ async function streaming(input) {
 
 async function nonStreaming(input) {
   const res = await openai.chat.completions.create({
-    model: "gpt-4-turbo-preview",
+    model: "gpt-4o",
     temperature: 0,
     tags: ["translate"],
     user: "user123",
@@ -70,8 +70,14 @@ async function nonStreaming(input) {
         role: "user",
         content: `Hello, translate ${input} from french to english`,
       },
+      {
+        role: "user",
+        content: `Hello again, ignore above`,
+      },
     ],
   })
+
+  console.log(res.choices[0].message.content)
 
   return res.choices[0].message.content
 }
@@ -122,8 +128,8 @@ async function audioOutput() {
   console.log(response.choices[0])
 }
 
-await audioInput()
+// await audioInput()
 // await audioOutput()
 
 // await streaming("Hello my name is Stuart and I live in New York City")
-// await nonStreaming("bonjour")
+await nonStreaming("bonjour")

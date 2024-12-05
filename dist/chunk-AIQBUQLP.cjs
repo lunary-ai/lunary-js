@@ -3,7 +3,7 @@
 
 
 
-var _chunk23WRDMP5cjs = require('./chunk-23WRDMP5.cjs');
+var _chunkM7VRZYX6cjs = require('./chunk-M7VRZYX6.cjs');
 
 
 var _chunkEC6JY3PVcjs = require('./chunk-EC6JY3PV.cjs');
@@ -49,7 +49,7 @@ var chainable_default = {
 };
 
 // src/index.ts
-var BackendMonitor = class extends _chunk23WRDMP5cjs.lunary_default {
+var BackendMonitor = class extends _chunkM7VRZYX6cjs.lunary_default {
   static {
     _chunkEC6JY3PVcjs.__name.call(void 0, this, "BackendMonitor");
   }
@@ -95,7 +95,7 @@ var BackendMonitor = class extends _chunk23WRDMP5cjs.lunary_default {
   // Extract the actual execution logic into a function
   async executeWrappedFunction(target) {
     const { type, args, func, params: properties } = target;
-    const runId2 = _chunk23WRDMP5cjs.generateUUID.call(void 0, );
+    const runId2 = _chunkM7VRZYX6cjs.generateUUID.call(void 0, );
     const name = _optionalChain([properties, 'optionalAccess', _ => _.nameParser]) ? properties.nameParser(...args) : _nullishCoalesce(_optionalChain([properties, 'optionalAccess', _2 => _2.name]), () => ( func.name));
     const {
       inputParser,
@@ -118,7 +118,7 @@ var BackendMonitor = class extends _chunk23WRDMP5cjs.lunary_default {
     const userIdData = _optionalChain([properties, 'optionalAccess', _6 => _6.userIdParser]) ? properties.userIdParser(...args) : userId;
     const userPropsData = _optionalChain([properties, 'optionalAccess', _7 => _7.userPropsParser]) ? properties.userPropsParser(...args) : userProps;
     const templateId = _optionalChain([properties, 'optionalAccess', _8 => _8.templateParser]) ? properties.templateParser(...args) : templateParser;
-    const input = inputParser ? inputParser(...args) : _chunk23WRDMP5cjs.getFunctionInput.call(void 0, func, args);
+    const input = inputParser ? inputParser(...args) : _chunkM7VRZYX6cjs.getFunctionInput.call(void 0, func, args);
     if (track !== false) {
       this.trackEvent(type, "start", {
         runId: runId2,
@@ -164,7 +164,7 @@ var BackendMonitor = class extends _chunk23WRDMP5cjs.lunary_default {
       if (track !== false) {
         this.trackEvent(type, "error", {
           runId: runId2,
-          error: _chunk23WRDMP5cjs.cleanError.call(void 0, error)
+          error: _chunkM7VRZYX6cjs.cleanError.call(void 0, error)
         });
         await this.processQueue();
       }
@@ -202,6 +202,39 @@ var BackendMonitor = class extends _chunk23WRDMP5cjs.lunary_default {
    */
   wrapModel(func, params) {
     return this.wrap("llm", func, params);
+  }
+  /**
+   * Scores a run based on the provided label, value, and optional comment
+   *
+   * @param {string} runId - Unique run identifier
+   * @param {string} label - Evaluation label
+   * @param {number | string | boolean} value - Evaluation value
+   * @param {string} [comment] - Optional evaluation comment
+   */
+  async score(runId2, label, value, comment) {
+    try {
+      const url = `${this.apiUrl}/v1/runs/${runId2}/score`;
+      const headers = {
+        Authorization: `Bearer ${this.publicKey}`,
+        "Content-Type": "application/json"
+      };
+      const data = {
+        label,
+        value,
+        ...comment && { comment }
+      };
+      const response = await fetch(url, {
+        method: "PATCH",
+        headers,
+        body: JSON.stringify(data)
+      });
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`Error scoring run: ${response.status} - ${text}`);
+      }
+    } catch (error) {
+      throw new Error(`Error scoring run: ${error.message}`);
+    }
   }
 };
 var lunary = new BackendMonitor(context_default);

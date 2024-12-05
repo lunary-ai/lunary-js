@@ -3,7 +3,7 @@ import {
   generateUUID,
   getFunctionInput,
   lunary_default
-} from "./chunk-SSVE3HL6.js";
+} from "./chunk-KJ6SSTH5.js";
 import {
   __name
 } from "./chunk-AGSXOS4O.js";
@@ -202,6 +202,39 @@ var BackendMonitor = class extends lunary_default {
    */
   wrapModel(func, params) {
     return this.wrap("llm", func, params);
+  }
+  /**
+   * Scores a run based on the provided label, value, and optional comment
+   *
+   * @param {string} runId - Unique run identifier
+   * @param {string} label - Evaluation label
+   * @param {number | string | boolean} value - Evaluation value
+   * @param {string} [comment] - Optional evaluation comment
+   */
+  async score(runId2, label, value, comment) {
+    try {
+      const url = `${this.apiUrl}/v1/runs/${runId2}/score`;
+      const headers = {
+        Authorization: `Bearer ${this.publicKey}`,
+        "Content-Type": "application/json"
+      };
+      const data = {
+        label,
+        value,
+        ...comment && { comment }
+      };
+      const response = await fetch(url, {
+        method: "PATCH",
+        headers,
+        body: JSON.stringify(data)
+      });
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`Error scoring run: ${response.status} - ${text}`);
+      }
+    } catch (error) {
+      throw new Error(`Error scoring run: ${error.message}`);
+    }
   }
 };
 var lunary = new BackendMonitor(context_default);

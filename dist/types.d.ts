@@ -9,7 +9,7 @@ interface LunaryOptions {
     runtime?: string;
 }
 type RunType = "log" | "tool" | "agent" | "llm" | "chain" | "retriever" | "embed" | "thread" | "chat";
-type EventName = "start" | "end" | "error" | "info" | "warn" | "feedback" | "chat";
+type EventName = "start" | "end" | "error" | "info" | "warn" | "feedback" | "chat" | "custom-event";
 interface Event {
     type: RunType;
     event: EventName;
