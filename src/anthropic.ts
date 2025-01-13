@@ -1,5 +1,5 @@
 import type Anthropic from "@anthropic-ai/sdk"
-import { ChatMessage, Template, WrapExtras, WrappedReturn } from "./types"
+import { ChatMessage, WrapExtras } from "./types"
 import { cleanExtra, teeAsync } from "./utils"
 import monitor from "./index"
 import { Stream } from "@anthropic-ai/sdk/streaming.mjs"
