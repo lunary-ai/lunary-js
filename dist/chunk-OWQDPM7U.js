@@ -181,11 +181,21 @@ var BackendMonitor = class extends lunary_default {
   }
   /**
    * Wrap an agent's Promise to track it's input, results and any errors.
+   * An agent is a group of tools and llms that work together to achieve a goal.
    * @param {Promise} func - Agent function
    * @param {WrapParams} params - Wrap params
    */
   wrapAgent(func, params) {
     return this.wrap("agent", func, params);
+  }
+  /**
+   * Wrap an chain's Promise to track it's input, results and any errors.
+   * A chain is a grouped sequence of actions (llms, tools and agents).
+   * @param {Promise} func - Chain function
+   * @param {WrapParams} params - Wrap params
+   */
+  wrapChain(func, params) {
+    return this.wrap("chain", func, params);
   }
   /**
    * Wrap an tool's Promise to track it's input, results and any errors.
