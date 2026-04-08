@@ -60,6 +60,7 @@ export interface Event {
 export type TokenUsage = {
   completion: number
   prompt: number
+  promptCached?: number
 }
 
 export interface RunEvent extends Event {
@@ -109,6 +110,7 @@ export type WrapParams<T extends WrappableFn> = {
   track?: boolean
   inputParser?: (...args: Parameters<T>) => cJSON
   metadataParser?: (...args: Parameters<T>) => cJSON
+  outputMetadataParser?: (result: Awaited<ReturnType<T>>) => cJSON
   paramsParser?: (...args: Parameters<T>) => cJSON
   nameParser?: (...args: Parameters<T>) => string
   outputParser?: (result: Awaited<ReturnType<T>>) => cJSON
@@ -124,7 +126,7 @@ export type WrapParams<T extends WrappableFn> = {
   waitUntil?: (
     result: Awaited<ReturnType<T>>,
     onComplete: (any) => any,
-    onError: (any) => any
+    onError: (any) => any,
   ) => ReturnType<T>
 } & WrapExtras
 
@@ -132,11 +134,11 @@ export type WrappableFn = (...args: any[]) => any
 
 export type Identify<T extends WrappableFn> = (
   userId: string,
-  userProps?: cJSON
+  userProps?: cJSON,
 ) => WrappedReturn<T>
 
 export type SetParent<T extends WrappableFn> = (
-  runId: string
+  runId: string,
 ) => WrappedReturn<T>
 // types.ts
 

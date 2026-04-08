@@ -1,27 +1,32 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { WrapExtras } from './types.js';
-import { Stream } from '@anthropic-ai/sdk/streaming.mjs';
-import { MessageStream } from '@anthropic-ai/sdk/lib/MessageStream.mjs';
+import { WrapExtras, Template, WrappedReturn, cJSON } from './types.js';
 
-type CustomProps = {
-    userId?: string;
-    userProps?: Record<string, any>;
+type AnthropicRequestOptions = Parameters<Anthropic["messages"]["create"]>[1];
+type AnthropicCreateFunction<T, U> = (body: T, options?: AnthropicRequestOptions) => U;
+type NewParams = {
     tags?: string[];
-    metadata?: Record<string, any>;
+    userId?: string;
+    userProps?: cJSON;
+    metadata?: cJSON;
     templateId?: string;
 };
-type BaseCreateParams = Anthropic.MessageCreateParamsNonStreaming;
-type BaseStreamParams = Anthropic.MessageCreateParamsStreaming;
-type BaseOptions = Anthropic.RequestOptions;
-type WrappedAnthropic<T> = Omit<T, "messages"> & {
+type WrapCreateFunction<T, U> = (body: (T & NewParams) | Template | (Template & T), options?: AnthropicRequestOptions) => WrappedReturn<AnthropicCreateFunction<T, U>>;
+type WrapCreate<T> = {
     messages: {
-        create: {
-            (params: BaseCreateParams & CustomProps, options?: BaseOptions): Anthropic.Message;
-            (params: BaseStreamParams & CustomProps, options?: BaseOptions): Stream<Anthropic.MessageStreamEvent>;
+        create: WrapCreateFunction<any, any>;
+    };
+} & T;
+type WrappedAnthropic<T> = Omit<T, "messages"> & WrapCreate<T>;
+type AnthropicLike = {
+    messages?: {
+        create?: (...args: any[]) => any;
+    };
+    beta?: {
+        messages?: {
+            create?: (...args: any[]) => any;
         };
-        stream: (params: Anthropic.MessageStreamParams & CustomProps, options?: BaseOptions) => MessageStream;
     };
 };
-declare function monitorAnthropic<T extends Anthropic>(anthropic: T, params?: WrapExtras): WrappedAnthropic<T>;
+declare function monitorAnthropic<T extends AnthropicLike>(anthropic: T, params?: WrapExtras): WrappedAnthropic<T>;
 
 export { monitorAnthropic };

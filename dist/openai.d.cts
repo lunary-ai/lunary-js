@@ -1,4 +1,4 @@
-import { WrapExtras, cJSON, Template, WrappedReturn } from './types.cjs';
+import { WrapExtras, Template, WrappedReturn, cJSON } from './types.cjs';
 import OpenAI from 'openai';
 import { APIPromise } from 'openai/core';
 import OpenAIStreaming from 'openai/streaming';

@@ -5,6 +5,7 @@ export default defineConfig({
   entry: [
     "src/index.ts",
     "src/openai.ts",
+    "src/anthropic.ts",
     "src/types.ts",
     "src/browser.ts",
     "src/react.ts",

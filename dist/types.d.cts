@@ -32,6 +32,7 @@ interface Event {
 type TokenUsage = {
     completion: number;
     prompt: number;
+    promptCached?: number;
 };
 interface RunEvent extends Event {
     runId: string;
@@ -76,6 +77,7 @@ type WrapParams<T extends WrappableFn> = {
     track?: boolean;
     inputParser?: (...args: Parameters<T>) => cJSON;
     metadataParser?: (...args: Parameters<T>) => cJSON;
+    outputMetadataParser?: (result: Awaited<ReturnType<T>>) => cJSON;
     paramsParser?: (...args: Parameters<T>) => cJSON;
     nameParser?: (...args: Parameters<T>) => string;
     outputParser?: (result: Awaited<ReturnType<T>>) => cJSON;

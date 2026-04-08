@@ -13,7 +13,7 @@ class BackendMonitor extends Lunary {
   private wrap<T extends WrappableFn>(
     type: RunType,
     func: T,
-    params?: WrapParams<T>
+    params?: WrapParams<T>,
   ): WrappedFn<T> {
     const lunary = this
 
@@ -80,11 +80,12 @@ class BackendMonitor extends Lunary {
     // Get agent name from function name or params
     const name = properties?.nameParser
       ? properties.nameParser(...args)
-      : properties?.name ?? func.name
+      : (properties?.name ?? func.name)
 
     const {
       inputParser,
       outputParser,
+      outputMetadataParser,
       tokensUsageParser,
       templateParser,
       waitUntil,
@@ -150,12 +151,16 @@ class BackendMonitor extends Lunary {
       const tokensUsage = tokensUsageParser
         ? await tokensUsageParser(output)
         : undefined
+      const outputMetadata = outputMetadataParser
+        ? outputMetadataParser(output)
+        : undefined
 
       this.trackEvent(type, "end", {
         runId,
         name, // need name in case need to count tokens usage server-side
         output: outputParser ? outputParser(output) : output,
         tokensUsage,
+        metadata: outputMetadata,
       })
 
       if (shouldWaitUntil) {
@@ -176,7 +181,7 @@ class BackendMonitor extends Lunary {
         return waitUntil(
           output,
           (res) => processOutput(res),
-          (error) => console.error(error)
+          (error) => console.error(error),
         )
       } else if (track !== false) {
         await processOutput(output)
@@ -216,7 +221,7 @@ class BackendMonitor extends Lunary {
    */
   wrapAgent<T extends WrappableFn>(
     func: T,
-    params?: WrapParams<T>
+    params?: WrapParams<T>,
   ): WrappedFn<T> {
     return this.wrap("agent", func, params)
   }
@@ -241,7 +246,7 @@ class BackendMonitor extends Lunary {
    */
   wrapTool<T extends WrappableFn>(
     func: T,
-    params?: WrapParams<T>
+    params?: WrapParams<T>,
   ): WrappedFn<T> {
     return this.wrap("tool", func, params)
   }
@@ -253,7 +258,7 @@ class BackendMonitor extends Lunary {
    */
   wrapModel<T extends WrappableFn>(
     func: T,
-    params?: WrapParams<T>
+    params?: WrapParams<T>,
   ): WrappedFn<T> {
     return this.wrap("llm", func, params) as WrappedFn<T>
   }
