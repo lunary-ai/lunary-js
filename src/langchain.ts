@@ -121,10 +121,10 @@ const parseExtraAndName = (
     ...(metadata || {}),
   }
 
-  const { model, model_name, modelName, model_id, userId, userProps, ...rest } =
+  const { ls_model_name, model, model_name, modelName, model_id, userId, userProps, ...rest } =
     allParams
 
-  const name = model || modelName || model_name || model_id || llm.id.at(-1)
+  const name = ls_model_name || model || modelName || model_name || model_id || llm.id.at(-1)
 
   // Filter rest to only include params we want to capture
   const params = Object.fromEntries(
@@ -137,6 +137,7 @@ const parseExtraAndName = (
       ([key]) =>
         !PARAMS_TO_CAPTURE.includes(key) &&
         ![
+          "ls_model_name",
           "model",
           "model_name",
           "modelName",

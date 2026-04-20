@@ -96,14 +96,15 @@ var parseExtraAndName = /* @__PURE__ */ __name((llm, extraParams, metadata) => {
     ...llm?.kwargs ?? {},
     ...metadata || {}
   };
-  const { model, model_name, modelName, model_id, userId, userProps, ...rest } = allParams;
-  const name = model || modelName || model_name || model_id || llm.id.at(-1);
+  const { ls_model_name, model, model_name, modelName, model_id, userId, userProps, ...rest } = allParams;
+  const name = ls_model_name || model || modelName || model_name || model_id || llm.id.at(-1);
   const params = Object.fromEntries(
     Object.entries(rest).filter(([key]) => PARAMS_TO_CAPTURE.includes(key))
   );
   const cleanedMetadata = Object.fromEntries(
     Object.entries(metadata).filter(
       ([key]) => !PARAMS_TO_CAPTURE.includes(key) && ![
+        "ls_model_name",
         "model",
         "model_name",
         "modelName",
